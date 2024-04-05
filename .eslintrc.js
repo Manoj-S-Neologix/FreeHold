@@ -1,6 +1,6 @@
 require('@rushstack/eslint-config/patch/modern-module-resolution');
 module.exports = {
-  extends: ['@microsoft/eslint-config-spfx/lib/profiles/react'],
+  extends: ['@microsoft/eslint-config-spfx/lib/profiles/default'],
   parserOptions: { tsconfigRootDir: __dirname },
   overrides: [
     {
@@ -60,7 +60,7 @@ module.exports = {
         //
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/explicit-function-return-type': [
-          1,
+          0,
           {
             'allowExpressions': true,
             'allowTypedFunctionExpressions': true,
@@ -79,13 +79,13 @@ module.exports = {
         //                    This rule should be suppressed only in very special cases such as JSON.stringify()
         //                    where the type really can be anything.  Even if the type is flexible, another type
         //                    may be more appropriate such as "unknown", "{}", or "Record<k,V>".
-        '@typescript-eslint/no-explicit-any': 1,
+        '@typescript-eslint/no-explicit-any': 0,
         // RATIONALE:         The #1 rule of promises is that every promise chain must be terminated by a catch()
         //                    handler.  Thus wherever a Promise arises, the code must either append a catch handler,
         //                    or else return the object to a caller (who assumes this responsibility).  Unterminated
         //                    promise chains are a serious issue.  Besides causing errors to be silently ignored,
         //                    they can also cause a NodeJS process to terminate unexpectedly.
-        '@typescript-eslint/no-floating-promises': 2,
+        '@typescript-eslint/no-floating-promises': 0,
         // RATIONALE:         Catches a common coding mistake.
         '@typescript-eslint/no-for-in-array': 2,
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
@@ -124,7 +124,7 @@ module.exports = {
         //
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/no-unused-vars': [
-          1,
+          0,
           {
             'vars': 'all',
             // Unused function arguments often indicate a mistake in JavaScript code.  However in TypeScript code,
@@ -135,7 +135,7 @@ module.exports = {
         ],
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/no-use-before-define': [
-          2,
+          0,
           {
             'functions': false,
             'classes': true,
@@ -346,7 +346,10 @@ module.exports = {
         '**/test/*.ts',
         '**/test/*.tsx'
       ],
-      rules: {}
+      rules: {
+        "camelcase": "off",
+        "@typescript-eslint/camelcase": "off"
+      }
     }
   ]
 };
