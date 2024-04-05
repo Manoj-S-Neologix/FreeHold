@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "freehold-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/freehold/FreeholdWebPart.js",
+          "manifest": "./src/webparts/freehold/FreeholdWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "FreeholdWebPartStrings": "lib/webparts/freehold/loc/{locale}.js"
+  }
+}
