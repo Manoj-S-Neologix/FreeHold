@@ -5,7 +5,7 @@ import Home from "./Home/Home";
 const FreeHold: React.FC<IFreeholdProps> = (props) => {
 
   return (
-    <Home />
+    <Home props={props} />
   );
 };
 export default FreeHold;

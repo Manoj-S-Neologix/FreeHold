@@ -1,13 +1,18 @@
-import React from 'react';
-import { Navbar, Container, Form, InputGroup, FormControl, Nav, Button } from 'react-bootstrap';
-import { FaSearch, FaFilter, FaUpload } from 'react-icons/fa';
+import * as React from 'react';
+// import { Navbar, Container, Form, InputGroup, FormControl, Nav, Button } from 'react-bootstrap';
+// import { FaSearch, FaFilter, FaUpload } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from '../Home/Home.module.scss';
-// import { Stylesheet } from '@fluentui/react';
+// import styles from '../Home/Home.module.scss';
+import Header from '../../../../Common/Header/Header';
+import Search from '../../../../Common/Search/Search';
+import Sidenav from '../SideNavBar/Sidenav';
+// import Header from '../src/Common/Header/Header';
 
-const Home = () => {
+const Home = (props:any) => {
     return (
-        <div>
+        <React.Fragment>
+
+       {/* {false&& <div>
             <Navbar className="Logo-navbar" >
                 <Container>
                     <Navbar.Brand href="#home">
@@ -50,11 +55,18 @@ const Home = () => {
 
                 </Form>
                 <div className={styles['custom-upload-container']}>
-  <FaUpload
-    className={`${styles['upload-icon']} rounded-circle`}
-  />
-  <Button className={styles['uploadButton']}  > Upload Documents </Button>
-</div>
+
+                    <Button className={`${styles['uploadButton']} d-flex align-items-center justify-content-between`}  > 
+                    <p>
+                    <FaUpload
+                        className={` rounded-circle`}
+                    />
+                    </p>
+                    <p>
+                    Upload Documents 
+                    </p>
+                    </Button>
+                </div>
 
 
             </Navbar>
@@ -79,11 +91,13 @@ const Home = () => {
 
 
 
-        </div>
+        </div>} */}
+        <Header props ={props}/>
+        <Search props={props}/>
+        <Sidenav props={props}/>
+        </React.Fragment>
     );
 }
 
 export default Home;
-
-
 

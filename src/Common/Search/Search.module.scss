@@ -1,0 +1,23 @@
+.searchContainer {
+    padding: 0.5rem; 
+    background-color: #125895;
+  
+    .searchInput {
+      width: 100%;
+      border-radius: 0.25rem; 
+  
+      .iconSearch {
+        margin-left: -2.25rem; 
+      }
+    }
+  
+    .uploadButton {
+      background-color: #dba236 !important;
+      border-radius: 0.65rem; 
+      color: black;
+      padding: 2px;
+      margin-right: 2.0625rem;
+      font-size: 0.875rem !important;
+    }
+  }
+  
