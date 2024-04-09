@@ -1,0 +1,55 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+.HeaderPart {
+    .container {
+        @include ms-Grid;
+
+    }
+
+    .row {
+        @include ms-Grid-row;
+        @include ms-md12;
+    }
+
+    .col6 {
+        @include ms-Grid-col;
+        @include ms-md6;
+        @include ms-sm12;
+        @include ms-lg6;
+    }
+    .col2{
+        @include ms-Grid-col;
+        @include ms-lg2;
+        @include ms-md2;
+        @include ms-sm12;
+    }
+    .col8{
+        @include ms-Grid-col;
+        @include ms-lg10;
+        @include ms-md10;
+        @include ms-sm12;
+    }
+
+    .col12 {
+        @include ms-Grid-col;
+        @include ms-lg12;
+    }
+
+    // .column {
+    //     @include ms-Grid-col;
+    //     // border: 1px solid #ccc;
+    //     padding: 5px;
+    //     width: 100% !important;
+    // }
+    .column {
+        @include ms-Grid-col;
+        // border: 1px solid #ccc;
+        padding: 0.3125rem; 
+        width: 100% !important; 
+    }
+    
+    
+
+}
+
+

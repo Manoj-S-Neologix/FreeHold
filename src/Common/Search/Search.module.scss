@@ -1,23 +1,155 @@
-.searchContainer {
-    padding: 0.5rem; 
-    background-color: #125895;
+
   
+  @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+  // .searchmodule {
+  //     .container {
+  //         @include ms-Grid;
+  //         background-color: #125895;
+  //         // padding: 0.5rem; 
+  
+  //     }
+  
+  //     .row {
+  //         @include ms-Grid-row;
+  //         @include ms-md12;
+  //     }
+  
+  //     .col6 {
+  //         @include ms-Grid-col;
+  //         @include ms-md6;
+  //         @include ms-sm12;
+  //         @include ms-lg6;
+  //     }
+  //     .col2{
+  //         @include ms-Grid-col;
+  //         @include ms-lg2;
+  //         @include ms-md2;
+  //         @include ms-sm12;
+  //         // background-color: pink;
+  //     }
+  //     .col8{
+  //         @include ms-Grid-col;
+  //         @include ms-lg10;
+  //         @include ms-md10;
+  //         @include ms-sm12;
+  //     }
+  
+  //     .col12 {
+  //         @include ms-Grid-col;
+  //         @include ms-lg12;
+  //     }
+  
+  //     .column {
+  //         @include ms-Grid-col;
+  //         // border: 1px solid #ccc;
+  //         // padding: 10px;
+  //         width: 100% !important;
+  //     }
+
+  //             .searchBar{
+  //         width: 70%;
+      
+  //       }
+      
+  //       .searchInput {
+  //         width: 100%;
+
+  //         .iconSearch {
+  //           margin-left: -2.25rem; 
+  //         }
+  //       }
+      
+  //       .uploadButton {
+  //         background-color: #dba236 !important;
+  //         border-radius: 0.65rem; 
+  //         color: black;
+  //         // padding: 2px;
+  //         // margin-right: 2.0625rem;
+  //         // font-size: 0.875rem !important;
+  //         width: max-content;
+          
+  //       }
+
+  // }
+
+
+  .searchmodule {
+    .container {
+        @include ms-Grid;
+        background-color: #125895;
+        padding: 0.4rem;
+    }
+
+    .row {
+        @include ms-Grid-row;
+    }
+
+    .col6 {
+        @include ms-Grid-col;
+        @include ms-md6;
+        @include ms-sm12;
+        @include ms-lg6;
+    }
+
+    .col2 {
+        @include ms-Grid-col;
+        @include ms-lg2;
+        @include ms-md2;
+        @include ms-sm12;
+    }
+
+    .col8 {
+        @include ms-Grid-col;
+        @include ms-lg10;
+        @include ms-md10;
+        @include ms-sm12;
+    }
+
+    .col12 {
+        @include ms-Grid-col;
+        @include ms-lg12;
+    }
+
+    .column {
+        @include ms-Grid-col;
+        width: 100% !important;
+    }
+
+    .searchBar {
+        width: 70%;
+    }
+
     .searchInput {
-      width: 100%;
-      border-radius: 0.25rem; 
-  
-      .iconSearch {
-        margin-left: -2.25rem; 
+        display: flex;
+        align-items: center;
+        width: 80%;
+        border-radius: 20px !important;
+    }
+
+    .iconFilter {
+        color: white;
+        margin-left: 0.5rem;
+    }
+
+    .uploadButton {
+        background-color: #dba236 !important;
+        border-radius: 0.65rem; 
+        color: black;
+        width: max-content;
+        padding: 8px;
+        font-weight: none !important;
+        margin-left: 50px !important;
+
+        .ms-Button-icon {
+          color: white !important;
+          background-color: #125895 !important;
+          border-radius: 50% !important;
+          padding: 8px !important; 
       }
     }
-  
-    .uploadButton {
-      background-color: #dba236 !important;
-      border-radius: 0.65rem; 
-      color: black;
-      padding: 2px;
-      margin-right: 2.0625rem;
-      font-size: 0.875rem !important;
-    }
-  }
-  
+//    .buttonGrid{
+//     padding: 0px !important;
+//     // margin-left: 20px !important;
+//    }
+}

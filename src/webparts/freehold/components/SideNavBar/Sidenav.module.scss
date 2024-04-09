@@ -1,27 +1,123 @@
-.sideMenu {
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+:root{
+
+    --padding:"0px";
+    --margin:"0px";
+}
+
+.sideNav {
+    .container {
+        @include ms-Grid;
+
+    }
+
+    .row {
+        @include ms-Grid-row;
+        @include ms-md12;
+    }
+
+    .col6 {
+        @include ms-Grid-col;
+        @include ms-md6;
+        @include ms-sm12;
+        @include ms-lg6;
+    }
+    .col2{
+        @include ms-Grid-col;
+        @include ms-lg2;
+        @include ms-md2;
+        @include ms-sm12;
+    }
+    .col8{
+        @include ms-Grid-col;
+        @include ms-lg10;
+        @include ms-md10;
+        @include ms-sm12;
+    }
+
+    .col12 {
+        @include ms-Grid-col;
+        @include ms-lg12;
+    }
+
+    .column {
+        @include ms-Grid-col;
+        // border: 1px solid #ccc;
+        // padding: 10px;
+        width: 100% !important;
+    }
+    // .sideMenu {
+    //     background-color: #125895 !important;
+    //     margin-left: 0rem !important; 
+    //     display: contents;
+    // }
+    
+    // .sideMenuStack {
+    //     background-color: #125895 !important;
+    //     margin-left: 0rem !important;
+    //     width: 20%;
+    // }
+    
+    // .sideBar {
+    //     display: flex;
+    // }
+    
+    .sideNavMenu {
+        color: white;
+    }
+    
+    .sidenavBar{
+        background-color: #125895;
+        // width: auto;
+        padding: var(--padding) !important;
+        margin: var(--margin) !important;
+        // width: 100% !important;
+    min-height: 15rem;
+    flex-direction: column;
+    gap: 5px !important;
+
+
+    }
+    
+    .sideText {
+        border-bottom: 0.0625rem solid white;
+        display: inline-block;
+        width: 100%;
+        margin-bottom: 0.2 rem;
+    }
+   
+    $sideImageUrl: url('/src/assets/images/Sideimage.png'); 
+
+    .sideImage {
+    background-image: $sideImageUrl;
+    background-repeat: no-repeat;
+    background-size: cover;
     background-color: #125895;
-    margin-left: 0rem !important; 
-    display: contents;
+    position:absolute;
+    min-height: 15rem;
+    object-fit: cover;
+}
+.sideContainer{
+    padding: var(--padding) !important;
+}
+.sideNavContainer, .sideNavColumn{
+    padding: var(--padding) !important;
+    margin: var(--margin) !important;
+}
+.sideRowContainer{
+    margin: var(--margin) !important;
 }
 
-.sideMenuStack {
-    background-color: #125895;
-    margin-left: 0rem !important;
-    width: 20%;
-}
 
-.sideBar {
-    display: flex;
+.hoverEffect {
+    &:hover {
+      color: #125895 !important; 
+     
+      background-color: #dba236 !important; 
+    }
+  }
+  
+  
 }
-
-.sideNavMenu {
-    color: white;
-}
-
-.sideText {
-    border-bottom: 0.0625rem solid white; /* 1px is approximately 0.0625rem */
-    display: inline-block;
-    width: 100%;
-}
-
 

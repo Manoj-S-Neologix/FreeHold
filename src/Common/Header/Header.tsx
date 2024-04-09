@@ -1,42 +1,37 @@
 import * as React from 'react';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
-import { Stack, IStackTokens } from '@fluentui/react/lib/Stack';
-// import fetchUserName from '../Header/apiService'; 
+import styles from '../Header/Header.module.scss';
 
-const Header = ({props}: any) => {
+
+const Header = ({ props }: any) => {
     const [userName] = React.useState(props.props.userDisplayName);
 
-    console.log(props,"name")
-
-
-    const stackTokens: IStackTokens = { childrenGap: 10 };
+    console.log(props, "name")
 
     return (
-        <Stack horizontal tokens={stackTokens} styles={{ root: { padding: '10px' } }}>
-            <Stack.Item grow={8}>
-                <img
-                    src={require('/src/assets/Logo/freeholdsolutions.png')}
-                    width="150"
-                    height="50"
-                    alt="Logo"
-                    style={{ marginLeft: '30px' }}
-                />
-            </Stack.Item>
-            <Stack.Item grow={4} align="end">
-                <Stack horizontalAlign="end">
-                    <Persona
-                        imageUrl=""
-                        text={userName}
-                        size={PersonaSize.size32}
-                        imageAlt={userName}
-                        styles={{ primaryText: { fontSize: '14px' }, root: { margin: '10px' } }}
-                    />
-                </Stack>
-            </Stack.Item>
-        </Stack>
+        <div className={styles.HeaderPart}>
+            <div className={styles.row}>
+                <div className={styles.column}>
+                    <div className={styles.col12}>
+                        <div className={`${styles.col8} `}><img
+                            src={require('/src/assets/Logo/freeholdsolutions.png')}
+                            width="150"
+                            height="50"
+                            alt="Logo"
+                            style={{ marginLeft: '30px' }}
+                        /></div>
+                        <div className={` ${styles.col2}`}> <Persona
+                            imageUrl=""
+                            text={userName}
+                            size={PersonaSize.size32}
+                            imageAlt={userName}
+                            styles={{ primaryText: { fontSize: '14px' }, root: { margin: '10px' } }}
+                        /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 
 export default Header;
-
-

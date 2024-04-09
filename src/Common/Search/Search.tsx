@@ -1,45 +1,49 @@
+
 import * as React from 'react';
-import { Stack, PrimaryButton, TextField, IconButton } from '@fluentui/react';
-import styles from './Search.module.scss'; 
+import { PrimaryButton, TextField, IconButton } from '@fluentui/react';
+import styles from './Search.module.scss';
 
 const Search = (props: any) => {
     return (
-        <div className={styles.searchContainer}>
+        <div className={styles.searchmodule}>
+            <div className={styles.container}>
+                <div className={styles.row}>
+                    <div className={styles.column}>
+                        <div className={styles.col12}>
+                            <div className={`${styles.col8} ${styles.searchInput}`}>
 
-            <Stack horizontal styles={{ root: { padding: '4px' } }}>
-                <Stack.Item grow={8}>
-                    <Stack horizontal styles={{ root: { alignItems: 'center' } }}>
-                        <TextField placeholder="Search" styles={{ root: { width: '100%', borderRadius: '5px', } }} />
-                        <IconButton iconProps={{ iconName: 'Search' }} styles={{ root: { marginLeft: '-2rem' }, rootHovered: { background: 'none' }, rootPressed: { background: 'none' } }} />
-                        <IconButton iconProps={{ iconName: 'Filter' }} styles={{
-                            root: {
-                                color: 'white',
+                                <TextField 
+                                    placeholder="Search..."
+                                    className={styles.searchBar}
+                                    iconProps={{ iconName: 'Search' }}
 
-                            },
-                            rootHovered: { background: 'none' },
-                            rootPressed: { background: 'none' }
-                        }} />
-                    </Stack>
-                </Stack.Item>
-                <Stack.Item grow={4} align="end">
-                    <Stack horizontalAlign="end">
-                        <PrimaryButton iconProps={{ iconName: 'Upload' }}
-                            text="UPLOAD DOCUMENTS"
-                            className={styles['uploadButton']} />
-                    </Stack>
-                </Stack.Item>
-            </Stack>
+                                />
 
+                                <IconButton 
+                                    iconProps={{ iconName: 'Filter' }} 
+                                    className={styles.iconFilter}
+                                />
+                            </div>
+                            {/* <div className={` ${styles.col2}`}>
+                                <PrimaryButton 
+                                    iconProps={{ iconName: 'Upload' }}
+                                    text="UPLOAD DOCUMENTS"
+                                    className={styles.uploadButton} 
+                                />
+                            </div> */}
+                            <div className={` ${styles.col2} ` }>
+                                    <PrimaryButton 
+                                        iconProps={{ iconName: 'Upload' }}
+                                        className={styles.uploadButton} >
+                                        <span>UPLOAD DOCUMENTS</span>
+                                    </PrimaryButton>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
 
 export default Search;
-
-
-
-
-
-
-
-
