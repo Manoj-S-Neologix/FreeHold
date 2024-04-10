@@ -181,6 +181,11 @@
     div.spAppAndPropertyPanelContainer {
       padding-bottom: 0 !important;
     }
+    
+    //customize css
+    .ms-TextField-fieldGroup{
+      border-radius: 20px !important;
+    }
   }
 
 
@@ -188,4 +193,6 @@
 
     --padding:"0px";
     --margin:"0px";
+    --primarycolor:#125895;
+    
 }

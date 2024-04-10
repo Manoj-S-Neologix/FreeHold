@@ -1,7 +1,4 @@
-
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
-
-
 
 .projectsClient {
 
@@ -40,32 +37,7 @@
         @include ms-md4;
         @include ms-sm12;
     }
-    
-    
 
-    // .col4{
-    //     @include ms-Grid-col;
-    // }
-    
-    // .col6 {
-    //     @include ms-Grid-col;
-    //     @include ms-md6;
-    //     @include ms-sm12;
-    //     @include ms-lg6;
-    // }
-    // .col2{
-    //     @include ms-Grid-col;
-    //     @include ms-lg2;
-    //     @include ms-md2;
-    //     @include ms-sm12;
-    //     background-color: pink;
-    // }
-    // .col8{
-    //     @include ms-Grid-col;
-    //     @include ms-lg10;
-    //     @include ms-md10;
-    //     @include ms-sm12;
-    // }
 
     .col12 {
         @include ms-Grid-col;
@@ -74,8 +46,6 @@
 
     .column {
         @include ms-Grid-col;
-        // border: 1px solid #ccc;
-        // padding: 10px;
         width: 100% !important;
     }
 }

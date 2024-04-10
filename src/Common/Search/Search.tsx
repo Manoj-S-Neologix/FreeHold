@@ -24,13 +24,7 @@ const Search = (props: any) => {
                                     className={styles.iconFilter}
                                 />
                             </div>
-                            {/* <div className={` ${styles.col2}`}>
-                                <PrimaryButton 
-                                    iconProps={{ iconName: 'Upload' }}
-                                    text="UPLOAD DOCUMENTS"
-                                    className={styles.uploadButton} 
-                                />
-                            </div> */}
+
                             <div className={` ${styles.col2} ` }>
                                     <PrimaryButton 
                                         iconProps={{ iconName: 'Upload' }}

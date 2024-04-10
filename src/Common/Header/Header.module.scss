@@ -35,12 +35,6 @@
         @include ms-lg12;
     }
 
-    // .column {
-    //     @include ms-Grid-col;
-    //     // border: 1px solid #ccc;
-    //     padding: 5px;
-    //     width: 100% !important;
-    // }
     .column {
         @include ms-Grid-col;
         // border: 1px solid #ccc;
