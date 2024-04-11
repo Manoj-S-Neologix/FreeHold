@@ -17,18 +17,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import styles from './Table.module.scss'
 import { Stack } from '@fluentui/react/lib/Stack';
 
-
+import styles from './Table.module.scss';
 
 function EnhancedTableHead(props: any) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
     return (
-   
-
-        <TableHead sx={{ backgroundColor: "#125895", color: "#fff" }} >
+        <TableHead sx={{ backgroundColor: "#125895", color: "#fff" }}>
             <TableRow>
                 <TableCell padding="checkbox" sx={{ backgroundColor: "#000", color: "#fff" }}>
                     <Checkbox
@@ -48,14 +45,14 @@ function EnhancedTableHead(props: any) {
                         align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        aria-label={headCell.label}
                     >
                         {headCell.label}
                     </TableCell>
                 ))}
             </TableRow>
         </TableHead>
-
-    );   
+    );
 }
 
 function EnhancedTableToolbar({ numSelected }: any) {
@@ -90,17 +87,21 @@ const headCells = [
     { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
     { id: 'country', numeric: false, disablePadding: false, label: 'Country' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
-    { id: 'action', numeric: false, disablePadding: false, label: '' },
+    { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 const rows = [
     { id: 1, name: 'John Doe', email: 'john@example.com', contact: '1234567890', country: 'USA', location: 'New York' },
     { id: 2, name: 'Jane Smith', email: 'jane@example.com', contact: '0987654321', country: 'UK', location: 'London' },
     { id: 3, name: 'Alice Johnson', email: 'alice@example.com', contact: '4567890123', country: 'Canada', location: 'Toronto' },
-    { id: 4, name: 'Bob Brown', email: 'bob@example.com', contact: '7890123456', country: 'Australia', location: 'Sydney' }
+    { id: 4, name: 'Bob Brown', email: 'bob@example.com', contact: '7890123456', country: 'Australia', location: 'Sydney' },
+    { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', contact: '0123456789', country: 'India', location: 'Delhi' },
+    { id: 6, name: 'David Wilson', email: 'david@example.com', contact: '2345678901', country: 'USA', location: 'New York' },
+    { id: 7, name: 'Eve Anderson', email: 'eve@example.com', contact: '5678901234', country: 'UK', location: 'London' },
+    { id: 8, name: 'Frank Martinez', email: 'frank@example.com', contact: '8901234567', country: 'Canada', location: 'Toronto' },
 ];
 
-export default function EnhancedTable() {
+const GridTable = ({ props, searchQuery }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [selected, setSelected] = React.useState<any>([]);
@@ -123,7 +124,7 @@ export default function EnhancedTable() {
         console.log(`View/Upload Documents clicked for row ${id}`);
     };
 
-    const handleRequestSort = ({ event, property }: any) => {
+    const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -137,6 +138,8 @@ export default function EnhancedTable() {
         }
         setSelected([]);
     };
+
+    
 
     const handleClick = (event: any, id: any) => {
         const selectedIndex = selected.indexOf(id);
@@ -157,11 +160,12 @@ export default function EnhancedTable() {
         setSelected(newSelected);
     };
 
-    const handleChangePage = ({ event, newPage }: any) => {
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event: any) => {
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
@@ -170,104 +174,196 @@ export default function EnhancedTable() {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+    const filteredRows = searchQuery
+        ? rows.filter((row) =>
+            Object.values(row).some(
+                (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        )
+        : rows;
+
     return (
         <Stack tokens={{ childrenGap: 10 }}>
-        <Stack.Item>
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2, mt:2 }}>
-               {false && <EnhancedTableToolbar numSelected={selected.length} />}
-                <TableContainer>
-                    <Table>
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+            <Stack.Item>
+                <Box sx={{ width: '100%' }}>
+                    <Paper sx={{ width: '100%', mb: 2, mt: 2 }}>
+                        {false && <EnhancedTableToolbar numSelected={selected.length} />}
+                        <TableContainer>
+                            <Table>
+                                <EnhancedTableHead
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={filteredRows.length}
+                                />
+                                <TableBody>
+
+                                    {filteredRows.length > 0
+                                        ? filteredRows
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row) => {
+                                                const isItemSelected = isSelected(row.id);
+                                                const labelId = `enhanced-table-checkbox-${row.id}`;
+
+                                                return (
+                                                    <TableRow
+                                                        hover
+                                                        onClick={(event) => handleClick(event, row.id)}
+                                                        role="checkbox"
+                                                        aria-checked={isItemSelected}
+                                                        tabIndex={-1}
+                                                        key={row.id}
+                                                        selected={isItemSelected}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                sx={{ color: 'black' }}
+                                                                checked={isItemSelected}
+                                                                inputProps={{
+                                                                    'aria-labelledby': labelId,
+                                                                }}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                            {searchQuery && row.name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                <>
+                                                                    {row.name.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                        <span key={index}>
+                                                                            {index > 0 && (
+                                                                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                            )}
+                                                                            {part}
+                                                                        </span>
+                                                                    ))}
+                                                                </>
+                                                            ) : (
+                                                                row.name
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                            {searchQuery && row.email.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                <>
+                                                                    {row.email.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                        <span key={index}>
+                                                                            {index > 0 && (
+                                                                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                            )}
+                                                                            {part}
+                                                                        </span>
+                                                                    ))}
+                                                                </>
+                                                            ) : (
+                                                                row.email
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                            {searchQuery && row.contact.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                <>
+                                                                    {row.contact.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                        <span key={index}>
+                                                                            {index > 0 && (
+                                                                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                            )}
+                                                                            {part}
+                                                                        </span>
+                                                                    ))}
+                                                                </>
+                                                            ) : (
+                                                                row.contact
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                            {searchQuery && row.country.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                <>
+                                                                    {row.country.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                        <span key={index}>
+                                                                            {index > 0 && (
+                                                                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                            )}
+                                                                            {part}
+                                                                        </span>
+                                                                    ))}
+                                                                </>
+                                                            ) : (
+                                                                row.country
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                            {searchQuery && row.location.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                <>
+                                                                    {row.location.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                        <span key={index}>
+                                                                            {index > 0 && (
+                                                                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                            )}
+                                                                            {part}
+                                                                        </span>
+                                                                    ))}
+                                                                </>
+                                                            ) : (
+                                                                row.location
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell align="left">
+                                                            <div className="d-flex align-items-center justify-content-around w-100">
+                                                                <div>
+                                                                    <Tooltip title="View">
+                                                                        <IconButton onClick={() => handleView(row.id)}>
+                                                                            <VisibilityIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Edit">
+                                                                        <IconButton onClick={() => handleEdit(row.id)}>
+                                                                            <EditIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Delete">
+                                                                        <IconButton onClick={() => handleDelete(row.id)}>
+                                                                            <DeleteIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                </div>
+                                                                <div>
+                                                                    <Button className={`${styles.viewbutton}`} onClick={() => handleViewUploadDocuments(row.id)}>
+                                                                        View/Upload Documents
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            }) :
+                                        <TableRow>
+                                            <TableCell colSpan={6} align="center">
+                                                No Records Found
+                                            </TableCell>
+                                        </TableRow>
+                                    }
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={filteredRows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
                         />
-                        <TableBody>
-                            {rows.map((row) => {
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${row.id}`;
+                    </Paper>
+                </Box>
+            </Stack.Item>
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        onClick={(event) => handleClick(event, row.id)}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.id}
-                                        selected={isItemSelected}
-                                        sx={{ cursor: 'pointer' }}
-                                    >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell component="th" id={labelId} scope="row" padding="none">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell align="left">{row.email}</TableCell>
-                                        <TableCell align="left">{row.contact}</TableCell>
-                                        <TableCell align="left">{row.country}</TableCell>
-                                        <TableCell align="left">{row.location}</TableCell>
-                                        <TableCell align="left">
-                                            <div className = "d-flex align-items-center justify-content-around w-100">
-                                            <div> <Tooltip title="View">
-                                                <IconButton onClick={() => handleView(row.id)}>
-                                                    <VisibilityIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Edit">
-                                                <IconButton onClick={() => handleEdit(row.id)}>
-                                                    <EditIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Delete">
-                                                <IconButton onClick={() => handleDelete(row.id)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </Tooltip></div>
-                                           <div>
-                                            <Button  className={`${styles.viewbutton}`}
-                                            onClick={() => handleViewUploadDocuments(row.id)}>
-                                                View/Upload Documents
-                                            </Button>
-                                            </div>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-        </Box>
-        </Stack.Item>
-    </Stack>
-       
+        </Stack>
     );
-}
-
+};
+export default GridTable;

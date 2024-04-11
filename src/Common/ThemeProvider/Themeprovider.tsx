@@ -1,8 +1,3 @@
-{/* <ThemeProvider primary={"#000"} secondary={"#fff"} >
-            {<EmployeeOnboardingProcess props={props} />}
-            <EnhancedTable />
-          </ThemeProvider> */}
-
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material";
 import React, { ReactNode } from "react";
 
@@ -73,6 +68,13 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     }
                 }
             },
+            MuiToolbar: {
+                styleOverrides: {
+                    root: {
+                        marginTop: "1rem"
+                    }
+                }
+            },
             MuiTableSortLabel: {
                 styleOverrides: {
                     root: {
@@ -89,33 +91,58 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                 }
             },
+            MuiCheckbox: {
+                styleOverrides: {
+                    root: {
+                        color: "#fff",
+                        '&.Mui-checked': {
+                            color: "#fff",
+                        },
+                        '&.MuiCheckbox-indeterminate': {
+                            color: "#fff",
+                        },
+                        '&.MuiCheckbox-indeterminate:hover': {
+                            color: "#fff",
+                        }, '&.MuiSvgIcon-root': {
+                            color: "#fff",
+                        }
 
+                    }
+                }
+            },
+            // MuiSvgIcon: {
+            //         styleOverrides: {
+            //             root: {
+            //                 color: "#fff",
+            //             }
+            //         }
+            //     },
             MuiInputBase: {
                 styleOverrides: {
                     root: {
-                        marginTop:'-14px'
+                        marginTop: '-14px'
                     }
                 }
-            }, 
+            },
 
-            MuiTablePagination:{
+            MuiTablePagination: {
                 styleOverrides: {
                     actions: {
-                        marginTop:'-14px'
+                        marginTop: '-14px'
                     }
                 }
-            }, 
+            },
 
             MuiTableBody: {
                 styleOverrides: {
-                    root: {
-                        '&:nth-of-type(odd)': {
-                            backgroundColor: '#f5f5f5',
-                        },
-                        '&:last-child td, &:last-child th': {
-                            border: 0,
-                        },
-                    }
+                    // root: {
+                    //     '&:nth-of-type(odd)': {
+                    //         backgroundColor: '#f5f5f5',
+                    //     },
+                    //     '&:last-child td, &:last-child th': {
+                    //         border: 0,
+                    //     },
+                    // }
                 }
             }
         },

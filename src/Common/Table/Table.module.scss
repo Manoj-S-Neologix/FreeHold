@@ -1,8 +1,12 @@
-.viewbutton{
+.viewbutton {
     background-color: var(--primarycolor) !important;
     border-radius: 10px !important;
     color: white !important;
     // padding: 3px !important;
     padding-left: 15px !important;
     padding-right: 15px !important;
+}
+
+th[aria-label="Actions"] {
+    text-align: center !important;
 }

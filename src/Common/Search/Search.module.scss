@@ -1,16 +1,26 @@
- @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+// Import Office UI Fabric Core
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
 
-  .searchmodule {
+// Variables
+$searchmodule-padding: 0.4rem;
+$searchInput-border-radius: 1.25rem;
+
+// Styles
+.searchmodule {
+
+    // Grid Container
     .container {
         @include ms-Grid;
-        background-color: #125895;
-        padding: 0.4rem;
+        background-color: var(--primarycolor);
+        padding: $searchmodule-padding;
     }
 
+    // Grid Row
     .row {
         @include ms-Grid-row;
     }
 
+    // Grid Columns
     .col6 {
         @include ms-Grid-col;
         @include ms-md6;
@@ -37,42 +47,30 @@
         @include ms-lg12;
     }
 
+    // Generic Column
     .column {
         @include ms-Grid-col;
         width: 100% !important;
     }
 
+    // Search Bar
     .searchBar {
         width: 70%;
     }
 
+    // Search Input
     .searchInput {
         display: flex;
         align-items: center;
         width: 80%;
-        border-radius: 20px !important;
+        border-radius: $searchInput-border-radius !important;
     }
 
+    // Icon Filter
     .iconFilter {
         color: white;
         margin-left: 0.5rem;
     }
 
-    .uploadButton {
-        background-color: #dba236 !important;
-        border-radius: 0.65rem; 
-        color: black;
-        width: max-content;
-        padding: 8px;
-        font-weight: none !important;
-        margin-left: 50px !important;
-
-        .ms-Button-icon {
-          color: white !important;
-          color: var(--primarycolor) !important;
-          border-radius: 50% !important;
-          padding: 8px !important; 
-      }
-    }
 
 }

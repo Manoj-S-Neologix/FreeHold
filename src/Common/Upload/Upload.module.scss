@@ -1,0 +1,22 @@
+// Import Office UI Fabric Core
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+.uploadModule {
+    .uploadButton {
+        background-color: var(--secondarycolor) !important;
+        border-radius: 0.65rem;
+        color: black;
+        width: max-content;
+        padding: 0.5rem;
+        font-weight: none !important;
+        margin-left: 3.125rem !important;
+
+        // Button Icon
+        .ms-Button-icon {
+            color: white !important;
+            color: var(--primarycolor) !important;
+            border-radius: 50% !important;
+            padding: 0.5rem !important;
+        }
+    }
+}

@@ -1,0 +1,59 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+// Variables
+$container-padding: 5rem !important;
+$container-gap: 2rem !important;
+
+// Styles
+.container {
+    @include ms-Grid;
+    padding-left: $container-padding;
+    padding-right: $container-padding;
+    display: flex;
+    flex-direction: column !important;
+
+    &:not(:first-child) {
+        gap: $container-gap !important;
+    }
+}
+
+.Addcontainer {
+    display: flex;
+    flex-direction: column !important;
+    gap: 2rem !important;
+}
+
+.searchBar {
+    width: 20%;
+    left: 1.25rem !important; 
+}
+
+.searchInput {
+    display: flex;
+    align-items: center;
+    min-width: 20%;
+}
+
+.iconFilter {
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.Addbutton {
+    display: flex;
+}
+
+.Clientcontainer {
+    background-color: white !important;
+    margin-left: 0.625rem !important; 
+}
+
+.Searchspan {
+    display: flex !important;
+}
+
+.Clientbutton {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--primarycolor) !important;
+}
