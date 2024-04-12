@@ -139,7 +139,7 @@ const GridTable = ({ props, searchQuery }: any) => {
         setSelected([]);
     };
 
-    
+
 
     const handleClick = (event: any, id: any) => {
         const selectedIndex = selected.indexOf(id);
