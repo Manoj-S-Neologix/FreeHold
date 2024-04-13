@@ -95,7 +95,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import styles from './Addclient.module.scss';
+import styles from './AddClient.module.scss';
 
 interface AddClientDialogProps {
   open: boolean;
