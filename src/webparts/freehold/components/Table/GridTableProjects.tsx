@@ -22,7 +22,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 
-import styles from './Table.module.scss';
+import styles from '../../../../Common/Table/Table.module.scss'
 
 function EnhancedTableHead(props: any) {
 const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
@@ -62,7 +62,7 @@ return (
 }
 
 const headCells = [
-{ id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
+{ id: 'name', numeric: false, disablePadding: true, label: 'Project Name' },
 { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
 { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
 { id: 'country', numeric: false, disablePadding: false, label: 'Country' },
@@ -82,7 +82,7 @@ const rows = [
 { id: 8, name: 'Frank Martinez', email: 'frank@example.com', contact: '8901234567', country: 'Canada', location: 'Toronto', modifiedOn: 'MM/DD/YYYY' },
 ];
 
-const GridTable = ({ props, searchQuery }: any) => {
+const GridTableProjects = ({ props, searchQuery }: any) => {
 const [order, setOrder] = React.useState('asc');
 const [orderBy, setOrderBy] = React.useState('name');
 const [selected, setSelected] = React.useState<any>([]);
@@ -267,7 +267,6 @@ return (
                             row.contact
                         )}
                     </TableCell>
-                    
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                         {searchQuery && row.country.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
@@ -316,7 +315,6 @@ return (
                 row.modifiedOn
             )}
         </TableCell>
-
                     <TableCell align="left" padding="none" >
                         <div className="d-flex align-items-center w-100">
                             <div>
@@ -348,7 +346,7 @@ return (
                         </div>
                     </TableCell>
                     
-                           
+
 
                 </TableRow>
             );
@@ -385,7 +383,7 @@ open={openDialog}
 onClose={handleCloseDialog}
 aria-labelledby="assign-staff-dialog-title"
 >
-<DialogTitle id="assign-staff-dialog-title">Assign Staff</DialogTitle>
+<DialogTitle id="assign-staff-dialog-title">Assign Client</DialogTitle>
 <DialogContent>
 {/* //peple picker */}
 </DialogContent>
@@ -401,5 +399,5 @@ aria-labelledby="assign-staff-dialog-title"
 </Box>
 );
 };
-export default GridTable;
+export default GridTableProjects;
 

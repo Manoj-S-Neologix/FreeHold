@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Breadcrumbs, Button, TextField, Grid } from '@mui/material'; 
 import SearchIcon from '@mui/icons-material/Search'; 
 import { ThemeProvider, createTheme } from '@mui/material/styles'; 
-import GridTable from "../../../../Common/Table/Table";
+// import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom'; 
-import AddClientDialog from '../AddClient/AddClient'; 
-import styles from './ViewClient.module.scss';
+import AddProjectDialog from '../AddProjects/AddProject';
+import styles from '../ViewClient/ViewClient.module.scss';
+import GridTableProjects from '../Table/GridTableProjects';
 
 
-
-function ViewClient(props:any) {
+function ViewProjects(props:any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false); 
   const navigate = useNavigate(); 
@@ -30,11 +30,6 @@ function ViewClient(props:any) {
     setAddClientDialogOpen(false);
   };
 
-  // const projectHeaders = [
-  //   { id: 'name', numeric: false, disablePadding: true, label: 'Project Name' },
-  //   // Add other project-specific headers if needed
-  // ];
-
   const theme = createTheme({ 
     palette: {
       primary: {
@@ -51,11 +46,11 @@ function ViewClient(props:any) {
   <Grid item xs={12} className={styles.Homebreadcrumb}>
     <Breadcrumbs aria-label="breadcrumb">
       <Button onClick={navigateToHome}>Home</Button>
-      <Button disabled>View Client</Button>
+      <Button disabled>View Projects</Button>
     </Breadcrumbs>
   </Grid>
   <Grid item xs={12} className={styles.Addcontainer}>
-    <Button className={styles.Addbutton} onClick={openAddClientDialog}>Add Client</Button>
+    <Button className={styles.Addbutton} onClick={openAddClientDialog}>Add Projects</Button>
     <div className={styles.searchInput}>
       <TextField
         className={styles.searchBar}
@@ -64,23 +59,19 @@ function ViewClient(props:any) {
         onChange={handleSearchChange}
       />
     </div>
-    <Button className={styles.Assignbutton}>Assign Staff</Button>
+    <Button className={styles.Assignbutton}>Assign Client</Button>
   </Grid>
 
   <ThemeProvider theme={theme}>
     <Grid item xs={12}>
-      <GridTable props={props} searchQuery={searchQuery} />
-
-
+      <GridTableProjects props={props} searchQuery={searchQuery} />
     </Grid>
   </ThemeProvider>
-  <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
+  <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
 </Grid>
 
   
   );
 }
 
-export default ViewClient;
-
-
+export default ViewProjects;

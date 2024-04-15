@@ -3,10 +3,24 @@
     border-radius: 10px !important;
     color: white !important;
     // padding: 3px !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    height: 35px !important;
 }
 
 th[aria-label="Actions"] {
-    text-align: center !important;
+    text-align: left !important;
+}
+th, td{
+    text-align: left !important;
+    padding: 10px !important;
+}
+// button[aria-label=["View"] ["Edit"] ["Delete"]] {
+//     padding: 0px !important;
+// }
+button[aria-label="View"],
+button[aria-label="Edit"],
+button[aria-label="Delete"] {
+    padding: 3px !important;
+ 
 }

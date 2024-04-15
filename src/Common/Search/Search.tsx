@@ -1,10 +1,15 @@
-
-import * as React from 'react';
-import { TextField, IconButton } from '@fluentui/react';
+import React from 'react';
 import styles from './Search.module.scss';
+import { TextField, IconButton } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import Upload from "../Upload/Upload";
 
-const Search = (props: any) => {
+const Search = (props:any) => {
+    const handleFilterClick = () => {
+        console.log('Filter clicked');
+    };
+
     return (
         <div className={styles.searchmodule}>
             <div className={styles.container}>
@@ -12,20 +17,21 @@ const Search = (props: any) => {
                     <div className={styles.column}>
                         <div className={styles.col12}>
                             <div className={`${styles.col8} ${styles.searchInput}`}>
-
-                                <TextField
-                                    placeholder="Search..."
+                                 <TextField
                                     className={styles.searchBar}
-                                    iconProps={{ iconName: 'Search' }}
-
+                                    placeholder="Search..."
+                                    InputProps={{ endAdornment: <SearchIcon 
+                                        className={styles.IconSearch}/>,
+                                        disableUnderline: true
+                                     }} 
                                 />
-
                                 <IconButton
-                                    iconProps={{ iconName: 'Filter' }}
+                                    onClick={handleFilterClick}
                                     className={styles.iconFilter}
-                                />
+                                >
+                                    <FilterListIcon />
+                                </IconButton>
                             </div>
-
                             <div className={` ${styles.col2} `}>
                                 <Upload props={props} />
                             </div>

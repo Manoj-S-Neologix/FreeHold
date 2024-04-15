@@ -6,6 +6,7 @@ import Sidenav from '../SideNavBar/Sidenav';
 import ProjectsClient from '../../../../Common/ProjectsClient/ProjectsClient';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Addclient from '../ViewClient/ViewClient';
+import ViewProjects from '../ViewProjects/ViewProjects';
 
 
 const Home = (props: any) => {
@@ -25,6 +26,10 @@ const Home = (props: any) => {
                     <Route
                         path='/Addclient'
                         element={<Addclient />}
+                    />
+                       <Route
+                        path='/ViewProjects'
+                        element={<ViewProjects />}
                     />
                 </Routes>
             </HashRouter>

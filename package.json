@@ -19,6 +19,8 @@
     "@emotion/styled": "^11.11.5",
     "@fluentui/react": "^8.106.4",
     "@fluentui/react-northstar": "^0.66.5",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@microsoft/sp-component-base": "1.18.2",
     "@microsoft/sp-core-library": "^1.18.2",
     "@microsoft/sp-lodash-subset": "1.18.2",

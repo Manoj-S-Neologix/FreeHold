@@ -17,7 +17,7 @@ const Header = ({ props }: any) => {
                                 width="150"
                                 height="50"
                                 alt="Logo"
-                                style={{ marginLeft: '30px' }}
+                                style={{ marginLeft: '7px' }}
                             />
                         </div>
                         <div className={` ${styles.col2}`}>
@@ -39,3 +39,4 @@ const Header = ({ props }: any) => {
 };
 
 export default Header;
+

@@ -1,26 +1,20 @@
-// Import Office UI Fabric Core
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
 
-// Variables
 $searchmodule-padding: 0.4rem;
 $searchInput-border-radius: 1.25rem;
 
-// Styles
 .searchmodule {
 
-    // Grid Container
     .container {
         @include ms-Grid;
         background-color: var(--primarycolor);
         padding: $searchmodule-padding;
     }
 
-    // Grid Row
     .row {
         @include ms-Grid-row;
     }
 
-    // Grid Columns
     .col6 {
         @include ms-Grid-col;
         @include ms-md6;
@@ -47,30 +41,47 @@ $searchInput-border-radius: 1.25rem;
         @include ms-lg12;
     }
 
-    // Generic Column
     .column {
         @include ms-Grid-col;
         width: 100% !important;
     }
 
-    // Search Bar
     .searchBar {
-        width: 70%;
+        // width: 100%;
+        width: calc(100% - 40px); 
+        background-color: #99b0c4;
+        border-radius: 20px; 
+        padding: 0.5rem; 
+        color: var(--primarycolor);
+        height: 35px !important;
+        
+        input{
+        padding: 0px !important;
+        }
     }
 
-    // Search Input
     .searchInput {
         display: flex;
         align-items: center;
         width: 80%;
         border-radius: $searchInput-border-radius !important;
+        justify-content: space-between;
+        padding-right: 0px !important
     }
 
-    // Icon Filter
+    .SearchIcon{
+        align-items: right !important;
+    }
+
     .iconFilter {
         color: white;
         margin-left: 0.5rem;
     }
+    .IconSearch{
+        color: black !important;
+    }
 
 
 }
+
+
