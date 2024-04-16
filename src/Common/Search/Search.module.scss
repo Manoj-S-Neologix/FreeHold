@@ -54,9 +54,18 @@ $searchInput-border-radius: 1.25rem;
         padding: 0.5rem; 
         color: var(--primarycolor);
         height: 35px !important;
+        // margin-top: 20px !important;
+        // margin-bottom: 20px !important;
         
         input{
         padding: 0px !important;
+        height: 20px !important;
+        padding: 0!important;
+        top: 0px;
+        margin-top: 0px;  
+        position: absolute;
+        display: block;
+        width: 93%;
         }
     }
 
@@ -66,19 +75,29 @@ $searchInput-border-radius: 1.25rem;
         width: 80%;
         border-radius: $searchInput-border-radius !important;
         justify-content: space-between;
-        padding-right: 0px !important
+        padding-right: 0px !important;
+
     }
 
-    .SearchIcon{
+    .SearchIcon  {
         align-items: right !important;
+        display: flex;
+        // bottom:10px !important
+
+
     }
 
     .iconFilter {
         color: white;
         margin-left: 0.5rem;
+       
+
     }
     .IconSearch{
         color: black !important;
+        position: relative !important;
+        margin-left: auto !important;
+        bottom: 2px !important;
     }
 
 

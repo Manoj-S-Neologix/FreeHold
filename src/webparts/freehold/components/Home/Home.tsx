@@ -7,6 +7,7 @@ import ProjectsClient from '../../../../Common/ProjectsClient/ProjectsClient';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Addclient from '../ViewClient/ViewClient';
 import ViewProjects from '../ViewProjects/ViewProjects';
+// import ChecklistValidation  from '../ChecklistValidation/ChecklistValidation';
 
 
 const Home = (props: any) => {
@@ -29,6 +30,10 @@ const Home = (props: any) => {
                     />
                        <Route
                         path='/ViewProjects'
+                        element={<ViewProjects />}
+                    />
+                    <Route
+                        path='/ChecklistValidation'
                         element={<ViewProjects />}
                     />
                 </Routes>

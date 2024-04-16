@@ -1,3 +1,43 @@
+// @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+// .uploadButton {
+//     background-color: var(--secondarycolor) !important;
+//     border-radius: 0.65rem !important;
+//     color: black !important;
+//     width: max-content;
+//     padding: 0.4rem !important;
+//     font-weight: none !important;
+//     margin-left: 3.125rem !important;
+//     margin-top: 4px !important;
+
+// }
+
+// .RadioButton {
+//     display: flex;
+// }
+
+// .ProjectDialogue {
+//     display: flex !important;
+//     flex-direction: column !important;
+//     gap: 10px !important;
+// }
+
+// .Projectfield,
+// .Clientfield {
+//     width: 100% !important;
+// }
+
+// .Question1,
+// .Question2 {
+//     width: 100%;
+// }
+
+// .CancelButton,
+// .SaveButton {
+//     border-radius: 2px !important;
+// }
+
+// Import Office UI Fabric Core
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
 
 .uploadButton {
@@ -10,6 +50,13 @@
     margin-left: 3.125rem !important;
     margin-top: 4px !important;
 
+    // // Button Icon
+    // .ms-Button-icon {
+    //     color: white !important;
+    //     color: var(--primarycolor) !important;
+    //     border-radius: 50% !important;
+    //     padding: 0.5rem !important;
+    // }
 }
 
 .RadioButton {

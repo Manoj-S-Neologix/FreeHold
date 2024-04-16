@@ -117,18 +117,22 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             //             }
             //         }
             //     },
+
+
             MuiInputBase: {
                 styleOverrides: {
                     root: {
-                        marginTop: '-14px'
+                        marginTop: '-20px'
                     }
                 }
             },
 
+   
+           
             MuiTablePagination: {
                 styleOverrides: {
                     actions: {
-                        marginTop: '-14px'
+                        marginTop: '-20px'
                     }
                 }
             },

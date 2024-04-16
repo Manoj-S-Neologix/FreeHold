@@ -11,13 +11,14 @@
       ]
     }
   },
-  "externals": { "bootstrap": {
-    "path": "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css",
-    "globalName": "bootstrap"
-}},
+  "externals": {
+    "bootstrap": {
+      "path": "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css",
+      "globalName": "bootstrap"
+    }
+  },
   "localizedResources": {
-    "FreeholdWebPartStrings": "lib/webparts/freehold/loc/{locale}.js"
+    "FreeholdWebPartStrings": "lib/webparts/freehold/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
   }
-  
-  
 }

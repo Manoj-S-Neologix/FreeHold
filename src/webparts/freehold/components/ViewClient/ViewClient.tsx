@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Button, TextField, Grid } from '@mui/material'; 
+import { Breadcrumbs, Button, TextField, Grid, Box, Stack } from '@mui/material'; 
 import SearchIcon from '@mui/icons-material/Search'; 
 import { ThemeProvider, createTheme } from '@mui/material/styles'; 
 import GridTable from "../../../../Common/Table/Table";
@@ -47,14 +47,16 @@ function ViewClient(props:any) {
   });
 
   return (
-<Grid container className={styles.container} spacing={2}> 
-  <Grid item xs={12} className={styles.Homebreadcrumb}>
+<Box sx={{width:'100', padding:'20px' }} > 
+<Stack direction ='column' spacing={2} >
+
+  <Grid item xs={12} className={styles.Homebreadcrumb} >
     <Breadcrumbs aria-label="breadcrumb">
-      <Button onClick={navigateToHome}>Home</Button>
+      <Button onClick={navigateToHome} >Home</Button>
       <Button disabled>View Client</Button>
     </Breadcrumbs>
   </Grid>
-  <Grid item xs={12} className={styles.Addcontainer}>
+  <Grid item xs={12} className={styles.Addcontainer} style={{ margin: '0px' }}>
     <Button className={styles.Addbutton} onClick={openAddClientDialog}>Add Client</Button>
     <div className={styles.searchInput}>
       <TextField
@@ -67,6 +69,7 @@ function ViewClient(props:any) {
     <Button className={styles.Assignbutton}>Assign Staff</Button>
   </Grid>
 
+
   <ThemeProvider theme={theme}>
     <Grid item xs={12}>
       <GridTable props={props} searchQuery={searchQuery} />
@@ -75,12 +78,17 @@ function ViewClient(props:any) {
     </Grid>
   </ThemeProvider>
   <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
-</Grid>
+  </Stack>
+</Box>
 
   
   );
 }
 
 export default ViewClient;
+
+
+
+
 
 

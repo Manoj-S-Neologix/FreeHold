@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,8 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Grid } from '@mui/material';
-
+import { Grid, Stack, Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -177,9 +175,10 @@ handleCloseDialog();
 };
 
 return (
-<Box>
-<Grid container spacing={2}>
-<Grid item xs={12}>
+<Box sx={{width:'100'}}>
+<Stack>
+<Grid container spacing={2} >
+<Grid item xs={12} style={{ paddingTop: '10px', paddingLeft:'24px' }}>
 <Paper sx={{ width: '100%', mb: 2 }}>
     <TableContainer>
         <Table>
@@ -398,6 +397,7 @@ aria-labelledby="assign-staff-dialog-title"
 </Button>
 </DialogActions>
 </Dialog>
+</Stack>
 </Box>
 );
 };

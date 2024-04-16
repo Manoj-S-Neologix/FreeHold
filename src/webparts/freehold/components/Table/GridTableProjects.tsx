@@ -178,8 +178,8 @@ handleCloseDialog();
 
 return (
 <Box>
-<Grid container spacing={2}>
-<Grid item xs={12}>
+<Grid container spacing={2} >
+<Grid item xs={12} style={{ paddingTop: '10px', paddingLeft:'24px' }}>
 <Paper sx={{ width: '100%', mb: 2 }}>
     <TableContainer>
         <Table>

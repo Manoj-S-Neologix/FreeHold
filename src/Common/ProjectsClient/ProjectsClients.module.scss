@@ -51,4 +51,39 @@
 }
 
 
+.projectImage {
+    width: 100%;
+    height: auto;
+  }
 
+
+.projectC3 {
+    position: relative; 
+  }
+
+  .projectContent, .clientContent{
+    
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    text-align: center; 
+  }
+
+  .projectNumber, .clientNumber {
+    font-size: 35px; 
+    color: var(--primarycolor) !important; 
+    font-weight: bold;
+  }
+
+  .projectHeading, .clientText {
+    font-size: 18px; 
+    color: var(--primarycolor) !important;
+    margin-top: -5px !important;
+  }
+
+
+  
+
+
+  

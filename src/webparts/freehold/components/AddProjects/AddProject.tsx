@@ -5,6 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { Box, Stack } from '@mui/material'; 
 
 interface AddClientDialogProps {
   open: boolean;
@@ -24,6 +25,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
   };
 
   return (
+    <Box sx={{width:'100', padding:'20px' }} > 
+    <Stack direction ='column' spacing={2} >
     <Dialog open={open} onClose={onClose} >
       <DialogTitle style={{textAlign: 'center'}}>Project Name</DialogTitle >
       <DialogContent >
@@ -49,6 +52,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
         <Button onClick={handleSave} > Save </Button>
       </DialogActions>
     </Dialog>
+    </Stack>
+    </Box>
   );
 };
 
