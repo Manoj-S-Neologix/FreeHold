@@ -322,6 +322,7 @@ const UploadComponent = (props: any) => {
                 onClose={() => setShowDialog(false)}
                 maxWidth="md"
                 fullWidth
+                className={styles.dialogOverlayUpload}
             >
                 <DialogTitle>
                     Upload Documents

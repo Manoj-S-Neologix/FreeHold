@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import styles from '../Header/Header.module.scss';
+import { Link } from 'react-router-dom';
 
 
 const Header = ({ props }: any) => {
@@ -12,6 +13,7 @@ const Header = ({ props }: any) => {
                 <div className={styles.column}>
                     <div className={styles.col12}>
                         <div className={`${styles.col8} `}>
+                        <Link to ='/'> 
                             <img
                                 src={require('/src/assets/Logo/freeholdsolutions.png')}
                                 width="150"
@@ -19,6 +21,7 @@ const Header = ({ props }: any) => {
                                 alt="Logo"
                                 style={{ marginLeft: '7px' }}
                             />
+                            </Link>
                         </div>
                         <div className={` ${styles.col2}`}>
                             <Persona
@@ -28,7 +31,7 @@ const Header = ({ props }: any) => {
                                 imageAlt={userName}
                                 styles={{
                                     primaryText: { fontSize: '14px' },
-                                    root: { margin: '10px' }
+                                    root: { margin: '10px', marginLeft:'52px' }
                                 }}
                             /></div>
                     </div>

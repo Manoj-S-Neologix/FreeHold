@@ -40,6 +40,10 @@
 // Import Office UI Fabric Core
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
 
+.dialogOverlayUpload{
+    backdrop-filter: blur(2px); 
+}
+
 .uploadButton {
     background-color: var(--secondarycolor) !important;
     border-radius: 0.65rem !important;
@@ -48,7 +52,8 @@
     padding: 0.4rem !important;
     font-weight: none !important;
     margin-left: 3.125rem !important;
-    margin-top: 4px !important;
+    margin-top: 7px !important;
+    font-size: 12px !important;
 
     // // Button Icon
     // .ms-Button-icon {

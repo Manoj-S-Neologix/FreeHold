@@ -61,23 +61,25 @@ return (
 
 const headCells = [
 { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-{ id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-{ id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
-{ id: 'country', numeric: false, disablePadding: false, label: 'Country' },
-{ id: 'location', numeric: false, disablePadding: false, label: 'Location' },
-{ id: 'modifiedOn', numeric: false, disablePadding: false, label: 'Modified On' }, 
+{ id: 'email', numeric: false, disablePadding: false, label: 'Client email' },
+// { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
+// { id: 'country', numeric: false, disablePadding: false, label: 'Country' },
+// { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
+{ id: 'modifiedDate', numeric: false, disablePadding: false, label: 'Modified Date' }, 
+{ id: 'modifiedBy', numeric: false, disablePadding: false, label: 'Modified By' }, 
+
 { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 const rows = [
-{ id: 1, name: 'John Doe', email: 'john@example.com', contact: '1234567890', country: 'USA', location: 'New York', modifiedOn: 'MM/DD/YYYY' },
-{ id: 2, name: 'Jane Smith', email: 'jane@example.com', contact: '0987654321', country: 'UK', location: 'London', modifiedOn: 'MM/DD/YYYY' },
-{ id: 3, name: 'Alice Johnson', email: 'alice@example.com', contact: '4567890123', country: 'Canada', location: 'Toronto', modifiedOn: 'MM/DD/YYYY' },
-{ id: 4, name: 'Bob Brown', email: 'bob@example.com', contact: '7890123456', country: 'Australia', location: 'Sydney', modifiedOn: 'MM/DD/YYYY' },
-{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com', contact: '0123456789', country: 'India', location: 'Delhi', modifiedOn: 'MM/DD/YYYY' },
-{ id: 6, name: 'David Wilson', email: 'david@example.com', contact: '2345678901', country: 'USA', location: 'New York', modifiedOn: 'MM/DD/YYYY' },
-{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', contact: '5678901234', country: 'UK', location: 'London', modifiedOn: 'MM/DD/YYYY' },
-{ id: 8, name: 'Frank Martinez', email: 'frank@example.com', contact: '8901234567', country: 'Canada', location: 'Toronto', modifiedOn: 'MM/DD/YYYY' },
+{ id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
 ];
 
 const GridTable = ({ props, searchQuery }: any) => {
@@ -250,7 +252,7 @@ return (
                             row.email
                         )}
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                         {searchQuery && row.contact.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
                                 {row.contact.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
@@ -265,9 +267,9 @@ return (
                         ) : (
                             row.contact
                         )}
-                    </TableCell>
+                    </TableCell> */}
                     
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                         {searchQuery && row.country.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
                                 {row.country.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
@@ -282,8 +284,8 @@ return (
                         ) : (
                             row.country
                         )}
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    </TableCell> */}
+                    {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                         {searchQuery && row.location.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
                                 {row.location.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
@@ -298,11 +300,11 @@ return (
                         ) : (
                             row.location
                         )}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell component="th" id={labelId} scope="row" padding="none">
-            {searchQuery && row.modifiedOn.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+            {searchQuery && row.modifiedDate.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                 <>
-                    {row.modifiedOn.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                    {row.modifiedDate.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                         <span key={index}>
                             {index > 0 && (
                                 <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -312,7 +314,23 @@ return (
                     ))}
                 </>
             ) : (
-                row.modifiedOn
+                row.modifiedDate
+            )}
+        </TableCell>
+        <TableCell component="th" id={labelId} scope="row" padding="none">
+            {searchQuery && row.modifiedBy.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                <>
+                    {row.modifiedBy.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                        <span key={index}>
+                            {index > 0 && (
+                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                            )}
+                            {part}
+                        </span>
+                    ))}
+                </>
+            ) : (
+                row.modifiedBy
             )}
         </TableCell>
 

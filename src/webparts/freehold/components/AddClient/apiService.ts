@@ -1,23 +1,27 @@
-import { sp } from "@pnp/sp/presets/all";
+import { Web, sp } from "@pnp/sp/presets/all";
+
+const web = Web ('https://freeholddxb.sharepoint.com/')
+
 
 // Add list items
-export const addListItem = async (listName: string, clientName: string): Promise<void> => {
-    try {
-      await sp.web.lists.getByTitle(listName).items.add({
-        'Client Name': clientName, 
-      });
-    } catch (error) {
-      console.error("Error adding client:", error);
-      throw error;
-    }
-  };
-  
+export const addListItem = async (listName: string, listData: any): Promise<void> => {
+  console.log(listName,web,listData,"Listname")
+  try {
+    await web.lists.getByTitle(listName).items.add(
+      listData
+    );
+  } catch (error) {
+    console.error("Error adding client:", error);
+    throw error;
+  }
+};
+
 
 
 // Create a folder in the library
 export const createFolderInLibrary = async (libraryName: string, folderName: string): Promise<any> => {
   try {
-    const library = await sp.web.getFolderByServerRelativeUrl(libraryName);
+    const library = await web.getFolderByServerRelativeUrl(libraryName);
     await library.folders.add(folderName);
     return true;
   } catch (error) {
@@ -30,7 +34,7 @@ export const createFolderInLibrary = async (libraryName: string, folderName: str
 // Upload a document to the folder
 export const uploadDocumentToLibrary = async (libraryName: string, folderName: string, fileName: string, file: Blob): Promise<any> => {
   try {
-    const library = await sp.web.getFolderByServerRelativeUrl(libraryName);
+    const library = await web.getFolderByServerRelativeUrl(libraryName);
     const uploadedFile = await library.folders.getByName(folderName).files.add(fileName, file);
     console.log(uploadedFile, "UploadedFileAPICall");
     return uploadedFile;

@@ -1,100 +1,3 @@
-// import React, { useState } from 'react';
-// import Dialog from '@mui/material/Dialog';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogActions from '@mui/material/DialogActions';
-// import Button from '@mui/material/Button';
-// import TextField from '@mui/material/TextField';
-// import styles from './AddClient.module.scss';
-// import { Box, Stack } from '@mui/material'; 
-
-// interface AddClientDialogProps {
-//   open: boolean;
-//   onClose: () => void;
-// }
-
-// const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
-//   const [file, setFile] = useState<File | null>(null);
-
-//   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-//     e.preventDefault();
-//     const droppedFile = e.dataTransfer.files[0];
-//     setFile(droppedFile);
-//   };
-
-//   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const selectedFile = e.target.files && e.target.files[0];
-//     setFile(selectedFile || null);
-//   };
-
-//   const handleCancel = () => {
-//     setFile(null);
-//     onClose();
-//   };
-
-//   const handleSave = () => {
-//     setFile(null);
-//     onClose();
-//   };
-
-//   return (
-//     <Box sx={{width:'100', padding:'20px' }} > 
-//     <Stack direction ='column' spacing={2} >
-//     <Dialog open={open} onClose={onClose} >
-//       <DialogTitle style={{textAlign: 'center', marginLeft:"7px"}}>Add Client</DialogTitle >
-//       <DialogContent >
-//         <div style={{ display: 'flex', marginBottom: '20px' }}>
-//           <div style={{ marginRight: '20px', flex: 1 }}>
-//             <label htmlFor="clientName">Client Name*</label>
-//             <TextField id="clientName" margin="dense" fullWidth />
-//           </div>
-//           <div style={{ flex: 1 }}>
-//             <label htmlFor="clientDetails">Client Details*</label>
-//             <TextField id="clientDetails" margin="dense" fullWidth />
-//           </div>
-//         </div>
-//         <div style={{ marginBottom: '10px' }}>
-//           <label htmlFor="loremIpsum">Lorem Ipsum</label>
-//           <TextField id="loremIpsum" margin="dense" fullWidth />
-//         </div>
-//         <div style={{ marginBottom: '10px' }}>
-//           <label htmlFor="clientDocuments">Client Documents</label>
-//           <div  
-//             onDrop={handleDrop}
-//             onDragOver={(e) => e.preventDefault()}
-//           >
-//             {file ? (
-//               <div>{file.name}</div>
-//             ) : (
-//               <div className={`${styles.dropZone}`}>
-//                 Drag and drop or{' '}
-//                 <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-//                   click here to upload document
-//                 </label>
-//                 <input
-//                   type="file"
-//                   id="fileInput"
-//                   accept=".pdf,.doc,.docx"
-//                   style={{ display: 'none' }}
-//                   onChange={handleFileInput}
-//                 />
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button onClick={handleCancel} >Cancel</Button>
-//         <Button onClick={handleSave} > Save </Button>
-//       </DialogActions>
-//     </Dialog>
-//     </Stack>
-//     </Box>
-//   );
-// };
-
-// export default AddClientDialog;
-
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -102,9 +5,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-import { Box, Stack } from '@mui/material'; 
+import { Box, Stack } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../AddClient/apiService';
+import { Delete } from '@mui/icons-material';
 
 interface AddClientDialogProps {
   open: boolean;
@@ -112,17 +18,24 @@ interface AddClientDialogProps {
 }
 
 const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
-  // const [documentlink, setdocumentlink] = useState<string>('');
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files && e.target.files[0];
-    setFile(selectedFile || null);
+    const selectedFiles = e.target.files;
+    if (selectedFiles) {
+      const newFiles = Array.from(selectedFiles);
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    }
+  };
+
+  const handleDeleteFile = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   const handleCancel = () => {
-    setFile(null);
+    setFiles([]);
+    setTitle('');
     onClose();
   };
 
@@ -134,21 +47,25 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
   const handleAddClientSubmit = async () => {
     if (title) {
       try {
+        const obj = {
+          Name: title,
+        };
+        await addListItem('Clients', obj);
 
-        await addListItem("Clients", title);
-
-        if (file) {
+        if (files.length > 0) {
           const currentDate = new Date().toISOString().slice(0, 10);
-          const formattedDate = currentDate.replace(/-/g, "");
+          const formattedDate = currentDate.replace(/-/g, '');
           const folderName = `${title}_${formattedDate}`;
 
-          await createFolderInLibrary("SPDocument", folderName);
+          await createFolderInLibrary('SPDocument', folderName);
 
-          await uploadDocumentToLibrary("SPDocument", folderName, file.name, file);
+          for (const file of files) {
+            await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
+          }
         }
 
-        alert('Client and Document added successfully!');
-        setFile(null);
+        alert('Client and Document(s) added successfully!');
+        setFiles([]);
         setTitle('');
       } catch (error) {
         console.error('Error adding client and document:', error);
@@ -159,11 +76,22 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
+  };
+
   return (
-    <Box sx={{width:'100', padding:'20px' }}>
-      <Stack direction ='column' spacing={2}>
-        <Dialog open={open} onClose={onClose}>
-          <DialogTitle style={{textAlign: 'center', marginLeft:"7px"}}>Add Client</DialogTitle>
+    <Box sx={{ width: '100', padding: '20px' }}>
+      <Stack direction="column" spacing={2}>
+        <Dialog open={open} onClose={handleCancel} maxWidth="md" fullWidth className={styles.dialogOverlayAddClient}>
+          <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px' }}>
+            Add Client
+            <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
           <DialogContent>
             <div style={{ marginBottom: '20px' }}>
               <label htmlFor="clientName">Client Name*</label>
@@ -171,33 +99,43 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
             </div>
             <div style={{ marginBottom: '10px' }}>
               <label htmlFor="clientDocuments">Client Documents</label>
-              <div  
-                onDrop={(e) => e.preventDefault()}
+              <div
+                onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
+                className={styles.dropZone}
               >
-                {file ? (
-                  <div>{file.name}</div>
-                ) : (
-                  <div className={`${styles.dropZone}`}>
-                    Drag and drop or{' '}
-                    <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-                      click here to upload document
-                    </label>
-                    <input
-                      type="file"
-                      id="fileInput"
-                      accept=".pdf,.doc,.docx, .txt"
-                      style={{ display: 'none' }}
-                      onChange={handleFileInput}
-                    />
+                {files.map((file, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                    <div>{file.name}</div>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handleDeleteFile(index)}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      <Delete />
+                    </IconButton>
                   </div>
-                )}
+                ))}
+                <div>
+                  Drag and drop or{' '}
+                  <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
+                    click here to upload document
+                  </label>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept=".pdf,.doc,.docx,.txt"
+                    style={{ display: 'none' }}
+                    onChange={handleFileInput}
+                    multiple 
+                  />
+                </div>
               </div>
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleCancel} className={styles.AddcancelButton}>Cancel</Button>
+            <Button onClick={handleSave} className={styles.AddsaveButton}>Save</Button>
           </DialogActions>
         </Dialog>
       </Stack>
@@ -206,6 +144,3 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
 };
 
 export default AddClientDialog;
-
-
-

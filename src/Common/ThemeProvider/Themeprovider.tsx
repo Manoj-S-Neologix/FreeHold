@@ -50,19 +50,19 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             MuiTableHead: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: "#125895",
-                        color: "#fff",
+                        backgroundColor: primary,
+                        color: secondary,
                         '& .MuiTableCell-head': {
-                            backgroundColor: "#125895",
-                            color: "#fff"
+                            backgroundColor: primary,
+                            color: secondary
                         },
                         '&.MuiTableHead-root': {
-                            backgroundColor: "#125895",
-                            color: "#fff"
+                            backgroundColor: primary,
+                            color: secondary
                         },
                         // '&.Hover': {
                         //     backgroundColor: "#000",
-                        //     color: "#fff"
+                        //     color: secondary
                         // }
 
                     }
@@ -79,14 +79,14 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                 styleOverrides: {
                     root: {
                         backgroundColor: "#000",
-                        color: "#fff",
+                        color: secondary,
                         '&.MuiActive': {
                             backgroundColor: "#000",
-                            color: "#fff",
+                            color: secondary,
                         },
                         '&.MuiSvgIcon-root': {
                             backgroundColor: "#000",
-                            color: "#fff",
+                            color: secondary,
                         }
                     },
                 }
@@ -94,17 +94,17 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             MuiCheckbox: {
                 styleOverrides: {
                     root: {
-                        color: "#fff",
+                        color: secondary,
                         '&.Mui-checked': {
-                            color: "#fff",
+                            color: primary,
                         },
                         '&.MuiCheckbox-indeterminate': {
-                            color: "#fff",
+                            color: secondary,
                         },
                         '&.MuiCheckbox-indeterminate:hover': {
-                            color: "#fff",
+                            color: secondary,
                         }, '&.MuiSvgIcon-root': {
-                            color: "#fff",
+                            color: secondary,
                         }
 
                     }
@@ -113,7 +113,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             // MuiSvgIcon: {
             //         styleOverrides: {
             //             root: {
-            //                 color: "#fff",
+            //                 color: secondary,
             //             }
             //         }
             //     },
@@ -122,21 +122,26 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             MuiInputBase: {
                 styleOverrides: {
                     root: {
-                        marginTop: '-20px'
+                        // marginTop: '-20px'
                     }
                 }
             },
 
-   
-           
+
             MuiTablePagination: {
-                styleOverrides: {
-                    actions: {
-                        marginTop: '-20px'
-                    }
-                }
-            },
+                        styleOverrides: {
+                            selectLabel: {
+                                margin: 0
+                                
+                            },
+                            displayedRows: {
+                                margin: 0
+                                // padding: 0 
 
+                            }
+                        }
+                    },
+         
             MuiTableBody: {
                 styleOverrides: {
                     // root: {
@@ -154,10 +159,10 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             mode: "light",
             common: {
                 black: "#000",
-                white: "#fff",
+                white: secondary,
             },
             primary: { main: primary ? primary : "#000" },
-            secondary: { main: secondary ? secondary : "#fff" },
+            secondary: { main: secondary ? secondary : secondary },
         },
     });
 

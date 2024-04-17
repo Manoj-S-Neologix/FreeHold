@@ -5,7 +5,11 @@
     --margin: "0px";
 }
 
-.sideNav {
+.sideNav { 
+    p{
+        padding:var(--padding);
+        margin: var(--margin);
+    }
     .container {
         @include ms-Grid;
 
@@ -72,6 +76,7 @@
     }
 
     $sideImageUrl: url('/src/assets/images/Sideimage.png');
+    // $sideImageUrl: url("../../../../assets/Images/Home.png");
 
     .sideImage {
         background-image: $sideImageUrl;
@@ -81,6 +86,30 @@
         position: absolute;
         min-height: 15rem;
         object-fit: cover;
+    }
+
+    .loremTextContainer {
+        position: absolute;
+        float: left;
+        width: 15%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); 
+        color: white;
+        padding: 20px;
+        box-sizing: border-box;
+        // overflow: hidden;
+    }
+    
+    .loremText {        
+        column-count: 1; 
+        column-gap: 20px;
+        height: 100%;
+        // overflow: hidden;
+    }
+    
+    .heading{
+        white-space: nowrap !important; 
+        overflow: visible !important;
     }
 
     .sideContainer {
@@ -101,7 +130,6 @@
     .hoverEffect {
         &:hover {
             color: var(--primarycolor) !important;
-
             background-color: var(--secondarycolor) !important;
         }
     }
