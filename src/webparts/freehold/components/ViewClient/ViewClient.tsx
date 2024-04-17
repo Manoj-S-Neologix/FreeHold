@@ -76,8 +76,6 @@ function ViewClient(props:any) {
 
     <Grid item xs={12}>
       <GridTable props={props} searchQuery={searchQuery} />
-
-
     </Grid>
 
   <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />

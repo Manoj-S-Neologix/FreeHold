@@ -62,24 +62,23 @@ return (
 }
 
 const headCells = [
-{ id: 'name', numeric: false, disablePadding: true, label: 'Project Name' },
-{ id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-{ id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
-{ id: 'country', numeric: false, disablePadding: false, label: 'Country' },
-{ id: 'location', numeric: false, disablePadding: false, label: 'Location' },
-{ id: 'modifiedOn', numeric: false, disablePadding: false, label: 'Modified On' }, 
+{ id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
+{ id: 'email', numeric: false, disablePadding: false, label: 'Client email' },
+{ id: 'assignedClients', numeric: false, disablePadding: false, label: 'Assigned Clients' }, 
+{ id: 'modifiedDate', numeric: false, disablePadding: false, label: 'Modified Date' }, 
+{ id: 'modifiedBy', numeric: false, disablePadding: false, label: 'Modified By' }, 
 { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 const rows = [
-{ id: 1, name: 'John Doe', email: 'john@example.com', contact: '1234567890', country: 'USA', location: 'New York', modifiedOn: 'MM/DD/YYYY' },
-{ id: 2, name: 'Jane Smith', email: 'jane@example.com', contact: '0987654321', country: 'UK', location: 'London', modifiedOn: 'MM/DD/YYYY' },
-{ id: 3, name: 'Alice Johnson', email: 'alice@example.com', contact: '4567890123', country: 'Canada', location: 'Toronto', modifiedOn: 'MM/DD/YYYY' },
-{ id: 4, name: 'Bob Brown', email: 'bob@example.com', contact: '7890123456', country: 'Australia', location: 'Sydney', modifiedOn: 'MM/DD/YYYY' },
-{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com', contact: '0123456789', country: 'India', location: 'Delhi', modifiedOn: 'MM/DD/YYYY' },
-{ id: 6, name: 'David Wilson', email: 'david@example.com', contact: '2345678901', country: 'USA', location: 'New York', modifiedOn: 'MM/DD/YYYY' },
-{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', contact: '5678901234', country: 'UK', location: 'London', modifiedOn: 'MM/DD/YYYY' },
-{ id: 8, name: 'Frank Martinez', email: 'frank@example.com', contact: '8901234567', country: 'Canada', location: 'Toronto', modifiedOn: 'MM/DD/YYYY' },
+{ id: 1, name: 'John Doe', email: 'john@example.com',assignedClients:'Smith Martinez ', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren' },
+{ id: 2, name: 'Jane Smith', email: 'jane@example.com', assignedClients:'Diego Charlie', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY'  },
+{ id: 3, name: 'Alice Johnson', email: 'alice@example.com',assignedClients:'Marco Doe', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
+{ id: 4, name: 'Bob Brown', email: 'bob@example.com',assignedClients:'Altair Martinez', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren',   },
+{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com',assignedClients:'Martinez', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
+{ id: 6, name: 'David Wilson', email: 'david@example.com',assignedClients:'Antonio Rabin' , modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren' },
+{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', assignedClients:'Etahn Martin', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
+{ id: 8, name: 'Frank Martinez', email: 'frank@example.com',assignedClients:'Henry ', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
 ];
 
 const GridTableProjects = ({ props, searchQuery }: any) => {
@@ -252,9 +251,9 @@ return (
                         )}
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.contact.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                        {searchQuery && row.assignedClients.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
-                                {row.contact.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                {row.assignedClients.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                                     <span key={index}>
                                         {index > 0 && (
                                             <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -264,13 +263,13 @@ return (
                                 ))}
                             </>
                         ) : (
-                            row.contact
+                            row.assignedClients
                         )}
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.country.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                        {searchQuery && row.modifiedDate.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
-                                {row.country.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                {row.modifiedDate.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                                     <span key={index}>
                                         {index > 0 && (
                                             <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -280,13 +279,13 @@ return (
                                 ))}
                             </>
                         ) : (
-                            row.country
+                            row.modifiedDate
                         )}
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.location.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                        {searchQuery && row.modifiedBy.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                             <>
-                                {row.location.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                {row.modifiedBy.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                                     <span key={index}>
                                         {index > 0 && (
                                             <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -296,28 +295,14 @@ return (
                                 ))}
                             </>
                         ) : (
-                            row.location
+                            row.modifiedBy
                         )}
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
-            {searchQuery && row.modifiedOn.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                <>
-                    {row.modifiedOn.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                        <span key={index}>
-                            {index > 0 && (
-                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                            )}
-                            {part}
-                        </span>
-                    ))}
-                </>
-            ) : (
-                row.modifiedOn
-            )}
-        </TableCell>
+
+
                     <TableCell align="left" padding="none" >
                         <div className="d-flex align-items-center w-100">
-                            <div>
+                            <div style={{ display:'flex', gap:'10px'}}>
                                 <Tooltip title="View">
                                     <IconButton onClick={() => handleView(row.id)}>
                                         <VisibilityIcon />
@@ -340,7 +325,7 @@ return (
                                 </Button>
                                 <Button variant="contained" color="primary" onClick={handleAssignStaff}  style={{ backgroundColor: '#dba236', color: 'black', marginLeft: '30px', borderRadius: '4px',
                                 padding: '2px 10px' }}>
-                                    Assign Staff
+                                    Assign Cient
                                 </Button>
                             </div>
                         </div>
