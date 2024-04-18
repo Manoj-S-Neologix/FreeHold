@@ -3,7 +3,11 @@ import { Box, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styles from './CustomSearch.module.scss';
 
-const CustomSearch = (props: any) => {
+interface ISearchPros {
+    handleSearchChange?: any;
+}
+
+const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
     return (
         <Box>
             <TextField
@@ -15,13 +19,16 @@ const CustomSearch = (props: any) => {
                     '& .MuiInputBase-input': {
                         color: 'primary',
                         border: 'none',
-                        fontSize: '16px'
-                    }
+                        fontSize: '16px',
+                        fontWeight: 600
+                    },
+                    "& fieldset": { border: 'none' },
                 }}
                 InputProps={{
                     endAdornment: <SearchIcon className={styles.IconSearch} />,
                     style: { border: "none", color: "#125895" }
                 }}
+                onChange={handleSearchChange}
             />
         </Box>
     );
