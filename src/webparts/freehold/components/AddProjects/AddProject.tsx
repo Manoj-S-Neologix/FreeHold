@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import styles from "./AddProject.module.scss";
+// import styles from "./AddProject.module.scss";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack } from '@mui/material';
@@ -39,7 +39,9 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
               <CloseIcon />
             </IconButton>
           </DialogTitle> */}
-          <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+          {/* <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}> */}
+          <DialogTitle >
+
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between
                      align-items-center relative">
