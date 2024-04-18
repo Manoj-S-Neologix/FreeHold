@@ -63,7 +63,10 @@ const Header = ({ props }: any) => {
                     alignItems: "center",
                     justifyContent: "center"
                 }}>
-                    <Grid container spacing={2} >
+                    <Grid container spacing={2} sx={{
+                        display: "flex",
+                        alignItems: "center",
+                    }} >
                         <Grid item xs={12} sm={8}>
                             <Box>
                                 <Link to='/'>
@@ -85,7 +88,10 @@ const Header = ({ props }: any) => {
                                     size={PersonaSize.size32}
                                     imageAlt={userName}
                                     styles={{
-                                        primaryText: { fontSize: '14px' },
+                                        primaryText: {
+                                            fontSize: '14px',
+                                            fontWeight: "600"
+                                        },
                                     }}
                                 />
                             </Box>

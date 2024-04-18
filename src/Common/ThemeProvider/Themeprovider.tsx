@@ -41,32 +41,19 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                         color: secondary,
                         '& .MuiTableCell-head': {
                             backgroundColor: primary,
-                            color: secondary,
+                            color: "#fff",
                         },
                         '&.MuiTableHead-root': {
                             backgroundColor: primary,
-                            color: secondary,
+                            color: "#fff",
                         },
-                        '&.MuiTableRow-root': {
-                            styleOverrides: {
-                                '&.MuiTableCell-root': {
-                                    styleOverrides: {
-                                        '&.MuiButtonBase-root.MuiCheckbox-root.Mui-checked, &.MuiButtonBase-root.Mui-checked': {
-                                            color: secondary,
-                                        }
-                                    },
-                                }
-                            }
+                        '& .MuiCheckbox-colorSecondary.Mui-checked': {
+                            color: secondary,
                         }
-
-                        // '&.Hover': {
-                        //     backgroundColor: "#000",
-                        //     color: secondary
-                        // }
-
                     }
                 }
             },
+            
 
             // MuiTableCell: {
             //     styleOverrides: {
