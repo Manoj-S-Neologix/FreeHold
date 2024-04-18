@@ -11,9 +11,18 @@ interface ButtonProps {
 }
 
 const Button = ({ message, Icon, color, style, handleClick, disabled }: ButtonProps) => {
+    const buttonClass = disabled ? "disabled-button" : "";
 
     return (
-        <MuiButton disabled={disabled} onClick={handleClick} style={style} startIcon={Icon} color={color} variant="contained">
+        <MuiButton
+            disabled={disabled}
+            onClick={handleClick}
+            style={disabled ? undefined : style} // Apply style only if not disabled
+            startIcon={Icon}
+            color={disabled ? undefined : color} // Apply color only if not disabled
+            variant="contained"
+            className={buttonClass}
+        >
             {message}
         </MuiButton>
     );

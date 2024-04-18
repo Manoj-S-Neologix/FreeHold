@@ -48,12 +48,13 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                             color: "#fff",
                         },
                         '& .MuiCheckbox-colorSecondary.Mui-checked': {
-                            color: secondary,
+                            color: "#fff", // Change checkbox color to white when checked
                         }
                     }
                 }
             },
-            
+
+
 
             // MuiTableCell: {
             //     styleOverrides: {
@@ -167,23 +168,23 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                 }
             },
 
-        //     MuiBreadcrumbsseperator:{
-        //         styleOverrides: {
-        //             root:{
-        //             margin: 0
-        //             }
-        //     }
-        // },
+            //     MuiBreadcrumbsseperator:{
+            //         styleOverrides: {
+            //             root:{
+            //             margin: 0
+            //             }
+            //     }
+            // },
 
-        MuiBreadcrumbs:{
-            styleOverrides:{
-                separator:{
-                    marginLeft:0,
-                    marginRight:0
+            MuiBreadcrumbs: {
+                styleOverrides: {
+                    separator: {
+                        marginLeft: 0,
+                        marginRight: 0
+                    }
                 }
             }
-        }
-    
+
 
         },
 

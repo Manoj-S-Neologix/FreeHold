@@ -44,7 +44,7 @@ function EnhancedTableHead(props: any) {
                     <TableCell
                         sx={{ backgroundColor: "#125895", color: "#fff" }}
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
+                        align={headCell.numeric ? 'right' : 'center'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                         aria-label={headCell.label}
@@ -62,7 +62,7 @@ function EnhancedTableHead(props: any) {
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-    { id: 'email', numeric: false, disablePadding: false, label: 'Client email' },
+    { id: 'email', numeric: false, disablePadding: false, label: 'Client Email' },
     // { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
     // { id: 'country', numeric: false, disablePadding: false, label: 'Country' },
     // { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
@@ -71,17 +71,17 @@ const headCells = [
     { id: 'assignedStaff', numeric: false, disablePadding: false, label: 'Assigned Staff' },
     { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
 ];
-
 const rows = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Smith Martinez ' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Diego Charlie' },
-    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Marco Doe' },
-    { id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Altair Martinez' },
-    { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Martinez' },
-    { id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Antonio Rabin' },
-    { id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Etahn Martin' },
-    { id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff: 'Henry ' },
+    { id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: '15/03/2024', modifiedBy: 'Alice Johnson', assignedStaff: 'Smith Martinez' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: '16/03/2024', modifiedBy: 'Bob Brown', assignedStaff: 'Diego Charlie' },
+    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: '17/03/2024', modifiedBy: 'Charlie Davis', assignedStaff: 'Marco Doe' },
+    { id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: '18/03/2024', modifiedBy: 'David Wilson', assignedStaff: 'Altair Martinez' },
+    { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: '19/03/2024', modifiedBy: 'Eve Anderson', assignedStaff: 'Martinez' },
+    { id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: '20/03/2024', modifiedBy: 'Frank Martinez', assignedStaff: 'Antonio Rabin' },
+    { id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: '21/03/2024', modifiedBy: 'John Doe', assignedStaff: 'Etahn Martin' },
+    { id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: '22/03/2024', modifiedBy: 'Jane Smith', assignedStaff: 'Henry' },
 ];
+
 
 const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
     const [order, setOrder] = React.useState('asc');
