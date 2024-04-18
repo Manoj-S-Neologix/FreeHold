@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-export const ChecklistValidation = (props:any) => {
+export const ChecklistConfiguration = (props:any) => {
   return (
     <div>ChecklistValidation</div>
   )
