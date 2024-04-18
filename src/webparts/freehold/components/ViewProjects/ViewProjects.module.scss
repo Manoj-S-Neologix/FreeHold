@@ -101,9 +101,18 @@ $container-gap: 1rem !important;
         margin-left: 10px !important;
     }
 
-
 }
 
+
+.Addbutton {
+    background-color: var(--primarycolor) !important;
+    border: none !important;
+    color: white !important;
+    padding: 5px !important;
+    // padding-left: 5px !important;
+    // padding-right: 5px !important;
+    border-radius: 4px !important;
+}
 
 .searchInput {
     display: contents !important;
@@ -139,7 +148,7 @@ $container-gap: 1rem !important;
 
 }
 .Homebreadcrumb{
-    margin-left: -16 !important;
-    padding: 0px !important;
+    // margin-left: -16 !important;
+    padding: 0 10px !important;
     // padding-top: 15px !important;
 }

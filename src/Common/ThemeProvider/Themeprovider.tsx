@@ -191,8 +191,29 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     //     },
                     // }
                 }
+            },
+
+        //     MuiBreadcrumbsseperator:{
+        //         styleOverrides: {
+        //             root:{
+        //             margin: 0
+        //             }
+        //     }
+        // },
+
+        MuiBreadcrumbs:{
+            styleOverrides:{
+                separator:{
+                    marginLeft:0,
+                    marginRight:0
+                }
             }
+        }
+    
+
         },
+
+
         palette: {
             mode: "light",
             common: {
@@ -203,6 +224,8 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             secondary: { main: secondary ? secondary : secondary },
         },
     });
+
+
 
     return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
 
