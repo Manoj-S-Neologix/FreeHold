@@ -32,21 +32,21 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                 ],
             },
-            MuiTextField: {
-                styleOverrides: {
-                    root: {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#CACACA",
-                            color: "black",
-                        },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "black",
-                            borderWidth: "1px",
-                            color: "black",
-                        },
-                    },
-                },
-            },
+            // MuiTextField: {
+            //     styleOverrides: {
+            //         root: {
+            //             "& .MuiOutlinedInput-notchedOutline": {
+            //                 borderColor: "#CACACA",
+            //                 color: "black",
+            //             },
+            //             "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            //                 borderColor: "black",
+            //                 borderWidth: "1px",
+            //                 color: "black",
+            //             },
+            //         },
+            //     },
+            // },
             MuiTableHead: {
                 styleOverrides: {
                     root: {
@@ -160,6 +160,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             common: {
                 black: "#000",
                 white: secondary,
+                
             },
             primary: { main: primary ? primary : "#000" },
             secondary: { main: secondary ? secondary : secondary },
