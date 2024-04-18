@@ -1,11 +1,9 @@
 import * as React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../../../../Common/Header/Header';
-// import Search from '../../../../Common/Search/Search';
 import Sidenav from '../SideNavBar/Sidenav';
 import ProjectsClient from '../../../../Common/ProjectsClient/ProjectsClient';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-// import Addclient from '../ViewClient/ViewClient';
 import ViewProjects from '../ViewProjects/ViewProjects';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
 import { ChecklistValidation } from '../ChecklistValidation/ChecklistValidation';
@@ -17,6 +15,7 @@ const colorCodes = {
     secondary: "#dba236"
 }
 const Home = (props: any) => {
+    // console.log(props)
     return (
         <React.Fragment>
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
@@ -31,10 +30,6 @@ const Home = (props: any) => {
                                     <ProjectsClient props={props} />
                                 </>}
                         />
-                        {/* <Route
-                            path='/Addclient'
-                            element={<Addclient />}
-                        /> */}
                         <Route
                         path='/ViewClient'
                         element={<ViewClient/>}
