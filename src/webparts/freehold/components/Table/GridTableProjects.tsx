@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Grid } from '@mui/material';
 
@@ -21,8 +21,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Button from "../../../../Common/Button/CustomButton";
 
-import styles from '../../../../Common/Table/Table.module.scss'
+// import styles from '../../../../Common/Table/Table.module.scss'
 
 function EnhancedTableHead(props: any) {
 const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
@@ -63,7 +64,7 @@ return (
 
 const headCells = [
 { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-{ id: 'email', numeric: false, disablePadding: false, label: 'Client email' },
+{ id: 'email', numeric: false, disablePadding: false, label: 'Client Email' },
 { id: 'assignedClients', numeric: false, disablePadding: false, label: 'Assigned Clients' }, 
 { id: 'modifiedDate', numeric: false, disablePadding: false, label: 'Modified Date' }, 
 { id: 'modifiedBy', numeric: false, disablePadding: false, label: 'Modified By' }, 
@@ -71,14 +72,14 @@ const headCells = [
 ];
 
 const rows = [
-{ id: 1, name: 'John Doe', email: 'john@example.com',assignedClients:'Smith Martinez ', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren' },
-{ id: 2, name: 'Jane Smith', email: 'jane@example.com', assignedClients:'Diego Charlie', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY'  },
-{ id: 3, name: 'Alice Johnson', email: 'alice@example.com',assignedClients:'Marco Doe', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
-{ id: 4, name: 'Bob Brown', email: 'bob@example.com',assignedClients:'Altair Martinez', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren',   },
-{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com',assignedClients:'Martinez', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
-{ id: 6, name: 'David Wilson', email: 'david@example.com',assignedClients:'Antonio Rabin' , modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren' },
-{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', assignedClients:'Etahn Martin', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
-{ id: 8, name: 'Frank Martinez', email: 'frank@example.com',assignedClients:'Henry ', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'Mateo Soren'  },
+{ id: 1, name: 'John Doe', email: 'john@example.com',assignedClients:'Smith Martinez ', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
+{ id: 2, name: 'Jane Smith', email: 'jane@example.com', assignedClients:'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: '04/04/2024'  },
+{ id: 3, name: 'Alice Johnson', email: 'alice@example.com',assignedClients:'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren'  },
+{ id: 4, name: 'Bob Brown', email: 'bob@example.com',assignedClients:'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren',   },
+{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com',assignedClients:'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren'  },
+{ id: 6, name: 'David Wilson', email: 'david@example.com',assignedClients:'Antonio Rabin' , modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' },
+{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', assignedClients:'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren'  },
+{ id: 8, name: 'Frank Martinez', email: 'frank@example.com',assignedClients:'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren'  },
 ];
 
 const GridTableProjects = ({ props, searchQuery }: any) => {
@@ -177,8 +178,8 @@ handleCloseDialog();
 
 return (
 <Box>
-<Grid container spacing={2} >
-<Grid item xs={12} style={{ paddingTop: '10px', paddingLeft:'24px' }}>
+<Grid container  >
+<Grid item xs={12} >
 <Paper sx={{ width: '100%', mb: 2 }}>
     <TableContainer>
         <Table>
@@ -300,7 +301,7 @@ return (
                     </TableCell>
 
 
-                    <TableCell align="left" padding="none" >
+                    <TableCell width={"40%"} align="left" padding="none">
                         <div className="d-flex align-items-center w-100">
                             <div style={{ display:'flex', gap:'10px'}}>
                                 <Tooltip title="View">
@@ -319,7 +320,7 @@ return (
                                     </IconButton>
                                 </Tooltip>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: '15px'}}>
+                            {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: '15px'}}>
                                 <Button className={`${styles.viewbutton}`} onClick={() => handleViewUploadDocuments(row.id)}>
                                     View/Upload Documents
                                 </Button>
@@ -327,7 +328,32 @@ return (
                                 padding: '2px 10px' }}>
                                     Assign Cient
                                 </Button>
-                            </div>
+                            </div> */}
+                                                                    <div
+                                                                        style={{
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+
+                                                                            marginLeft: '15px',
+                                                                            width: "100%",
+                                                                            gap: "20px"
+                                                                        }}>
+
+                                                                        <Button
+                                                                            style={{ maxWidth: "230px", whiteSpace: "pre" }}
+                                                                            color={"primary"}
+                                                                            message="View/Upload Documents"
+                                                                            handleClick={
+                                                                                () => handleViewUploadDocuments(row.id)}
+                                                                        />
+
+                                                                        <Button
+                                                                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
+                                                                            color={"secondary"}
+                                                                            message="Assign Client"
+                                                                            handleClick={handleAssignStaff}
+                                                                        />
+                                                                    </div>
                         </div>
                     </TableCell>
                     
@@ -373,12 +399,27 @@ aria-labelledby="assign-staff-dialog-title"
 {/* //peple picker */}
 </DialogContent>
 <DialogActions>
-<Button onClick={handleCloseDialog} color="primary">
+{/* <Button onClick={handleCloseDialog} color="primary">
     Cancel
 </Button>
 <Button onClick={handleSaveStaff} color="primary">
     Save
-</Button>
+</Button> */}
+  <Button
+                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
+                            color={"secondary"}
+                            message="Cancel"
+                            handleClick={handleCloseDialog}
+                        />
+                        {/* <Button onClick={handleSaveStaff} color="primary">
+                            Save
+                        </Button> */}
+                        <Button
+                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
+                            color={"primary"}
+                            message="Save"
+                            handleClick={handleSaveStaff}
+                        />
 </DialogActions>
 </Dialog>
 </Box>

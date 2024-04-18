@@ -143,7 +143,7 @@ import styles from '../SideNavBar/Sidenav.module.scss';
 initializeIcons();
 
 const menuItems = [
-    { to: '/Addclient', text: 'View Clients' },
+    { to: '/ViewClient', text: 'View Clients' },
     { to: '/ViewProjects', text: 'View Projects' },
     { to: '/ChecklistValidation', text: 'Checklist Validation' },
     { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
