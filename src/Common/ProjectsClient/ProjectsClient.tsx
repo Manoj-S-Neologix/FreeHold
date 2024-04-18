@@ -35,7 +35,7 @@ const ProjectsClient = ({ props }: any) => {
                   </Link>
 
                   {/* <div className={`${styles.col3} ${styles.clientC3}`} >CLIENTS</div> */}
-                  <Link to={"/Addclient"}>
+                  <Link to={"/ViewClient"}>
                     <div className={`${styles.col3} ${styles.clientC3}`}>
                       <img
                         src={require('/src/assets/Images/ProjectsClients.png')}
