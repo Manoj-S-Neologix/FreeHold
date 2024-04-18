@@ -1,52 +1,4 @@
-// import React from 'react';
-// import styles from './Search.module.scss';
-// import { TextField, IconButton } from '@material-ui/core';
-// import SearchIcon from '@material-ui/icons/Search';
-// import FilterListIcon from '@material-ui/icons/FilterList';
-// import Upload from "../Upload/Upload";
-
-// const Search = (props:any) => {
-//     const handleFilterClick = () => {
-//         console.log('Filter clicked');
-//     };
-
-//     return (
-//         <div className={styles.searchmodule}>
-//             <div className={styles.container}>
-//                 <div className={styles.row}>
-//                     <div className={styles.column}>
-//                         <div className={styles.col12}>
-//                             <div className={`${styles.col8} ${styles.searchInput}`}>
-//                                  <TextField
-//                                     className={styles.searchBar}
-//                                     placeholder="Search..."
-//                                     InputProps={{ endAdornment: <SearchIcon 
-//                                         className={styles.IconSearch}/>,
-//                                         disableUnderline: true
-//                                      }} 
-//                                 />
-//                                 <IconButton
-//                                     onClick={handleFilterClick}
-//                                     className={styles.iconFilter}
-//                                 >
-//                                     <FilterListIcon />
-//                                 </IconButton>
-//                             </div>
-//                             <div className={` ${styles.col2} `}>
-//                                 <Upload props={props} />
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Search;
-
-
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Stack } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, MenuItem, Stack, TextField } from "@mui/material";
 import React from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
@@ -54,12 +6,10 @@ import CustomSearch from "../../../../Common/Search/CustomSearch";
 import UploadIcon from '@mui/icons-material/Upload';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from "@mui/icons-material/Close";
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 
-
-// import { useTheme } from "@mui/material/styles";
+// Import your options for the select here
+const clientOptions = ['Client1', 'Client2', 'Client3'];
+const projectOptions = ['Project1', 'Project2', 'Project3'];
 
 const IconStyles = (icon: any) => {
     return (
@@ -71,11 +21,25 @@ const IconStyles = (icon: any) => {
 
 const Search = (props: any) => {
     const [open, setOpen] = React.useState(false);
-
+    const [clientValue, setClientValue] = React.useState<string>('');
+    const [projectValue, setProjectValue] = React.useState<string>('');
 
     const handleFilterClick = () => {
         console.log('Filter clicked');
         setOpen(true);
+    };
+
+    const handleClear = () => {
+        setClientValue('');
+        setProjectValue('');
+    };
+
+    const handleApply = () => {
+
+        console.log({
+            "client": clientValue,
+            "project": projectValue
+        });
     };
 
     return (
@@ -110,7 +74,7 @@ const Search = (props: any) => {
                         <Grid item xs={12} sm={4}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button
-                                    style={{ maxWidth: "190px", whiteSpace: "pre" }}
+                                    style={{ maxWidth: "200px", whiteSpace: "pre" }}
                                     Icon={IconStyles(
                                         <UploadIcon
                                             sx={{
@@ -119,7 +83,7 @@ const Search = (props: any) => {
                                             }} />
                                     )}
                                     color={"secondary"}
-                                    message="Upload Document" />
+                                    message="Upload Documents" />
                             </Box>
                         </Grid>
                     </Grid>
@@ -128,14 +92,14 @@ const Search = (props: any) => {
             <Dialog
                 open={open}
                 fullWidth={true}
-                maxWidth={"md"}
+                maxWidth={"sm"}
             >
                 <DialogTitle>
                     <div className="d-flex flex-column">
                         <div className="d-flex justify-content-between
                      align-items-center relative">
                             <h4 style={{ margin: '0', color: '#125895' }}>
-                                Filter</h4>
+                                Advanced Filter</h4>
                         </div>
                         <div style={{
                             height: '4px', width: '100%',
@@ -155,17 +119,48 @@ const Search = (props: any) => {
                 >
                     <CloseIcon />
                 </IconButton>
-                <DialogContent sx={{ pt: 0, mt: 0 }}>
-                    <RadioGroup name="radio-buttons-group" >
-                        <FormControlLabel value="Client" label="Client" control={<Radio />} />
-                        <FormControlLabel value="Project" label="Project" control={<Radio />} />
-                    </RadioGroup>
-                    <DialogActions sx={{ mt: 3 }}>
-                        <MuiButton variant="outlined" onClick={() => { setOpen(false); }}>
-                            Reset
+                <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
+                    <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+                        <Grid item xs={12} sm={12} >
+                            <TextField
+                                fullWidth
+                                label="Client"
+                                select
+                                value={clientValue}
+                                onChange={(event) => setClientValue(event.target.value)}
+                                variant="outlined"
+                            >
+                                {clientOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                fullWidth
+                                label="Project"
+                                select
+                                value={projectValue}
+                                onChange={(event) => setProjectValue(event.target.value)}
+                                variant="outlined"
+                            >
+                                {projectOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                    </Grid>
+                    <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+                        <MuiButton variant="outlined" onClick={handleClear}>
+                            Clear
                         </MuiButton>
                         <MuiButton
-                            type="submit"
+                            onClick={handleApply}
                             variant="contained"
                             color="primary"
                             sx={{
@@ -173,7 +168,7 @@ const Search = (props: any) => {
                                 float: 'right',
                             }}
                         >
-                            Filter
+                            Apply
                         </MuiButton>
                     </DialogActions>
                 </DialogContent>
@@ -183,6 +178,3 @@ const Search = (props: any) => {
 };
 
 export default Search;
-
-
-

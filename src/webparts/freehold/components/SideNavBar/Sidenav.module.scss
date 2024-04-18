@@ -169,9 +169,11 @@
 // }
 
 .sideNavItem:hover {
+    width: 80%;
     background-color: var(--secondarycolor) !important;
 
     .sideNavLink {
+        padding-left:5px;
         color: var(--primarycolor) !important;
     }
 }
