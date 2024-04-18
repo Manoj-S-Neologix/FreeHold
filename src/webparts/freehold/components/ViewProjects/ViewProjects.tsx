@@ -104,7 +104,7 @@ import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import AddClientDialog from '../AddClient/AddClient';
-import GridTable from "../../../../Common/Table/Table";
+// import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
@@ -112,7 +112,7 @@ import Button from "../../../../Common/Button/CustomButton";
 import AddIcon from '@mui/icons-material/Add';
 import AddProjectDialog from '../AddProjects/AddProject';
 import styles from './ViewProjects.module.scss';
-
+import GridTableProjects from '../Table/GridTableProjects';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -141,7 +141,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-function ViewClient(props: any) {
+function  ViewProject(props: any) {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
@@ -209,14 +209,14 @@ function ViewClient(props: any) {
               handleClick={openAddClientDialog}
               disabled={selected.length === 0}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
-              message="Assign Staff"
+              message="Assign Client"
             />
             {/* <Button className={styles.Assignbutton}>Assign Staff</Button> */}
           </Box>
           <CustomSearch handleSearchChange={handleSearchChange} />
         </Box>
         <Box >
-          <GridTable props={props} searchQuery={searchQuery} setSelected={setSelected} selected={selected} />
+          <GridTableProjects props={props} searchQuery={searchQuery} setSelected={setSelected} selected={selected} />
         </Box>
       </Stack>
       <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
@@ -224,4 +224,4 @@ function ViewClient(props: any) {
   );
 }
 
-export default ViewClient;
+export default ViewProject;
