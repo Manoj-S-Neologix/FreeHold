@@ -99,7 +99,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import AddClientDialog from '../AddClient/AddClient';
 import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom';
-import styles from './ViewClient.module.scss';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
@@ -165,7 +164,7 @@ function ViewClient(props: any) {
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
       <Stack direction='column' sx={{ gap: "30px" }} >
-        <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
+        <Box >
           {/* <Breadcrumbs separator="›"  aria-label="breadcrumb" > */}
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="medium" />}
@@ -179,7 +178,7 @@ function ViewClient(props: any) {
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Box>
-        <Box className={styles.Addcontainer} style={{
+        <Box style={{
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"
         }}>
@@ -198,7 +197,7 @@ function ViewClient(props: any) {
               }
             />
             <Button
-              handleClick={openAddClientDialog}
+              // handleClick={openAddClientDialog}
               disabled={selected.length === 0}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
               message="Assign Staff"

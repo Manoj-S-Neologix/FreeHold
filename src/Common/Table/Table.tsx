@@ -31,7 +31,10 @@ function EnhancedTableHead(props: any) {
             <TableRow>
                 <TableCell padding="checkbox" sx={{ backgroundColor: "#125895", color: "#fff" }}>
                     <Checkbox
-                        color="primary"
+                        sx={{
+                            color: onSelectAllClick ? "#fff !important" :
+                                "#000 !important",
+                        }}
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
@@ -42,9 +45,9 @@ function EnhancedTableHead(props: any) {
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
-                        sx={{ backgroundColor: "#125895", color: "#fff" }}
+                        sx={{ backgroundColor: "#125895", color: "#fff", fontWeight: 600 }}
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'center'}
+                        align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                         aria-label={headCell.label}
@@ -62,14 +65,14 @@ function EnhancedTableHead(props: any) {
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-    { id: 'email', numeric: false, disablePadding: false, label: 'Client Email' },
-    // { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
-    // { id: 'country', numeric: false, disablePadding: false, label: 'Country' },
-    // { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
-    { id: 'modifiedDate', numeric: false, disablePadding: false, label: 'Modified Date' },
-    { id: 'modifiedBy', numeric: false, disablePadding: false, label: 'Modified By' },
-    { id: 'assignedStaff', numeric: false, disablePadding: false, label: 'Assigned Staff' },
-    { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
+    { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
+    // { id: 'contact', numeric: false, disablePadding: true, label: 'Contact' },
+    // { id: 'country', numeric: false, disablePadding: true, label: 'Country' },
+    // { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
+    { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
+    { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
+    { id: 'assignedStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
+    { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
 ];
 const rows = [
     { id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: '15/03/2024', modifiedBy: 'Alice Johnson', assignedStaff: 'Smith Martinez' },
@@ -210,11 +213,12 @@ const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
                                                             tabIndex={-1}
                                                             key={row.id}
                                                             selected={isItemSelected}
-                                                            sx={{ cursor: 'pointer' }}
+                                                            sx={{ cursor: 'pointer', height: "55px" }}
+
                                                         >
                                                             <TableCell padding="checkbox">
                                                                 <Checkbox
-                                                                    sx={{ color: 'black' }}
+                                                                    sx={{ color: 'black', }}
                                                                     checked={isItemSelected}
                                                                     inputProps={{
                                                                         'aria-labelledby': labelId,
@@ -374,8 +378,8 @@ const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
                                                                         style={{
                                                                             display: 'flex',
                                                                             alignItems: 'center',
-
                                                                             marginLeft: '15px',
+                                                                            marginRight: '15px',
                                                                             width: "100%",
                                                                             gap: "20px"
                                                                         }}>

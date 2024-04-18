@@ -137,7 +137,7 @@
 
 import React from 'react';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../SideNavBar/Sidenav.module.scss';
 
 initializeIcons();
@@ -150,6 +150,7 @@ const menuItems = [
 ];
 
 const Sidenav = (props: any) => {
+    const navigate = useNavigate();
     return (
         <div className={styles.sideNav}>
             <div className={`${styles.container} ${styles.sideContainer}`}>
@@ -161,7 +162,7 @@ const Sidenav = (props: any) => {
                                 <ul className={styles.sidenavBar}>
                                     {menuItems.map((item, index) => (
                                         <React.Fragment key={index}>
-                                            <li className={styles.sideNavItem}>
+                                            <li onClick={() => { navigate(`${item.to}`); }} className={styles.sideNavItem}>
                                                 <Link to={item.to} className={styles.sideNavLink}>
                                                     {item.text}
                                                 </Link>

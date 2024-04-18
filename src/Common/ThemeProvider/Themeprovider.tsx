@@ -46,9 +46,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                         '&.MuiTableHead-root': {
                             backgroundColor: primary,
                             color: "#fff",
-                        },
-                        '& .MuiCheckbox-colorSecondary.Mui-checked': {
-                            color: "#fff", // Change checkbox color to white when checked
                         }
                     }
                 }
@@ -81,7 +78,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             MuiToolbar: {
                 styleOverrides: {
                     root: {
-                        marginTop: "1rem"
+                        marginTop: "0rem"
                     }
                 }
             },
@@ -101,28 +98,28 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                 }
             },
-            MuiCheckbox: {
-                styleOverrides: {
-                    root: {
-                        color: secondary,
+            // MuiCheckbox: {
+            //     styleOverrides: {
+            //         root: {
+            //             color: secondary,
 
 
 
-                        '&.Mui-checked': {
-                            color: primary,
-                        },
-                        '&.MuiCheckbox-indeterminate': {
-                            color: secondary,
-                        },
-                        '&.MuiCheckbox-indeterminate:hover': {
-                            color: secondary,
-                        }, '&.MuiSvgIcon-root': {
-                            color: secondary,
-                        }
+            //             '&.Mui-checked': {
+            //                 color: primary,
+            //             },
+            //             '&.MuiCheckbox-indeterminate': {
+            //                 color: secondary,
+            //             },
+            //             '&.MuiCheckbox-indeterminate:hover': {
+            //                 color: secondary,
+            //             }, '&.MuiSvgIcon-root': {
+            //                 color: secondary,
+            //             }
 
-                    }
-                }
-            },
+            //         }
+            //     }
+            // },
             // MuiSvgIcon: {
             //         styleOverrides: {
             //             root: {

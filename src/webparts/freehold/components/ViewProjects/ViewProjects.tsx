@@ -104,7 +104,7 @@ import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import AddClientDialog from '../AddClient/AddClient';
-import GridTable from "../../../../Common/Table/Table";
+// import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
@@ -112,6 +112,7 @@ import Button from "../../../../Common/Button/CustomButton";
 import AddIcon from '@mui/icons-material/Add';
 import AddProjectDialog from '../AddProjects/AddProject';
 import styles from './ViewProjects.module.scss';
+import GridTableProjects from "../Table/GridTableProjects";
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -187,11 +188,11 @@ function ViewClient(props: any) {
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Box>
-        <Box className={styles.Addcontainer} style={{
+        <Box style={{
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"
         }}>
-          <Box sx={{ display: "flex", alignItems: "center", width: "23%", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center", width: "25%", justifyContent: "space-between" }}>
             <Button
               handleClick={openAddClientDialog}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
@@ -206,17 +207,17 @@ function ViewClient(props: any) {
               }
             />
             <Button
-              handleClick={openAddClientDialog}
+              // handleClick={openAddClientDialog}
               disabled={selected.length === 0}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
-              message="Assign Staff"
+              message="Assign Client"
             />
             {/* <Button className={styles.Assignbutton}>Assign Staff</Button> */}
           </Box>
           <CustomSearch handleSearchChange={handleSearchChange} />
         </Box>
         <Box >
-          <GridTable props={props} searchQuery={searchQuery} setSelected={setSelected} selected={selected} />
+          <GridTableProjects props={props} searchQuery={searchQuery} setSelected={setSelected} selected={selected} />
         </Box>
       </Stack>
       <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />

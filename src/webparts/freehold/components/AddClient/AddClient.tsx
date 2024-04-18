@@ -248,17 +248,38 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
             </IconButton>
           </DialogTitle> */}
 
-            <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
-            Add Client
-            <hr style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '80px', border: '1px solid black' }} />
-            <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
+          <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+            <div className="d-flex flex-column">
+              <div className="d-flex justify-content-between
+                     align-items-center relative">
+                <h4 style={{ margin: '0', color: '#125895' }}>
+                  Add Client</h4>
+              </div>
+              <div style={{
+                height: '4px', width: '100%',
+                backgroundColor: '#125895'
+              }} />
+            </div>
+            {/* <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
               <CloseIcon />
-            </IconButton>
+            </IconButton> */}
           </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCancel}
+            sx={{
+              position: "absolute",
+              right: "14px",
+              top: "8px",
+              color: (theme: any) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent >
             <div style={{ marginBottom: '20px' }}>
               {/* <label htmlFor="clientName">Client Name*</label> */}
-              <label htmlFor="clientName">Client Name<span style={{color:'red'}}>*</span></label>
+              <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
 
               <TextField id="clientName" margin="dense" fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
@@ -281,48 +302,63 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
                     </IconButton>
                   </div>
                 ))}
-                <div style={{ display: "flex", justifyContent:'space-between', alignItems:'center' }}>
-                  <div style={{width: "50%"}}>
+                <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ width: "50%" }}>
                     {/* <IconButton >
                   <UploadFileIcon fontSize='large'/>
                   </IconButton> */}
                     <img src={require('./../../../../assets/Images/UploadImage.jpg')}
-                     width="90"
-                     height="70"
-                     alt="Upload Image"
+                      width="90"
+                      height="70"
+                      alt="Upload Image"
                     />
                   </div>
-                  <div style={{width: "50%"}}>
-                    <div style={{ display: "flex", flexDirection:"column", textAlign:'left'}}>
-                    <div>
-                  Drag and drop 
+                  <div style={{ width: "50%" }}>
+                    <div style={{ display: "flex", flexDirection: "column", textAlign: 'left' }}>
+                      <div>
+                        Drag and drop
+                      </div>
+                      <div>or{' '}</div>
+                      <div>
+                        <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
+                          click here to upload document
+                        </label>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      accept=".pdf,.doc,.docx,.txt"
+                      style={{ display: 'none' }}
+                      onChange={handleFileInput}
+                      multiple
+                    />
                   </div>
-                  <div>or{' '}</div>
-                  <div>
-                  <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-                    click here to upload document                  
-                  </label>
-                  </div>
-                  </div>
-                  <input
-                    type="file"
-                    id="fileInput"
-                    accept=".pdf,.doc,.docx,.txt"
-                    style={{ display: 'none' }}
-                    onChange={handleFileInput}
-                    multiple 
-                  />
                 </div>
-                </div>
-                
+
               </div>
             </div>
           </DialogContent>
-          <DialogActions sx={{padding:'10px', marginRight:'14px'}}>
+          <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             {/* <Button onClick={handleCancel} className={styles.AddcancelButton}>Cancel</Button>
             <Button onClick={handleSave} className={styles.AddsaveButton}>Save</Button> */}
-            <Button onClick={handleSave} variant="contained">Save</Button>
-            <Button onClick={handleCancel} variant="contained">Cancel</Button>
+            {/* <Button onClick={handleSave} variant="contained">Save</Button>
+            <Button onClick={handleCancel} variant="contained">Cancel</Button> */}
+
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              color="primary"
+              sx={{
+                maxWidth: '150px',
+                float: 'right',
+              }}
+            >
+              Save
+            </Button>
+            <Button variant="outlined" onClick={handleCancel}>
+              Clear
+            </Button>
           </DialogActions>
         </Dialog>
       </Stack>
