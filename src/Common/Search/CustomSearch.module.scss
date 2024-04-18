@@ -7,6 +7,15 @@
     padding-right: 0px !important;
 }
 
+.IconSearch {
+    color: rgb(56, 54, 54) !important;
+    position: relative !important;
+    margin-left: auto !important;
+    bottom: 2px !important;
+    color: var(--primarycolor);
+}
+
+
 .SearchIcon {
     align-items: right !important;
     display: flex;
@@ -19,13 +28,10 @@
 
 }
 
-.IconSearch {
-    color: black !important;
-}
 
 .searchBar {
     background: rgb(173, 173, 173);
-    border-radius: 20px;
+    border-radius: 20px;    
     border: 2px solid #fff !important;
     overflow: hidden;
 }

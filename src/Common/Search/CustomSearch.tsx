@@ -11,10 +11,16 @@ const CustomSearch = (props: any) => {
                 size="small"
                 fullWidth
                 placeholder="Search..."
-
+                sx={{
+                    '& .MuiInputBase-input': {
+                        color: 'primary',
+                        border: 'none',
+                        fontSize: '16px'
+                    }
+                }}
                 InputProps={{
                     endAdornment: <SearchIcon className={styles.IconSearch} />,
-                    style: { border: "none" } // Remove default border
+                    style: { border: "none", color: "#125895" }
                 }}
             />
         </Box>
