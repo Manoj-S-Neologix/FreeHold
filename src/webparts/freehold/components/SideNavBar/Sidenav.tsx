@@ -147,6 +147,7 @@ const menuItems = [
     { to: '/ViewProjects', text: 'View Projects' },
     { to: '/ChecklistValidation', text: 'Checklist Validation' },
     { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
+
 ];
 
 const Sidenav = (props: any) => {

@@ -7,8 +7,10 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import ViewProjects from '../ViewProjects/ViewProjects';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
 import { ChecklistValidation } from '../ChecklistValidation/ChecklistValidation';
+import {ChecklistConfiguration} from '../ChecklistConfiguration/ChecklistConfiguration';
 import Search from "../Search/Search";
 import ViewClient from '../ViewClient/ViewClient';
+
 
 const colorCodes = {
     primary: "#125895",
@@ -41,6 +43,10 @@ const Home = (props: any) => {
                         <Route
                             path='/ChecklistValidation'
                             element={<ChecklistValidation />}
+                        />
+                        <Route
+                            path='/ChecklistConfiguration'
+                            element={<ChecklistConfiguration />}
                         />
                     </Routes>
                 </HashRouter>

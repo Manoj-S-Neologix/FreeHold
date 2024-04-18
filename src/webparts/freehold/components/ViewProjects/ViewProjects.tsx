@@ -104,7 +104,6 @@ import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import AddClientDialog from '../AddClient/AddClient';
-// import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
@@ -142,7 +141,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-function ViewClient(props: any) {
+function ViewProject(props: any) {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
@@ -225,4 +224,4 @@ function ViewClient(props: any) {
   );
 }
 
-export default ViewClient;
+export default ViewProject;
