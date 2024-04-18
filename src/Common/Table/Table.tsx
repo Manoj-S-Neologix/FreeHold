@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,19 +13,13 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-// import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Grid, Stack, Box } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-
-// import styles from './Table.module.scss';
+import { Grid } from '@mui/material';
 import Button from "../Button/CustomButton";
 
+
 function EnhancedTableHead(props: any) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, headCells } = props;
 
     return (
         <TableHead sx={{ backgroundColor: "#125895", color: "#fff", maxWidth: '100%' }}>
@@ -43,7 +38,7 @@ function EnhancedTableHead(props: any) {
                         }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {headCells.map((headCell: any) => (
                     <TableCell
                         sx={{ backgroundColor: "#125895", color: "#fff", fontWeight: 600 }}
                         key={headCell.id}
@@ -56,43 +51,16 @@ function EnhancedTableHead(props: any) {
                     </TableCell>
                 ))}
             </TableRow>
-
         </TableHead>
-
-
     );
 }
 
-const headCells = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-    { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
-    // { id: 'contact', numeric: false, disablePadding: true, label: 'Contact' },
-    // { id: 'country', numeric: false, disablePadding: true, label: 'Country' },
-    // { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
-    { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
-    { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
-    { id: 'assignedStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
-    { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
-];
-const rows = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: '15/03/2024', modifiedBy: 'Alice Johnson', assignedStaff: 'Smith Martinez' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: '16/03/2024', modifiedBy: 'Bob Brown', assignedStaff: 'Diego Charlie' },
-    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: '17/03/2024', modifiedBy: 'Charlie Davis', assignedStaff: 'Marco Doe' },
-    { id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: '18/03/2024', modifiedBy: 'David Wilson', assignedStaff: 'Altair Martinez' },
-    { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: '19/03/2024', modifiedBy: 'Eve Anderson', assignedStaff: 'Martinez' },
-    { id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: '20/03/2024', modifiedBy: 'Frank Martinez', assignedStaff: 'Antonio Rabin' },
-    { id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: '21/03/2024', modifiedBy: 'John Doe', assignedStaff: 'Etahn Martin' },
-    { id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: '22/03/2024', modifiedBy: 'Jane Smith', assignedStaff: 'Henry' },
-];
-
-
-const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
+const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, handleAssign }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [openDialog, setOpenDialog] = React.useState(false);
 
     const handleView = (id: any) => {
         console.log(`View clicked for row ${id}`);
@@ -116,9 +84,11 @@ const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
         setOrderBy(property);
     };
 
+
+
     const handleSelectAllClick = (event: any) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = rows.map((n: any, idx: any) => idx + 1);
             setSelected(newSelected);
             return;
         }
@@ -159,328 +129,157 @@ const GridTable = ({ props, searchQuery, selected, setSelected }: any) => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const filteredRows = searchQuery
-        ? rows.filter((row) =>
+        ? rows.filter((row: any) =>
             Object.values(row).some(
                 (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
             )
         )
         : rows;
 
-    const handleAssignStaff = () => {
-        // setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setSelected([]);
-        setOpenDialog(false);
-    };
-
-    const handleSaveStaff = () => {
-        console.log("Saving staff...");
-        handleCloseDialog();
-    };
-
     return (
-        <Box sx={{ width: '100' }}>
-            <Stack>
-                <Grid  >
-                    <Grid item xs={12}>
-                        <Paper sx={{ width: '100%', mb: 2 }}>
-                            <TableContainer>
-                                <Table>
-                                    <EnhancedTableHead
-                                        numSelected={selected.length}
-                                        order={order}
-                                        orderBy={orderBy}
-                                        onSelectAllClick={handleSelectAllClick}
-                                        onRequestSort={handleRequestSort}
-                                        rowCount={filteredRows.length}
-                                    />
-                                    <TableBody>
-                                        {filteredRows.length > 0
-                                            ? filteredRows
-                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                .map((row) => {
-                                                    const isItemSelected = isSelected(row.id);
-                                                    const labelId = `enhanced-table-checkbox-${row.id}`;
+        <Box>
+            <Grid container  >
+                <Grid item xs={12} >
+                    <Paper sx={{ width: '100%', mb: 2 }}>
+                        <TableContainer>
+                            <Table>
+                                <EnhancedTableHead
+                                    headCells={headCells}
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={filteredRows.length}
+                                />
+                                <TableBody>
+                                    {filteredRows.length > 0
+                                        ? filteredRows
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row: any, idx: any) => {
+                                                const isItemSelected = isSelected(idx + 1);
+                                                const labelId = `enhanced-table-checkbox-${idx + 1}`;
 
-                                                    return (
-                                                        <TableRow
-                                                            hover
-                                                            onClick={(event) => handleClick(event, row.id)}
-                                                            role="checkbox"
-                                                            aria-checked={isItemSelected}
-                                                            tabIndex={-1}
-                                                            key={row.id}
-                                                            selected={isItemSelected}
-                                                            sx={{ cursor: 'pointer', height: "55px" }}
-
-                                                        >
-                                                            <TableCell padding="checkbox">
-                                                                <Checkbox
-                                                                    sx={{ color: 'black', }}
-                                                                    checked={isItemSelected}
-                                                                    inputProps={{
-                                                                        'aria-labelledby': labelId,
-                                                                    }}
-                                                                />
-                                                            </TableCell>
-                                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                                {searchQuery && row.name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                return (
+                                                    <TableRow
+                                                        hover
+                                                        onClick={(event) => handleClick(event, idx + 1)}
+                                                        role="checkbox"
+                                                        aria-checked={isItemSelected}
+                                                        tabIndex={-1}
+                                                        key={idx + 1}
+                                                        selected={isItemSelected}
+                                                        sx={{ cursor: 'pointer', height: "55px" }}
+                                                    >
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                // sx={{ color: 'black' }}
+                                                                checked={isItemSelected}
+                                                                inputProps={{
+                                                                    'aria-labelledby': labelId,
+                                                                }}
+                                                            />
+                                                        </TableCell>
+                                                        {Object.values(row).map((cellData: string, cellIndex) => (
+                                                            <TableCell key={cellIndex} component="th" scope="row" padding="none">
+                                                                {searchQuery && cellData && typeof cellData === 'string' && cellData.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                                                                     <>
-                                                                        {row.name.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                                                            <span key={index}>
+                                                                        {cellData.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
+                                                                            <React.Fragment key={index}>
                                                                                 {index > 0 && (
                                                                                     <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
                                                                                 )}
                                                                                 {part}
-                                                                            </span>
+                                                                            </React.Fragment>
                                                                         ))}
                                                                     </>
                                                                 ) : (
-                                                                    row.name
+                                                                    cellData
                                                                 )}
                                                             </TableCell>
-                                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                                {searchQuery && row.email.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row.email.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                                                            <span key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </span>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row.email
-                                                                )}
-                                                            </TableCell>
-                                                            {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.contact.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                            <>
-                                {row.contact.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                    <span key={index}>
-                                        {index > 0 && (
-                                            <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                        )}
-                                        {part}
-                                    </span>
-                                ))}
-                            </>
-                        ) : (
-                            row.contact
-                        )}
-                    </TableCell> */}
-
-                                                            {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.country.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                            <>
-                                {row.country.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                    <span key={index}>
-                                        {index > 0 && (
-                                            <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                        )}
-                                        {part}
-                                    </span>
-                                ))}
-                            </>
-                        ) : (
-                            row.country
-                        )}
-                    </TableCell> */}
-                                                            {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {searchQuery && row.location.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                            <>
-                                {row.location.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                    <span key={index}>
-                                        {index > 0 && (
-                                            <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                        )}
-                                        {part}
-                                    </span>
-                                ))}
-                            </>
-                        ) : (
-                            row.location
-                        )}
-                    </TableCell> */}
-                                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                                {searchQuery && row.modifiedDate.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row.modifiedDate.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                                                            <span key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </span>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row.modifiedDate
-                                                                )}
-                                                            </TableCell>
-                                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                                {searchQuery && row.modifiedBy.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row.modifiedBy.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                                                            <span key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </span>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row.modifiedBy
-                                                                )}
-                                                            </TableCell>
-                                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                                {searchQuery && row.assignedStaff.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row.assignedStaff.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
-                                                                            <span key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </span>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row.assignedStaff
-                                                                )}
-                                                            </TableCell>
-
-                                                            <TableCell width={"40%"} align="left" padding="none" >
-                                                                <div className="d-flex align-items-center w-100 ">
-                                                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                                                        <Tooltip title="View" >
-                                                                            <IconButton onClick={() => handleView(row.id)}>
-                                                                                <VisibilityIcon />
-                                                                            </IconButton>
-                                                                        </Tooltip>
-                                                                        <Tooltip title="Edit">
-                                                                            <IconButton onClick={() => handleEdit(row.id)}>
-                                                                                <EditIcon />
-                                                                            </IconButton>
-                                                                        </Tooltip>
-                                                                        <Tooltip title="Delete">
-                                                                            <IconButton onClick={() => handleDelete(row.id)}>
-                                                                                <DeleteIcon />
-                                                                            </IconButton>
-                                                                        </Tooltip>
-                                                                    </div>
-                                                                    <div
-                                                                        style={{
-                                                                            display: 'flex',
-                                                                            alignItems: 'center',
-                                                                            marginLeft: '15px',
-                                                                            marginRight: '15px',
-                                                                            width: "100%",
-                                                                            gap: "20px"
-                                                                        }}>
-                                                                        {/* <Button
-                                                                            className={`${styles.viewbutton}`}
-                                                                            onClick={() => handleViewUploadDocuments(row.id)}>
-                                                                            View/Upload Documents
-                                                                        </Button> */}
-                                                                        <Button
-                                                                            style={{ maxWidth: "230px", whiteSpace: "pre" }}
-                                                                            color={"primary"}
-                                                                            message="View/Upload Documents"
-                                                                            handleClick={
-                                                                                () => handleViewUploadDocuments(row.id)}
-                                                                        />
-                                                                        {/* <Button variant="contained"
-                                                                            color="primary"
-                                                                            onClick={handleAssignStaff} style={{
-                                                                                backgroundColor: '#dba236',
-                                                                                color: 'black',
-                                                                                marginLeft: '30px',
-                                                                                borderRadius: '4px',
-                                                                                padding: '2px 10px'
-                                                                            }}>
-                                                                            Assign Staff
-                                                                        </Button> */}
-                                                                        <Button
-                                                                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
-                                                                            color={"secondary"}
-                                                                            message="Assign Staff"
-                                                                            handleClick={handleAssignStaff}
-                                                                        />
-                                                                    </div>
+                                                        ))}
+                                                        <TableCell width={"40%"} align="left" padding="none">
+                                                            <div className="d-flex align-items-center w-100">
+                                                                <div style={{ display: 'flex', gap: '10px' }}>
+                                                                    <Tooltip title="View">
+                                                                        <IconButton onClick={() => handleView(row.id)}>
+                                                                            <VisibilityIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Edit">
+                                                                        <IconButton onClick={() => handleEdit(row.id)}>
+                                                                            <EditIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Delete">
+                                                                        <IconButton onClick={() => handleDelete(row.id)}>
+                                                                            <DeleteIcon />
+                                                                        </IconButton>
+                                                                    </Tooltip>
                                                                 </div>
-                                                            </TableCell>
+                                                                <div
+                                                                    style={{
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        marginLeft: '15px',
+                                                                        marginRight: '15px',
+                                                                        width: "100%",
+                                                                        gap: "20px"
+                                                                    }}>
+
+                                                                    <Button
+                                                                        style={{ maxWidth: "230px", whiteSpace: "pre" }}
+                                                                        color={"primary"}
+                                                                        message="View/Upload Documents"
+                                                                        handleClick={
+                                                                            () => handleViewUploadDocuments(row.id)}
+                                                                    />
+
+                                                                    <Button
+                                                                        style={{ maxWidth: "200px", whiteSpace: "pre" }}
+                                                                        color={"secondary"}
+                                                                        message="Assign Client"
+                                                                        handleClick={handleAssign}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
 
 
 
-                                                        </TableRow>
-                                                    );
-                                                }) :
-                                            <TableRow>
-                                                <TableCell colSpan={6} align="center">
-                                                    No Records Found
-                                                </TableCell>
-                                            </TableRow>
-                                        }
-                                        {emptyRows > 0 && (
-                                            <TableRow style={{ height: 53 * emptyRows }}>
-                                                <TableCell colSpan={6} />
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
-                                component="div"
-                                count={filteredRows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                        </Paper>
-                    </Grid>
+                                                    </TableRow>
+                                                );
+                                            }) :
+                                        <TableRow>
+                                            <TableCell colSpan={6} align="center">
+                                                No Records Found
+                                            </TableCell>
+                                        </TableRow>
+                                    }
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={filteredRows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
                 </Grid>
-
-                <Dialog
-                    open={openDialog}
-                    onClose={handleCloseDialog}
-                    aria-labelledby="assign-staff-dialog-title"
-                >
-                    <DialogTitle id="assign-staff-dialog-title">Assign Staff</DialogTitle>
-                    <DialogContent>
-                        {/* //peple picker */}
-                    </DialogContent>
-                    <DialogActions>
-                        {/* <Button onClick={handleCloseDialog} color="primary">
-                            Cancel
-                        </Button> */}
-                        <Button
-                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
-                            color={"secondary"}
-                            message="Cancel"
-                            handleClick={handleCloseDialog}
-                        />
-                        {/* <Button onClick={handleSaveStaff} color="primary">
-                            Save
-                        </Button> */}
-                        <Button
-                            style={{ maxWidth: "200px", whiteSpace: "pre" }}
-                            color={"primary"}
-                            message="Save"
-                            handleClick={handleSaveStaff}
-                        />
-                    </DialogActions>
-                </Dialog>
-            </Stack>
+            </Grid>
         </Box>
     );
 };
 export default GridTable;
+
+
 
