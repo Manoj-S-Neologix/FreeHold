@@ -163,7 +163,7 @@ function ViewClient(props:any) {
               Home
             </StyledBreadcrumb>
             <StyledBreadcrumb disabled>
-              View Client
+              Client
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Grid>

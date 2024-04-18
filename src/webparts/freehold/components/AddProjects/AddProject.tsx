@@ -5,6 +5,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack } from '@mui/material'; 
 
 interface AddClientDialogProps {
@@ -28,7 +30,14 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
     <Box sx={{width:'100', padding:'20px' }} > 
     <Stack direction ='column' spacing={2} >
     <Dialog open={open} onClose={onClose} >
-      <DialogTitle style={{textAlign: 'center'}}>Project Name</DialogTitle >
+      {/* <DialogTitle style={{textAlign: 'center'}}>Project Name</DialogTitle > */}
+      <DialogTitle  style={{ textAlign: 'center', marginLeft: '7px', position: 'relative', color:'#125895' }}>
+            Add Project
+            <hr style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '80px', border: '1px solid black' }} />
+            <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
       <DialogContent >
         <div style={{ display: 'flex', marginBottom: '20px' }}>
           <div style={{ marginRight: '20px', flex: 1 }}>
@@ -47,9 +56,9 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
        
 
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel} >Cancel</Button>
-        <Button onClick={handleSave} > Save </Button>
+      <DialogActions sx={{padding:'10px', marginRight:'14px'}}>
+        <Button onClick={handleCancel} variant="contained">Cancel</Button>
+        <Button onClick={handleSave} variant="contained"> Save </Button>
       </DialogActions>
     </Dialog>
     </Stack>
