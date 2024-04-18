@@ -20,7 +20,7 @@ const Home = (props: any) => {
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
                 <HashRouter basename='/'>
                     <Header props={props} />
-                    <Search props={props} />
+                    {/* <Search props={props} /> */}
                     <Routes>
                         <Route path='/'
                             element={

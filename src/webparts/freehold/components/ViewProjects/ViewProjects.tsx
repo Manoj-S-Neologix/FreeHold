@@ -80,7 +80,7 @@
 import React, { useState } from 'react';
 import { Breadcrumbs, Button, TextField, Grid, Box, Stack } from '@mui/material'; 
 import SearchIcon from '@mui/icons-material/Search'; 
-import { ThemeProvider, createTheme } from '@mui/material/styles'; 
+// import { createTheme } from '@mui/material/styles'; 
 import { useNavigate } from 'react-router-dom'; 
 import styles from './ViewProjects.module.scss';
 import GridTableProjects from '../Table/GridTableProjects';
@@ -112,16 +112,16 @@ function ViewProjects (props:any) {
   //   // Add other project-specific headers if needed
   // ];
 
-  const theme = createTheme({ 
-    palette: {
-      primary: {
-        main: '#125895', 
-      },
-      secondary: {
-        main: '#fff',
-      },
-    },
-  });
+  // const theme = createTheme({ 
+  //   palette: {
+  //     primary: {
+  //       main: '#125895', 
+  //     },
+  //     secondary: {
+  //       main: '#fff',
+  //     },
+  //   },
+  // });
 
   return (
 <Box sx={{width:'100', padding:'20px' }} > 
@@ -143,17 +143,17 @@ function ViewProjects (props:any) {
         onChange={handleSearchChange}
       />
     </div>
-    <Button className={styles.Assignbutton}>Assign Staff</Button>
+    <Button className={styles.Assignbutton}>Assign Client</Button>
   </Grid>
 
 
-  <ThemeProvider theme={theme}>
+
     <Grid item xs={12}>
       <GridTableProjects props={props} searchQuery={searchQuery} />
 
 
     </Grid>
-  </ThemeProvider>
+
   <AddProjectDialog open={addProjectDialogOpen} onClose={closeAddClientDialog} />
   </Stack>
 </Box>

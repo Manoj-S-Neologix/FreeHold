@@ -67,19 +67,19 @@ const headCells = [
 // { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
 { id: 'modifiedDate', numeric: false, disablePadding: false, label: 'Modified Date' }, 
 { id: 'modifiedBy', numeric: false, disablePadding: false, label: 'Modified By' }, 
-
+{ id: 'assignedStaff', numeric: false, disablePadding: false, label: 'Assigned Staff' }, 
 { id: 'action', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 const rows = [
-{ id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
-{ id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY' },
+{ id: 1, name: 'John Doe', email: 'john@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Smith Martinez ' },
+{ id: 2, name: 'Jane Smith', email: 'jane@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Diego Charlie'  },
+{ id: 3, name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Marco Doe'  },
+{ id: 4, name: 'Bob Brown', email: 'bob@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Altair Martinez'  },
+{ id: 5, name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Martinez'  },
+{ id: 6, name: 'David Wilson', email: 'david@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Antonio Rabin'  },
+{ id: 7, name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Etahn Martin'  },
+{ id: 8, name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: 'MM/DD/YYYY', modifiedBy: 'MM/DD/YYYY', assignedStaff:'Henry '  },
 ];
 
 const GridTable = ({ props, searchQuery }: any) => {
@@ -333,11 +333,27 @@ return (
                 row.modifiedBy
             )}
         </TableCell>
+        <TableCell component="th" id={labelId} scope="row" padding="none">
+            {searchQuery && row.assignedStaff.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                <>
+                    {row.assignedStaff.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                        <span key={index}>
+                            {index > 0 && (
+                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                            )}
+                            {part}
+                        </span>
+                    ))}
+                </>
+            ) : (
+                row.assignedStaff
+            )}
+        </TableCell>
 
                     <TableCell align="left" padding="none" >
-                        <div className="d-flex align-items-center w-100">
-                            <div>
-                                <Tooltip title="View">
+                        <div className="d-flex align-items-center w-100 ">
+                            <div style={{ display:'flex', gap:'10px'}}>
+                                <Tooltip title="View" >
                                     <IconButton onClick={() => handleView(row.id)}>
                                         <VisibilityIcon />
                                     </IconButton>

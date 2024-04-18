@@ -54,12 +54,24 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                         color: secondary,
                         '& .MuiTableCell-head': {
                             backgroundColor: primary,
-                            color: secondary
+                            color: secondary,
                         },
                         '&.MuiTableHead-root': {
                             backgroundColor: primary,
-                            color: secondary
+                            color: secondary,
                         },
+                        '&.MuiTableRow-root':{
+                            styleOverrides:{
+                        '&.MuiTableCell-root': {
+                            styleOverrides:{
+                                    '&.MuiButtonBase-root.MuiCheckbox-root.Mui-checked, &.MuiButtonBase-root.Mui-checked': {
+                                        color: secondary,
+                                    }
+                        },
+                            }
+                        }
+                        }
+
                         // '&.Hover': {
                         //     backgroundColor: "#000",
                         //     color: secondary
@@ -68,6 +80,29 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     }
                 }
             },
+
+            // MuiTableCell: {
+            //     styleOverrides: {
+            //         root: {
+            //             '& .MuiButtonBase-root.MuiCheckbox-root.Mui-checked': {
+            //                 color: secondary,
+            //                 // backgroundColor: "#000",
+            //             },
+            //         },
+            //     },
+            // },
+            
+            MuiTableCell: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiTableCell-root .MuiButtonBase-root.MuiCheckbox-root.Mui-checked': {
+                            color: secondary,
+                        },
+                    },
+                },
+            },
+            
+
             MuiToolbar: {
                 styleOverrides: {
                     root: {
@@ -95,6 +130,9 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                 styleOverrides: {
                     root: {
                         color: secondary,
+
+
+
                         '&.Mui-checked': {
                             color: primary,
                         },
@@ -168,4 +206,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
     });
 
     return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+
 };
+
