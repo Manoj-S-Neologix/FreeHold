@@ -22,9 +22,16 @@ const IconStyles = (icon: any) => {
 
 const Search = (props: any) => {
     const [open, setOpen] = React.useState(false);
+    const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
     const [clientValue, setClientValue] = React.useState<string>('');
     const [projectValue, setProjectValue] = React.useState<string>('');
+
+    const handleSearchChange = (e: any) => {
+        setSearch(e.target.value);
+    };
+
+    console.log(search, "searchEvent");
 
     const handleFilterClick = () => {
         console.log('Filter clicked');
@@ -51,7 +58,7 @@ const Search = (props: any) => {
     const { control, handleSubmit, formState: { errors } } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
-    
+
 
 
     const handleSave = (data: any) => {
@@ -82,7 +89,7 @@ const Search = (props: any) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CustomSearch />
+                                    <CustomSearch handleSearchChange={handleSearchChange} />
                                 </Box>
                                 <Box>
                                     <IconButton
@@ -112,6 +119,7 @@ const Search = (props: any) => {
                         </Grid>
                     </Grid>
                 </Box >
+
             </Stack >
             <Dialog
                 open={open}

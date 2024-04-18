@@ -59,32 +59,31 @@ function EnhancedTableHead(props: any) {
                     </TableCell>
                 ))}
             </TableRow>
-
         </TableHead>
-
-
     );
 }
 
 const headCells = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
-    { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
-    { id: 'assignedClients', numeric: false, disablePadding: true, label: 'Assigned Client' },
+    { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
+    { id: 'projectCode', numeric: false, disablePadding: true, label: 'Project Code' },
+    { id: 'assignedClients', numeric: false, disablePadding: true, label: 'Assigned Clients' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
-    { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
+    { id: 'action', numeric: false, disablePadding: true, label: 'Action' },
 ];
 
+
 const rows = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', assignedClients: 'Smith Martinez ', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', assignedClients: 'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', assignedClients: 'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-    { id: 4, name: 'Bob Brown', email: 'bob@example.com', assignedClients: 'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren', },
-    { id: 5, name: 'Charlie Davis', email: 'charlie@example.com', assignedClients: 'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren' },
-    { id: 6, name: 'David Wilson', email: 'david@example.com', assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' },
-    { id: 7, name: 'Eve Anderson', email: 'eve@example.com', assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
-    { id: 8, name: 'Frank Martinez', email: 'frank@example.com', assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
+    { id: 1, projectName: 'John Doe', projectCode: 'JD123', assignedClients: 'Smith Martinez', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
+    { id: 2, projectName: 'Jane Smith', projectCode: 'JS456', assignedClients: 'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
+    { id: 3, projectName: 'Alice Johnson', projectCode: 'AJ789', assignedClients: 'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
+    { id: 4, projectName: 'Bob Brown', projectCode: 'BB321', assignedClients: 'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren' },
+    { id: 5, projectName: 'Charlie Davis', projectCode: 'CD654', assignedClients: 'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren' },
+    { id: 6, projectName: 'David Wilson', projectCode: 'DW987', assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' },
+    { id: 7, projectName: 'Eve Anderson', projectCode: 'EA246', assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
+    { id: 8, projectName: 'Frank Martinez', projectCode: 'FM135', assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
 ];
+
 
 const GridTableProjects = ({ props, searchQuery, setSelected, selected }: any) => {
     const [order, setOrder] = React.useState('asc');
@@ -224,9 +223,9 @@ const GridTableProjects = ({ props, searchQuery, setSelected, selected }: any) =
                                                             />
                                                         </TableCell>
                                                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                            {searchQuery && row.name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                            {searchQuery && row.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                                                                 <>
-                                                                    {row.name.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                    {row.projectName.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                                                                         <span key={index}>
                                                                             {index > 0 && (
                                                                                 <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -236,13 +235,13 @@ const GridTableProjects = ({ props, searchQuery, setSelected, selected }: any) =
                                                                     ))}
                                                                 </>
                                                             ) : (
-                                                                row.name
+                                                                row.projectName
                                                             )}
                                                         </TableCell>
                                                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                            {searchQuery && row.email.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                            {searchQuery && row.projectCode.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                                                                 <>
-                                                                    {row.email.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
+                                                                    {row.projectCode.toLowerCase().split(searchQuery.toLowerCase()).map((part, index) => (
                                                                         <span key={index}>
                                                                             {index > 0 && (
                                                                                 <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
@@ -252,7 +251,7 @@ const GridTableProjects = ({ props, searchQuery, setSelected, selected }: any) =
                                                                     ))}
                                                                 </>
                                                             ) : (
-                                                                row.email
+                                                                row.projectCode
                                                             )}
                                                         </TableCell>
                                                         <TableCell component="th" id={labelId} scope="row" padding="none">

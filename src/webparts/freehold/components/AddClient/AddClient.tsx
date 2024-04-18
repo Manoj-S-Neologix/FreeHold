@@ -281,7 +281,8 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
               {/* <label htmlFor="clientName">Client Name*</label> */}
               <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
 
-              <TextField id="clientName" margin="dense" fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
+              <TextField id="clientName" margin="dense" size="small"
+               fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div style={{ marginBottom: '10px' }}>
               <label htmlFor="clientDocuments">Client Documents</label>

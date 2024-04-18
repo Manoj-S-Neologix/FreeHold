@@ -76,8 +76,8 @@
         margin-bottom: 0.2 rem;
     }
 
-    $sideImageUrl: url('/src/assets/images/homeImage.png');
-    // $sideImageUrl: url("../../../../assets/Images/Home.png");
+    //$sideImageUrl: url('/src/assets/images/homeImage.png');
+    $sideImageUrl: url("../../../../assets/Images/Home.png");
 
     .sideImage {
         background-image: $sideImageUrl;
@@ -173,7 +173,7 @@
     background-color: var(--secondarycolor) !important;
 
     .sideNavLink {
-        padding-left:5px;
+        padding-left: 5px;
         color: var(--primarycolor) !important;
     }
 }
