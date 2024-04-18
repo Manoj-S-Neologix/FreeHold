@@ -1,7 +1,7 @@
 import * as React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../../../../Common/Header/Header';
-// import Search from '../../../../Common/Search/Search';
+import Search from '../../../../Common/Search/Search';
 import Sidenav from '../SideNavBar/Sidenav';
 import ProjectsClient from '../../../../Common/ProjectsClient/ProjectsClient';
 import { HashRouter, Routes, Route } from 'react-router-dom';
@@ -20,7 +20,7 @@ const Home = (props: any) => {
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
                 <HashRouter basename='/'>
                     <Header props={props} />
-                    {/* <Search props={props} /> */}
+                    <Search props={props} />
                     <Routes>
                         <Route path='/'
                             element={

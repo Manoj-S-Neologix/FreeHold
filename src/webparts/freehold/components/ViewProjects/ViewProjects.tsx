@@ -75,10 +75,11 @@ import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddClientDialog from '../AddClient/AddClient'; 
-import GridTable from "../../../../Common/Table/Table";
+// import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom'; 
 import styles from './ViewProjects.module.scss';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import GridTableProjects from '../Table/GridTableProjects';
 
 const StyledBreadcrumb = styled(Button)(({ theme }) => ({
   backgroundColor:
@@ -158,7 +159,7 @@ function ViewClient(props:any) {
           <Button className={styles.Assignbutton}>Assign Client</Button>
         </Grid>
         <Grid item xs={12}>
-          <GridTable props={props} searchQuery={searchQuery} />
+          <GridTableProjects props={props} searchQuery={searchQuery} />
         </Grid>
         <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
       </Stack>
