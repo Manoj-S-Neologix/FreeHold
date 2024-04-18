@@ -47,7 +47,7 @@
 //   //     },
 //   //   },
 //   // });
-  
+
 
 //   return (
 // <Box sx={{width:'100', padding:'20px' }} > 
@@ -82,7 +82,7 @@
 //   </Stack>
 // </Box>
 
-  
+
 //   );
 // }
 
@@ -91,18 +91,22 @@
 
 
 import React, { useState } from 'react';
-import { Breadcrumbs, Button, TextField, Grid, Box, Stack } from '@mui/material'; 
-import SearchIcon from '@mui/icons-material/Search'; 
+import { Breadcrumbs, Box, Stack } from '@mui/material';
+import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddClientDialog from '../AddClient/AddClient'; 
+import AddClientDialog from '../AddClient/AddClient';
 import GridTable from "../../../../Common/Table/Table";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import styles from './ViewClient.module.scss';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import CustomSearch from "../../../../Common/Search/CustomSearch";
+import Button from "../../../../Common/Button/CustomButton";
+import AddIcon from '@mui/icons-material/Add';
 
-const StyledBreadcrumb = styled(Button)(({ theme }) => ({
+
+const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === 'light'
       ? theme.palette.grey[100]
@@ -129,12 +133,13 @@ const StyledBreadcrumb = styled(Button)(({ theme }) => ({
   },
 }));
 
-function ViewClient(props:any) {
+function ViewClient(props: any) {
+  const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [addClientDialogOpen, setAddClientDialogOpen] = useState(false); 
-  const navigate = useNavigate(); 
+  const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSearchChange = (event:any) => {
+  const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);
   };
 
@@ -149,16 +154,23 @@ function ViewClient(props:any) {
   const closeAddClientDialog = () => {
     setAddClientDialogOpen(false);
   };
+  const IconStyles = (icon: any) => {
+    return (
+      <div>
+        {icon}
+      </div >
+    );
+  };
 
   return (
-    <Box sx={{width:'100', padding:'20px' }} > 
-      <Stack direction ='column' spacing={2} >
-        <Grid item xs={12} className={styles.Homebreadcrumb} style={{padding:'0 10px !important'}}>
+    <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
+      <Stack direction='column' sx={{ gap: "30px" }} >
+        <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
           {/* <Breadcrumbs separator="›"  aria-label="breadcrumb" > */}
           <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="medium" />}
-        aria-label="breadcrumb"
-      >
+            separator={<NavigateNextIcon fontSize="medium" />}
+            aria-label="breadcrumb"
+          >
             <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
               Home
             </StyledBreadcrumb>
@@ -166,24 +178,40 @@ function ViewClient(props:any) {
               Client
             </StyledBreadcrumb>
           </Breadcrumbs>
-        </Grid>
-        <Grid item xs={12} className={styles.Addcontainer} style={{ margin: '0px' }}>
-          <Button className={styles.Addbutton} onClick={openAddClientDialog} >Add Client</Button>
-          <div className={styles.searchInput}>
-            <TextField
-              className={styles.searchBar}
-              placeholder="Search..."
-              InputProps={{ endAdornment: <SearchIcon className={styles.iconFilter}/> }} 
-              onChange={handleSearchChange}
+        </Box>
+        <Box className={styles.Addcontainer} style={{
+          margin: '0px', display: "flex", alignItems: "center",
+          justifyContent: "space-between"
+        }}>
+          <Box sx={{ display: "flex", alignItems: "center", width: "23%", justifyContent: "space-between" }}>
+            <Button
+              handleClick={openAddClientDialog}
+              style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
+              message="Add Client"
+              Icon={
+                IconStyles(<AddIcon
+                  sx={{
+                    color: "white",
+                    fontSize: "20px !important",
+
+                  }} />)
+              }
             />
-          </div>
-          <Button className={styles.Assignbutton}>Assign Staff</Button>
-        </Grid>
-        <Grid item xs={12}>
-          <GridTable props={props} searchQuery={searchQuery} />
-        </Grid>
-        <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
+            <Button
+              handleClick={openAddClientDialog}
+              disabled={selected.length === 0}
+              style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
+              message="Assign Staff"
+            />
+            {/* <Button className={styles.Assignbutton}>Assign Staff</Button> */}
+          </Box>
+          <CustomSearch handleSearchChange={handleSearchChange} />
+        </Box>
+        <Box >
+          <GridTable props={props} searchQuery={searchQuery} setSelected={setSelected} selected={selected} />
+        </Box>
       </Stack>
+      <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
     </Box>
   );
 }

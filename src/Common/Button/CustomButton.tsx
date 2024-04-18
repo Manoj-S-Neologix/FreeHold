@@ -6,12 +6,14 @@ interface ButtonProps {
     color?: any;
     Icon?: any;
     style?: any;
+    handleClick?: any;
+    disabled?: any;
 }
 
-const Button = ({ message, Icon, color, style }: ButtonProps) => {
+const Button = ({ message, Icon, color, style, handleClick, disabled }: ButtonProps) => {
 
     return (
-        <MuiButton style={style} startIcon={Icon} color={color} variant="contained">
+        <MuiButton disabled={disabled} onClick={handleClick} style={style} startIcon={Icon} color={color} variant="contained">
             {message}
         </MuiButton>
     );

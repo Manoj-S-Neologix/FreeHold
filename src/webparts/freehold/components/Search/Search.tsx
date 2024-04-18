@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, MenuItem, Stack, TextField } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField } from "@mui/material";
 import React from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
@@ -6,7 +6,8 @@ import CustomSearch from "../../../../Common/Search/CustomSearch";
 import UploadIcon from '@mui/icons-material/Upload';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from "@mui/icons-material/Close";
-
+import { Controller, useForm } from "react-hook-form";
+import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
 // Import your options for the select here
 const clientOptions = ['Client1', 'Client2', 'Client3'];
 const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -21,12 +22,17 @@ const IconStyles = (icon: any) => {
 
 const Search = (props: any) => {
     const [open, setOpen] = React.useState(false);
+    const [openDocuments, setOpenDocuments] = React.useState(false);
     const [clientValue, setClientValue] = React.useState<string>('');
     const [projectValue, setProjectValue] = React.useState<string>('');
 
     const handleFilterClick = () => {
         console.log('Filter clicked');
         setOpen(true);
+    };
+    const handleDocumentClick = () => {
+        console.log('Document clicked');
+        setOpenDocuments(true);
     };
 
     const handleClear = () => {
@@ -41,6 +47,22 @@ const Search = (props: any) => {
             "project": projectValue
         });
     };
+
+    const { control, handleSubmit, formState: { errors } } = useForm();
+    const [documentType, setDocumentType] = React.useState('');
+    const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
+    
+
+
+    const handleSave = (data: any) => {
+        setOpenDocuments(false);
+    };
+
+    const documentTypes = [
+        { id: 1, label: "Project" },
+        { id: 2, label: "Client" }
+    ];
+
 
     return (
         <Box sx={{ backgroundColor: '#125895', padding: '10px' }} >
@@ -60,7 +82,7 @@ const Search = (props: any) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CustomSearch props={props} />
+                                    <CustomSearch />
                                 </Box>
                                 <Box>
                                     <IconButton
@@ -83,7 +105,9 @@ const Search = (props: any) => {
                                             }} />
                                     )}
                                     color={"secondary"}
-                                    message="Upload Documents" />
+                                    message="Upload Documents"
+                                    handleClick={handleDocumentClick}
+                                />
                             </Box>
                         </Grid>
                     </Grid>
@@ -173,6 +197,270 @@ const Search = (props: any) => {
                     </DialogActions>
                 </DialogContent>
             </Dialog >
+            {false && openDocuments &&
+                <Dialog
+                    open={openDocuments}
+                    fullWidth={true}
+                    maxWidth={"sm"}
+                >
+                    <DialogTitle>
+                        Upload Documents
+                        <IconButton
+                            aria-label="close"
+                            onClick={() => setOpenDocuments(false)}
+                            sx={{
+                                // position: 'relative',
+                                right: "21px",
+                                top: "21px",
+                                color: (theme: any) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </DialogTitle>
+                    <DialogContent >
+                        <RadioGroup
+                            row
+                            name="row-radio-buttons-group"
+                            value={documentType}
+                            onChange={(e) => setDocumentType(e.target.value)}
+                        >
+                            {documentTypes.map((docType) => (
+                                <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
+                            ))}
+                        </RadioGroup>
+                        {documentType === 'Project' && (
+                            <form onSubmit={handleSubmit(handleSave)}>
+                                <Stack direction={"column"} gap={3}>
+                                    <Grid container spacing={2}>
+                                        <Grid item sm={12}>
+                                            <Controller
+                                                name="projectName"
+                                                control={control}
+                                                defaultValue=""
+                                                rules={{ required: 'Project Name is required' }}
+                                                render={({ field }: any) => (
+                                                    <>
+                                                        <InputLabel htmlFor="project-name">Project Name</InputLabel>
+                                                        <TextField
+                                                            {...field}
+                                                            id="project-name"
+                                                            fullWidth
+                                                            variant="outlined"
+                                                            select
+                                                            size="small"
+                                                            required
+                                                            label=""
+                                                            error={!!errors.projectName}
+                                                        >
+                                                            <MenuItem value="">None</MenuItem>
+                                                            <MenuItem value="Project A">Project A</MenuItem>
+                                                            <MenuItem value="Project B">Project B</MenuItem>
+                                                        </TextField>
+                                                        <FormHelperText error>{errors.projectName && errors.projectName.message}</FormHelperText>
+                                                    </>
+                                                )}
+                                            />
+                                        </Grid>
+
+                                        <Grid item sm={6}>
+                                            <Controller
+                                                name="clientName"
+                                                control={control}
+                                                defaultValue=""
+                                                rules={{ required: 'Client Name is required' }}
+                                                render={({ field }) => (
+                                                    <>
+                                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                                                        <TextField
+                                                            {...field}
+                                                            id="client-name"
+                                                            fullWidth
+                                                            variant="outlined"
+                                                            select
+                                                            size="small"
+                                                            required
+                                                            label=""
+                                                            error={!!errors.clientName}
+                                                        >
+                                                            <MenuItem value="">None</MenuItem>
+                                                            <MenuItem value="Client A">Client A</MenuItem>
+                                                            <MenuItem value="Client B">Client B</MenuItem>
+                                                        </TextField>
+                                                        <FormHelperText error>
+                                                            {errors.clientName && errors.clientName.message}
+                                                        </FormHelperText>
+                                                    </>
+                                                )}
+                                            />
+                                        </Grid>
+
+                                        <Grid item sm={6}>
+                                            <Stack direction="row" alignItems="center">
+                                                <Checkbox checked={isUnitDocumentChecked}
+                                                    onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
+                                                    size="small" sx={{ p: 0, mr: 2 }} />
+                                                <InputLabel>Is Unit Document</InputLabel>
+                                            </Stack>
+                                            {<Controller
+                                                name="unitDocument"
+
+                                                control={control}
+                                                defaultValue=""
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        id="is-unit-document"
+                                                        fullWidth
+                                                        select
+                                                        disabled={!isUnitDocumentChecked}
+                                                        variant="outlined"
+                                                        placeholder="Select Unit..."
+                                                        size="small"
+                                                        required
+                                                    >
+                                                        <MenuItem value="">None</MenuItem>
+                                                        <MenuItem value="Option A">Option A</MenuItem>
+                                                        <MenuItem value="Option B">Option B</MenuItem>
+                                                    </TextField>
+                                                )}
+                                            />}
+                                        </Grid>
+
+                                        <Grid item sm={12}>
+                                            <InputLabel htmlFor="project-document">Upload Document</InputLabel>
+                                            <input type="file" id="project-document" />
+                                        </Grid>
+
+                                        <Grid item sm={12} sx={{
+                                            display: 'flex', alignItems: 'center',
+                                            justifyContent: 'space-between'
+                                        }}>
+                                            <InputLabel htmlFor="question-one" sx={{ width: '15%' }}>Question 1:</InputLabel>
+                                            <Controller
+                                                name="questionOne"
+                                                control={control}
+                                                defaultValue=""
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        id="question-one"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        size="small"
+                                                        required
+                                                        label=""
+                                                        error={!!errors.questionOne}
+                                                    />
+                                                )}
+                                            />
+                                            {/* <FormHelperText error>{errors.questionOne && errors.questionOne.message}</FormHelperText> */}
+                                        </Grid>
+                                        <Grid item sm={12} sx={{
+                                            display: 'flex', alignItems: 'center',
+                                            justifyContent: 'space-between'
+                                        }}>
+                                            <InputLabel htmlFor="question-two" sx={{ width: '15%' }}>Question 2:</InputLabel>
+                                            <Controller
+                                                name="questionTwo"
+                                                control={control}
+                                                defaultValue=""
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        id="question-two"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        size="small"
+                                                        required
+                                                        label=""
+                                                        error={!!errors.questionTwo}
+                                                    />
+                                                )}
+                                            />
+                                            {/* <FormHelperText error>{errors.questionTwo && errors.questionTwo.message}</FormHelperText> */}
+                                        </Grid>
+                                    </Grid>
+                                </Stack>
+                                <DialogActions>
+                                    {/* <Button onClick={() => setOpenDocuments(false)} className='CancelButton' >Cancel</Button>
+                                    <Button type="submit" className='SaveButton'>Save</Button> */}
+                                    <MuiButton
+                                        variant="outlined"
+                                        onClick={() => setOpenDocuments(false)}
+                                    >
+                                        Cancel
+                                    </MuiButton>
+                                    <MuiButton
+                                        type="submit"
+                                        variant="contained"
+                                    >
+                                        Save
+                                    </MuiButton>
+                                </DialogActions>
+                            </form>
+                        )}
+                        {documentType === 'Client' && (
+                            <form onSubmit={handleSubmit(handleSave)}>
+                                <Stack direction={"column"} gap={3}>
+                                    <Grid container spacing={2}>
+                                        <Grid item sm={12}>
+                                            <Controller
+                                                name="clientName"
+                                                control={control}
+                                                defaultValue=""
+                                                rules={{ required: 'Client Name is required' }}
+                                                render={({ field }) => (
+                                                    <>
+                                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                                                        <TextField
+                                                            {...field}
+                                                            id="client-name"
+                                                            fullWidth
+                                                            variant="outlined"
+                                                            select
+                                                            size="small"
+                                                            required
+                                                            label=""
+                                                            error={!!errors.clientName}
+                                                        >
+                                                            <MenuItem value="">None</MenuItem>
+                                                            <MenuItem value="Client A">Client A</MenuItem>
+                                                            <MenuItem value="Client B">Client B</MenuItem>
+                                                        </TextField>
+                                                        <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
+                                                    </>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item sm={12}>
+                                            <InputLabel htmlFor="client-document">Upload Document</InputLabel>
+                                            <input type="file" id="client-document" />
+                                        </Grid>
+                                    </Grid>
+                                </Stack>
+                                <DialogActions>
+                                    {/* <Button onClick={() => setOpenDocuments(false)} className='CancelButton' >Cancel</Button>
+                                    <Button type="submit" className='SaveButton'>Save</Button> */}
+
+                                    <MuiButton
+                                        variant="outlined"
+                                        onClick={() => setOpenDocuments(false)}
+                                    >
+                                        Cancel
+                                    </MuiButton>
+                                    <MuiButton
+                                        type="submit"
+                                        variant="contained"
+                                    >
+                                        Save
+                                    </MuiButton>
+                                </DialogActions>
+                            </form>
+                        )}
+                    </DialogContent>
+                </Dialog>
+            }
         </Box >
     );
 };
