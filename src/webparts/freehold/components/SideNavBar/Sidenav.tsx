@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // import * as React from 'react';
 // import { initializeIcons } from '@fluentui/react/lib/Icons';
 // import { Link } from 'react-router-dom';
@@ -149,7 +150,7 @@ const menuItems = [
     { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
 
 ];
-
+const images = require("../../../../assets/Images/Home.png");
 const Sidenav = (props: any) => {
     const navigate = useNavigate();
     return (
@@ -158,7 +159,8 @@ const Sidenav = (props: any) => {
                 <div className={`${styles.row} ${styles.sideRowContainer}`}>
                     <div className={`${styles.column} ${styles.sideNavColumn}`}>
                         <div className={`${styles.col12} ${styles.sideContainer}`}>
-                            <div className={`${styles.col8} ${styles.sideImage}`} />
+                            <div style={{ backgroundImage: images }}
+                                className={`${styles.col8} ${styles.sideImage}`} />
                             <div className={`${styles.col2} ${styles.sideNavContainer}`} style={{ float: 'right' }}>
                                 <ul className={styles.sidenavBar}>
                                     {menuItems.map((item, index) => (
