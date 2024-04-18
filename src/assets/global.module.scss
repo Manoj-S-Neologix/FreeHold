@@ -192,9 +192,9 @@
     border: 0px !important;
   }
 
-  .MuiFormLabel{
+  .MuiFormLabel {
     color: var(--primarycolor) !important;
-}
+  }
 
 }
 
@@ -208,4 +208,9 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: Sans-serif !important;
+}
+
+.css-1d6wzja-MuiButton-startIcon>*:nth-of-type(1) {
+  font-size: 0px !important;
 }

@@ -5,11 +5,12 @@
     --margin: "0px";
 }
 
-.sideNav { 
-    p{
-        padding:var(--padding);
+.sideNav {
+    p {
+        padding: var(--padding);
         margin: var(--margin);
     }
+
     .container {
         @include ms-Grid;
 
@@ -56,7 +57,7 @@
     }
 
     .sidenavBar {
-        background-color: var(--primarycolor) ;
+        background-color: var(--primarycolor);
 
         padding: var(--padding) !important;
         margin: var(--margin) !important;
@@ -75,7 +76,7 @@
         margin-bottom: 0.2 rem;
     }
 
-    $sideImageUrl: url('/src/assets/images/Sideimage.png');
+    $sideImageUrl: url('/src/assets/images/homeImage.png');
     // $sideImageUrl: url("../../../../assets/Images/Home.png");
 
     .sideImage {
@@ -93,22 +94,22 @@
         float: left;
         width: 15%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); 
+        background-color: rgba(0, 0, 0, 0.5);
         color: white;
         padding: 20px;
         box-sizing: border-box;
         // overflow: hidden;
     }
-    
-    .loremText {        
-        column-count: 1; 
+
+    .loremText {
+        column-count: 1;
         column-gap: 20px;
         height: 100%;
         // overflow: hidden;
     }
-    
-    .heading{
-        white-space: nowrap !important; 
+
+    .heading {
+        white-space: nowrap !important;
         overflow: visible !important;
     }
 
@@ -135,4 +136,51 @@
     }
 
 
+}
+
+.sidenavBar {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sideNavItem {
+    width: 100%;
+    padding: 5px 0px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+
+}
+
+.divider {
+    width: 80%;
+    height: 1px;
+    background-color: white;
+}
+
+// .sideNavItem ::after {
+//     content: '';
+//     display: block;
+//     width: 0;
+//     height: 2px;
+//     background: var(--primarycolor);
+//     transition: width .3s;
+// }
+
+.sideNavItem:hover {
+    background-color: var(--secondarycolor) !important;
+
+    .sideNavLink {
+        color: var(--primarycolor) !important;
+    }
+}
+
+.sideNavLink {
+    text-decoration: none;
+    color: #fff !important;
+    font-weight: 700;
+    list-style: none;
+    text-align: center;
+    padding-left: 25px;
 }

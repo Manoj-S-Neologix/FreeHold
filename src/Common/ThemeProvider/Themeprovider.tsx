@@ -11,42 +11,29 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
     const theme = createTheme({
         components: {
             MuiButton: {
-                variants: [
-                    {
-                        props: { variant: "outlined" },
-                        style: {
-                            textTransform: "none",
-                            '&:hover': {
-                                boxShadow: 'none'
-                            }
-                        },
-                    },
-                    {
-                        props: { variant: "contained" },
-                        style: {
-                            textTransform: "none",
-                            '&:hover': {
-                                boxShadow: 'none'
-                            }
-                        },
-                    },
-                ],
-            },
-            MuiTextField: {
                 styleOverrides: {
-                    root: {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#CACACA",
-                            color: "black",
-                        },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "black",
-                            borderWidth: "1px",
-                            color: "black",
-                        },
-                    },
-                },
+                    startIcon: {
+                        '& > *:nth-of-type(1)': {
+                            fontSize: '0px !important',
+                        }
+                    }
+                }
             },
+            // MuiTextField: {
+            //     styleOverrides: {
+            //         root: {
+            //             "& .MuiOutlinedInput-notchedOutline": {
+            //                 borderColor: "#CACACA",
+            //                 color: "black",
+            //             },
+            //             "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            //                 borderColor: "black",
+            //                 borderWidth: "1px",
+            //                 color: "black",
+            //             },
+            //         },
+            //     },
+            // },
             MuiTableHead: {
                 styleOverrides: {
                     root: {
@@ -60,16 +47,16 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                             backgroundColor: primary,
                             color: secondary,
                         },
-                        '&.MuiTableRow-root':{
-                            styleOverrides:{
-                        '&.MuiTableCell-root': {
-                            styleOverrides:{
-                                    '&.MuiButtonBase-root.MuiCheckbox-root.Mui-checked, &.MuiButtonBase-root.Mui-checked': {
-                                        color: secondary,
-                                    }
-                        },
+                        '&.MuiTableRow-root': {
+                            styleOverrides: {
+                                '&.MuiTableCell-root': {
+                                    styleOverrides: {
+                                        '&.MuiButtonBase-root.MuiCheckbox-root.Mui-checked, &.MuiButtonBase-root.Mui-checked': {
+                                            color: secondary,
+                                        }
+                                    },
+                                }
                             }
-                        }
                         }
 
                         // '&.Hover': {
@@ -91,7 +78,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             //         },
             //     },
             // },
-            
+
             MuiTableCell: {
                 styleOverrides: {
                     root: {
@@ -101,7 +88,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                 },
             },
-            
+
 
             MuiToolbar: {
                 styleOverrides: {
@@ -167,19 +154,19 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
 
 
             MuiTablePagination: {
-                        styleOverrides: {
-                            selectLabel: {
-                                margin: 0
-                                
-                            },
-                            displayedRows: {
-                                margin: 0
-                                // padding: 0 
+                styleOverrides: {
+                    selectLabel: {
+                        margin: 0
 
-                            }
-                        }
                     },
-         
+                    displayedRows: {
+                        margin: 0
+                        // padding: 0 
+
+                    }
+                }
+            },
+
             MuiTableBody: {
                 styleOverrides: {
                     // root: {
@@ -219,6 +206,7 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             common: {
                 black: "#000",
                 white: secondary,
+
             },
             primary: { main: primary ? primary : "#000" },
             secondary: { main: secondary ? secondary : secondary },
