@@ -2,19 +2,24 @@
 
 .projectsClient {
 
-    .projectContainer, .projectRow, .projectColumn, .projectCol12, .projectCol13{
+    .projectContainer,
+    .projectRow,
+    .projectColumn,
+    .projectCol12,
+    .projectCol13 {
         padding: var(--padding) !important;
         margin: var(--margin) !important
     }
-    .projectC3, .clientC3{
+
+    .projectC3,
+    .clientC3 {
         min-height: 15rem !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center;
-        text-align: center
-        
-        
+        text-align: center;
     }
+
     .container {
         @include ms-Grid;
     }
@@ -54,36 +59,33 @@
 .projectImage {
     width: 100%;
     height: auto;
-  }
+}
 
 
 .projectC3 {
-    position: relative; 
-  }
+    position: relative;
+}
 
-  .projectContent, .clientContent{
-    
-    position: absolute; 
-    top: 45%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    text-align: center; 
-  }
+.projectContent,
+.clientContent {
 
-  .projectNumber, .clientNumber {
-    font-size: 35px; 
-    color: var(--primarycolor) !important; 
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.projectNumber,
+.clientNumber {
+    font-size: 35px;
+    color: var(--primarycolor) !important;
     font-weight: bold;
-  }
+}
 
-  .projectHeading, .clientText {
-    font-size: 18px; 
+.projectHeading,
+.clientText {
+    font-size: 18px;
     color: var(--primarycolor) !important;
     margin-top: -5px !important;
-  }
-
-
-  
-
-
-  
+}

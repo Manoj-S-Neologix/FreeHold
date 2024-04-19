@@ -19,21 +19,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     }
                 }
             },
-            // MuiTextField: {
-            //     styleOverrides: {
-            //         root: {
-            //             "& .MuiOutlinedInput-notchedOutline": {
-            //                 borderColor: "#CACACA",
-            //                 color: "black",
-            //             },
-            //             "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            //                 borderColor: "black",
-            //                 borderWidth: "1px",
-            //                 color: "black",
-            //             },
-            //         },
-            //     },
-            // },
             MuiTableHead: {
                 styleOverrides: {
                     root: {
@@ -50,20 +35,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     }
                 }
             },
-
-
-
-            // MuiTableCell: {
-            //     styleOverrides: {
-            //         root: {
-            //             '& .MuiButtonBase-root.MuiCheckbox-root.Mui-checked': {
-            //                 color: secondary,
-            //                 // backgroundColor: "#000",
-            //             },
-            //         },
-            //     },
-            // },
-
             MuiTableCell: {
                 styleOverrides: {
                     root: {
@@ -98,45 +69,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                 }
             },
-            // MuiCheckbox: {
-            //     styleOverrides: {
-            //         root: {
-            //             color: secondary,
-
-
-
-            //             '&.Mui-checked': {
-            //                 color: primary,
-            //             },
-            //             '&.MuiCheckbox-indeterminate': {
-            //                 color: secondary,
-            //             },
-            //             '&.MuiCheckbox-indeterminate:hover': {
-            //                 color: secondary,
-            //             }, '&.MuiSvgIcon-root': {
-            //                 color: secondary,
-            //             }
-
-            //         }
-            //     }
-            // },
-            // MuiSvgIcon: {
-            //         styleOverrides: {
-            //             root: {
-            //                 color: secondary,
-            //             }
-            //         }
-            //     },
-
-
-            MuiInputBase: {
-                styleOverrides: {
-                    root: {
-                        // marginTop: '-20px'
-                    }
-                }
-            },
-
 
             MuiTablePagination: {
                 styleOverrides: {
@@ -146,32 +78,9 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                     },
                     displayedRows: {
                         margin: 0
-                        // padding: 0 
-
                     }
                 }
             },
-
-            MuiTableBody: {
-                styleOverrides: {
-                    // root: {
-                    //     '&:nth-of-type(odd)': {
-                    //         backgroundColor: '#f5f5f5',
-                    //     },
-                    //     '&:last-child td, &:last-child th': {
-                    //         border: 0,
-                    //     },
-                    // }
-                }
-            },
-
-            //     MuiBreadcrumbsseperator:{
-            //         styleOverrides: {
-            //             root:{
-            //             margin: 0
-            //             }
-            //     }
-            // },
 
             MuiBreadcrumbs: {
                 styleOverrides: {
@@ -197,8 +106,6 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             secondary: { main: secondary ? secondary : secondary },
         },
     });
-
-
 
     return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
 
