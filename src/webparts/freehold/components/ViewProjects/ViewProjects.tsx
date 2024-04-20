@@ -7,10 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
-import AddIcon from '@mui/icons-material/Add';
 import AddProjectDialog from '../AddProjects/AddProject';
 import styles from './ViewProjects.module.scss';
 import GridTable from "../../../../Common/Table/Table";
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddClientDialog from "../AddClient/AddClient";
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -44,6 +48,8 @@ function ViewProject(props: any) {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
+  const [handleClientDialog, setHandleClientDialog] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -60,6 +66,14 @@ function ViewProject(props: any) {
 
   const closeAddClientDialog = () => {
     setAddClientDialogOpen(false);
+  };
+
+  const openAssignClientDialog = () => {
+    setHandleClientDialog(true);
+  };
+
+  const closeAssignClientDialog = () => {
+    setHandleClientDialog(false);
   };
   const IconStyles = (icon: any) => {
     return (
@@ -88,6 +102,54 @@ function ViewProject(props: any) {
     { projectName: 'David Wilson', projectCode: 'DW987', assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' },
     { projectName: 'Eve Anderson', projectCode: 'EA246', assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
     { projectName: 'Frank Martinez', projectCode: 'FM135', assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
+  ];
+
+  const actions = [
+    {
+      label: 'View',
+      icon: <VisibilityIcon />,
+      handler: (id: any) => {
+        console.log(`View clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Edit',
+      icon: <EditIcon />,
+      handler: (id: any) => {
+        console.log(`Edit clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Delete',
+      icon: <DeleteIcon />,
+      handler: (id: any) => {
+        console.log(`Delete clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Upload Documents',
+      button: (
+        <Button
+          color="primary"
+          message="Upload Documents"
+          handleClick={(id: any) => {
+            console.log(`Upload Documents clicked for row ${id}`);
+          }}
+        />
+      ),
+    },
+    {
+      label: 'Assign Client',
+      button: (
+        <Button
+          color="secondary"
+          message="Assign Client"
+          handleClick={(id: any) => {
+            setHandleClientDialog(!handleClientDialog);
+          }}
+        />
+      ),
+    },
   ];
 
   return (
@@ -131,6 +193,7 @@ function ViewProject(props: any) {
               }
             />
             <Button
+              handleClick={openAssignClientDialog}
               disabled={selected.length === 0}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
               message="Assign Client"
@@ -143,12 +206,14 @@ function ViewProject(props: any) {
             rows={rows}
             headCells={headCells}
             props={props}
+            actions={actions}
             searchQuery={searchQuery}
             setSelected={setSelected}
             selected={selected} />
         </Box>
       </Stack>
       <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
+      <AddClientDialog open={handleClientDialog} onClose={closeAssignClientDialog} />
     </Box>
   );
 }

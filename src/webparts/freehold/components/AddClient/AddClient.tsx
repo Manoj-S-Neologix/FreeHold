@@ -86,13 +86,13 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
   return (
     <Box sx={{ width: '100', padding: '20px' }}>
       <Stack direction="column" spacing={2}>
-        <Dialog open={open}  maxWidth='sm' fullWidth  >
+        <Dialog open={open} maxWidth='sm' fullWidth  >
           <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between
                      align-items-center relative">
                 <h4 style={{ margin: '0', color: '#125895' }}>
-                  Add Client</h4>
+                  Assign Client</h4>
               </div>
               <div style={{
                 height: '4px', width: '100%',
@@ -113,13 +113,13 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
             <CloseIcon />
           </IconButton>
           <DialogContent >
-            <div style={{ marginBottom: '20px' }}>
+            {false && <div style={{ marginBottom: '20px' }}>
               <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
 
               <TextField id="clientName" margin="dense" size="small"
                 fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div style={{ marginBottom: '10px' }}>
+            </div>}
+            {false && <div style={{ marginBottom: '10px' }}>
               <label htmlFor="clientDocuments">Client Documents</label>
               <div
                 onDrop={handleDrop}
@@ -171,7 +171,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
                 </div>
 
               </div>
-            </div>
+            </div>}
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             <Button
