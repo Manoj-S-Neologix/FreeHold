@@ -8,13 +8,15 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useForm } from "react-hook-form";
 import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+
 // Import your options for the select here
 const clientOptions = ['Client1', 'Client2', 'Client3'];
 const projectOptions = ['Project1', 'Project2', 'Project3'];
 
-const IconStyles = (icon: any) => {
+const IconStyles = (icon: any, theme: any) => {
     return (
-        <div style={{ backgroundColor: '#125895', padding: '1px', borderRadius: "50%", border: "1px solid white", width: "25px", height: '25px' }}>
+        <div style={{ backgroundColor: theme.palette.primary.main, padding: '1px', borderRadius: "50%", border: "1px solid white", width: "25px", height: '25px' }}>
             {icon}
         </div >
     );
@@ -48,7 +50,6 @@ const Search = (props: any) => {
     };
 
     const handleApply = () => {
-
         console.log({
             "client": clientValue,
             "project": projectValue
@@ -59,7 +60,7 @@ const Search = (props: any) => {
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
 
-
+    const theme = useTheme();
 
     const handleSave = (data: any) => {
         setOpenDocuments(false);
@@ -70,9 +71,8 @@ const Search = (props: any) => {
         { id: 2, label: "Client" }
     ];
 
-
     return (
-        <Box sx={{ backgroundColor: '#125895', padding: '10px' }} >
+        <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
             <Stack direction={"column"} spacing={2}>
                 <Box sx={{
                     display: "flex",
@@ -95,7 +95,7 @@ const Search = (props: any) => {
                                     <IconButton
                                         onClick={handleFilterClick}
                                     >
-                                        <FilterAltIcon sx={{ color: "white" }} />
+                                        <FilterAltIcon sx={{ color: theme.palette.common.white }} />
                                     </IconButton>
                                 </Box>
                             </Box>
@@ -107,9 +107,10 @@ const Search = (props: any) => {
                                     Icon={IconStyles(
                                         <UploadIcon
                                             sx={{
-                                                color: "white",
+                                                color: theme.palette.common.white,
                                                 fontSize: "20px !important"
-                                            }} />
+                                            }} />,
+                                        theme
                                     )}
                                     color={"secondary"}
                                     message="Upload Documents"
@@ -130,12 +131,12 @@ const Search = (props: any) => {
                     <div className="d-flex flex-column">
                         <div className="d-flex justify-content-between
                      align-items-center relative">
-                            <h4 style={{ margin: '0', color: '#125895' }}>
+                            <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
                                 Advanced Filter</h4>
                         </div>
                         <div style={{
                             height: '4px', width: '100%',
-                            backgroundColor: '#125895'
+                            backgroundColor: theme.palette.primary.main
                         }} />
                     </div>
                 </DialogTitle>

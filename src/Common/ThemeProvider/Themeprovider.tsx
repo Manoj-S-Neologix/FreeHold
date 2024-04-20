@@ -7,6 +7,9 @@ interface ThemeProps {
     children: ReactNode;
 }
 
+
+
+
 export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
     const theme = createTheme({
         components: {
@@ -94,16 +97,18 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
 
         },
 
-
         palette: {
             mode: "light",
             common: {
                 black: "#000",
-                white: secondary,
+                white: "#fff",
+            },
+            primary: {
+                main: primary ? primary : "#000",
 
             },
-            primary: { main: primary ? primary : "#000" },
             secondary: { main: secondary ? secondary : secondary },
+
         },
     });
 

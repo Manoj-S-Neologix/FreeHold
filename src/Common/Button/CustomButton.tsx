@@ -17,9 +17,9 @@ const Button = ({ message, Icon, color, style, handleClick, disabled }: ButtonPr
         <MuiButton
             disabled={disabled}
             onClick={handleClick}
-            style={disabled ? undefined : style} // Apply style only if not disabled
+            style={disabled ? undefined : style}
             startIcon={Icon}
-            color={disabled ? undefined : color} // Apply color only if not disabled
+            color={disabled ? undefined : color}
             variant="contained"
             className={buttonClass}
         >

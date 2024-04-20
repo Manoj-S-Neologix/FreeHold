@@ -4,13 +4,16 @@ import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import AddClientDialog from '../AddClient/AddClient';
+import AddStaffDialog from '../AddStaff/AddStaff';
 import GridTable from "../../../../Common/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
 import AddIcon from '@mui/icons-material/Add';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -42,7 +45,8 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 function ViewClient(props: any) {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
+  const [handleStaffDialog, setHandleStaffDialog] = useState(false);
+  const [addClientDialog, setAddClientDialog] = useState(false);
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -53,13 +57,22 @@ function ViewClient(props: any) {
     navigate('/');
   };
 
+  const openAddStaffDialog = () => {
+    setHandleStaffDialog(true);
+  };
+
+  const closeAddStaffDialog = () => {
+    setHandleStaffDialog(false);
+  };
+
   const openAddClientDialog = () => {
-    setAddClientDialogOpen(true);
+    setAddClientDialog(true);
   };
 
   const closeAddClientDialog = () => {
-    setAddClientDialogOpen(false);
+    setAddClientDialog(false);
   };
+
   const IconStyles = (icon: any) => {
     return (
       <div>
@@ -87,9 +100,55 @@ function ViewClient(props: any) {
     { name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: '22/03/2024', modifiedBy: 'Jane Smith', assignedStaff: 'Henry' },
   ];
 
-  const handleAssign = () => {
-    setAddClientDialogOpen(!addClientDialogOpen);
-  };
+  const actions = [
+    {
+      label: 'View',
+      icon: <VisibilityIcon />,
+      handler: (id: any) => {
+        console.log(`View clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Edit',
+      icon: <EditIcon />,
+      handler: (id: any) => {
+        console.log(`Edit clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Delete',
+      icon: <DeleteIcon />,
+      handler: (id: any) => {
+        console.log(`Delete clicked for row ${id}`);
+      },
+    },
+    {
+      label: 'Upload Documents',
+      button: (
+        <Button
+          color="primary"
+          message="Upload Documents"
+          handleClick={(id: any) => {
+            console.log(`Upload Documents clicked for row ${id}`);
+          }}
+        />
+      ),
+    },
+    {
+      label: 'Assign Staff',
+      button: (
+        <Button
+          color="secondary"
+          message="Assign Staff"
+          handleClick={(id: any) => {
+            setHandleStaffDialog(!handleStaffDialog);
+          }}
+        />
+      ),
+    },
+  ];
+
+
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -126,9 +185,12 @@ function ViewClient(props: any) {
               }
             />
             <Button
-              // handleClick={openAddClientDialog}
+              handleClick={openAddStaffDialog}
               disabled={selected.length === 0}
-              style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
+              style={{
+                maxWidth: "200px", whiteSpace: "pre",
+                background: "#dba236", color: "#000"
+              }}
               message="Assign Staff"
             />
           </Box>
@@ -142,11 +204,12 @@ function ViewClient(props: any) {
             searchQuery={searchQuery}
             setSelected={setSelected}
             selected={selected}
-            handleAssign={handleAssign}
+            actions={actions}
           />
         </Box>
       </Stack>
-      <AddClientDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
+      <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />
+      <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />
     </Box>
   );
 }

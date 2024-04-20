@@ -1,11 +1,11 @@
 import { Web, sp } from "@pnp/sp/presets/all";
 
-const web = Web ('https://freeholddxb.sharepoint.com/')
+const web = Web('https://freeholddxb.sharepoint.com/');
 
 
 // Add list items
 export const addListItem = async (listName: string, listData: any): Promise<void> => {
-  console.log(listName,web,listData,"Listname")
+  console.log(listName, web, listData, "Listname");
   try {
     await web.lists.getByTitle(listName).items.add(
       listData
@@ -36,7 +36,6 @@ export const uploadDocumentToLibrary = async (libraryName: string, folderName: s
   try {
     const library = await web.getFolderByServerRelativeUrl(libraryName);
     const uploadedFile = await library.folders.getByName(folderName).files.add(fileName, file);
-    console.log(uploadedFile, "UploadedFileAPICall");
     return uploadedFile;
   } catch (error) {
     console.error('Error uploading document to library:', error);
@@ -47,7 +46,6 @@ export const uploadDocumentToLibrary = async (libraryName: string, folderName: s
 
 
 // Get logged-in user's SharePoint groups
-
 export const getLoggedInUserGroups = async (): Promise<any[]> => {
   try {
     const groups = await sp.web.currentUser.groups.get();

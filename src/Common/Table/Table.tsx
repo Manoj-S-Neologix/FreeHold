@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -11,12 +12,15 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Grid } from '@mui/material';
-import Button from "../Button/CustomButton";
 
+
+interface Action {
+    label: string;
+    icon?: React.ReactNode;
+    button?: React.ReactNode;
+    handler?: (id: string | number) => void;
+}
 
 function EnhancedTableHead(props: any) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, headCells } = props;
@@ -27,8 +31,7 @@ function EnhancedTableHead(props: any) {
                 <TableCell padding="checkbox" sx={{ backgroundColor: "#125895", color: "#fff" }}>
                     <Checkbox
                         sx={{
-                            color: onSelectAllClick ? "#fff !important" :
-                                "#000 !important",
+                            color: onSelectAllClick ? "#fff !important" : "#000 !important",
                         }}
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
@@ -55,36 +58,17 @@ function EnhancedTableHead(props: any) {
     );
 }
 
-const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, handleAssign }: any) => {
+const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, actions }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
-
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const handleView = (id: any) => {
-        console.log(`View clicked for row ${id}`);
-    };
-
-    const handleEdit = (id: any) => {
-        console.log(`Edit clicked for row ${id}`);
-    };
-
-    const handleDelete = (id: any) => {
-        console.log(`Delete clicked for row ${id}`);
-    };
-
-    const handleViewUploadDocuments = (id: any) => {
-        console.log(`View/Upload Documents clicked for row ${id}`);
-    };
 
     const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-
 
     const handleSelectAllClick = (event: any) => {
         if (event.target.checked) {
@@ -114,8 +98,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null,
-        newPage: number) => {
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
 
@@ -138,8 +121,8 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
 
     return (
         <Box>
-            <Grid container  >
-                <Grid item xs={12} >
+            <Grid container>
+                <Grid item xs={12}>
                     <Paper sx={{ width: '100%', mb: 2 }}>
                         <TableContainer>
                             <Table>
@@ -153,8 +136,8 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                     rowCount={filteredRows.length}
                                 />
                                 <TableBody>
-                                    {filteredRows.length > 0
-                                        ? filteredRows
+                                    {filteredRows.length > 0 ? (
+                                        filteredRows
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             .map((row: any, idx: any) => {
                                                 const isItemSelected = isSelected(idx + 1);
@@ -173,7 +156,6 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                     >
                                                         <TableCell padding="checkbox">
                                                             <Checkbox
-                                                                // sx={{ color: 'black' }}
                                                                 checked={isItemSelected}
                                                                 inputProps={{
                                                                     'aria-labelledby': labelId,
@@ -181,7 +163,12 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                             />
                                                         </TableCell>
                                                         {Object.values(row).map((cellData: string, cellIndex) => (
-                                                            <TableCell key={cellIndex} component="th" scope="row" padding="none">
+                                                            <TableCell
+                                                                key={cellIndex}
+                                                                component="th"
+                                                                scope="row"
+                                                                padding="none"
+                                                            >
                                                                 {searchQuery && cellData && typeof cellData === 'string' && cellData.toLowerCase().includes(searchQuery.toLowerCase()) ? (
                                                                     <>
                                                                         {cellData.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
@@ -201,61 +188,41 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                         <TableCell width={"40%"} align="left" padding="none">
                                                             <div className="d-flex align-items-center w-100">
                                                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                                                    <Tooltip title="View">
-                                                                        <IconButton onClick={() => handleView(row.id)}>
-                                                                            <VisibilityIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                    <Tooltip title="Edit">
-                                                                        <IconButton onClick={() => handleEdit(row.id)}>
-                                                                            <EditIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                    <Tooltip title="Delete">
-                                                                        <IconButton onClick={() => handleDelete(row.id)}>
-                                                                            <DeleteIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                </div>
-                                                                <div
-                                                                    style={{
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        marginLeft: '15px',
-                                                                        marginRight: '15px',
-                                                                        width: "100%",
-                                                                        gap: "20px"
-                                                                    }}>
-
-                                                                    <Button
-                                                                        style={{ maxWidth: "230px", whiteSpace: "pre" }}
-                                                                        color={"primary"}
-                                                                        message="View/Upload Documents"
-                                                                        handleClick={
-                                                                            () => handleViewUploadDocuments(row.id)}
-                                                                    />
-
-                                                                    <Button
-                                                                        style={{ maxWidth: "200px", whiteSpace: "pre" }}
-                                                                        color={"secondary"}
-                                                                        message="Assign Client"
-                                                                        handleClick={handleAssign}
-                                                                    />
+                                                                    {actions.map((action: Action, index: number) => (
+                                                                        action.button ? (
+                                                                            <IconButton
+                                                                                key={index}
+                                                                                onClick={(e) => {
+                                                                                    e?.stopPropagation();
+                                                                                    action.handler && action.handler(row.id);
+                                                                                }}
+                                                                            >
+                                                                                {action.button}
+                                                                            </IconButton>
+                                                                        ) : (
+                                                                            <Tooltip key={index} title={action.label}>
+                                                                                <IconButton
+                                                                                    onClick={() =>
+                                                                                        action.handler && action.handler(row.id)}
+                                                                                >
+                                                                                    {action.icon}
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                        )
+                                                                    ))}
                                                                 </div>
                                                             </div>
                                                         </TableCell>
-
-
-
                                                     </TableRow>
                                                 );
-                                            }) :
+                                            })
+                                    ) : (
                                         <TableRow>
                                             <TableCell colSpan={6} align="center">
                                                 No Records Found
                                             </TableCell>
                                         </TableRow>
-                                    }
+                                    )}
                                     {emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
                                             <TableCell colSpan={6} />
@@ -276,10 +243,8 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                     </Paper>
                 </Grid>
             </Grid>
-        </Box>
+        </Box >
     );
 };
+
 export default GridTable;
-
-
-
