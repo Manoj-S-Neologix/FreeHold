@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddClientDialog from "../AddClient/AddClient";
+import ViewUpload from '../ProjectUpload/ProjectUpload';
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -49,6 +50,8 @@ function ViewProject(props: any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -75,6 +78,11 @@ function ViewProject(props: any) {
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
   };
+
+  const closeUploadDialog = () => {
+    setUploadDialogOpen(false);
+  };
+
   const IconStyles = (icon: any) => {
     return (
       <div>
@@ -131,9 +139,10 @@ function ViewProject(props: any) {
       button: (
         <Button
           color="primary"
-          message="Upload Documents"
+          message="View / Upload Documents"
           handleClick={(id: any) => {
             console.log(`Upload Documents clicked for row ${id}`);
+            setUploadDialogOpen(true);
           }}
         />
       ),
@@ -214,6 +223,8 @@ function ViewProject(props: any) {
       </Stack>
       <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
       <AddClientDialog open={handleClientDialog} onClose={closeAssignClientDialog} />
+      <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} />
+
     </Box>
   );
 }
