@@ -196,10 +196,10 @@ function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any
                             <TableHead>
                                 <TableRow>
                                     <TableCell
-                                        sx={{ fontWeight: 'bold' }}
+                                        sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
                                         component="th"
                                         scope="row"
-                                        colSpan={2}>ClientDetails</TableCell>
+                                        colSpan={2}>Client Details</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
