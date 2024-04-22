@@ -53,9 +53,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
                 backgroundColor: '#125895'
               }} />
             </div>
-            {/* <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
-              <CloseIcon />
-            </IconButton> */}
           </DialogTitle>
           <IconButton
             aria-label="close"

@@ -9,8 +9,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useForm } from "react-hook-form";
 import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
+import DragAndDropUpload from "../../../../Common/DragAndDrop/DragAndDrop";
 
-// Import your options for the select here
 const clientOptions = ['Client1', 'Client2', 'Client3'];
 const projectOptions = ['Project1', 'Project2', 'Project3'];
 
@@ -49,12 +49,18 @@ const Search = (props: any) => {
         setProjectValue('');
     };
 
+    // const handleCancel = () => {
+    //     onClose();
+    //   };
+
     const handleApply = () => {
         console.log({
             "client": clientValue,
             "project": projectValue
         });
     };
+
+
 
     const { control, handleSubmit, formState: { errors } } = useForm();
     const [documentType, setDocumentType] = React.useState('');
@@ -140,18 +146,20 @@ const Search = (props: any) => {
                         }} />
                     </div>
                 </DialogTitle>
-                <IconButton
-                    aria-label="close"
-                    onClick={() => { setOpen(false); }}
-                    sx={{
-                        position: "absolute",
-                        right: "14px",
-                        top: "8px",
-                        color: (theme: any) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
+
+            <IconButton
+            aria-label="close"
+            // onClick={handleCancel}
+            onClick={() => { setOpen(false); }}
+            sx={{
+              position: "absolute",
+              right: "14px",
+              top: "8px",
+              color: (theme: any) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
                 <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
                     <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
                         <Grid item xs={12} sm={12} >
@@ -206,7 +214,7 @@ const Search = (props: any) => {
                     </DialogActions>
                 </DialogContent>
             </Dialog >
-            {false && openDocuments &&
+
                 <Dialog
                     open={openDocuments}
                     fullWidth={true}
@@ -338,62 +346,16 @@ const Search = (props: any) => {
 
                                         <Grid item sm={12}>
                                             <InputLabel htmlFor="project-document">Upload Document</InputLabel>
-                                            <input type="file" id="project-document" />
+                                            <DragAndDropUpload
+                                            onFilesAdded={(files: File[]) => {
+                                                console.log(files);
+                                            }}
+                                            />
                                         </Grid>
 
-                                        <Grid item sm={12} sx={{
-                                            display: 'flex', alignItems: 'center',
-                                            justifyContent: 'space-between'
-                                        }}>
-                                            <InputLabel htmlFor="question-one" sx={{ width: '15%' }}>Question 1:</InputLabel>
-                                            <Controller
-                                                name="questionOne"
-                                                control={control}
-                                                defaultValue=""
-                                                render={({ field }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        id="question-one"
-                                                        fullWidth
-                                                        variant="outlined"
-                                                        size="small"
-                                                        required
-                                                        label=""
-                                                        error={!!errors.questionOne}
-                                                    />
-                                                )}
-                                            />
-                                            {/* <FormHelperText error>{errors.questionOne && errors.questionOne.message}</FormHelperText> */}
-                                        </Grid>
-                                        <Grid item sm={12} sx={{
-                                            display: 'flex', alignItems: 'center',
-                                            justifyContent: 'space-between'
-                                        }}>
-                                            <InputLabel htmlFor="question-two" sx={{ width: '15%' }}>Question 2:</InputLabel>
-                                            <Controller
-                                                name="questionTwo"
-                                                control={control}
-                                                defaultValue=""
-                                                render={({ field }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        id="question-two"
-                                                        fullWidth
-                                                        variant="outlined"
-                                                        size="small"
-                                                        required
-                                                        label=""
-                                                        error={!!errors.questionTwo}
-                                                    />
-                                                )}
-                                            />
-                                            {/* <FormHelperText error>{errors.questionTwo && errors.questionTwo.message}</FormHelperText> */}
-                                        </Grid>
                                     </Grid>
                                 </Stack>
                                 <DialogActions>
-                                    {/* <Button onClick={() => setOpenDocuments(false)} className='CancelButton' >Cancel</Button>
-                                    <Button type="submit" className='SaveButton'>Save</Button> */}
                                     <MuiButton
                                         variant="outlined"
                                         onClick={() => setOpenDocuments(false)}
@@ -444,14 +406,15 @@ const Search = (props: any) => {
                                         </Grid>
                                         <Grid item sm={12}>
                                             <InputLabel htmlFor="client-document">Upload Document</InputLabel>
-                                            <input type="file" id="client-document" />
+                                            <DragAndDropUpload
+                                            onFilesAdded={(files: File[]) => {
+                                                console.log(files);
+                                            }}
+                                            />
                                         </Grid>
                                     </Grid>
                                 </Stack>
                                 <DialogActions>
-                                    {/* <Button onClick={() => setOpenDocuments(false)} className='CancelButton' >Cancel</Button>
-                                    <Button type="submit" className='SaveButton'>Save</Button> */}
-
                                     <MuiButton
                                         variant="outlined"
                                         onClick={() => setOpenDocuments(false)}
@@ -469,7 +432,6 @@ const Search = (props: any) => {
                         )}
                     </DialogContent>
                 </Dialog>
-            }
         </Box >
     );
 };
