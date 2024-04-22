@@ -17,6 +17,7 @@ interface AddStaffDialog {
     onClose: () => void;
 }
 
+// console.log(handleDeleteFile)
 const AddStaffDialog: React.FC<AddStaffDialog> = ({ open, onClose }) => {
     const [files, setFiles] = useState<File[]>([]);
     const [title, setTitle] = useState<string>('');

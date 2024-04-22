@@ -18,6 +18,7 @@ const menuItems = [
 const images = require("../../../../assets/Images/Home.png");
 const Sidenav = (props: any) => {
     const navigate = useNavigate();
+    console.log(props)
     return (
         <div className={styles.sideNav}>
             <div className={`${styles.container} ${styles.sideContainer}`}>
