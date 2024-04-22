@@ -316,7 +316,7 @@ const UploadComponent = (props: any) => {
                                         />
                                     </Grid>
                                     <Grid item sm={12}>
-                                        <InputLabel htmlFor="client-document">Upload Document</InputLabel>
+                                         <InputLabel htmlFor="client-document">Upload Document</InputLabel>
                                         <input type="file" id="client-document" />
                                     </Grid>
                                 </Grid>

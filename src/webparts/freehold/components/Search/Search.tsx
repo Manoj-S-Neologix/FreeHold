@@ -10,6 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import DragAndDropUpload from "../../../../Common/DragAndDrop/DragAndDrop";
+import styles from "./Search.module.scss";
 
 const clientOptions = ['Client1', 'Client2', 'Client3'];
 const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -147,19 +148,19 @@ const Search = (props: any) => {
                     </div>
                 </DialogTitle>
 
-            <IconButton
-            aria-label="close"
-            // onClick={handleCancel}
-            onClick={() => { setOpen(false); }}
-            sx={{
-              position: "absolute",
-              right: "14px",
-              top: "8px",
-              color: (theme: any) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+                <IconButton
+                    aria-label="close"
+                    // onClick={handleCancel}
+                    onClick={() => { setOpen(false); }}
+                    sx={{
+                        position: "absolute",
+                        right: "14px",
+                        top: "8px",
+                        color: (theme: any) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
                     <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
                         <Grid item xs={12} sm={12} >
@@ -215,13 +216,14 @@ const Search = (props: any) => {
                 </DialogContent>
             </Dialog >
 
-                <Dialog
-                    open={openDocuments}
-                    fullWidth={true}
-                    maxWidth={"sm"}
-                >
-                    <DialogTitle>
-                        Upload Documents
+            <Dialog
+                open={openDocuments}
+                fullWidth
+                maxWidth={"sm"}
+                scroll={"paper"}
+            >
+                {/* <DialogTitle>
+                        View / Upload Documents
                         <IconButton
                             aria-label="close"
                             onClick={() => setOpenDocuments(false)}
@@ -234,128 +236,208 @@ const Search = (props: any) => {
                         >
                             <CloseIcon />
                         </IconButton>
-                    </DialogTitle>
-                    <DialogContent >
-                        <RadioGroup
-                            row
-                            name="row-radio-buttons-group"
-                            value={documentType}
-                            onChange={(e) => setDocumentType(e.target.value)}
-                        >
-                            {documentTypes.map((docType) => (
-                                <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
-                            ))}
-                        </RadioGroup>
-                        {documentType === 'Project' && (
-                            <form onSubmit={handleSubmit(handleSave)}>
-                                <Stack direction={"column"} gap={3}>
-                                    <Grid container spacing={2}>
-                                        <Grid item sm={12}>
-                                            <Controller
-                                                name="projectName"
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Project Name is required' }}
-                                                render={({ field }: any) => (
-                                                    <>
-                                                        <InputLabel htmlFor="project-name">Project Name</InputLabel>
-                                                        <TextField
-                                                            {...field}
-                                                            id="project-name"
-                                                            fullWidth
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            label=""
-                                                            error={!!errors.projectName}
-                                                        >
-                                                            <MenuItem value="">None</MenuItem>
-                                                            <MenuItem value="Project A">Project A</MenuItem>
-                                                            <MenuItem value="Project B">Project B</MenuItem>
-                                                        </TextField>
-                                                        <FormHelperText error>{errors.projectName && errors.projectName.message}</FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </Grid>
-
-                                        <Grid item sm={6}>
-                                            <Controller
-                                                name="clientName"
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Client Name is required' }}
-                                                render={({ field }) => (
-                                                    <>
-                                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                                                        <TextField
-                                                            {...field}
-                                                            id="client-name"
-                                                            fullWidth
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            label=""
-                                                            error={!!errors.clientName}
-                                                        >
-                                                            <MenuItem value="">None</MenuItem>
-                                                            <MenuItem value="Client A">Client A</MenuItem>
-                                                            <MenuItem value="Client B">Client B</MenuItem>
-                                                        </TextField>
-                                                        <FormHelperText error>
-                                                            {errors.clientName && errors.clientName.message}
-                                                        </FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </Grid>
-
-                                        <Grid item sm={6}>
-                                            <Stack direction="row" alignItems="center">
-                                                <Checkbox checked={isUnitDocumentChecked}
-                                                    onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
-                                                    size="small" sx={{ p: 0, mr: 2 }} />
-                                                <InputLabel>Is Unit Document</InputLabel>
-                                            </Stack>
-                                            {<Controller
-                                                name="unitDocument"
-
-                                                control={control}
-                                                defaultValue=""
-                                                render={({ field }) => (
+                    </DialogTitle> */}
+                <DialogTitle className={styles.addTitle}
+                    style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex justify-content-between align-items-center relative">
+                            <h4 style={{ margin: '0', color: '#125895' }}>
+                                Upload Documents</h4>
+                        </div>
+                        <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
+                    </div>
+                </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setOpenDocuments(false)}
+                    sx={{
+                        position: "absolute",
+                        right: "14px",
+                        top: "8px",
+                        color: (theme: any) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+                <DialogContent sx={{ pt: 0, }}>
+                    <RadioGroup
+                        row
+                        name="row-radio-buttons-group"
+                        value={documentType}
+                        onChange={(e) => setDocumentType(e.target.value)}
+                    >
+                        {documentTypes.map((docType) => (
+                            <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
+                        ))}
+                    </RadioGroup>
+                    {documentType === 'Project' && (
+                        <form onSubmit={handleSubmit(handleSave)}>
+                            <Stack direction={"column"} gap={3}>
+                                <Grid container spacing={2}>
+                                    <Grid item sm={12}>
+                                        <Controller
+                                            name="projectName"
+                                            control={control}
+                                            defaultValue=""
+                                            rules={{ required: 'Project Name is required' }}
+                                            render={({ field }: any) => (
+                                                <>
+                                                    <InputLabel htmlFor="project-name">Project Name</InputLabel>
                                                     <TextField
                                                         {...field}
-                                                        id="is-unit-document"
+                                                        id="project-name"
                                                         fullWidth
-                                                        select
-                                                        disabled={!isUnitDocumentChecked}
                                                         variant="outlined"
-                                                        placeholder="Select Unit..."
+                                                        select
                                                         size="small"
                                                         required
+                                                        label=""
+                                                        error={!!errors.projectName}
                                                     >
                                                         <MenuItem value="">None</MenuItem>
-                                                        <MenuItem value="Option A">Option A</MenuItem>
-                                                        <MenuItem value="Option B">Option B</MenuItem>
+                                                        <MenuItem value="Project A">Project A</MenuItem>
+                                                        <MenuItem value="Project B">Project B</MenuItem>
                                                     </TextField>
-                                                )}
-                                            />}
-                                        </Grid>
+                                                    <FormHelperText error>{errors.projectName && errors.projectName.message}</FormHelperText>
+                                                </>
+                                            )}
+                                        />
+                                    </Grid>
 
-                                        <Grid item sm={12}>
-                                            <InputLabel htmlFor="project-document">Upload Document</InputLabel>
-                                            <DragAndDropUpload
+                                    <Grid item sm={6}>
+                                        <Controller
+                                            name="clientName"
+                                            control={control}
+                                            defaultValue=""
+                                            rules={{ required: 'Client Name is required' }}
+                                            render={({ field }) => (
+                                                <>
+                                                    <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                                                    <TextField
+                                                        {...field}
+                                                        id="client-name"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        select
+                                                        size="small"
+                                                        required
+                                                        label=""
+                                                        error={!!errors.clientName}
+                                                    >
+                                                        <MenuItem value="">None</MenuItem>
+                                                        <MenuItem value="Client A">Client A</MenuItem>
+                                                        <MenuItem value="Client B">Client B</MenuItem>
+                                                    </TextField>
+                                                    <FormHelperText error>
+                                                        {errors.clientName && errors.clientName.message}
+                                                    </FormHelperText>
+                                                </>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item sm={6}>
+                                        <Stack direction="row" alignItems="center">
+                                            <Checkbox checked={isUnitDocumentChecked}
+                                                onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
+                                                size="small" sx={{ p: 0, mr: 2 }} />
+                                            <InputLabel>Is Unit Document</InputLabel>
+                                        </Stack>
+                                        {<Controller
+                                            name="unitDocument"
+
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    id="is-unit-document"
+                                                    fullWidth
+                                                    select
+                                                    disabled={!isUnitDocumentChecked}
+                                                    variant="outlined"
+                                                    placeholder="Select Unit..."
+                                                    size="small"
+                                                    required
+                                                >
+                                                    <MenuItem value="">None</MenuItem>
+                                                    <MenuItem value="Option A">Option A</MenuItem>
+                                                    <MenuItem value="Option B">Option B</MenuItem>
+                                                </TextField>
+                                            )}
+                                        />}
+                                    </Grid>
+
+                                    <Grid item sm={12}>
+                                        <InputLabel htmlFor="project-document">Upload Document</InputLabel>
+                                        <DragAndDropUpload
                                             onFilesAdded={(files: File[]) => {
                                                 console.log(files);
                                             }}
-                                            />
-                                        </Grid>
-
+                                        />
                                     </Grid>
-                                </Stack>
-                                <DialogActions>
+
+                                </Grid>
+                            </Stack>
+                            <DialogActions sx={{ px: 0, mr: 0 }}>
+                                <MuiButton
+                                    variant="outlined"
+                                    onClick={() => setOpenDocuments(false)}
+                                >
+                                    Cancel
+                                </MuiButton>
+                                <MuiButton
+                                    type="submit"
+                                    variant="contained"
+                                >
+                                    Save
+                                </MuiButton>
+                            </DialogActions>
+                        </form>
+                    )}
+                    {documentType === 'Client' && (
+                        <form onSubmit={handleSubmit(handleSave)}>
+                            <Stack direction={"column"} gap={3}>
+                                <Grid container spacing={2}>
+                                    <Grid item sm={12}>
+                                        <Controller
+                                            name="clientName"
+                                            control={control}
+                                            defaultValue=""
+                                            rules={{ required: 'Client Name is required' }}
+                                            render={({ field }) => (
+                                                <>
+                                                    <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                                                    <TextField
+                                                        {...field}
+                                                        id="client-name"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        select
+                                                        size="small"
+                                                        required
+                                                        label=""
+                                                        error={!!errors.clientName}
+                                                    >
+                                                        <MenuItem value="">None</MenuItem>
+                                                        <MenuItem value="Client A">Client A</MenuItem>
+                                                        <MenuItem value="Client B">Client B</MenuItem>
+                                                    </TextField>
+                                                    <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
+                                                </>
+                                            )}
+                                        />
+                                    </Grid>
+                                    <Grid item sm={12}>
+                                        <InputLabel htmlFor="client-document">Upload Document</InputLabel>
+                                        <DragAndDropUpload
+                                            onFilesAdded={(files: File[]) => {
+                                                console.log(files);
+                                            }}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <DialogActions sx={{ px: 0, mr: 0 }}>
                                     <MuiButton
                                         variant="outlined"
                                         onClick={() => setOpenDocuments(false)}
@@ -369,69 +451,12 @@ const Search = (props: any) => {
                                         Save
                                     </MuiButton>
                                 </DialogActions>
-                            </form>
-                        )}
-                        {documentType === 'Client' && (
-                            <form onSubmit={handleSubmit(handleSave)}>
-                                <Stack direction={"column"} gap={3}>
-                                    <Grid container spacing={2}>
-                                        <Grid item sm={12}>
-                                            <Controller
-                                                name="clientName"
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Client Name is required' }}
-                                                render={({ field }) => (
-                                                    <>
-                                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                                                        <TextField
-                                                            {...field}
-                                                            id="client-name"
-                                                            fullWidth
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            label=""
-                                                            error={!!errors.clientName}
-                                                        >
-                                                            <MenuItem value="">None</MenuItem>
-                                                            <MenuItem value="Client A">Client A</MenuItem>
-                                                            <MenuItem value="Client B">Client B</MenuItem>
-                                                        </TextField>
-                                                        <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid item sm={12}>
-                                            <InputLabel htmlFor="client-document">Upload Document</InputLabel>
-                                            <DragAndDropUpload
-                                            onFilesAdded={(files: File[]) => {
-                                                console.log(files);
-                                            }}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Stack>
-                                <DialogActions>
-                                    <MuiButton
-                                        variant="outlined"
-                                        onClick={() => setOpenDocuments(false)}
-                                    >
-                                        Cancel
-                                    </MuiButton>
-                                    <MuiButton
-                                        type="submit"
-                                        variant="contained"
-                                    >
-                                        Save
-                                    </MuiButton>
-                                </DialogActions>
-                            </form>
-                        )}
-                    </DialogContent>
-                </Dialog>
+                            </Stack>
+                        </form>
+                    )}
+
+                </DialogContent>
+            </Dialog>
         </Box >
     );
 };
