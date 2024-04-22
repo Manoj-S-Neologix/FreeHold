@@ -155,6 +155,10 @@
     padding-right: 0rem !important
   }
 
+  div[data-automationid="SimpleFooter"] {
+    display: none !important
+  }
+
   /**/
   div[data-automationid="SiteHeader"] {
     display: none !important
