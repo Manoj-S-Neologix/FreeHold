@@ -204,7 +204,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                                 <IconButton
                                                                                     onClick={(e) => {
                                                                                         e?.stopPropagation();
-                                                                                        action.handler && action.handler(row.id);
+                                                                                        action.handler && action.handler(row);
                                                                                     }}
                                                                                 >
                                                                                     {action.icon}

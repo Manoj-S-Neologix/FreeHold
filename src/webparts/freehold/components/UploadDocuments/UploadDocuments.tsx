@@ -218,7 +218,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
           </DialogActions>
         </Dialog>
         {isDeleteDialogOpen && (
-          <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} />
+          <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} clientDetails={""}/>
         )}
       </Stack>
     </Box>

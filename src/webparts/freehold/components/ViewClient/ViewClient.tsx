@@ -16,6 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteDialog from "../Delete/Delete";
 import UploadDocument from '../UploadDocuments/UploadDocuments';
+import ViewParticularClient from './ViewParticularClient';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -50,6 +51,10 @@ function ViewClient(props: any) {
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+ 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [clientDetails, setClientDetails] = useState({});
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -82,6 +87,11 @@ function ViewClient(props: any) {
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
+  };
+
+  const handleDeleteDialogClose = () => {
+   
+    setIsDeleteDialogOpen(false);
   };
 
   const IconStyles = (icon: any) => {
@@ -117,6 +127,8 @@ function ViewClient(props: any) {
       icon: <VisibilityIcon />,
       handler: (id: any) => {
         console.log(`View clicked for row ${id}`);
+        setIsViewDialogOpen(true);
+        setClientDetails(id);
       },
     },
     {
@@ -132,6 +144,7 @@ function ViewClient(props: any) {
       handler: (id: any) => {
         console.log(`Delete clicked for row ${id}`);
         setIsDeleteDialogOpen(true);
+        setClientDetails(id);
       },
     },
     {
@@ -161,17 +174,11 @@ function ViewClient(props: any) {
     },
   ];
 
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-
-  const handleDeleteDialogClose = () => {
-    setIsDeleteDialogOpen(false);
-  };
 
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
-      <Stack direction='column' sx={{ gap: "30px" }} >
+      {!isViewDialogOpen && <Stack direction='column' sx={{ gap: "30px" }} >
         <Box >
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="medium" />}
@@ -226,14 +233,22 @@ function ViewClient(props: any) {
             actions={actions}
           />
         </Box>
+
       </Stack>
+}
       <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />
       <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} />
 
       {isDeleteDialogOpen &&
-        <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+        <DeleteDialog clientDetails={clientDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+      {isViewDialogOpen &&
+        <ViewParticularClient
+          props={props}
+          clientDetails={clientDetails}
+          setIsViewDialogOpen={setIsViewDialogOpen} />}
     </Box>
+      
   );
 }
 

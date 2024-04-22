@@ -221,7 +221,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
 import { Box, Stack } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
-import DeleteDialog from "../Delete/Delete";
+// import DeleteDialog from "../Delete/Delete";
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 
 interface AddClientDialogProps {
@@ -232,7 +232,6 @@ interface AddClientDialogProps {
 const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -244,9 +243,9 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
     onClose();
   };
 
-  const handleDeleteDialogClose = () => {
-    setIsDeleteDialogOpen(false);
-  };
+  // const handleDeleteDialogClose = () => {
+  //   setIsDeleteDialogOpen(false);
+  // };
 
   const handleSave = async () => {
     onClose();
@@ -345,8 +344,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
             </Button>
           </DialogActions>
         </Dialog>
-        {isDeleteDialogOpen &&
-          <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+
       </Stack>
     </Box>
   );

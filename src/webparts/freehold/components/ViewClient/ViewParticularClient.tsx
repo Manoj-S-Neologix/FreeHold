@@ -15,6 +15,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteDialog from "../Delete/Delete";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -43,7 +50,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-function ViewParticularClient(props: any, clientName: any) {
+function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any) {
     const [selected, setSelected] = React.useState<any>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
@@ -53,6 +60,8 @@ function ViewParticularClient(props: any, clientName: any) {
     const handleSearchChange = (event: any) => {
         setSearchQuery(event.target.value);
     };
+
+    console.log(clientDetails, "clientDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -159,10 +168,11 @@ function ViewParticularClient(props: any, clientName: any) {
 
     const navigateToClient = () => {
         navigate('/viewClient');
+        setIsViewDialogOpen(false);
     };
 
     return (
-        <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
+        <Box>
             <Stack direction='column' sx={{ gap: "30px" }} >
                 <Box >
                     <Breadcrumbs
@@ -176,9 +186,46 @@ function ViewParticularClient(props: any, clientName: any) {
                             Client
                         </StyledBreadcrumb>
                         <StyledBreadcrumb disabled>
-                            {clientName}
+                            {clientDetails.name}
                         </StyledBreadcrumb>
                     </Breadcrumbs>
+                </Box>
+                <Box>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                        component="th"
+                                        scope="row"
+                                        colSpan={2}>Client Details</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Name</TableCell>
+                                    <TableCell>{clientDetails.name}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Email</TableCell>
+                                    <TableCell>{clientDetails.email}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Modified Date</TableCell>
+                                    <TableCell>{clientDetails.modifiedDate}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Modified By</TableCell>
+                                    <TableCell>{clientDetails.modifiedBy}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Assigned Staff</TableCell>
+                                    <TableCell>{clientDetails.assignedStaff}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Box>
                 {false && <Box style={{
                     margin: '0px', display: "flex", alignItems: "center",
@@ -222,10 +269,13 @@ function ViewParticularClient(props: any, clientName: any) {
                     />
                 </Box>}
             </Stack>
-            <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />
-            <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />
-            {isDeleteDialogOpen &&
-                <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+            {false && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />}
+            {false && <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />}
+            {false && isDeleteDialogOpen &&
+                <DeleteDialog
+                    clientDetails={clientDetails}
+                    open={isDeleteDialogOpen}
+                    onClose={handleDeleteDialogClose} />}
         </Box>
     );
 }
