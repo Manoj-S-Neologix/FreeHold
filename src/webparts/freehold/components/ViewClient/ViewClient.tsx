@@ -14,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteDialog from "../Delete/Delete";
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -120,6 +121,7 @@ function ViewClient(props: any) {
       icon: <DeleteIcon />,
       handler: (id: any) => {
         console.log(`Delete clicked for row ${id}`);
+        setIsDeleteDialogOpen(true);
       },
     },
     {
@@ -148,6 +150,12 @@ function ViewClient(props: any) {
     },
   ];
 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+
+  const handleDeleteDialogClose = () => {
+    setIsDeleteDialogOpen(false);
+  };
 
 
   return (
@@ -210,6 +218,8 @@ function ViewClient(props: any) {
       </Stack>
       <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />
       <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />
+      {isDeleteDialogOpen &&
+        <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
     </Box>
   );
 }

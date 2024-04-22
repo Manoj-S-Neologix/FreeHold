@@ -202,8 +202,10 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                         ) : (
                                                                             <Tooltip key={index} title={action.label}>
                                                                                 <IconButton
-                                                                                    onClick={() =>
-                                                                                        action.handler && action.handler(row.id)}
+                                                                                    onClick={(e) => {
+                                                                                        e?.stopPropagation();
+                                                                                        action.handler && action.handler(row.id);
+                                                                                    }}
                                                                                 >
                                                                                     {action.icon}
                                                                                 </IconButton>

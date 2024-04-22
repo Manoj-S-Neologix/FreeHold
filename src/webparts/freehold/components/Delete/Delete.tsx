@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -7,37 +8,22 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './AddClient.module.scss';
+import styles from './Delete.module.scss';
 import { Box, Stack } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
 import { Delete } from '@mui/icons-material';
-import DeleteDialog from "../Delete/Delete";
 
-interface AddClientDialogProps {
+interface DeleteDialogProps {
   open: boolean;
   onClose: () => void;
 }
 
-const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
+const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (selectedFiles) {
-      const newFiles = Array.from(selectedFiles);
-      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    }
-  };
 
   const handleDeleteFile = (index: number) => {
-    setIsDeleteDialogOpen(true);
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-  };
-
-  const handleDeleteDialogClose = () => {
-    setIsDeleteDialogOpen(false);
   };
 
   const handleCancel = () => {
@@ -48,7 +34,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
 
   const handleSave = async () => {
     onClose();
-    await handleAddClientSubmit();
+    false && await handleAddClientSubmit();
   };
 
   const handleAddClientSubmit = async () => {
@@ -99,7 +85,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
               <div className="d-flex justify-content-between
                      align-items-center relative">
                 <h4 style={{ margin: '0', color: '#125895' }}>
-                  Assign Client</h4>
+                  Delete Client</h4>
               </div>
               <div style={{
                 height: '4px', width: '100%',
@@ -138,50 +124,20 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
                     <div>{file.name}</div>
                     <IconButton
                       aria-label="delete"
-                      onClick={(e) => {
-                        handleDeleteFile(index);
-                        e.stopPropagation();
-                      }}
+                      onClick={() => handleDeleteFile(index)}
                       style={{ marginLeft: 'auto' }}
                     >
                       <Delete />
                     </IconButton>
                   </div>
                 ))}
-                <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ width: "50%" }}>
 
-                    <img src={require('./../../../../assets/Images/UploadImage.jpg')}
-                      width="90"
-                      height="70"
-                      alt="Upload Image"
-                    />
-                  </div>
-                  <div style={{ width: "50%" }}>
-                    <div style={{ display: "flex", flexDirection: "column", textAlign: 'left' }}>
-                      <div>
-                        Drag and drop
-                      </div>
-                      <div>or{' '}</div>
-                      <div>
-                        <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-                          click here to upload document
-                        </label>
-                      </div>
-                    </div>
-                    <input
-                      type="file"
-                      id="fileInput"
-                      accept=".pdf,.doc,.docx,.txt"
-                      style={{ display: 'none' }}
-                      onChange={handleFileInput}
-                      multiple
-                    />
-                  </div>
-                </div>
 
               </div>
             </div>}
+            <div style={{ marginLeft: '7px' }}>
+              Are you sure you want to delete this client?
+            </div>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             <Button
@@ -193,20 +149,18 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
                 float: 'right',
               }}
             >
-              Save
+              Delete
             </Button>
             <Button variant="outlined" onClick={handleCancel}>
-              Clear
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>
-        {isDeleteDialogOpen &&
-          <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
       </Stack>
     </Box>
   );
 };
 
-export default AddClientDialog;
+export default DeleteDialog;
 
 
