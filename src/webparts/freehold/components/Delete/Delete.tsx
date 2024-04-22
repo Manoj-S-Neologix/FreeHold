@@ -16,9 +16,10 @@ import { Delete } from '@mui/icons-material';
 interface DeleteDialogProps {
   open: boolean;
   onClose: () => void;
+  clientDetails: any;
 }
 
-const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose }) => {
+const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetails }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
 
@@ -136,7 +137,10 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose }) => {
               </div>
             </div>}
             <div style={{ marginLeft: '7px' }}>
-              Are you sure you want to delete this client?
+              Are you sure you want to delete client
+              <strong>{clientDetails.name}
+              </strong>
+              ?
             </div>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
