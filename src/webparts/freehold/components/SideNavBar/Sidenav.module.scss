@@ -77,10 +77,10 @@
     }
 
     //$sideImageUrl: url('/src/assets/images/homeImage.png');
-    $sideImageUrl: url("../../../../assets/Images/Home.png");
+    // $sideImageUrl: url("../../../../assets/Images/Home.png");
 
     .sideImage {
-        background-image: $sideImageUrl;
+        // background-image: $sideImageUrl;
         background-repeat: no-repeat;
         background-size: cover;
         background-color: var(--primarycolor);

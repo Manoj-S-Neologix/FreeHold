@@ -1,0 +1,11 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
+
+
+
+.dropZone{
+    margin-top: 10px !important;
+    padding: 20px !important;
+    border: 1px solid gray !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    }
