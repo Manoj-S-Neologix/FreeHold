@@ -50,7 +50,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any) {
+const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any) => {
     const [selected, setSelected] = React.useState<any>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
@@ -61,7 +61,7 @@ function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any
         setSearchQuery(event.target.value);
     };
 
-    console.log(clientDetails, "clientDetails");
+    //console.log(clientDetails, "clientDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -270,7 +270,7 @@ function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any
                 </Box>}
             </Stack>
             {false && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />}
-            {false && <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />}
+            {false && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
             {false && isDeleteDialogOpen &&
                 <DeleteDialog
                     clientDetails={clientDetails}
@@ -278,7 +278,7 @@ function ViewParticularClient({ props, clientDetails, setIsViewDialogOpen }: any
                     onClose={handleDeleteDialogClose} />}
         </Box>
     );
-}
+};
 
 export default ViewParticularClient;
 

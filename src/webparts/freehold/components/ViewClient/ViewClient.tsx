@@ -45,13 +45,13 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-function ViewClient(props: any) {
+const ViewClient = ({ props }: any) => {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
- 
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
@@ -90,7 +90,7 @@ function ViewClient(props: any) {
   };
 
   const handleDeleteDialogClose = () => {
-   
+
     setIsDeleteDialogOpen(false);
   };
 
@@ -235,9 +235,9 @@ function ViewClient(props: any) {
         </Box>
 
       </Stack>
-}
-      <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />
-      <AddStaffDialog open={handleStaffDialog} onClose={closeAddStaffDialog} />
+      }
+      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />}
+      {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} />
 
       {isDeleteDialogOpen &&
@@ -246,11 +246,12 @@ function ViewClient(props: any) {
         <ViewParticularClient
           props={props}
           clientDetails={clientDetails}
-          setIsViewDialogOpen={setIsViewDialogOpen} />}
+          setIsViewDialogOpen={setIsViewDialogOpen}
+        />}
     </Box>
-      
+
   );
-}
+};
 
 export default ViewClient;
 

@@ -12,6 +12,7 @@ import {
 } from '../Route/index';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
+import PeoplePickers from "../PeoplePicker/PeoplePickers";
 
 const colorCodes = {
     primary: "#125895",
@@ -25,6 +26,7 @@ const Home = (props: any) => {
                 <HashRouter basename='/'>
                     <Header props={props} />
                     <Search props={props} />
+                        <PeoplePickers props={props} />
                     <Routes>
                         <Route path='/'
                             element={
@@ -35,7 +37,7 @@ const Home = (props: any) => {
                         />
                         <Route
                             path='/ViewClient'
-                            element={<ViewClient />}
+                            element={<ViewClient props={props} />}
                         />
                         <Route
                             path='/ViewProjects'

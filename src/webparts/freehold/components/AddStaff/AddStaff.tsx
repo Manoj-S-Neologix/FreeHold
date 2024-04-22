@@ -4,36 +4,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddStaff.module.scss';
 import { Box, Stack } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
-import { Delete } from '@mui/icons-material';
 
-interface AddStaffDialog {
-    open: boolean;
-    onClose: () => void;
-}
 
 // console.log(handleDeleteFile)
-const AddStaffDialog: React.FC<AddStaffDialog> = ({ open, onClose }) => {
+const AddStaffDialog = ({ open, onClose, props }: any) => {
+    console.log(props.context.props.context, "props");
     const [files, setFiles] = useState<File[]>([]);
     const [title, setTitle] = useState<string>('');
-
-    const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = e.target.files;
-        if (selectedFiles) {
-            const newFiles = Array.from(selectedFiles);
-            setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-        }
-    };
-
-    const handleDeleteFile = (index: number) => {
-        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    };
-
     const handleCancel = () => {
         setFiles([]);
         setTitle('');
@@ -44,6 +26,8 @@ const AddStaffDialog: React.FC<AddStaffDialog> = ({ open, onClose }) => {
         onClose();
         await handleAddClientSubmit();
     };
+
+
 
     const handleAddClientSubmit = async () => {
         if (title) {
@@ -77,11 +61,6 @@ const AddStaffDialog: React.FC<AddStaffDialog> = ({ open, onClose }) => {
         }
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        const droppedFiles = Array.from(e.dataTransfer.files);
-        setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-    };
 
 
     return (
@@ -114,65 +93,7 @@ const AddStaffDialog: React.FC<AddStaffDialog> = ({ open, onClose }) => {
                         <CloseIcon />
                     </IconButton>
                     <DialogContent >
-                        {false && <div style={{ marginBottom: '20px' }}>
-                            <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
-
-                            <TextField id="clientName" margin="dense" size="small"
-                                fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </div>}
-                        {false && <div style={{ marginBottom: '10px' }}>
-                            <label htmlFor="clientDocuments">Client Documents</label>
-                            <div
-                                onDrop={handleDrop}
-                                onDragOver={(e) => e.preventDefault()}
-                                className={styles.dropZone}
-                            >
-                                {files.map((file, index) => (
-                                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-                                        <div>{file.name}</div>
-                                        <IconButton
-                                            aria-label="delete"
-                                            onClick={() => handleDeleteFile(index)}
-                                            style={{ marginLeft: 'auto' }}
-                                        >
-                                            <Delete />
-                                        </IconButton>
-                                    </div>
-                                ))}
-                                <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ width: "50%" }}>
-
-                                        <img src={require('./../../../../assets/Images/UploadImage.jpg')}
-                                            width="90"
-                                            height="70"
-                                            alt="Upload Image"
-                                        />
-                                    </div>
-                                    <div style={{ width: "50%" }}>
-                                        <div style={{ display: "flex", flexDirection: "column", textAlign: 'left' }}>
-                                            <div>
-                                                Drag and drop
-                                            </div>
-                                            <div>or{' '}</div>
-                                            <div>
-                                                <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-                                                    click here to upload document
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <input
-                                            type="file"
-                                            id="fileInput"
-                                            accept=".pdf,.doc,.docx,.txt"
-                                            style={{ display: 'none' }}
-                                            onChange={handleFileInput}
-                                            multiple
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>}
+                        
                     </DialogContent>
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button
