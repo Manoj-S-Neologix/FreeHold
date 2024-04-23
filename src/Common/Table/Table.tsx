@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Grid } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 
 
 interface Action {
@@ -58,7 +58,7 @@ function EnhancedTableHead(props: any) {
     );
 }
 
-const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, actions }: any) => {
+const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, actions, isLoading }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
@@ -136,7 +136,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                     rowCount={filteredRows.length}
                                 />
                                 <TableBody>
-                                    {filteredRows.length > 0 ? (
+                                    {!isLoading && filteredRows.length > 0 ? (
                                         filteredRows
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             .map((row: any, idx: any) => {
@@ -219,17 +219,24 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                 );
                                             })
                                     ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={6} align="center">
+                                        !isLoading && <TableRow>
+                                            <TableCell colSpan={7} align="center">
                                                 No Records Found
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {emptyRows > 0 && (
+                                    {!isLoading && emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={6} />
+                                            <TableCell colSpan={7} />
                                         </TableRow>
                                     )}
+                                    {isLoading &&
+                                        <TableRow>
+                                            <TableCell colSpan={7} align="center">
+                                                <CircularProgress />
+                                            </TableCell>
+                                        </TableRow>
+                                    }
                                 </TableBody>
                             </Table>
                         </TableContainer>
