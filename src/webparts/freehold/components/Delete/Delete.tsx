@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './Delete.module.scss';
 import { Box, Stack } from '@mui/material';
-import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
+import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
 import { Delete } from '@mui/icons-material';
 
 interface DeleteDialogProps {

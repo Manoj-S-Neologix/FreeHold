@@ -3,7 +3,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
+import { Button as MuiButton } from "@mui/material";
+// import Button from "../../../../Common/Button/CustomButton";
+
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -109,12 +112,28 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                             </TableContainer>
                         </Stack>
                     </DialogContent>
-                    <DialogActions>
+                    {/* <DialogActions>
                         <Button onClick={handleSave} variant="contained" color="primary">
                             Save
                         </Button>
                         <Button onClick={handleCancel} variant='outlined'>Cancel</Button>
-                    </DialogActions>
+                    </DialogActions> */}
+                            <DialogActions sx={{ px: 0, mr: 0 }}>
+                                <MuiButton
+                                    onClick={handleSave}
+                                    type="submit"
+                                    variant="contained"
+                                >
+                                    Save
+                                </MuiButton>
+                                <MuiButton style={{marginRight:'30px' }}
+                                    onClick={handleCancel}
+                                    variant="outlined"                                  
+                                >
+                                    Cancel
+                                </MuiButton>
+                               
+                            </DialogActions>
                 </Dialog>
                 {isDeleteDialogOpen && (
                     <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} clientDetails={""} />

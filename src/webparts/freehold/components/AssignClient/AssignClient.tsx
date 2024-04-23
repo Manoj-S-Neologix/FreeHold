@@ -102,7 +102,7 @@ const AssignClient = ({ open, onClose, props }: any) => {
                             Save
                         </Button>
                         <Button variant="outlined" onClick={handleCancel}>
-                            Clear
+                            Cancel
                         </Button>
                     </DialogActions>
                 </Dialog>

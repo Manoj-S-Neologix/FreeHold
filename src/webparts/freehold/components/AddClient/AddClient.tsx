@@ -1,214 +1,3 @@
-// import React, { useState } from 'react';
-// import Dialog from '@mui/material/Dialog';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogActions from '@mui/material/DialogActions';
-// import Button from '@mui/material/Button';
-// import TextField from '@mui/material/TextField';
-// import IconButton from '@mui/material/IconButton';
-// import CloseIcon from '@mui/icons-material/Close';
-// import styles from './AddClient.module.scss';
-// import { Box, Stack } from '@mui/material';
-// import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
-// import { Delete } from '@mui/icons-material';
-// import DeleteDialog from "../Delete/Delete";
-
-// interface AddClientDialogProps {
-//   open: boolean;
-//   onClose: () => void;
-// }
-
-// const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
-//   const [files, setFiles] = useState<File[]>([]);
-//   const [title, setTitle] = useState<string>('');
-//   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-//   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const selectedFiles = e.target.files;
-//     if (selectedFiles) {
-//       const newFiles = Array.from(selectedFiles);
-//       setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-//     }
-//   };
-
-//   const handleDeleteFile = (index: number) => {
-//     setIsDeleteDialogOpen(true);
-//     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-//   };
-
-//   const handleDeleteDialogClose = () => {
-//     setIsDeleteDialogOpen(false);
-//   };
-
-//   const handleCancel = () => {
-//     setFiles([]);
-//     setTitle('');
-//     onClose();
-//   };
-
-//   const handleSave = async () => {
-//     onClose();
-//     await handleAddClientSubmit();
-//   };
-
-//   const handleAddClientSubmit = async () => {
-//     if (title) {
-//       try {
-//         const obj = {
-//           Name: title,
-//         };
-//         await addListItem('Clients', obj);
-
-//         if (files.length > 0) {
-//           const currentDate = new Date().toISOString().slice(0, 10);
-//           const formattedDate = currentDate.replace(/-/g, '');
-//           const folderName = `${title}_${formattedDate}`;
-
-//           await createFolderInLibrary('SPDocument', folderName);
-
-//           for (const file of files) {
-//             await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
-//           }
-//         }
-
-//         alert('Client and Document(s) added successfully!');
-//         setFiles([]);
-//         setTitle('');
-//       } catch (error) {
-//         console.error('Error adding client and document:', error);
-//         alert('Failed to add client and document. Please check the console for details.');
-//       }
-//     } else {
-//       alert('Please enter a title.');
-//     }
-//   };
-
-//   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-//     e.preventDefault();
-//     const droppedFiles = Array.from(e.dataTransfer.files);
-//     setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-//   };
-
-
-//   return (
-//     <Box sx={{ width: '100', padding: '20px' }}>
-//       <Stack direction="column" spacing={2}>
-//         <Dialog open={open} maxWidth='sm' fullWidth  >
-//           <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
-//             <div className="d-flex flex-column">
-//               <div className="d-flex justify-content-between
-//                      align-items-center relative">
-//                 <h4 style={{ margin: '0', color: '#125895' }}>
-//                   Assign Client</h4>
-//               </div>
-//               <div style={{
-//                 height: '4px', width: '100%',
-//                 backgroundColor: '#125895'
-//               }} />
-//             </div>
-//           </DialogTitle>
-//           <IconButton
-//             aria-label="close"
-//             onClick={handleCancel}
-//             sx={{
-//               position: "absolute",
-//               right: "14px",
-//               top: "8px",
-//               color: (theme: any) => theme.palette.grey[500],
-//             }}
-//           >
-//             <CloseIcon />
-//           </IconButton>
-//           <DialogContent >
-//         <div style={{ marginBottom: '20px' }}>
-//               <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
-
-//               <TextField id="clientName" margin="dense" size="small"
-//                 fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
-//             </div>
-//              <div style={{ marginBottom: '10px' }}>
-//               <label htmlFor="clientDocuments">Client Documents</label>
-//               <div
-//                 onDrop={handleDrop}
-//                 onDragOver={(e) => e.preventDefault()}
-//                 className={styles.dropZone}
-//               >
-//                 {files.map((file, index) => (
-//                   <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-//                     <div>{file.name}</div>
-//                     <IconButton
-//                       aria-label="delete"
-//                       onClick={(e) => {
-//                         handleDeleteFile(index);
-//                         e.stopPropagation();
-//                       }}
-//                       style={{ marginLeft: 'auto' }}
-//                     >
-//                       <Delete />
-//                     </IconButton>
-//                   </div>
-//                 ))}
-//                 <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
-//                   <div style={{ width: "50%" }}>
-
-//                     <img src={require('./../../../../assets/Images/UploadImage.jpg')}
-//                       width="90"
-//                       height="70"
-//                       alt="Upload Image"
-//                     />
-//                   </div>
-//                   <div style={{ width: "50%" }}>
-//                     <div style={{ display: "flex", flexDirection: "column", textAlign: 'left' }}>
-//                       <div>
-//                         Drag and drop
-//                       </div>
-//                       <div>or{' '}</div>
-//                       <div>
-//                         <label htmlFor="fileInput" style={{ color: 'blue', cursor: 'pointer' }}>
-//                           click here to upload document
-//                         </label>
-//                       </div>
-//                     </div>
-//                     <input
-//                       type="file"
-//                       id="fileInput"
-//                       accept=".pdf,.doc,.docx,.txt"
-//                       style={{ display: 'none' }}
-//                       onChange={handleFileInput}
-//                       multiple
-//                     />
-//                   </div>
-//                 </div>
-
-//               </div>
-//             </div>
-//           </DialogContent>
-//           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-//             <Button
-//               onClick={handleSave}
-//               variant="contained"
-//               color="primary"
-//               sx={{
-//                 maxWidth: '150px',
-//                 float: 'right',
-//               }}
-//             >
-//               Save
-//             </Button>
-//             <Button variant="outlined" onClick={handleCancel}>
-//               Clear
-//             </Button>
-//           </DialogActions>
-//         </Dialog>
-//         {isDeleteDialogOpen &&
-//           <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
-//       </Stack>
-//     </Box>
-//   );
-// };
-
-// export default AddClientDialog;
-
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -219,8 +8,9 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-import { Box, Stack } from '@mui/material';
-import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
+import { Box, Stack, Grid } from '@mui/material';
+// import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
+import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
 // import DeleteDialog from "../Delete/Delete";
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 
@@ -228,7 +18,9 @@ import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 const AddClientDialog = ({ open, onClose, props }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
-
+  const [email, setEmail] = useState<string>('');
+  const [contact, setContact] = useState<string>('');
+  
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
@@ -236,6 +28,8 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
   const handleCancel = () => {
     setFiles([]);
     setTitle('');
+    setEmail('');
+    setContact('');
     onClose();
   };
 
@@ -253,6 +47,8 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
       try {
         const obj = {
           Name: title,
+          Email: email,
+          Contact: contact,
         };
         await addListItem('Clients', obj);
 
@@ -288,7 +84,7 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between align-items-center relative">
                 <h4 style={{ margin: '0', color: '#125895' }}>
-                  Assign Client</h4>
+                  Add Client</h4>
               </div>
               <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
             </div>
@@ -306,6 +102,8 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
             <CloseIcon />
           </IconButton>
           <DialogContent>
+          <Grid container spacing={2}>
+          <Grid item sm={6}>
             <div style={{ marginBottom: '20px' }}>
               <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
               <TextField
@@ -317,13 +115,39 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
+            </Grid>
+            <Grid item sm={6}>
+            <div style={{ marginBottom: '20px' }}>
+              <label htmlFor="clientEmail">Client Email<span style={{ color: 'red' }}>*</span></label>
+              <TextField
+                id="clientEmail"
+                margin="dense"
+                size="small"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            </Grid>
+            </Grid>
+            <div style={{ marginBottom: '20px' }}>
+              <label htmlFor="clientContact">Client Contact<span style={{ color: 'red' }}>*</span></label>
+              <TextField
+                id="clientContact"
+                margin="dense"
+                size="small"
+                fullWidth
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+              </div>
             <div style={{ marginBottom: '10px' }}>
               <label htmlFor="clientDocuments">Client Documents</label>
               <DragAndDropUpload onFilesAdded={handleFileInput} />
             </div>
           </DialogContent>
 
-          <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+          <DialogActions sx={{ padding: '10px', marginRight: '14px', mt:'0px' }}>
             <Button
               onClick={handleSave}
               variant="contained"
@@ -333,11 +157,11 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
                 float: 'right',
               }}
             >
-              Save
+              Add
             </Button>
-            <Button variant="outlined" onClick={handleCancel}>
+            {/* <Button variant="outlined" onClick={handleCancel}>
               Clear
-            </Button>
+            </Button> */}
           </DialogActions>
         </Dialog>
 
@@ -347,3 +171,186 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
 };
 
 export default AddClientDialog;
+
+
+// import React, { useState } from 'react';
+// import Dialog from '@mui/material/Dialog';
+// import DialogTitle from '@mui/material/DialogTitle';
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogActions from '@mui/material/DialogActions';
+// import Button from '@mui/material/Button';
+// import TextField from '@mui/material/TextField';
+// import IconButton from '@mui/material/IconButton';
+// import CloseIcon from '@mui/icons-material/Close';
+// import styles from './AddClient.module.scss';
+// import { Box, Stack, Grid } from '@mui/material';
+// import { createFolderInLibrary, uploadDocumentToLibrary, addListItem, updateListItem } from '../../Services/Core/ClientService';
+// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+
+// const AddClientDialog = ({ open, onClose, props }: any) => {
+//   const [files, setFiles] = useState<File[]>([]);
+//   const [title, setTitle] = useState<string>('');
+//   const [email, setEmail] = useState<string>('');
+//   const [contact, setContact] = useState<string>('');
+
+//   const handleFileInput = (selectedFiles: File[]) => {
+//     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+//   };
+
+//   const handleCancel = () => {
+//     setFiles([]);
+//     setTitle('');
+//     setEmail('');
+//     setContact('');
+//     onClose();
+//   };
+
+//   const handleSave = async () => {
+//     onClose();
+//     await handleAddClientSubmit();
+//   };
+
+//   const handleAddClientSubmit = async () => {
+//     if (title) {
+//       try {
+//         const obj = {
+//           Name: title,
+//           Email: email,
+//           Contact: contact,
+//         };
+
+
+//         const addedClient = await addListItem('Clients', obj);
+
+//         if (files.length > 0) {
+//           const currentDate = new Date().toISOString().slice(0, 10);
+//           const formattedDate = currentDate.replace(/-/g, '');
+//           const folderName = `${title}_${formattedDate}`;
+
+
+//           await createFolderInLibrary('SPDocument', folderName);
+
+//           for (const file of files) {
+//             await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
+//           }
+
+//           const documentIds = await Promise.all(files.map(async (file) => {
+//             const uploadedFile = await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
+//             return uploadedFile.Id;
+//           }));
+
+
+//           await updateListItem('Clients', addedClient.Id, {
+//             ClientLibraryGUID: documentIds.join(','),
+//             ClientLibraryPath: `SPDocument/${folderName}`,
+//           });
+//         }
+
+//         setFiles([]);
+//         setTitle('');
+//         setEmail('');
+//         setContact('');
+//       } catch (error) {
+//         console.error('Error adding client and document:', error);
+
+//       }
+//     } else {
+ 
+//     }
+//   };
+
+//   return (
+//     <Box sx={{ width: '100', padding: '20px' }}>
+//       <Stack direction="column" spacing={2}>
+//         <Dialog open={open} maxWidth='sm' fullWidth  >
+//           <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+//             <div className="d-flex flex-column">
+//               <div className="d-flex justify-content-between align-items-center relative">
+//                 <h4 style={{ margin: '0', color: '#125895' }}>
+//                   Add Client</h4>
+//               </div>
+//               <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
+//             </div>
+//           </DialogTitle>
+//           <IconButton
+//             aria-label="close"
+//             onClick={handleCancel}
+//             sx={{
+//               position: "absolute",
+//               right: "14px",
+//               top: "8px",
+//               color: (theme: any) => theme.palette.grey[500],
+//             }}
+//           >
+//             <CloseIcon />
+//           </IconButton>
+//           <DialogContent>
+//             <Grid container spacing={2}>
+//               <Grid item sm={6}>
+//                 <div style={{ marginBottom: '20px' }}>
+//                   <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
+//                   <TextField
+//                     id="clientName"
+//                     margin="dense"
+//                     size="small"
+//                     fullWidth
+//                     value={title}
+//                     onChange={(e) => setTitle(e.target.value)}
+//                   />
+//                 </div>
+//               </Grid>
+//               <Grid item sm={6}>
+//                 <div style={{ marginBottom: '20px' }}>
+//                   <label htmlFor="clientEmail">Client Email<span style={{ color: 'red' }}>*</span></label>
+//                   <TextField
+//                     id="clientEmail"
+//                     margin="dense"
+//                     size="small"
+//                     fullWidth
+//                     value={email}
+//                     onChange={(e) => setEmail(e.target.value)}
+//                   />
+//                 </div>
+//               </Grid>
+//             </Grid>
+//             <div style={{ marginBottom: '20px' }}>
+//               <label htmlFor="clientContact">Client Contact<span style={{ color: 'red' }}>*</span></label>
+//               <TextField
+//                 id="clientContact"
+//                 margin="dense"
+//                 size="small"
+//                 fullWidth
+//                 value={contact}
+//                 onChange={(e) => setContact(e.target.value)}
+//               />
+//             </div>
+//             <div style={{ marginBottom: '10px' }}>
+//               <label htmlFor="clientDocuments">Client Documents</label>
+//               <DragAndDropUpload onFilesAdded={handleFileInput} />
+//             </div>
+//           </DialogContent>
+
+//           <DialogActions sx={{ padding: '10px', marginRight: '14px', mt:'0px' }}>
+//             <Button
+//               onClick={handleSave}
+//               variant="contained"
+//               color="primary"
+//               sx={{
+//                 maxWidth: '150px',
+//                 float: 'right',
+//               }}
+//             >
+//               Add
+//             </Button>
+//             {/* <Button variant="outlined" onClick={handleCancel}>
+//               Clear
+//             </Button> */}
+//           </DialogActions>
+//         </Dialog>
+
+//       </Stack>
+//     </Box>
+//   );
+// };
+
+// export default AddClientDialog;

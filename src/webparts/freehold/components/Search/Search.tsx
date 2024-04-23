@@ -381,17 +381,18 @@ const Search = (props: any) => {
                             </Stack>
                             <DialogActions sx={{ px: 0, mr: 0 }}>
                                 <MuiButton
-                                    variant="outlined"
-                                    onClick={() => setOpenDocuments(false)}
-                                >
-                                    Cancel
-                                </MuiButton>
-                                <MuiButton
                                     type="submit"
                                     variant="contained"
                                 >
                                     Save
                                 </MuiButton>
+                                <MuiButton
+                                    variant="outlined"
+                                    onClick={() => setOpenDocuments(false)}
+                                >
+                                    Cancel
+                                </MuiButton>
+                               
                             </DialogActions>
                         </form>
                     )}
@@ -438,18 +439,19 @@ const Search = (props: any) => {
                                     </Grid>
                                 </Grid>
                                 <DialogActions sx={{ px: 0, mr: 0 }}>
+                                <MuiButton
+                                        type="submit"
+                                        variant="contained"
+                                    >
+                                        Save
+                                    </MuiButton>
                                     <MuiButton
                                         variant="outlined"
                                         onClick={() => setOpenDocuments(false)}
                                     >
                                         Cancel
                                     </MuiButton>
-                                    <MuiButton
-                                        type="submit"
-                                        variant="contained"
-                                    >
-                                        Save
-                                    </MuiButton>
+                                    
                                 </DialogActions>
                             </Stack>
                         </form>
