@@ -143,11 +143,11 @@ const ViewProject = (props: any) => {
       },
     },
     {
-      label: 'Upload Documents',
+      label: 'View Documents',
       button: (
         <Button
           color="primary"
-          message="View / Upload Documents"
+          message="View Documents"
           handleClick={(id: any) => {
             //console.log(`Upload Documents clicked for row ${id}`);
             setUploadDialogOpen(true);

@@ -92,7 +92,50 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                         marginRight: 0
                     }
                 }
+            },
+
+            // MuiStack: {
+            //     styleOverrides: {
+            //         root: {
+            //             '& .MuiFormLabel-root': {
+            //                 color: 'black'
+            //             }
+            //         }
+            //     }
+            // }
+            MuiStack: {
+                styleOverrides: {
+                    root: {
+                        color: 'black'
+                    }
+                }
+            },
+            MuiGrid: {
+                styleOverrides: {
+                    root: {
+                        color: 'black'
+                    },
+                    item: {
+                        color: 'black'
+                    }
+                }
+            },
+            MuiFormLabel: {
+                styleOverrides: {
+                    root: {
+                        color: 'black'
+                    }
+                }
+            },
+            MuiInputLabel: {
+                styleOverrides: {
+                    root: {
+                        color: 'black'
+                    }
+                }
             }
+            
+            
 
 
         },
