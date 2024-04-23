@@ -23,6 +23,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AssignClient from "../AssignClient/AssignClient";
+// import ViewProjects from '../ViewProjects/ViewProjects';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -88,6 +89,11 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
     const closeAddClientDialog = () => {
         setAddClientDialog(false);
     };
+
+    // const handleEditClick = () => {
+    //     setIsEditClicked(true);
+    // };
+    
 
     const IconStyles = (icon: any) => {
         return (
@@ -174,7 +180,7 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
     };
 
     const navigateToClient = () => {
-        navigate('/viewClient');
+        navigate('/ViewProjects');
         setIsViewDialogOpen(false);
     };
 
@@ -209,7 +215,7 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                         scope="row"
                                         colSpan={2}
                                     >Project Details</TableCell>
-                                    <Box sx={{
+                                    {/* <Box sx={{
                                         display: "flex",
                                         justifyContent: "flex-end",
                                         marginTop: "10px",
@@ -223,7 +229,20 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                             }
                                             message="Edit"
                                         />
-                                    </Box>
+                                    </Box> */}
+                                    <Box sx={{ display: "flex", 
+                                    justifyContent: "flex-end", 
+                                    marginTop: "10px", 
+                                    marginRight: "10px" }}>
+                                    {!isEdit && ( 
+                                        <Button
+                                            handleClick={() => setIsEdit(true)}
+                                            color="secondary"
+                                            Icon={<EditIcon />}
+                                            message="Edit"
+                                        />
+                                    )}
+                                </Box>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -281,11 +300,14 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                         <MuiButton variant="contained" color="primary">
                                             Save
                                         </MuiButton>
-                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary">
+                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary"
+                                        onClick={navigateToClient}
+                                         >
                                             Cancel
                                         </MuiButton>
                                     </TableCell>
                                 </TableRow>}
+                                
 
                             </TableBody>
 
@@ -349,5 +371,6 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
 };
 
 export default ViewParticularProject;
+
 
 

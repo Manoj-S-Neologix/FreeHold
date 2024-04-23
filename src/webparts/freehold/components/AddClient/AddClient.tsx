@@ -141,7 +141,7 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
                 onChange={(e) => setContact(e.target.value)}
               />
               </div>
-            <div style={{ marginBottom: '10px' }}>
+            <div >
               <label htmlFor="clientDocuments">Client Documents</label>
               <DragAndDropUpload onFilesAdded={handleFileInput} />
             </div>

@@ -201,7 +201,7 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         component="th"
                                         scope="row"
                                         colSpan={2}>Client Details</TableCell>
-                                    <Box sx={{
+                                    {/* <Box sx={{
                                         display: "flex", justifyContent: "flex-end",
                                         marginTop: "10px", marginRight: "10px"
                                     }} >
@@ -213,7 +213,20 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                             }
                                             message="Edit"
                                         />
-                                    </Box>
+                                    </Box> */}
+                                     <Box sx={{ display: "flex", 
+                                    justifyContent: "flex-end", 
+                                    marginTop: "10px", 
+                                    marginRight: "10px" }}>
+                                    {!isEdit && ( 
+                                        <Button
+                                            handleClick={() => setIsEdit(true)}
+                                            color="secondary"
+                                            Icon={<EditIcon />}
+                                            message="Edit"
+                                        />
+                                    )}
+                                </Box>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -295,7 +308,9 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         <MuiButton variant="contained" color="primary">
                                             Save
                                         </MuiButton>
-                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary">
+                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary"
+                                        onClick={navigateToClient}
+                                        >
                                             Cancel
                                         </MuiButton>
                                     </TableCell>

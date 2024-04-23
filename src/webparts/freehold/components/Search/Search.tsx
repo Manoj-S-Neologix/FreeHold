@@ -265,6 +265,7 @@ const Search = (props: any) => {
                         name="row-radio-buttons-group"
                         value={documentType}
                         onChange={(e) => setDocumentType(e.target.value)}
+                        sx={{ justifyContent: 'space-evenly' }}
                     >
                         {documentTypes.map((docType) => (
                             <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
@@ -380,7 +381,7 @@ const Search = (props: any) => {
                                 </Grid>
                             </Stack>
                             <DialogActions sx={{ px: 0, mr: 0 }}>
-                                <MuiButton
+                                 <MuiButton
                                     type="submit"
                                     variant="contained"
                                 >
