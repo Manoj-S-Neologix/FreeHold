@@ -20,6 +20,7 @@ import ViewParticularClient from './ViewParticularClient';
 
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import ClientService from "../../Services/Business/ClientService";
+import { createDocumentLibrary } from '../../Services/Core/ClientService';
 
 console.log(WebPartContext, "WebPartContext");
 
@@ -216,6 +217,10 @@ const ViewClient = (props: any) => {
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Box>
+        <MuiButton
+          onClick={async () => {
+            await createDocumentLibrary("ClientName")
+          }}>Create Document</MuiButton>
         <Box style={{
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"

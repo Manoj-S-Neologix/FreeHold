@@ -64,15 +64,15 @@ const web = Web('https://freeholddxb.sharepoint.com/');
 
 // Add list items
 export const addListItem = async (listName: string, listData: any): Promise<any> => {
-    try {
-      const addedItem = await web.lists.getByTitle(listName).items.add(listData);
-      return addedItem;
-    } catch (error) {
-      console.error("Error adding client:", error);
-      throw error;
-    }
-  };
-  
+  try {
+    const addedItem = await web.lists.getByTitle(listName).items.add(listData);
+    return addedItem;
+  } catch (error) {
+    console.error("Error adding client:", error);
+    throw error;
+  }
+};
+
 
 // Create a folder in the library
 export const createFolderInLibrary = async (libraryName: string, folderName: string): Promise<any> => {
@@ -118,3 +118,46 @@ export const getLoggedInUserGroups = async (): Promise<any[]> => {
     throw error;
   }
 };
+
+
+
+// export const createDocumentLibrary = async () => {
+
+//     try {
+
+//         await web.lists.ensure("Client1",  "", 101); // 101 is the list template for document libraries
+
+//         console.log("Document library created successfully!");
+
+//     } catch (error) {
+
+//         console.error("Error creating document library:", error);
+
+//     }
+
+// };
+
+
+// // Create library and Upload document to a library
+
+export const createDocumentLibrary = async (libraryName: string): Promise<any> => {
+  try {
+    const library = await web.getFolderByServerRelativeUrl(libraryName);
+    // try {
+    // await library.folders.getByName(folderName).get();
+    // } catch (error) {
+    //   console.log(error, "ErrorMessage")
+    //   if (error) {
+    //     await library.folders.add(folderName);
+    //   await library.folders.getByName(folderName).get();
+    //   } else {
+    //     throw error;
+    //   }
+    // }
+    return library
+  }
+  catch (err) {
+    console.log(err);
+
+  }
+}

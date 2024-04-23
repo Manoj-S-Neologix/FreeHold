@@ -56,6 +56,10 @@ const SPService: SPServiceType = {
         const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter)();
         return response;
     }
+
+    
+
+
 };
 
 export default SPService;

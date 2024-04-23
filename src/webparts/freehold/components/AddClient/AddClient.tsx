@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -13,6 +15,7 @@ import { Box, Stack, Grid } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
 // import DeleteDialog from "../Delete/Delete";
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+import ClientService from '../../Services/Business/ClientService';
 
 
 const AddClientDialog = ({ open, onClose, props }: any) => {
@@ -40,13 +43,20 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
 
   const handleAddClientSubmit = async () => {
     if (title) {
+
+     
       try {
-        const obj = {
-          Name: title,
-          Email: email,
-          Contact: contact,
+        const apiResponse = ClientService()
+
+        const data = {
+          Title: title,
+          ClientEmail: email,
+          ClientContact: contact,
         };
-        await addListItem('Clients', obj);
+        false&& await addListItem('Clients', data);
+
+        const response = apiResponse.addClient("Client_Information", data )
+        console.log(response)
 
         if (files.length > 0) {
           const currentDate = new Date().toISOString().slice(0, 10);
@@ -162,6 +172,7 @@ const AddClientDialog = ({ open, onClose, props }: any) => {
         </Dialog>
 
       </Stack>
+      
     </Box>
   );
 };
