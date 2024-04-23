@@ -16,6 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewUpload from '../ProjectUpload/ProjectUpload';
 import AssignClient from "../AssignClient/AssignClient";
+import ViewParticularProject from "./ViewParticularProject";
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -52,6 +53,9 @@ const ViewProject = (props: any) => {
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [clientDetails, setClientDetails] = useState({});
+
 
 
   const navigate = useNavigate();
@@ -119,6 +123,9 @@ const ViewProject = (props: any) => {
       icon: <VisibilityIcon />,
       handler: (id: any) => {
         //console.log(`View clicked for row ${id}`);
+        //console.log(`View clicked for row ${id}`);
+        setIsViewDialogOpen(true);
+        setClientDetails(id);
       },
     },
     {
@@ -163,7 +170,8 @@ const ViewProject = (props: any) => {
   ];
 
   return (
-    <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
+    <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >  
+      {!isViewDialogOpen &&
       <Stack direction='column' sx={{ gap: "30px" }} >
         <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
           <Breadcrumbs
@@ -221,12 +229,17 @@ const ViewProject = (props: any) => {
             setSelected={setSelected}
             selected={selected} />
         </Box>
-      </Stack>
-      <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
-      <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
-        props={props} />
-      <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} />
-
+      </Stack>}
+      {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />}
+      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
+        props={props} />}
+      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} />}
+      {isViewDialogOpen &&
+        <ViewParticularProject
+          props={props}
+          clientDetails={clientDetails}
+          setIsViewDialogOpen={setIsViewDialogOpen}
+        />}
     </Box>
   );
 };

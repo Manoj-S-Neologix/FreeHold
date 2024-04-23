@@ -22,6 +22,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import AssignClient from "../AssignClient/AssignClient";
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -50,18 +51,23 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any) => {
+const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: any) => {
     const [selected, setSelected] = React.useState<any>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
+    const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [addClientDialog, setAddClientDialog] = useState(false);
     const navigate = useNavigate();
+
+    const closeAssignClientDialog = () => {
+        setHandleClientDialog(false);
+    };
 
     const handleSearchChange = (event: any) => {
         setSearchQuery(event.target.value);
     };
 
-    ////console.log(clientDetails, "clientDetails");
+    console.log(clientDetails, "clientDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -160,8 +166,8 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
     ];
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
 
+    const [isEdit, setIsEdit] = useState(false);
 
     const handleDeleteDialogClose = () => {
         setIsDeleteDialogOpen(false);
@@ -184,10 +190,10 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                             Home
                         </StyledBreadcrumb>
                         <StyledBreadcrumb onClick={navigateToClient}>
-                            Client
+                            Project
                         </StyledBreadcrumb>
                         <StyledBreadcrumb disabled>
-                            {clientDetails.name}
+                            {clientDetails.projectCode}
                         </StyledBreadcrumb>
                     </Breadcrumbs>
                 </Box>
@@ -196,14 +202,18 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                         <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
                             <TableHead>
                                 <TableRow>
+
                                     <TableCell
                                         sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
                                         component="th"
                                         scope="row"
-                                        colSpan={2}>Client Details</TableCell>
+                                        colSpan={2}
+                                    >Project Details</TableCell>
                                     <Box sx={{
-                                        display: "flex", justifyContent: "flex-end",
-                                        marginTop: "10px", marginRight: "10px"
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        marginTop: "10px",
+                                        marginRight: "10px"
                                     }} >
                                         <Button
                                             handleClick={() => { setIsEdit(true); }}
@@ -220,77 +230,53 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                 <TableRow>
                                     <TableCell component="th" scope="row">Name</TableCell>
                                     {!isEdit ? (
-                                        <TableCell>{clientDetails.name}</TableCell>
+                                        <TableCell>{clientDetails.projectName}</TableCell>
                                     ) : (
                                         <TableCell>
                                             <TextField
                                                 sx={{ pt: 1 }}
-                                                label="Name"
+                                                label="Project Name"
                                                 size="small"
-                                                value={clientDetails.name}
+                                                value={clientDetails.projectName}
                                                 variant="outlined"
                                             />
                                         </TableCell>
                                     )}
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell component="th" scope="row">Email</TableCell>
+                                    <TableCell component="th" scope="row">Code</TableCell>
                                     {!isEdit ? (
-                                        <TableCell>{clientDetails.email}</TableCell>
+                                        <TableCell>{clientDetails.projectCode}</TableCell>
                                     ) : (
                                         <TableCell>
                                             <TextField
                                                 sx={{ pt: 1 }}
-                                                label="Email"
+                                                label="Project Code"
                                                 size="small"
-                                                value={clientDetails.email}
+                                                value={clientDetails.projectCode}
                                                 variant="outlined"
                                             />
                                         </TableCell>
                                     )}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Assign Client</TableCell>
+                                    <TableCell
+                                        sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                        onClick={() => { setHandleClientDialog(true); }}
+                                    >
+                                        {clientDetails.assignedClients}
+                                    </TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell component="th" scope="row">Modified Date</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{clientDetails.modifiedDate}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                            <TextField
-                                                sx={{ pt: 1 }}
-                                                label="Modified Date"
-                                                size="small"
-                                                value={clientDetails.modifiedDate}
-                                                variant="outlined"
-                                            />
-                                        </TableCell>
-                                    )}
+                                    <TableCell>{clientDetails.modifiedDate}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell component="th" scope="row">Modified By</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{clientDetails.modifiedBy}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                            <TextField
-                                                sx={{ pt: 1 }}
-                                                label="Modified By"
-                                                size="small"
-                                                value={clientDetails.modifiedBy}
-                                                variant="outlined"
-                                            />
-                                        </TableCell>
-                                    )}
+                                    <TableCell>{clientDetails.modifiedBy}</TableCell>
                                 </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                    <TableCell
-                                        sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        onClick={() => { setHandleStaffDialog(true); }}
-                                    >
-                                        {clientDetails.assignedStaff}
-                                    </TableCell>
-                                </TableRow>
-                                {isEdit && <TableRow>
+                                {isEdit&&<TableRow>
                                     <TableCell component="th" scope="row">
                                         <MuiButton variant="contained" color="primary">
                                             Save
@@ -300,6 +286,7 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         </MuiButton>
                                     </TableCell>
                                 </TableRow>}
+
                             </TableBody>
 
                         </Table>
@@ -355,11 +342,12 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                     open={isDeleteDialogOpen}
                     onClose={handleDeleteDialogClose} />}
 
-            {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
+            {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
+                props={props} />}
         </Box>
     );
 };
 
-export default ViewParticularClient;
+export default ViewParticularProject;
 
 
