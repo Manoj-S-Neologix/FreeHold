@@ -34,6 +34,9 @@ const ClientService = () => {
     const addClient = async (ListName: string, itemData: any) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.addListItem(ListName, itemData);
+            // step 1:create document
+
+            //step 2: update list 
             console.log(results, "results");
             return results;
         }
