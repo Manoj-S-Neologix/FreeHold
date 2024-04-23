@@ -1,220 +1,194 @@
+
+:root {
+    --primarycolor: #125895;
+    --secondarycolor: #dba236;
+}
+
 :global {
-  // * {
-  // font-family: var(--primaryFontFamily) !important;
-  // //  font-family: "Arial", sans-serif !important;
-  // }
-
-  #workbenchPageContent,
-  .CanvasComponent.LCS .CanvasZone,
-  .CanvasComponent.LCS .CanvasZone .CanvasZoneContent .CanvasZoneContentWrapper {
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-family: "Arial", sans-serif !important;
-  }
-
-  .CanvasSection-col {
-    padding: 0 !important;
-  }
-
-  .ControlZone {
-    padding: 0px !important;
-  }
-
-  #workbenchPageContent>div>div>div {
-    padding: 0px !important;
-  }
-
-  #workbenchPageContent {
-    right: 0px !important;
-    left: 0px !important;
-  }
-
-  // .CanvasComponent.canvasReflow {
-  //   font-family: var(--primaryFontFamily);
-  // }
-
-  div.SPPageChrome.isFluent {
-    font-family: "Arial", sans-serif
-  }
-
-  div[data-automation-id="CanvasZone"] div {
-    max-width: 100% !important;
-  }
-
-  @media screen and (min-width: 1024px) {
+    // * {
+    // font-family: var(--primaryFontFamily) !important;
+    // //  font-family: "Arial", sans-serif !important;
+    // }
+  
+    #workbenchPageContent,
+    .CanvasComponent.LCS .CanvasZone,
+    .CanvasComponent.LCS .CanvasZone .CanvasZoneContent .CanvasZoneContentWrapper {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      font-family: "Arial", sans-serif !important;
+    }
+  
+    .CanvasSection-col {
+      padding: 0 !important;
+    }
+  
+    .ControlZone {
+      padding: 0px !important;
+    }
+  
+    #workbenchPageContent>div>div>div {
+      padding: 0px !important;
+    }
+  
+    #workbenchPageContent {
+      right: 0px !important;
+      left: 0px !important;
+    }
+  
+    // .CanvasComponent.canvasReflow {
+    //   font-family: var(--primaryFontFamily);
+    // }
+  
+    div.SPPageChrome.isFluent {
+      font-family: "Arial", sans-serif
+    }
+  
     div[data-automation-id="CanvasZone"] div {
       max-width: 100% !important;
     }
-  }
-
-  div[data-automation-id="CanvasZone"] div {
-    max-width: 100% !important;
-  }
-
-
-  .CanvasComponent>div>div:first-child {
-    padding: 0 !important;
-  }
-
-  .CanvasComponent>div>div:first-child>div:first-child {
-    padding: 0 !important;
-  }
-
-  .ControlZone {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /*Background color*/
-  // div[data-automation-id="CanvasLayout"]>div {
-  //   background-color:#a5a5a5 !important;
-  // }
-
-  /*sp-appBar*/
-  #sp-appBar {
-    display: none !important;
-  }
-
-  /*Hide Header*/
-  #SuiteNavWrapper {
-    display: none !important;
-  }
-
-  /*workbenchCommandBar*/
-  // #workbenchCommandBar {
-  //   display: none !important;
-  // }
-
-  /*Help Container*/
-  #O365_MainLink_Help_container {
-    display: none !important;
-  }
-
-  /*Padding For Other Webparts*/
-  .CanvasZone.row {
-    padding-left: 5.6rem !important;
-    padding-right: 5.6rem !important;
-
-    @media screen and (max-width: 640px) {
-      padding-left: 10px !important;
-      padding-right: 10px !important;
+  
+    @media screen and (min-width: 1024px) {
+      div[data-automation-id="CanvasZone"] div {
+        max-width: 100% !important;
+      }
     }
-
-    @media screen and (min-width: 641px) and (max-width: 768px) {
-      padding-left: 15px !important;
-      padding-right: 15px !important;
+  
+    div[data-automation-id="CanvasZone"] div {
+      max-width: 100% !important;
     }
-
-
-    @media screen and (min-width: 769px) and (max-width: 1024px) {
-      padding-left: 25px !important;
-      padding-right: 25px !important;
+  
+  
+    .CanvasComponent>div>div:first-child {
+      padding: 0 !important;
     }
-  }
-
-  @media screen and (min-width: 641px) {
-    .CanvasComponent.LCS .CanvasSection--read:not(.CanvasSection--fullWidth) .ControlZone:last-of-type {
+  
+    .CanvasComponent>div>div:first-child>div:first-child {
+      padding: 0 !important;
+    }
+  
+    .ControlZone {
+      padding: 0 !important;
       margin: 0 !important;
     }
+  
+    /*Background color*/
+    // div[data-automation-id="CanvasLayout"]>div {
+    //   background-color:#a5a5a5 !important;
+    // }
+  
+    /*sp-appBar*/
+    #sp-appBar {
+      display: none !important;
+    }
+  
+    /*Hide Header*/
+    #SuiteNavWrapper {
+      display: none !important;
+    }
+  
+    /*workbenchCommandBar*/
+    // #workbenchCommandBar {
+    //   display: none !important;
+    // }
+  
+    /*Help Container*/
+    #O365_MainLink_Help_container {
+      display: none !important;
+    }
+  
+    /*Padding For Other Webparts*/
+    .CanvasZone.row {
+      padding-left: 5.6rem !important;
+      padding-right: 5.6rem !important;
+  
+      @media screen and (max-width: 640px) {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+  
+      @media screen and (min-width: 641px) and (max-width: 768px) {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+      }
+  
+  
+      @media screen and (min-width: 769px) and (max-width: 1024px) {
+        padding-left: 25px !important;
+        padding-right: 25px !important;
+      }
+    }
+  
+    @media screen and (min-width: 641px) {
+      .CanvasComponent.LCS .CanvasSection--read:not(.CanvasSection--fullWidth) .ControlZone:last-of-type {
+        margin: 0 !important;
+      }
+    }
+  
+    // #workbenchPageContent>div,
+    #workbenchPageContent>div>div>div {
+      scrollbar-width: none !important;
+    }
+  
+    #workbenchPageContent>div::-webkit-scrollbar-thumb {
+      background: #000 !important;
+    }
+  
+    #workbenchPageContent>div::-webkit-scrollbar {
+      width: 5px !important;
+      height: 8px !important;
+      background-color: #aaa !important;
+      /* or add it to the track */
+    }
+  
+    #workbenchPageContent>div::-webkit-scrollbar-thumb:hover {
+      background: #555 !important;
+    }
+  
+    #workbenchPageContent>div::-webkit-scrollbar {
+      display: block;
+    }
+  
+    // .spAppAndPropertyPanelContainer .sp-appBar {
+    //   display: none !important;
+    // }
+  
+    // div[data-automation-id="CanvasLayout"] div {
+    //   padding: 0px !important;
+    // }
+    .CanvasZone.row {
+      padding-left: 0rem !important;
+      padding-right: 0rem !important
+    }
+  
+    /**/
+    div[data-automationid="SiteHeader"] {
+      display: none !important
+    }
+  
+    div[data-automation-id="pageHeader"] {
+      display: none !important
+    }
+  
+    div[data-automation-id="CanvasZone"]>div {
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+    }
+  
+    div[id="CommentsWrapper"],
+    div[data-automationid="ShyHeader"] {
+      display: none !important;
+    }
+  
+    div#sp-appBar {
+      display: none !important;
+    }
+  
+    div.spAppAndPropertyPanelContainer {
+      padding-bottom: 0 !important;
+    }
   }
 
-  // #workbenchPageContent>div,
-  #workbenchPageContent>div>div>div {
-    scrollbar-width: none !important;
-  }
-
-  #workbenchPageContent>div::-webkit-scrollbar-thumb {
-    background: #000 !important;
-  }
-
-  #workbenchPageContent>div::-webkit-scrollbar {
-    width: 5px !important;
-    height: 8px !important;
-    background-color: #aaa !important;
-    /* or add it to the track */
-  }
-
-  #workbenchPageContent>div::-webkit-scrollbar-thumb:hover {
-    background: #555 !important;
-  }
-
-  #workbenchPageContent>div::-webkit-scrollbar {
-    display: block;
-  }
-
-  // .spAppAndPropertyPanelContainer .sp-appBar {
-  //   display: none !important;
-  // }
-
-  // div[data-automation-id="CanvasLayout"] div {
-  //   padding: 0px !important;
-  // }
-  .CanvasZone.row {
-    padding-left: 0rem !important;
-    padding-right: 0rem !important
-  }
-
-  div[data-automationid="SimpleFooter"] {
-    display: none !important
-  }
-
-  /**/
-  div[data-automationid="SiteHeader"] {
-    display: none !important
-  }
-
-  div[data-automation-id="pageHeader"] {
-    display: none !important
-  }
-
-  div[data-automation-id="CanvasZone"]>div {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-  }
-
-  div[id="CommentsWrapper"],
-  div[data-automationid="ShyHeader"] {
-    display: none !important;
-  }
-
-  div#sp-appBar {
-    display: none !important;
-  }
-
-  div.spAppAndPropertyPanelContainer {
-    padding-bottom: 0 !important;
-  }
-
-  //customize css for Search bar
-  .ms-TextField-fieldGroup {
-    border-radius: 20px !important;
-    background-color: #99b0c4 !important;
-  }
-
-  .ms-TextField-fieldGroup::after {
-    border: 0px !important;
-  }
-
-  .MuiFormLabel {
-    color: var(--primarycolor) !important;
-  }
-
-}
-
-
-:root {
-  --primarycolor: #125895;
-  --secondarycolor: #dba236;
-}
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: Sans-serif !important;
-}
-
-.css-1d6wzja-MuiButton-startIcon>*:nth-of-type(1) {
-  font-size: 0px !important;
+body {
+    font-family: sans-serif !important;
 }

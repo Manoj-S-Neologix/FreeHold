@@ -73,19 +73,19 @@
 //     const [openDialog, setOpenDialog] = React.useState(false);
 
 //     const handleView = (id: any) => {
-//         console.log(`View clicked for row ${id}`);
+//         //console.log(`View clicked for row ${id}`);
 //     };
 
 //     const handleEdit = (id: any) => {
-//         console.log(`Edit clicked for row ${id}`);
+//         //console.log(`Edit clicked for row ${id}`);
 //     };
 
 //     const handleDelete = (id: any) => {
-//         console.log(`Delete clicked for row ${id}`);
+//         //console.log(`Delete clicked for row ${id}`);
 //     };
 
 //     const handleViewUploadDocuments = (id: any) => {
-//         console.log(`View/Upload Documents clicked for row ${id}`);
+//         //console.log(`View/Upload Documents clicked for row ${id}`);
 //     };
 
 //     const handleRequestSort = (property: string) => {
@@ -156,7 +156,7 @@
 //     };
 
 //     const handleSaveStaff = () => {
-//         console.log("Saving staff...");
+//         //console.log("Saving staff...");
 //         handleCloseDialog();
 //     };
 

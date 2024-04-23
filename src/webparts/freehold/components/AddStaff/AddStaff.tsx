@@ -8,71 +8,33 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddStaff.module.scss';
 import { Box, Stack } from '@mui/material';
-import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/apiService';
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 
-
-// console.log(handleDeleteFile)
 const AddStaffDialog = ({ open, onClose, props }: any) => {
-    console.log(props.context.props.context, "props");
-    const [files, setFiles] = useState<File[]>([]);
-    const [title, setTitle] = useState<string>('');
+    const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
     const handleCancel = () => {
-        setFiles([]);
-        setTitle('');
         onClose();
     };
 
     const handleSave = async () => {
-        onClose();
-        await handleAddClientSubmit();
+        // Perform save operation here
     };
 
-
-
-    const handleAddClientSubmit = async () => {
-        if (title) {
-            try {
-                const obj = {
-                    Name: title,
-                };
-                await addListItem('Clients', obj);
-
-                if (files.length > 0) {
-                    const currentDate = new Date().toISOString().slice(0, 10);
-                    const formattedDate = currentDate.replace(/-/g, '');
-                    const folderName = `${title}_${formattedDate}`;
-
-                    await createFolderInLibrary('SPDocument', folderName);
-
-                    for (const file of files) {
-                        await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
-                    }
-                }
-
-                alert('Client and Document(s) added successfully!');
-                setFiles([]);
-                setTitle('');
-            } catch (error) {
-                console.error('Error adding client and document:', error);
-                alert('Failed to add client and document. Please check the console for details.');
-            }
-        } else {
-            alert('Please enter a title.');
-        }
+    const handlePeoplePickerChange = (items: any[]) => {
+        setSelectedPersons(items);
     };
-
+    console.log("Selected persons:", selectedPersons);
 
 
     return (
         <Box sx={{ width: '100', padding: '20px' }}>
             <Stack direction="column" spacing={2}>
-                <Dialog open={open} onClose={handleCancel} maxWidth='sm' fullWidth  >
+                <Dialog open={open} maxWidth='sm' fullWidth>
                     <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
                         <div className="d-flex flex-column">
-                            <div className="d-flex justify-content-between
-                     align-items-center relative">
-                                <h4 style={{ margin: '0', color: '#125895' }}>
-                                    Assign Staff</h4>
+                            <div className="d-flex justify-content-between align-items-center relative">
+                                <h4 style={{ margin: '0', color: '#125895' }}>Assign Staff</h4>
                             </div>
                             <div style={{
                                 height: '4px', width: '100%',
@@ -93,7 +55,29 @@ const AddStaffDialog = ({ open, onClose, props }: any) => {
                         <CloseIcon />
                     </IconButton>
                     <DialogContent >
-                        
+                        <PeoplePicker
+                            styles={{
+                                input: {
+                                    width: '100%',
+                                    height: '40px',
+                                    marginBottom: '10px'
+                                },
+                                itemsWrapper: {
+                                    'ms-PickerPersona-container': {
+                                        width: '100%',
+                                        backgroundColor: 'white !important'
+                                    }
+                                }
+                            }}
+                            context={props.props.props.context as any}
+                            personSelectionLimit={4}
+                            required={true}
+                            showHiddenInUI={false}
+                            principalTypes={[PrincipalType.User]}
+                            resolveDelay={1000}
+                            onChange={handlePeoplePickerChange}
+                        />
+
                     </DialogContent>
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button
@@ -105,7 +89,7 @@ const AddStaffDialog = ({ open, onClose, props }: any) => {
                                 float: 'right',
                             }}
                         >
-                            save
+                            Save
                         </Button>
                         <Button variant="outlined" onClick={handleCancel}>
                             Clear
@@ -118,5 +102,3 @@ const AddStaffDialog = ({ open, onClose, props }: any) => {
 };
 
 export default AddStaffDialog;
-
-

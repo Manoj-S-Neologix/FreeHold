@@ -37,11 +37,11 @@ const Search = (props: any) => {
     console.log(search, "searchEvent");
 
     const handleFilterClick = () => {
-        console.log('Filter clicked');
+        //console.log('Filter clicked');
         setOpen(true);
     };
     const handleDocumentClick = () => {
-        console.log('Document clicked');
+        //console.log('Document clicked');
         setOpenDocuments(true);
     };
 
@@ -372,7 +372,7 @@ const Search = (props: any) => {
                                         <InputLabel htmlFor="project-document">Upload Document</InputLabel>
                                         <DragAndDropUpload
                                             onFilesAdded={(files: File[]) => {
-                                                console.log(files);
+                                                //console.log(files);
                                             }}
                                         />
                                     </Grid>
@@ -432,7 +432,7 @@ const Search = (props: any) => {
                                         <InputLabel htmlFor="client-document">Upload Document</InputLabel>
                                         <DragAndDropUpload
                                             onFilesAdded={(files: File[]) => {
-                                                console.log(files);
+                                                //console.log(files);
                                             }}
                                         />
                                     </Grid>

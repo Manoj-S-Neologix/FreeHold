@@ -61,7 +61,7 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
         setSearchQuery(event.target.value);
     };
 
-    //console.log(clientDetails, "clientDetails");
+    ////console.log(clientDetails, "clientDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -115,21 +115,21 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
             label: 'View',
             icon: <VisibilityIcon />,
             handler: (id: any) => {
-                console.log(`View clicked for row ${id}`);
+                //console.log(`View clicked for row ${id}`);
             },
         },
         {
             label: 'Edit',
             icon: <EditIcon />,
             handler: (id: any) => {
-                console.log(`Edit clicked for row ${id}`);
+                //console.log(`Edit clicked for row ${id}`);
             },
         },
         {
             label: 'Delete',
             icon: <DeleteIcon />,
             handler: (id: any) => {
-                console.log(`Delete clicked for row ${id}`);
+                //console.log(`Delete clicked for row ${id}`);
                 setIsDeleteDialogOpen(true);
             },
         },
@@ -140,7 +140,7 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                     color="primary"
                     message="Upload Documents"
                     handleClick={(id: any) => {
-                        console.log(`Upload Documents clicked for row ${id}`);
+                        //console.log(`Upload Documents clicked for row ${id}`);
                     }}
                 />
             ),

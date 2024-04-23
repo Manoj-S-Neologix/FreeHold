@@ -224,12 +224,8 @@ import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../
 // import DeleteDialog from "../Delete/Delete";
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 
-interface AddClientDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
 
-const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
+const AddClientDialog = ({ open, onClose, props }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
 
@@ -310,22 +306,22 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-          <div style={{ marginBottom: '20px' }}>
-            <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
-            <TextField
-              id="clientName"
-              margin="dense"
-              size="small"
-              fullWidth
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label htmlFor="clientDocuments">Client Documents</label>
-            <DragAndDropUpload onFilesAdded={handleFileInput} />
-          </div>
-        </DialogContent>
+            <div style={{ marginBottom: '20px' }}>
+              <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
+              <TextField
+                id="clientName"
+                margin="dense"
+                size="small"
+                fullWidth
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="clientDocuments">Client Documents</label>
+              <DragAndDropUpload onFilesAdded={handleFileInput} />
+            </div>
+          </DialogContent>
 
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             <Button
