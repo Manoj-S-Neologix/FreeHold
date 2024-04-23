@@ -272,15 +272,15 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
           }
         }
 
-        alert('Client and Document(s) added successfully!');
+        // alert('Client and Document(s) added successfully!');
         setFiles([]);
         setTitle('');
       } catch (error) {
         console.error('Error adding client and document:', error);
-        alert('Failed to add client and document. Please check the console for details.');
+        // alert('Failed to add client and document. Please check the console for details.');
       }
     } else {
-      alert('Please enter a title.');
+      // alert('Please enter a title.');
     }
   };
 

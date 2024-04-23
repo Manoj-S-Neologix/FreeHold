@@ -119,5 +119,3 @@ const DragAndDropUpload: React.FC<DragAndDropUploadProps> = ({ onFilesAdded }) =
 };
 
 export default DragAndDropUpload;
-
-
