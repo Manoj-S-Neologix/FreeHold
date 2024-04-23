@@ -18,6 +18,11 @@ import DeleteDialog from "../Delete/Delete";
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import ViewParticularClient from './ViewParticularClient';
 
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import ClientService from "../../Services/Business/ClientService";
+
+console.log(WebPartContext, "WebPartContext");
+
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === 'light'
@@ -51,10 +56,12 @@ const ViewClient = (props: any) => {
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [clientData, setClientData] = useState<any>([]);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -81,9 +88,7 @@ const ViewClient = (props: any) => {
     setAddClientDialog(false);
   };
 
-  // const openUploadDialog = () => {
-  //   setUploadDialogOpen(true);
-  // };
+
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
@@ -174,7 +179,26 @@ const ViewClient = (props: any) => {
     },
   ];
 
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const clientService = ClientService();
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id';
+      const expand = 'AssignedStaff';
+      const results = await clientService.getClientExpand('Client_Information', select, expand);
+      setClientData(results);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(clientData, "clientDetails");
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -231,6 +255,7 @@ const ViewClient = (props: any) => {
             setSelected={setSelected}
             selected={selected}
             actions={actions}
+            isLoading={isLoading}
           />
         </Box>
 
