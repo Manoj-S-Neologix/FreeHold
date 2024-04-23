@@ -2,7 +2,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base'
+import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import Freehold from './components/Freehold';
 import { IFreeholdProps } from './components/IFreeholdProps';
 import "../../assets/global.module.scss";

@@ -14,8 +14,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddClientDialog from "../AddClient/AddClient";
 import ViewUpload from '../ProjectUpload/ProjectUpload';
+import AssignClient from "../AssignClient/AssignClient";
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -45,7 +45,8 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-function ViewProject(props: any) {
+const ViewProject = (props: any) => {
+  //console.log(props, "propspropsprops");
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
@@ -117,21 +118,21 @@ function ViewProject(props: any) {
       label: 'View',
       icon: <VisibilityIcon />,
       handler: (id: any) => {
-        console.log(`View clicked for row ${id}`);
+        //console.log(`View clicked for row ${id}`);
       },
     },
     {
       label: 'Edit',
       icon: <EditIcon />,
       handler: (id: any) => {
-        console.log(`Edit clicked for row ${id}`);
+        //console.log(`Edit clicked for row ${id}`);
       },
     },
     {
       label: 'Delete',
       icon: <DeleteIcon />,
       handler: (id: any) => {
-        console.log(`Delete clicked for row ${id}`);
+        //console.log(`Delete clicked for row ${id}`);
       },
     },
     {
@@ -141,7 +142,7 @@ function ViewProject(props: any) {
           color="primary"
           message="View / Upload Documents"
           handleClick={(id: any) => {
-            console.log(`Upload Documents clicked for row ${id}`);
+            //console.log(`Upload Documents clicked for row ${id}`);
             setUploadDialogOpen(true);
           }}
         />
@@ -222,11 +223,12 @@ function ViewProject(props: any) {
         </Box>
       </Stack>
       <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />
-      <AddClientDialog open={handleClientDialog} onClose={closeAssignClientDialog} />
+      <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
+        props={props} />
       <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} />
 
     </Box>
   );
-}
+};
 
 export default ViewProject;

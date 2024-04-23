@@ -5,7 +5,7 @@ const web = Web('https://freeholddxb.sharepoint.com/');
 
 // Add list items
 export const addListItem = async (listName: string, listData: any): Promise<void> => {
-  console.log(listName, web, listData, "Listname");
+  //console.log(listName, web, listData, "Listname");
   try {
     await web.lists.getByTitle(listName).items.add(
       listData

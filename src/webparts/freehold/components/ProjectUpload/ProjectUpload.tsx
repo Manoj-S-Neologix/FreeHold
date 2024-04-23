@@ -62,7 +62,7 @@
 //                 <Box>
 //             <DragAndDropUpload
 //               onFilesAdded={(files: File[]) => {
-//                 console.log(files);
+//                 //console.log(files);
 //               }}
 //             />
 //             </Box>
@@ -294,7 +294,7 @@ const ViewUpload: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
               <Box>
                 <DragAndDropUpload
                   onFilesAdded={(files: File[]) => {
-                    console.log(files);
+                    //console.log(files);
                   }}
                 />
               </Box>

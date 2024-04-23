@@ -1,5 +1,4 @@
 import * as React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {
     Header,
     SideNavBar,
@@ -12,7 +11,6 @@ import {
 } from '../Route/index';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
-import PeoplePickers from "../PeoplePicker/PeoplePickers";
 
 const colorCodes = {
     primary: "#125895",
@@ -26,7 +24,6 @@ const Home = (props: any) => {
                 <HashRouter basename='/'>
                     <Header props={props} />
                     <Search props={props} />
-                        <PeoplePickers props={props} />
                     <Routes>
                         <Route path='/'
                             element={
@@ -41,7 +38,7 @@ const Home = (props: any) => {
                         />
                         <Route
                             path='/ViewProjects'
-                            element={<ViewProjects />}
+                            element={<ViewProjects props={props} />}
                         />
                         <Route
                             path='/ChecklistValidation'

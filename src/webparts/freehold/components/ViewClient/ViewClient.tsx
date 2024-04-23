@@ -45,7 +45,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewClient = ({ props }: any) => {
+const ViewClient = (props: any) => {
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
@@ -126,7 +126,7 @@ const ViewClient = ({ props }: any) => {
       label: 'View',
       icon: <VisibilityIcon />,
       handler: (id: any) => {
-        console.log(`View clicked for row ${id}`);
+        //console.log(`View clicked for row ${id}`);
         setIsViewDialogOpen(true);
         setClientDetails(id);
       },
@@ -135,14 +135,14 @@ const ViewClient = ({ props }: any) => {
       label: 'Edit',
       icon: <EditIcon />,
       handler: (id: any) => {
-        console.log(`Edit clicked for row ${id}`);
+        //console.log(`Edit clicked for row ${id}`);
       },
     },
     {
       label: 'Delete',
       icon: <DeleteIcon />,
       handler: (id: any) => {
-        console.log(`Delete clicked for row ${id}`);
+        //console.log(`Delete clicked for row ${id}`);
         setIsDeleteDialogOpen(true);
         setClientDetails(id);
       },
@@ -154,7 +154,7 @@ const ViewClient = ({ props }: any) => {
           color="primary"
           message="View / Upload Documents"
           handleClick={(id: any) => {
-            console.log(`Upload Documents clicked for row ${id}`);
+            //console.log(`Upload Documents clicked for row ${id}`);
             setUploadDialogOpen(true);
           }}
         />
