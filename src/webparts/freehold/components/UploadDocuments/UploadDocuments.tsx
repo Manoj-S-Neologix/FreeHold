@@ -70,8 +70,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                     >
                         <CloseIcon />
                     </IconButton>
+
                     <DialogContent>
-                        <Stack direction={"column"} spacing={3}>
+
+                        <Stack direction={"column"} spacing={2}>
                             <Box>
                                 <DragAndDropUpload
                                     onFilesAdded={(files: File[]) => {
@@ -79,6 +81,22 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                                     }}
                                 />
                             </Box>
+                            <DialogActions sx={{ px: 0, mr: 0 }}>
+                                <MuiButton
+                                    onClick={handleSave}
+                                    type="submit"
+                                    variant="contained"
+                                >
+                                    Save
+                                </MuiButton>
+                                <MuiButton style={{marginRight:'30px' }}
+                                    onClick={handleCancel}
+                                    variant="outlined"                                  
+                                >
+                                    Cancel
+                                </MuiButton>
+                               
+                            </DialogActions>
                             <TableContainer>
                                 <Table>
                                     <TableHead>
@@ -118,22 +136,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                         </Button>
                         <Button onClick={handleCancel} variant='outlined'>Cancel</Button>
                     </DialogActions> */}
-                            <DialogActions sx={{ px: 0, mr: 0 }}>
-                                <MuiButton
-                                    onClick={handleSave}
-                                    type="submit"
-                                    variant="contained"
-                                >
-                                    Save
-                                </MuiButton>
-                                <MuiButton style={{marginRight:'30px' }}
-                                    onClick={handleCancel}
-                                    variant="outlined"                                  
-                                >
-                                    Cancel
-                                </MuiButton>
-                               
-                            </DialogActions>
+
                 </Dialog>
                 {isDeleteDialogOpen && (
                     <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} clientDetails={""} />

@@ -69,17 +69,23 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
           <DialogContent >
             <div style={{ display: 'flex', marginBottom: '20px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
-                <label htmlFor="clientName">Client Name*</label>
+                <label htmlFor="clientName">Project Number*</label>
                 <TextField id="clientName" margin="dense" size="small" fullWidth />
               </div>
               <div style={{ flex: 1 }}>
-                <label htmlFor="clientDetails">Project Detail</label>
+                <label htmlFor="clientDetails">Project Name</label>
                 <TextField id="clientDetails" margin="dense" size="small" fullWidth />
               </div>
             </div>
-            <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="loremIpsum">Lorem Ipsum</label>
-              <TextField id="loremIpsum" margin="dense" size="small" fullWidth />
+            <div style={{ display: 'flex', marginBottom: '10px' }}>
+              <div style={{ marginRight: '20px', flex: 1 }}>
+              <label htmlFor="Location">Location</label>
+              <TextField id="Location" margin="dense" size="small" fullWidth />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label htmlFor="Developer">Developer</label>
+                <TextField id="Developer" margin="dense" size="small" fullWidth />
+              </div>
             </div>
 
 

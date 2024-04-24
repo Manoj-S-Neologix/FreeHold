@@ -181,7 +181,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                         ))}
                                                                     </>
                                                                 ) : (
-                                                                    cellData ? cellData : 'N/A'
+                                                                    cellData ? cellData : '-'
                                                                 )}
                                                             </TableCell>
                                                         ))}
@@ -194,7 +194,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                                 key={index}
                                                                                 onClick={(e) => {
                                                                                     e?.stopPropagation();
-                                                                                    action.handler && action.handler(row.id);
+                                                                                    action.handler && action.handler(row);
                                                                                 }}
                                                                             >
                                                                                 {action.button}

@@ -54,6 +54,7 @@ const ViewClient = (props: any) => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [clientData, setClientData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
+  const [particularClientAllData, setParticularClientAllData] = useState<any>([])
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -84,6 +85,7 @@ const ViewClient = (props: any) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialog(false);
+    fetchData()
   };
 
 
@@ -109,6 +111,7 @@ const ViewClient = (props: any) => {
     { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
     { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
+    { id: 'contact', numeric: false, disablePadding: true, label: 'Contact Number' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
     { id: 'assignedStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
@@ -122,13 +125,20 @@ const ViewClient = (props: any) => {
     {
       label: 'View',
       icon: <VisibilityIcon />,
-      handler: (id: any) => {
-        //console.log(`View clicked for row ${id}`);
+      handler: (data: any) => {
         setIsViewDialogOpen(true);
-        setClientDetails(id);
+        setClientDetails(data);
+        console.log()
 
+        // Filter out unique client data
+        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        setParticularClientAllData(uniqueClientData);
       },
     },
+
+
+
+
     {
       label: 'Edit',
       icon: <EditIcon />,
@@ -146,6 +156,7 @@ const ViewClient = (props: any) => {
         //console.log(`Delete clicked for row ${id}`);
         setIsDeleteDialogOpen(true);
         setClientDetails(id);
+        // handledeleteClient(id);
       },
     },
     {
@@ -158,8 +169,16 @@ const ViewClient = (props: any) => {
             //console.log(`Upload Documents clicked for row ${id}`);
             setUploadDialogOpen(true);
           }}
+
         />
       ),
+      handler: async (data: any) => {
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
+        console.log(getUnique[0].GUID, 'GUID')
+        await ClientService().getDocumentsFromFolder(getUnique[0].GUID)
+      
+      },
     },
     {
       label: 'Assign Staff',
@@ -175,6 +194,8 @@ const ViewClient = (props: any) => {
     },
   ];
 
+  console.log(particularClientAllData, "Data")
+
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -182,7 +203,7 @@ const ViewClient = (props: any) => {
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
       const results = await clientService.getClientExpand('Client_Information', select, expand);
-      setClientData(results?.TableData);
+      setClientData(results?.updatedResults[0].TableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
     } catch (error) {
@@ -191,12 +212,29 @@ const ViewClient = (props: any) => {
     }
   };
 
+  const tableData = clientData.map((item: any) => {
+    return {
+      Id: item.Id,
+      name: item.name,
+      email: item.email,
+      contact: item.contact,
+      modifiedDate: item.modifiedDate,
+      modifiedBy: item.modifiedBy,
+      assignStaff: item?.assignStaff,
+    };
+  })
+
+
+
+
+
+
   React.useEffect(() => {
     fetchData();
   }, []);
   React.useEffect(() => {
     fetchData();
-  }, [addClientDialog, isViewDialogOpen]);
+  }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen]);
 
 
 
@@ -250,7 +288,7 @@ const ViewClient = (props: any) => {
         </Box>
         <Box >
           <GridTable
-            rows={clientData}
+            rows={tableData}
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
@@ -258,6 +296,7 @@ const ViewClient = (props: any) => {
             selected={selected}
             actions={actions}
             isLoading={isLoading}
+            AllClientData={AllClientData}
           />
         </Box>
 

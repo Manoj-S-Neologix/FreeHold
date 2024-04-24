@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack } from '@mui/material';
+import { Breadcrumbs, Box, Stack, IconButton } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -17,6 +17,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewUpload from '../ProjectUpload/ProjectUpload';
 import AssignClient from "../AssignClient/AssignClient";
 import ViewParticularProject from "./ViewParticularProject";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -87,6 +89,10 @@ const ViewProject = (props: any) => {
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
   };
+
+  const handleFilterClick = () => {
+    console.log('Filter icon clicked');
+};
 
   const IconStyles = (icon: any) => {
     return (
@@ -217,7 +223,12 @@ const ViewProject = (props: any) => {
               message="Assign Client"
             />
           </Box>
+          <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <CustomSearch handleSearchChange={handleSearchChange} />
+          <IconButton onClick={handleFilterClick}> 
+                        <FilterAltIcon />
+                    </IconButton>
+                    </Box>
         </Box>
         <Box >
           <GridTable
