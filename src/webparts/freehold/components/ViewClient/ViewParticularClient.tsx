@@ -22,6 +22,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import ClientService from '../../Services/Business/ClientService';
+import { Controller, useForm } from "react-hook-form";
+
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -50,18 +53,54 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit }: any) => {
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel }: any) => {
     const [selected, setSelected] = React.useState<any>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [addClientDialog, setAddClientDialog] = useState(false);
+    // const { handleSubmit, control } = useForm();
+    const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+    setValue('title', clientDetails.name)
+    // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
     const handleSearchChange = (event: any) => {
         setSearchQuery(event.target.value);
     };
 
+
+
     ////console.log(clientDetails, "clientDetails");
+
+
+   // update code start
+
+   const handleUpdate = handleSubmit(async (data) => {
+    try {
+        const apiResponse = ClientService();
+
+        const updatedData = {
+            Title: data.title,
+            ClientEmail: data.email,
+            // ClientContact: data.contact,
+        };
+        const response = await apiResponse.updateClient("Client_Information", 10, updatedData);
+        console.log(response, 'responseresponseresponse');
+        await apiResponse.uploadDocument(response.Title, response.ClientEmail, 'Client_Information', response.Id);
+      
+        // handleCancel();
+        // console.log("Update response:", response);
+        reset();
+        handleCancel();
+    } catch (error) {
+        console.error('Error updating client details:', error);
+        // setIsError(true);
+    }
+});
+
+
+// update code end
+
 
     const navigateToHome = () => {
         navigate('/');
@@ -82,6 +121,14 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     const closeAddClientDialog = () => {
         setAddClientDialog(false);
     };
+
+
+ 
+
+
+
+
+
 
     const IconStyles = (icon: any) => {
         return (
@@ -229,14 +276,46 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         <TableCell>{clientDetails.name}</TableCell>
                                     ) : (
                                         <TableCell>
-                                            <TextField
+                                            {/* <TextField
                                                 sx={{ pt: 1 }}
                                                 size="small"
                                                 value={clientDetails.name}
                                                 onChange={(e) => setClientDetails({ ...clientDetails, name: e.target.value })}
                                                 variant="outlined"
                                                 label=""
-                                            />
+                                            /> */}
+                                                                <Controller
+                      name="title"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'Client Name is required',
+                        minLength: {
+                          value: 3,
+                          message: "Client Name must be at least 3 characters.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "Client Name must be at most 100 characters.",
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="clientName"
+                          margin="dense"
+                          size="small"
+                        //   fullWidth
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            field.onChange(value);
+                            await trigger('title');
+                          }}
+                          error={!!errors.title}
+                          helperText={errors.title && errors.title.message}
+                        />
+                      )}
+                      />
                                         </TableCell>
                                     )}
                                 </TableRow>
@@ -307,7 +386,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                 </TableRow>
                                 {isEdit && <TableRow>
                                     <TableCell component="th" scope="row">
-                                        <MuiButton type="submit" variant="contained" color="primary">
+                                        <MuiButton type="submit" variant="contained" color="primary"
+                                          onClick={handleUpdate}
+                                          >
                                             Update
                                         </MuiButton>
                                         <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
@@ -372,11 +453,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                     open={isDeleteDialogOpen}
                     onClose={handleDeleteDialogClose} />}
 
-            {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
+
         </Box>
     );
 };
 
 export default ViewParticularClient;
-
 
