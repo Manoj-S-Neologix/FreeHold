@@ -181,7 +181,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                         ))}
                                                                     </>
                                                                 ) : (
-                                                                    cellData
+                                                                    cellData ? cellData : 'N/A'
                                                                 )}
                                                             </TableCell>
                                                         ))}

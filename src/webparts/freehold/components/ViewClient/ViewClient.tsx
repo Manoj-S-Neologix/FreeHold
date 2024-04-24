@@ -53,6 +53,7 @@ const ViewClient = (props: any) => {
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [clientData, setClientData] = useState<any>([]);
+  const [AllClientData, setAllClientData] = useState<any>([]);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -105,6 +106,7 @@ const ViewClient = (props: any) => {
   };
 
   const headCells = [
+    { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
     { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
@@ -113,7 +115,7 @@ const ViewClient = (props: any) => {
     { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
   ];
 
-
+  console.log(AllClientData, "AllClientData");
 
 
   const actions = [
@@ -124,6 +126,7 @@ const ViewClient = (props: any) => {
         //console.log(`View clicked for row ${id}`);
         setIsViewDialogOpen(true);
         setClientDetails(id);
+
       },
     },
     {
@@ -179,7 +182,8 @@ const ViewClient = (props: any) => {
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
       const results = await clientService.getClientExpand('Client_Information', select, expand);
-      setClientData(results);
+      setClientData(results?.TableData);
+      setAllClientData(results?.updatedResults);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -192,7 +196,7 @@ const ViewClient = (props: any) => {
   }, []);
   React.useEffect(() => {
     fetchData();
-  }, [addClientDialog]);
+  }, [addClientDialog, isViewDialogOpen]);
 
 
 

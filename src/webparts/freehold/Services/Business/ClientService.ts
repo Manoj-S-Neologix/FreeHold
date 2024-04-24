@@ -9,19 +9,17 @@ const ClientService = () => {
 
     const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
         if (spServiceInstance) {
-            const library = await spServiceInstance.createLibrary(libraryName);
-            if (library) {
-                const response = await spServiceInstance.uploadDocument(libraryName, file);
+            const response = await spServiceInstance.createLibrary(libraryName);
+            await spServiceInstance.uploadDocument(libraryName, file);
+            console.log(response, "ClientLibraryGUIDClientLibraryGUID");
+            const results = await spServiceInstance.updateListItem(listName, Id,
+                {
+                    ClientLibraryGUID: response.data.Id,
+                    ClientLibraryPath: response.data.DocumentTemplateUrl
+                }
+            );
+            return results;
 
-                console.log(response, "ClientLibraryGUIDClientLibraryGUID");
-                const results = await spServiceInstance.updateListItem(listName, Id,
-                    {
-                        ClientLibraryGUID: response.data.Id,
-                        ClientLibraryPath: response.data.ServerRelativeUrl
-                    }
-                );
-                return results;
-            }
         }
     };
 
@@ -41,26 +39,33 @@ const ClientService = () => {
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
                     assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
-                    // Contact: item.ClientContact,
-                    //GUID: item.GUID,
-                    // Author: {
-                    //     Name: item.Author.Title,
-                    //     Email: item.Author.EMail
-                    // },
-                    // assignedStaff: item.AssignedStaff &&
-                    //     item.AssignedStaff.map((staff: any) => {
-                    //         return {
-                    //             Name: staff.Title,
-                    //             Id: staff.Id
-                    //         };
-                    //     }),
-
-                    //Id: item.Id
+                    Contact: item.ClientContact,
+                    GUID: item.GUID,
+                    Author: {
+                        Name: item.Author.Title,
+                        Email: item.Author.EMail
+                    },
+                    assignedStaff: item.AssignedStaff &&
+                        item.AssignedStaff.map((staff: any) => {
+                            return {
+                                Name: staff.Title,
+                                Id: staff.Id
+                            };
+                        }),
+                    Id: item.Id
                 };
             });
-
-            console.log(updatedResults, "updatedResults");
-            return updatedResults;
+            const TableData = results.map((item: any) => {
+                return {
+                    Id: item.Id,
+                    name: item.Title,
+                    email: item.ClientEmail,
+                    modifiedDate: formatDate(item.Modified),
+                    modifiedBy: item.Author.Title,
+                    assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
+                };
+            });
+            return { updatedResults, TableData };
         }
     };
 

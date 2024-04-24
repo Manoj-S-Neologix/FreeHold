@@ -1,7 +1,7 @@
 import { Web } from "@pnp/sp/presets/all";
 
 export type SPServiceType = {
-    createLibrary: (libraryName: string,) => Promise<any[]>;
+    createLibrary: (libraryName: string,) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;

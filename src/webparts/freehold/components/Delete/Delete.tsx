@@ -138,7 +138,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
             </div>}
             <div style={{ marginLeft: '7px' }}>
               Are you sure you want to delete client
-              <strong>{clientDetails.name}
+              <strong style={{ marginLeft: '2px' }}>{clientDetails.name}
               </strong>
               ?
             </div>

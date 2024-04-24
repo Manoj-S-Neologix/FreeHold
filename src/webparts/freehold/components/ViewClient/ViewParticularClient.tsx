@@ -55,12 +55,19 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel }: any) => {
     const [selected, setSelected] = React.useState<any>([]);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [addClientDialog, setAddClientDialog] = useState(false);
     // const { handleSubmit, control } = useForm();
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
-    setValue('title', clientDetails.name)
+    setValue('title', clientDetails.name);
+    setValue('email', clientDetails.email);
+    const [editData, setEditData] = React.useState<any>({
+        title: clientDetails.name,
+        email: clientDetails.email,
+
+    });
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
@@ -70,36 +77,35 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
 
 
-    ////console.log(clientDetails, "clientDetails");
+    console.log(clientDetails, editData, "clientDetails");
 
 
-   // update code start
+    // update code start
 
-   const handleUpdate = handleSubmit(async (data) => {
-    try {
-        const apiResponse = ClientService();
+    const handleUpdate = handleSubmit(async (data) => {
+        try {
+            const apiResponse = ClientService();
 
-        const updatedData = {
-            Title: data.title,
-            ClientEmail: data.email,
-            // ClientContact: data.contact,
-        };
-        const response = await apiResponse.updateClient("Client_Information", 10, updatedData);
-        console.log(response, 'responseresponseresponse');
-        await apiResponse.uploadDocument(response.Title, response.ClientEmail, 'Client_Information', response.Id);
-      
-        // handleCancel();
-        // console.log("Update response:", response);
-        reset();
-        handleCancel();
-    } catch (error) {
-        console.error('Error updating client details:', error);
-        // setIsError(true);
-    }
-});
+            const updatedData = {
+                Title: editData.title,
+                ClientEmail: editData.email,
+                // ClientContact: data.contact,
+            };
+
+            const response = await apiResponse.updateClient("Client_Information", clientDetails.Id, updatedData);
+            console.log(response, updatedData, 'responseresponseresponse');
+            // handleCancel();
+            // console.log("Update response:", response);
+            reset();
+            navigateToClient();
+        } catch (error) {
+            console.error('Error updating client details:', error);
+            // setIsError(true);
+        }
+    });
 
 
-// update code end
+    // update code end
 
 
     const navigateToHome = () => {
@@ -123,7 +129,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     };
 
 
- 
+
 
 
 
@@ -242,41 +248,42 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                     </Breadcrumbs>
                 </Box>
                 <Box>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
-                                        component="th"
-                                        scope="row"
-                                        colSpan={1}>Client Details</TableCell>
+                    <form onSubmit={handleUpdate}>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            component="th"
+                                            scope="row"
+                                            colSpan={1}>Client Details</TableCell>
 
-                                    <Box sx={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        marginTop: "10px",
-                                        marginRight: "10px"
-                                    }}>
-                                        {!isEdit && (
-                                            <Button
-                                                handleClick={() => setIsEdit(true)}
-                                                color="secondary"
-                                                Icon={<EditIcon />}
-                                                message="Edit"
-                                            />
-                                        )}
-                                    </Box>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Name</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{clientDetails.name}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                            {/* <TextField
+                                        <Box sx={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                            marginTop: "10px",
+                                            marginRight: "10px"
+                                        }}>
+                                            {!isEdit && (
+                                                <Button
+                                                    handleClick={() => setIsEdit(true)}
+                                                    color="secondary"
+                                                    Icon={<EditIcon />}
+                                                    message="Edit"
+                                                />
+                                            )}
+                                        </Box>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Name</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{clientDetails.name}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                {/* <TextField
                                                 sx={{ pt: 1 }}
                                                 size="small"
                                                 value={clientDetails.name}
@@ -284,62 +291,101 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 variant="outlined"
                                                 label=""
                                             /> */}
-                                                                <Controller
-                      name="title"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: 'Client Name is required',
-                        minLength: {
-                          value: 3,
-                          message: "Client Name must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Client Name must be at most 100 characters.",
-                        }
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="clientName"
-                          margin="dense"
-                          size="small"
-                        //   fullWidth
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger('title');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.title && errors.title.message}
-                        />
-                      )}
-                      />
-                                        </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Email</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{clientDetails.email}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                            <TextField
+                                                <Controller
+                                                    name="title"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Client Name is required',
+                                                        minLength: {
+                                                            value: 3,
+                                                            message: "Client Name must be at least 3 characters.",
+                                                        },
+                                                        maxLength: {
+                                                            value: 100,
+                                                            message: "Client Name must be at most 100 characters.",
+                                                        }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="clientName"
+                                                            margin="dense"
+                                                            size="small"
+                                                            //   fullWidth
+                                                            value={editData.title}
+                                                            onChange={async (e) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger('title');
+                                                                setEditData({ ...editData, title: value });
+                                                            }}
+                                                            error={!!errors.title}
+                                                            helperText={errors.title && errors.title.message}
+                                                        />
+                                                    )}
+                                                />
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Email</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{clientDetails.email}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                {/* <TextField
                                                 sx={{ pt: 1 }}
                                                 size="small"
                                                 value={clientDetails.email}
                                                 onChange={(e) => setClientDetails({ ...clientDetails, email: e.target.value })}
                                                 variant="outlined"
                                                 label=""
-                                            />
-                                        </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Modified Date</TableCell>
-                                    {!isEdit ? (
+                                            /> */}
+                                                <Controller
+                                                    name="email"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: "Email Id is required.",
+                                                        minLength: {
+                                                            value: 5,
+                                                            message: "Email address must be at least 5 characters.",
+                                                        },
+                                                        maxLength: {
+                                                            value: 100,
+                                                            message: "Email address must be at most 100 characters.",
+                                                        },
+                                                        pattern: {
+                                                            value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i,
+                                                            message: "Invalid email address",
+                                                        },
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="clientEmail"
+                                                            margin="dense"
+                                                            size="small"
+                                                            value={editData.email}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger("email");
+                                                                setEditData({ ...editData, email: value });
+                                                            }}
+                                                            error={!!errors.email}
+                                                            helperText={errors.email && errors.email.message}
+                                                        />
+                                                    )}
+                                                />
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Modified Date</TableCell>
                                         <TableCell>{clientDetails.modifiedDate}</TableCell>
+                                        {/* {!isEdit ? (
                                     ) : (
                                         <TableCell>
                                             <TextField
@@ -357,12 +403,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             />
 
                                         </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Modified By</TableCell>
-                                    {!isEdit ? (
+                                    )} */}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Modified By</TableCell>
                                         <TableCell>{clientDetails.modifiedBy}</TableCell>
+                                        {/* {!isEdit ? (
                                     ) : (
                                         <TableCell>
                                             <TextField
@@ -373,35 +419,41 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 label=""
                                             />
                                         </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                    <TableCell
-                                        sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        onClick={() => { setHandleStaffDialog(true); }}
-                                    >
-                                        {clientDetails.assignStaff}
-                                    </TableCell>
-                                </TableRow>
-                                {isEdit && <TableRow>
-                                    <TableCell component="th" scope="row">
-                                        <MuiButton type="submit" variant="contained" color="primary"
-                                          onClick={handleUpdate}
-                                          >
-                                            Update
-                                        </MuiButton>
-                                        <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
-                                            onClick={navigateToClient}
+                                    )} */}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Assigned Staff</TableCell>
+                                        {isEdit && <TableCell
+                                            onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            Cancel
-                                        </MuiButton>
-                                    </TableCell>
-                                </TableRow>}
-                            </TableBody>
+                                            {clientDetails.assignStaff}
+                                        </TableCell>}
+                                        {!isEdit && <TableCell
+                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                            onClick={() => { setHandleStaffDialog(true); }}
+                                        >
+                                            {clientDetails.assignStaff}
+                                        </TableCell>}
+                                    </TableRow>
+                                    {isEdit && <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            <MuiButton type="submit" variant="contained" color="primary"
+                                                onClick={handleUpdate}
+                                            >
+                                                Update
+                                            </MuiButton>
+                                            <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
+                                                onClick={navigateToClient}
+                                            >
+                                                Cancel
+                                            </MuiButton>
+                                        </TableCell>
+                                    </TableRow>}
+                                </TableBody>
 
-                        </Table>
-                    </TableContainer>
+                            </Table>
+                        </TableContainer>
+                    </form>
                 </Box>
                 {false && <Box style={{
                     margin: '0px', display: "flex", alignItems: "center",
