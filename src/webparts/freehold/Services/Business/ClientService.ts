@@ -9,16 +9,19 @@ const ClientService = () => {
 
     const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
         if (spServiceInstance) {
-            await spServiceInstance.createLibrary(libraryName);
-            const response = await spServiceInstance.uploadDocument(libraryName, file);
-            console.log(response, "ClientLibraryGUIDClientLibraryGUID");
-            const results = await spServiceInstance.updateListItem(listName, Id,
-                {
-                    ClientLibraryGUID: response.data.Id,
-                    ClientLibraryPath: response.data.ServerRelativeUrl
-                }
-            );
-            return results;
+            const library = await spServiceInstance.createLibrary(libraryName);
+            if (library) {
+                const response = await spServiceInstance.uploadDocument(libraryName, file);
+
+                console.log(response, "ClientLibraryGUIDClientLibraryGUID");
+                const results = await spServiceInstance.updateListItem(listName, Id,
+                    {
+                        ClientLibraryGUID: response.data.Id,
+                        ClientLibraryPath: response.data.ServerRelativeUrl
+                    }
+                );
+                return results;
+            }
         }
     };
 

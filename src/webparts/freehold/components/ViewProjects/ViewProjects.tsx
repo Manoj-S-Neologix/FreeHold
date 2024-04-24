@@ -192,7 +192,7 @@ const ViewProject = (props: any) => {
         }}>
           <Box sx={{
             display: "flex", alignItems: "center",
-            width: "25%", justifyContent: "space-between"
+            width: "22%", justifyContent: "space-between"
           }}>
             <Button
               handleClick={openAddClientDialog}

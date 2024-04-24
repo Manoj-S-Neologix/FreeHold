@@ -31,7 +31,6 @@ const SPService: SPServiceType = {
     createLibrary: async (libraryName: string): Promise<any> => {
         try {
             const list = await web.lists.add(libraryName, "Document Library", 101);
-
             console.log(`Document Library created with ID: ${list.data.Id}`);
             return list;
         } catch (error) {
@@ -42,11 +41,15 @@ const SPService: SPServiceType = {
 
 
     // Upload Document to a library
-    uploadDocument: async (libraryName: string, file: any): Promise<any> => {
+    uploadDocument: async (libraryName: string, files: any): Promise<any> => {
         try {
-            const library = await web.getFolderByServerRelativeUrl(libraryName);
-            const document = await library.files.add(file.name, file, true);
-            return document;
+            const library = web.getFolderByServerRelativeUrl(libraryName);
+            console.log(files, "filesfilesfiles");
+            for (const file of files) {
+                console.log(files, "filesfilesfilesInside");
+                const document = await library.files.add(file.name, file, true);
+                return document;
+            }
         } catch (error) {
             console.error("Error uploading document:", error);
             throw error;
