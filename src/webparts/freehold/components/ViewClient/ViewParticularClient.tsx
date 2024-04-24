@@ -50,7 +50,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any) => {
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit }: any) => {
     const [selected, setSelected] = React.useState<any>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
@@ -160,16 +160,19 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
     ];
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
+
 
 
     const handleDeleteDialogClose = () => {
         setIsDeleteDialogOpen(false);
     };
 
+    console.log(clientDetails, 'viewParticularClient');
+
     const navigateToClient = () => {
-        navigate('/viewClient');
         setIsViewDialogOpen(false);
+        setIsEdit(false);
+        navigate('/viewClient');
     };
 
     return (
@@ -200,33 +203,23 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
                                         component="th"
                                         scope="row"
-                                        colSpan={2}>Client Details</TableCell>
-                                    {/* <Box sx={{
-                                        display: "flex", justifyContent: "flex-end",
-                                        marginTop: "10px", marginRight: "10px"
-                                    }} >
-                                        <Button
-                                            handleClick={() => { setIsEdit(true); }}
-                                            color="secondary"
-                                            Icon={
-                                                <EditIcon />
-                                            }
-                                            message="Edit"
-                                        />
-                                    </Box> */}
-                                     <Box sx={{ display: "flex", 
-                                    justifyContent: "flex-end", 
-                                    marginTop: "10px", 
-                                    marginRight: "10px" }}>
-                                    {!isEdit && ( 
-                                        <Button
-                                            handleClick={() => setIsEdit(true)}
-                                            color="secondary"
-                                            Icon={<EditIcon />}
-                                            message="Edit"
-                                        />
-                                    )}
-                                </Box>
+                                        colSpan={1}>Client Details</TableCell>
+
+                                    <Box sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        marginTop: "10px",
+                                        marginRight: "10px"
+                                    }}>
+                                        {!isEdit && (
+                                            <Button
+                                                handleClick={() => setIsEdit(true)}
+                                                color="secondary"
+                                                Icon={<EditIcon />}
+                                                message="Edit"
+                                            />
+                                        )}
+                                    </Box>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -238,10 +231,11 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         <TableCell>
                                             <TextField
                                                 sx={{ pt: 1 }}
-                                                label="Name"
                                                 size="small"
                                                 value={clientDetails.name}
+                                                onChange={(e) => setClientDetails({ ...clientDetails, name: e.target.value })}
                                                 variant="outlined"
+                                                label=""
                                             />
                                         </TableCell>
                                     )}
@@ -254,10 +248,11 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         <TableCell>
                                             <TextField
                                                 sx={{ pt: 1 }}
-                                                label="Email"
                                                 size="small"
                                                 value={clientDetails.email}
+                                                onChange={(e) => setClientDetails({ ...clientDetails, email: e.target.value })}
                                                 variant="outlined"
+                                                label=""
                                             />
                                         </TableCell>
                                     )}
@@ -269,12 +264,19 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                     ) : (
                                         <TableCell>
                                             <TextField
-                                                sx={{ pt: 1 }}
-                                                label="Modified Date"
-                                                size="small"
-                                                value={clientDetails.modifiedDate}
+                                                sx={{
+                                                    pt: 1,
+                                                    width: "230px",
+                                                    '& input[type="date"]': {
+                                                        padding: '11px',
+                                                    },
+                                                }}
+                                                type="date"
+                                                value={clientDetails.modifiedDate ? clientDetails.modifiedDate.split('/').reverse().join('-') : ''}
+                                                onChange={(e) => setClientDetails({ ...clientDetails, modifiedDate: e.target.value })}
                                                 variant="outlined"
                                             />
+
                                         </TableCell>
                                     )}
                                 </TableRow>
@@ -286,10 +288,10 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         <TableCell>
                                             <TextField
                                                 sx={{ pt: 1 }}
-                                                label="Modified By"
                                                 size="small"
                                                 value={clientDetails.modifiedBy}
                                                 variant="outlined"
+                                                label=""
                                             />
                                         </TableCell>
                                     )}
@@ -300,16 +302,16 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                                         sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
                                         onClick={() => { setHandleStaffDialog(true); }}
                                     >
-                                        {clientDetails.assignedStaff}
+                                        {clientDetails.assignStaff}
                                     </TableCell>
                                 </TableRow>
                                 {isEdit && <TableRow>
                                     <TableCell component="th" scope="row">
-                                        <MuiButton variant="contained" color="primary">
-                                            Save
+                                        <MuiButton type="submit" variant="contained" color="primary">
+                                            Update
                                         </MuiButton>
-                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary"
-                                        onClick={navigateToClient}
+                                        <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
+                                            onClick={navigateToClient}
                                         >
                                             Cancel
                                         </MuiButton>
@@ -324,7 +326,7 @@ const ViewParticularClient = ({ props, clientDetails, setIsViewDialogOpen }: any
                     margin: '0px', display: "flex", alignItems: "center",
                     justifyContent: "space-between"
                 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", width: "23%", justifyContent: "space-between" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", width: "21%", justifyContent: "space-between" }}>
                         <Button
                             handleClick={openAddClientDialog}
                             style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}

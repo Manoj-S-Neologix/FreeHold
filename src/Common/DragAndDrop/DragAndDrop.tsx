@@ -21,13 +21,13 @@
 //     setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
 //     onFilesAdded(droppedFiles);
 //   };
-  
+
 //   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     const selectedFiles = Array.from(e.target.files || []).filter(file => !files.some(f => f.name === file.name));
 //     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
 //     onFilesAdded(selectedFiles);
 //   };
-  
+
 
 //   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
 //     e.preventDefault();
@@ -113,7 +113,7 @@
 //         </div>
 
 //       </div>
-      
+
 //     </div>
 //   );
 // };
@@ -128,9 +128,11 @@ import IconButton from '@mui/material/IconButton';
 
 interface DragAndDropUploadProps {
   onFilesAdded: (files: File[]) => void;
+  setIsError?: React.Dispatch<React.SetStateAction<boolean>>;
+
 }
 
-const DragAndDropUpload: React.FC<DragAndDropUploadProps> = ({ onFilesAdded }) => {
+const DragAndDropUpload: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError }) => {
   const [highlight, setHighlight] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -141,12 +143,27 @@ const DragAndDropUpload: React.FC<DragAndDropUploadProps> = ({ onFilesAdded }) =
     setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
     onFilesAdded(droppedFiles);
   };
-  
+
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []).filter(file => !files.some(f => f.name === file.name));
-    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
-    onFilesAdded(selectedFiles);
+    const filesWithLimit = selectedFiles.filter(file => file.size <= 10 * 1024 * 1024);
+    const filesExceedingLimit = selectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+
+    if (filesExceedingLimit.length > 0) {
+      if (setIsError) {
+        setIsError(true);
+      }
+    }
+    else {
+      if (setIsError) {
+        setIsError(false);
+      }
+    }
+
+    setFiles((prevFiles) => [...prevFiles, ...filesWithLimit]);
+    onFilesAdded(filesWithLimit);
   };
+
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();

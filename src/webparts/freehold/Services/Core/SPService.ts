@@ -1,6 +1,8 @@
 import { Web } from "@pnp/sp/presets/all";
 
 export type SPServiceType = {
+    createLibrary: (libraryName: string,) => Promise<any[]>;
+    uploadDocument: (libraryName: string, file: any) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
@@ -16,10 +18,39 @@ export type SPServiceType = {
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
 
 const SPService: SPServiceType = {
+
+
     // Get all list items
     getAllListItems: async (listTitle: string): Promise<any[]> => {
         const response = await web.lists.getByTitle(listTitle).items();
         return response;
+    },
+
+
+    //Create Library
+    createLibrary: async (libraryName: string): Promise<any> => {
+        try {
+            const list = await web.lists.add(libraryName, "Document Library", 101);
+
+            console.log(`Document Library created with ID: ${list.data.Id}`);
+            return list;
+        } catch (error) {
+            console.error("Error creating Document Library:", error);
+            throw error;
+        }
+    },
+
+
+    // Upload Document to a library
+    uploadDocument: async (libraryName: string, file: any): Promise<any> => {
+        try {
+            const library = await web.getFolderByServerRelativeUrl(libraryName);
+            const document = await library.files.add(file.name, file, true);
+            return document;
+        } catch (error) {
+            console.error("Error uploading document:", error);
+            throw error;
+        }
     },
 
     // Add list items
@@ -57,7 +88,7 @@ const SPService: SPServiceType = {
         return response;
     }
 
-    
+
 
 
 };

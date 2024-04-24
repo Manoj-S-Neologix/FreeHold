@@ -133,9 +133,17 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                         color: 'black'
                     }
                 }
+            },
+            MuiFormHelperText: {
+                styleOverrides: {
+                    root: {
+                        marginRight: 0,
+                        marginLeft: 0
+                    }
+                }
             }
-            
-            
+
+
 
 
         },

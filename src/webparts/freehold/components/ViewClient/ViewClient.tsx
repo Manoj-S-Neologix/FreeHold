@@ -17,12 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteDialog from "../Delete/Delete";
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import ViewParticularClient from './ViewParticularClient';
-
-import { WebPartContext } from "@microsoft/sp-webpart-base";
 import ClientService from "../../Services/Business/ClientService";
-import { createDocumentLibrary } from '../../Services/Core/ClientService';
-
-console.log(WebPartContext, "WebPartContext");
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -61,6 +56,7 @@ const ViewClient = (props: any) => {
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -116,16 +112,9 @@ const ViewClient = (props: any) => {
     { id: 'assignedStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
     { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
   ];
-  const rows = [
-    { name: 'John Doe', email: 'john@example.com', modifiedDate: '15/03/2024', modifiedBy: 'Alice Johnson', assignedStaff: 'Smith Martinez' },
-    { name: 'Jane Smith', email: 'jane@example.com', modifiedDate: '16/03/2024', modifiedBy: 'Bob Brown', assignedStaff: 'Diego Charlie' },
-    { name: 'Alice Johnson', email: 'alice@example.com', modifiedDate: '17/03/2024', modifiedBy: 'Charlie Davis', assignedStaff: 'Marco Doe' },
-    { name: 'Bob Brown', email: 'bob@example.com', modifiedDate: '18/03/2024', modifiedBy: 'David Wilson', assignedStaff: 'Altair Martinez' },
-    { name: 'Charlie Davis', email: 'charlie@example.com', modifiedDate: '19/03/2024', modifiedBy: 'Eve Anderson', assignedStaff: 'Martinez' },
-    { name: 'David Wilson', email: 'david@example.com', modifiedDate: '20/03/2024', modifiedBy: 'Frank Martinez', assignedStaff: 'Antonio Rabin' },
-    { name: 'Eve Anderson', email: 'eve@example.com', modifiedDate: '21/03/2024', modifiedBy: 'John Doe', assignedStaff: 'Etahn Martin' },
-    { name: 'Frank Martinez', email: 'frank@example.com', modifiedDate: '22/03/2024', modifiedBy: 'Jane Smith', assignedStaff: 'Henry' },
-  ];
+
+
+
 
   const actions = [
     {
@@ -142,6 +131,9 @@ const ViewClient = (props: any) => {
       icon: <EditIcon />,
       handler: (id: any) => {
         //console.log(`Edit clicked for row ${id}`);
+        setIsViewDialogOpen(true);
+        setClientDetails(id);
+        setIsEdit(true);
       },
     },
     {
@@ -184,8 +176,8 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id';
-      const expand = 'AssignedStaff';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
+      const expand = 'AssignedStaff,Author';
       const results = await clientService.getClientExpand('Client_Information', select, expand);
       setClientData(results);
       setIsLoading(false);
@@ -198,8 +190,12 @@ const ViewClient = (props: any) => {
   React.useEffect(() => {
     fetchData();
   }, []);
+  React.useEffect(() => {
+    fetchData();
+  }, [addClientDialog]);
 
-  console.log(clientData, "clientDetails");
+
+
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -217,15 +213,12 @@ const ViewClient = (props: any) => {
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Box>
-        <MuiButton
-          onClick={async () => {
-            await createDocumentLibrary("ClientName")
-          }}>Create Document</MuiButton>
+
         <Box style={{
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"
         }}>
-          <Box sx={{ display: "flex", alignItems: "center", width: "23%", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center", width: "21%", justifyContent: "space-between" }}>
             <Button
               handleClick={openAddClientDialog}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
@@ -253,7 +246,7 @@ const ViewClient = (props: any) => {
         </Box>
         <Box >
           <GridTable
-            rows={rows}
+            rows={clientData}
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
@@ -266,7 +259,7 @@ const ViewClient = (props: any) => {
 
       </Stack>
       }
-      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} />}
+      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} />}
       {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} />
 
@@ -277,6 +270,9 @@ const ViewClient = (props: any) => {
           props={props}
           clientDetails={clientDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}
+          setIsEdit={setIsEdit}
+          setClientDetails={setClientDetails}
+          isEdit={isEdit}
         />}
     </Box>
 

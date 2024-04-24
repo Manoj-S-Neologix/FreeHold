@@ -318,7 +318,7 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                     margin: '0px', display: "flex", alignItems: "center",
                     justifyContent: "space-between"
                 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", width: "23%", justifyContent: "space-between" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", width: "21%", justifyContent: "space-between" }}>
                         <Button
                             handleClick={openAddClientDialog}
                             style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}

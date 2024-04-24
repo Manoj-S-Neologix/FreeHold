@@ -51,7 +51,7 @@ const Home = (props: any) => {
                     </Routes>
                 </HashRouter>
             </ThemeProvider>
-        </React.Fragment>
+        </React.Fragment >
     );
 };
 
