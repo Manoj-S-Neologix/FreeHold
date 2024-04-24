@@ -93,7 +93,7 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
     // const handleEditClick = () => {
     //     setIsEditClicked(true);
     // };
-    
+
 
     const IconStyles = (icon: any) => {
         return (
@@ -213,7 +213,6 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                         sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
                                         component="th"
                                         scope="row"
-                                        colSpan={2}
                                     >Project Details</TableCell>
                                     {/* <Box sx={{
                                         display: "flex",
@@ -230,19 +229,21 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                             message="Edit"
                                         />
                                     </Box> */}
-                                    <Box sx={{ display: "flex", 
-                                    justifyContent: "flex-end", 
-                                    marginTop: "10px", 
-                                    marginRight: "10px" }}>
-                                    {!isEdit && ( 
-                                        <Button
-                                            handleClick={() => setIsEdit(true)}
-                                            color="secondary"
-                                            Icon={<EditIcon />}
-                                            message="Edit"
-                                        />
-                                    )}
-                                </Box>
+                                    <Box sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        marginTop: "10px",
+                                        marginRight: "10px"
+                                    }}>
+                                        {!isEdit && (
+                                            <Button
+                                                handleClick={() => setIsEdit(true)}
+                                                color="secondary"
+                                                Icon={<EditIcon />}
+                                                message="Edit"
+                                            />
+                                        )}
+                                    </Box>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -295,19 +296,19 @@ const ViewParticularProject = ({ props, clientDetails, setIsViewDialogOpen }: an
                                     <TableCell component="th" scope="row">Modified By</TableCell>
                                     <TableCell>{clientDetails.modifiedBy}</TableCell>
                                 </TableRow>
-                                {isEdit&&<TableRow>
+                                {isEdit && <TableRow>
                                     <TableCell component="th" scope="row">
                                         <MuiButton variant="contained" color="primary">
                                             Save
                                         </MuiButton>
                                         <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary"
-                                        onClick={navigateToClient}
-                                         >
+                                            onClick={navigateToClient}
+                                        >
                                             Cancel
                                         </MuiButton>
                                     </TableCell>
                                 </TableRow>}
-                                
+
 
                             </TableBody>
 
