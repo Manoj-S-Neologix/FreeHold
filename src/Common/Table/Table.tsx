@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-unused-expressions */
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -162,7 +163,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                 }}
                                                             />
                                                         </TableCell>
-                                                        {Object.values(row).map((cellData: string, cellIndex) => (
+                                                        {/* {Object.values(row).map((cellData: string, cellIndex) => (
                                                             <TableCell
                                                                 key={cellIndex}
                                                                 component="th"
@@ -184,7 +185,34 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                     cellData ? cellData : '-'
                                                                 )}
                                                             </TableCell>
+                                                        ))} */}
+                                                        {headCells.map((headCell: any) => (
+                                                            row.hasOwnProperty(headCell.id) &&  
+                                                            <TableCell
+                                                                key={headCell.id}
+                                                                component="th"
+                                                                scope="row"
+                                                                padding="none"
+                                                            >
+                                                                {searchQuery && row[headCell.id] &&
+                                                                 typeof row[headCell.id] === 'string' && 
+                                                                 row[headCell.id].toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                    <>
+                                                                        {row[headCell.id].toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
+                                                                            <React.Fragment key={index}>
+                                                                                {index > 0 && (
+                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                                )}
+                                                                                {part}
+                                                                            </React.Fragment>
+                                                                        ))}
+                                                                    </>
+                                                                ) : (
+                                                                    row[headCell.id] ? row[headCell.id] : '-'
+                                                                )}
+                                                            </TableCell>
                                                         ))}
+
                                                         <TableCell width={"40%"} align="left" padding="none">
                                                             <div className="d-flex align-items-center w-100">
                                                                 <div style={{ display: 'flex', gap: '10px' }}>

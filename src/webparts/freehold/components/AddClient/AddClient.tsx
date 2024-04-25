@@ -59,7 +59,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       };
       false && await addListItem('Clients', dataObj);
 
-      const response = await apiResponse.addClient("Client_Information", dataObj);
+      const response = await apiResponse.addClient("Client_Informations", dataObj);
       const fileInfoArray = files.map((file: any) => ({
         lastModified: file.lastModified,
         lastModifiedDate: file.lastModifiedDate,
@@ -69,7 +69,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         webkitRelativePath: file.webkitRelativePath
       }));
       console.log(response, fileInfoArray, 'responseresponseresponse');
-      await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Information', response.Id);
+      await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
       handleCancel();
 
       // false && if (files.length > 0) {

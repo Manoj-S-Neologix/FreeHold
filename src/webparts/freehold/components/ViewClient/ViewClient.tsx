@@ -54,7 +54,7 @@ const ViewClient = (props: any) => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [clientData, setClientData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
-  const [particularClientAllData, setParticularClientAllData] = useState<any>([])
+  const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -77,6 +77,7 @@ const ViewClient = (props: any) => {
 
   const closeAddStaffDialog = () => {
     setHandleStaffDialog(false);
+    fetchData();
   };
 
   const openAddClientDialog = () => {
@@ -85,7 +86,7 @@ const ViewClient = (props: any) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialog(false);
-    fetchData()
+    fetchData();
   };
 
 
@@ -108,7 +109,6 @@ const ViewClient = (props: any) => {
   };
 
   const headCells = [
-    { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
     { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
     { id: 'contact', numeric: false, disablePadding: true, label: 'Contact Number' },
@@ -128,7 +128,7 @@ const ViewClient = (props: any) => {
       handler: (data: any) => {
         setIsViewDialogOpen(true);
         setClientDetails(data);
-        console.log()
+        console.log();
 
         // Filter out unique client data
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
@@ -175,9 +175,8 @@ const ViewClient = (props: any) => {
       handler: async (data: any) => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
-        console.log(getUnique[0].GUID, 'GUID')
-        await ClientService().getDocumentsFromFolder(getUnique[0].GUID)
-      
+        await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+
       },
     },
     {
@@ -186,15 +185,19 @@ const ViewClient = (props: any) => {
         <Button
           color="secondary"
           message="Assign Staff"
-          handleClick={(id: any) => {
+          handleClick={(data: any) => {
             setHandleStaffDialog(!handleStaffDialog);
           }}
         />
       ),
+      handler: async (data: any) => {
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
+      },
     },
   ];
 
-  console.log(particularClientAllData, "Data")
+  console.log(particularClientAllData, "Data");
 
   const fetchData = async () => {
     try {
@@ -202,7 +205,7 @@ const ViewClient = (props: any) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
-      const results = await clientService.getClientExpand('Client_Information', select, expand);
+      const results = await clientService.getClientExpand('Client_Informations', select, expand);
       setClientData(results?.updatedResults[0].TableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -220,9 +223,9 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff: item?.assignStaff,
+      assignedStaff: item?.assignStaff,
     };
-  })
+  });
 
 
 
@@ -234,7 +237,7 @@ const ViewClient = (props: any) => {
   }, []);
   React.useEffect(() => {
     fetchData();
-  }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen]);
+  }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
 
 
 
@@ -303,7 +306,11 @@ const ViewClient = (props: any) => {
       </Stack>
       }
       {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} />}
-      {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
+      {handleStaffDialog && <AddStaffDialog
+        props={props} open={handleStaffDialog}
+        onClose={closeAddStaffDialog}
+        particularClientAllData={particularClientAllData}
+      />}
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} />
 
       {isDeleteDialogOpen &&

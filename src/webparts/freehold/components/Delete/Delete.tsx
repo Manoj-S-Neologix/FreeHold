@@ -86,7 +86,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
 
    const handledeleteClient = async (clientId:any, Title:any) => {
     try {
-        await ClientService().deleteClient("Client_Information", clientId);
+        await ClientService().deleteClient("Client_Informations", clientId);
         await ClientService().deleteLibrary(Title);
         // console.log(response, "delete response");
         console.log('Client deleted successfully');

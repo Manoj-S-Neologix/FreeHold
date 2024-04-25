@@ -97,7 +97,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 ClientContact: editData.contact,
             };
 
-            const response = await apiResponse.updateClient("Client_Information", clientDetails.Id, updatedData);
+            const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
             console.log(response, updatedData, 'responseresponseresponse');
             // handleCancel();
             // console.log("Update response:", response);
@@ -470,13 +470,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         {isEdit && <TableCell
                                             onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignStaff}
+                                            {clientDetails.assignedStaff}
                                         </TableCell>}
                                         {!isEdit && <TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
                                             onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignStaff}
+                                            {clientDetails.assignedStaff}
                                         </TableCell>}
                                     </TableRow>
                                     {isEdit && <TableRow>

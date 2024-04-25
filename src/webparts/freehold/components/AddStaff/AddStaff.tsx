@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,22 +9,79 @@ import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddStaff.module.scss';
 import { Box, Stack } from '@mui/material';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import ClientService from "../../Services/Business/ClientService";
 
-const AddStaffDialog = ({ open, onClose, props }: any) => {
+const AddStaffDialog = ({ open, onClose, props, particularClientAllData }: any) => {
+
+
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
+    console.log(particularClientAllData);
+
+    useEffect(() => {
+        // Pre-populate selected persons if already assigned
+        if (particularClientAllData && particularClientAllData.assignedStaff) {
+            setSelectedPersons(particularClientAllData.assignedStaff.map((staff: any) => ({
+                id: staff.Id,
+                text: staff.Name,
+                secondaryText: staff.Email,
+                imageUrl: `https://freeholddxb.sharepoint.com/_layouts/15/userphoto.aspx?size=M&accountname=${encodeURIComponent(staff.Email)}`
+            })));
+        }
+
+    }, []);
+    useEffect(() => {
+        // Pre-populate selected persons if already assigned
+        if (particularClientAllData && particularClientAllData.assignedStaff) {
+            setSelectedPersons(particularClientAllData.assignedStaff.map((staff: any) => ({
+                id: staff.Id,
+                text: staff.Name,
+                secondaryText: staff.Email,
+                imageUrl: `https://freeholddxb.sharepoint.com/_layouts/15/userphoto.aspx?size=M&accountname=${encodeURIComponent(staff.Email)}`
+            })));
+        }
+
+    }, [particularClientAllData]);
+
 
     const handleCancel = () => {
         onClose();
     };
 
+    console.log("Selected persons:", selectedPersons);
     const handleSave = async () => {
-        // Perform save operation here
+        const dataObj = {
+            AssignedStaffId: {
+                results: selectedPersons
+            }
+        };
+        ClientService().updateClient(
+            "Client_Informations",
+            particularClientAllData[0].Id,
+            dataObj
+        ).then((response: any) => {
+            console.log("Success:", response);
+            onClose();
+
+        }).catch((error: any) => {
+            console.error("Error:", error);
+        });
     };
 
-    const handlePeoplePickerChange = (items: any[]) => {
-        setSelectedPersons(items);
+
+
+    const handlePeoplePickerChange = async (items: any[]) => {
+        console.log(items, "itemsitemsitemsitems");
+        const selectedPersonsIds = [];
+        for (const item of items) {
+            const getID = await ClientService().getPersonByEmail(item.secondaryText);
+            console.log(getID.Id, "getIDgetID");
+            selectedPersonsIds.push(getID.Id);
+        }
+        setSelectedPersons(selectedPersonsIds);
     };
-    console.log("Selected persons:", selectedPersons);
+
+
 
 
     return (
@@ -59,7 +116,7 @@ const AddStaffDialog = ({ open, onClose, props }: any) => {
                             styles={{
                                 input: {
                                     width: '100%',
-                                    height: '40px',
+                                    height: '30px',
                                     marginBottom: '10px'
                                 },
                                 itemsWrapper: {
@@ -76,6 +133,7 @@ const AddStaffDialog = ({ open, onClose, props }: any) => {
                             principalTypes={[PrincipalType.User]}
                             resolveDelay={1000}
                             onChange={handlePeoplePickerChange}
+                            defaultSelectedUsers={selectedPersons}
                         />
 
                     </DialogContent>
