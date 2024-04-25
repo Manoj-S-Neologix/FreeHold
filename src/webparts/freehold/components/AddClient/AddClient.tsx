@@ -72,18 +72,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
       handleCancel();
 
-      // false && if (files.length > 0) {
-      //   const currentDate = new Date().toISOString().slice(0, 10);
-      //   const formattedDate = currentDate.replace(/-/g, '');
-      //   const folderName = `${data.title}_${formattedDate}`;
-
-      //   await createFolderInLibrary('SPDocument', folderName);
-
-      //   for (const file of files) {
-      //     await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
-      //   }
-      // }
-
       setFiles([]);
       //showToast(`Client Added Successfully !`, "success");
 
@@ -202,7 +190,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                 </Grid>
               </Grid>
               <div style={{ marginBottom: '20px' }}>
-                <label htmlFor="clientContact">Client Contact<span style={{ color: 'red' }}>*</span></label>
+                <label htmlFor="clientContact">Contact Number<span style={{ color: 'red' }}>*</span></label>
                 <Controller
                   name="contact"
                   control={control}

@@ -1,40 +1,98 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-// import Button from '@mui/material/Button';
-import { Button as MuiButton } from "@mui/material";
-// import Button from "../../../../Common/Button/CustomButton";
-
-import IconButton from '@mui/material/IconButton';
+import { Button as MuiButton, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Stack } from '@mui/material';
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import DeleteDialog from "../Delete/Delete";
+import ClientService from '../../Services/Business/ClientService';
 
 interface UploadDocumentProps {
     open: boolean;
     onClose: () => void;
+    particularClientAllData: any 
 }
 
-const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
+const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [files, setFiles] = useState<File[]>([]); 
+    const { handleSubmit } = useForm(); 
+    console.log(particularClientAllData, "ClientData")
+
+
+    // const fetchData = async () => {
+    //     if (particularClientAllData.length > 0) {
+    //         const clientService: any = ClientService(); 
+    //         const folderGUID = particularClientAllData[0].GUID;
+    //         try {
+    //             const results = await clientService.getDocumentsFromFolder(folderGUID);
+    //             console.log(results, "lib name");
+    //         } catch (error) {
+    //             console.error("Error fetching documents:", error);
+    //         }
+    //     }
+    // };
+    
+    const fetchData = async () => {
+        if (particularClientAllData.length > 0) {
+            const clientService: any = ClientService(); 
+            const folderGUID = particularClientAllData[0].GUID;
+            try {
+                const results = await clientService.getDocumentsFromFolder(folderGUID);
+                console.log(results, "lib name");
+            } catch (error) {
+                console.error("Error fetching documents:", error);
+            }
+        } else {
+            console.warn("No data in particularClientAllData");
+        }
+    };
+    
+    
+   
+    useEffect(() => {
+        fetchData();
+      }, [particularClientAllData]);
+
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
     };
 
-    const handleSave = () => {
-        onClose();
-    };
+    
+    const fileInfoArray = files?.map((file: any) => ({
+        lastModified: file.lastModified,
+        lastModifiedDate: file.lastModifiedDate,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        webkitRelativePath: file.webkitRelativePath
+      }));
+    
+      console.log(fileInfoArray, 'fileInfoArray');
+
+      const handleSave = handleSubmit(async (data: any) => {
+        try {
+            const apiResponse = ClientService();
+    
+            console.log(particularClientAllData[0].name, "name");
+            console.log(fileInfoArray);
+            await apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray);
+
+
+            
+            handleCancel();
+            setFiles([]); 
+        } catch (error) {
+            console.error("Failed to add client and document:", error);
+        }
+    });
+    
+
 
     const handleCancel = () => {
         onClose();
@@ -44,13 +102,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
         <Box sx={{ width: '100', padding: '20px' }}>
             <Stack direction="column" spacing={2}>
                 <Dialog open={open} onClose={onClose}>
-                    <DialogTitle >
-
+                    <DialogTitle>
                         <div className="d-flex flex-column">
-                            <div className="d-flex justify-content-between
-                    align-items-center relative">
-                                <h4 style={{ margin: '0', color: '#125895' }}>
-                                    View/Upload Documents</h4>
+                            <div className="d-flex justify-content-between align-items-center relative">
+                                <h4 style={{ margin: '0', color: '#125895' }}>View/Upload Documents</h4>
                             </div>
                             <div style={{
                                 height: '4px', width: '100%',
@@ -72,12 +127,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                     </IconButton>
 
                     <DialogContent>
-
                         <Stack direction={"column"} spacing={2}>
                             <Box>
                                 <DragAndDropUpload
                                     onFilesAdded={(files: File[]) => {
-                                        //console.log(files);
+                                        setFiles(prevFiles => [...prevFiles, ...files]); // Add uploaded files to state
                                     }}
                                 />
                             </Box>
@@ -89,35 +143,32 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                                 >
                                     Save
                                 </MuiButton>
-                                <MuiButton style={{marginRight:'30px' }}
+                                <MuiButton style={{ marginRight: '30px' }}
                                     onClick={handleCancel}
-                                    variant="outlined"                                  
+                                    variant="outlined"
                                 >
                                     Cancel
                                 </MuiButton>
-                               
                             </DialogActions>
                             <TableContainer>
                                 <Table>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Document Name</TableCell>
-                                            <TableCell>Modified Date</TableCell>
-                                            <TableCell>Modified By</TableCell>
-                                            <TableCell>Upload Date</TableCell>
+                                            <TableCell>Uploaded Date</TableCell>
+                                            <TableCell>Uploaded By</TableCell>
                                             <TableCell>Action</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {[
-                                            { id: 1, name: 'Document 1', modifiedDate: '2024-04-22', modifiedBy: 'User 1', uploadDate: '2024-04-20' },
-                                            { id: 2, name: 'Document 2', modifiedDate: '2024-04-21', modifiedBy: 'User 2', uploadDate: '2024-04-19' },
+                                            { id: 1, name: 'Document 1', uploadedDate: '2024-04-22', uploadedBy: 'User 1' },
+                                            { id: 2, name: 'Document 2', uploadedDate: '2024-04-21', uploadedBy: 'User 2' },
                                         ].map((document) => (
                                             <TableRow key={document.id}>
                                                 <TableCell>{document.name}</TableCell>
-                                                <TableCell>{document.modifiedDate}</TableCell>
-                                                <TableCell>{document.modifiedBy}</TableCell>
-                                                <TableCell>{document.uploadDate}</TableCell>
+                                                <TableCell>{document.uploadedDate}</TableCell>
+                                                <TableCell>{document.uploadedBy}</TableCell>
                                                 <TableCell>
                                                     <IconButton onClick={() => setIsDeleteDialogOpen(true)}>
                                                         <DeleteIcon color="error" />
@@ -130,13 +181,6 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                             </TableContainer>
                         </Stack>
                     </DialogContent>
-                    {/* <DialogActions>
-                        <Button onClick={handleSave} variant="contained" color="primary">
-                            Save
-                        </Button>
-                        <Button onClick={handleCancel} variant='outlined'>Cancel</Button>
-                    </DialogActions> */}
-
                 </Dialog>
                 {isDeleteDialogOpen && (
                     <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} clientDetails={""} />

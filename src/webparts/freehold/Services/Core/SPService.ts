@@ -9,7 +9,8 @@ export type SPServiceType = {
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
     deleteLibrary: (libraryName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
-    getPersonByEmail: (email: any) => Promise<any>;
+    getPersonByEmail: (email: string) => Promise<any>;
+    // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (

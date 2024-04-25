@@ -184,6 +184,13 @@ const ClientService = () => {
             return results;
         }
     };
+    const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.uploadDocument(libraryGuid, file);
+            console.log(results, "results");
+        }
+    };
 
 
 
@@ -196,7 +203,8 @@ const ClientService = () => {
         uploadDocument,
         deleteLibrary,
         getDocumentsFromFolder,
-        getPersonByEmail
+        getPersonByEmail,
+        addDocumentsToFolder
     };
 };
 
