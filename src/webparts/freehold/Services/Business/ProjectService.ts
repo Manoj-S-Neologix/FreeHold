@@ -3,7 +3,7 @@ import SPService, { SPServiceType } from "../Core/SPService";
 
 
 
-const ClientService = () => {
+const ProjectService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
 
@@ -23,21 +23,22 @@ const ClientService = () => {
         }
     };
 
-    const getClient = async (ListName: string) => {
+    const getProject = async (ListName: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
         }
     };
-    const getClientExpand = async (ListName: string, select: string, expand: string) => {
+    const getProjectExpand = async (ListName: string, select: string, expand: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
             const TableData = results.map((item: any) => {
                 return {
                     Id: item.Id,
-                    name: item.Title,
-                    email: item.ClientEmail,
-                    contact: item.ClientContact,
+                    projectCode: item.ProjectNumber,
+                    projectName: item.ProjectName,
+                    location: item.Locatiot,
+                    developer:item.Developer,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
                     assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
@@ -45,8 +46,8 @@ const ClientService = () => {
             });
             const updatedResults = results.map((item: any) => {
                 return {
-                    name: item.Title,
-                    email: item.ClientEmail,
+                    // name: item.Title,
+                    // email: item.ClientEmail,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
                     assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
@@ -130,9 +131,9 @@ const ClientService = () => {
 
 
     return {
-        getClient,
+        getProject,
         updateClient,
-        getClientExpand,
+        getProjectExpand,
         addClient,
         deleteClient,
         uploadDocument,
@@ -142,4 +143,4 @@ const ClientService = () => {
     };
 };
 
-export default ClientService;
+export default ProjectService;

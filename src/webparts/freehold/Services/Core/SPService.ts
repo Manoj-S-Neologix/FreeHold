@@ -9,7 +9,8 @@ export type SPServiceType = {
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
     deleteLibrary: (libraryName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
-
+    // addDocumentsToFolder: (libraryName: string) => Promise<any>;
+    
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
         listTitle: string,
@@ -101,16 +102,19 @@ const SPService: SPServiceType = {
         return response;
     },
 
-     getDocumentsFromFolder: async (libraryGuid: string): Promise<any> => {
-
+          getDocumentsFromFolder: async (libraryGuid: string): Promise<any> => {
             const files = await web.lists.getById(libraryGuid).items.get();
             console.log('Retrieved files:', files);
      
-        
-          }
+          },
+
     
-
-
+        //   addDocumentsToFolder: async (libraryGuid: string): Promise<any> => {
+        //     const files = await web.lists.getById(libraryGuid).items.get();
+        //     console.log('Retrieved files:', files);
+     
+        //   }
+          
 
 
 

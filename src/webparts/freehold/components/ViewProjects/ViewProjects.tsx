@@ -18,6 +18,8 @@ import ViewUpload from '../ProjectUpload/ProjectUpload';
 import AssignClient from "../AssignClient/AssignClient";
 import ViewParticularProject from "./ViewParticularProject";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import ClientService from '../../Services/Business/ClientService';
+import ProjectService from '../../Services/Business/ProjectService';
 
 
 
@@ -56,7 +58,14 @@ const ViewProject = (props: any) => {
   const [handleClientDialog, setHandleClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [clientDetails, setClientDetails] = useState({});
+  const [projectDetails, setProjectDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [projectData, setProjectData] = useState<any>([]);
+  const [AllClientData, setAllClientData] = useState<any>([]);
+
+
+
+
 
 
 
@@ -103,8 +112,11 @@ const ViewProject = (props: any) => {
   };
 
   const headCells = [
+    { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
+    { id: 'projectCode', numeric: false, disablePadding: true, label: 'Project Number' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
-    { id: 'projectCode', numeric: false, disablePadding: true, label: 'Project Code' },
+    { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
+    { id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
     { id: 'assignedClients', numeric: false, disablePadding: true, label: 'Assigned Clients' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
@@ -112,16 +124,16 @@ const ViewProject = (props: any) => {
   ];
 
 
-  const rows = [
-    { projectName: 'John Doe', projectCode: 'JD123', assignedClients: 'Smith Martinez', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Jane Smith', projectCode: 'JS456', assignedClients: 'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Alice Johnson', projectCode: 'AJ789', assignedClients: 'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Bob Brown', projectCode: 'BB321', assignedClients: 'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Charlie Davis', projectCode: 'CD654', assignedClients: 'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'David Wilson', projectCode: 'DW987', assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Eve Anderson', projectCode: 'EA246', assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
-    { projectName: 'Frank Martinez', projectCode: 'FM135', assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
-  ];
+  // const rows = [
+  //   {  projectCode: 'JD123', projectName: 'John Doe', location: "UAE", developer:"Soren", assignedClients: 'Smith Martinez', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
+  //   {  projectCode: 'JS456', projectName: 'Jane Smith', location: "UAE", developer:"Soren", assignedClients: 'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
+  //   {  projectCode: 'AJ789',projectName: 'Alice Johnson', location: "UAE", developer:"Soren", assignedClients: 'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
+  //   { projectCode: 'BB321', projectName: 'Bob Brown', location: "UAE", developer:"Soren", assignedClients: 'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren' },
+  //   { projectCode: 'CD654',  projectName: 'Charlie Davis', location: "UAE", developer:"Soren", assignedClients: 'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren' },
+  //   {  projectCode: 'DW987', projectName: 'David Wilson', location: "UAE", developer:"Soren", assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' }, 
+  //   {  projectCode: 'EA246', projectName: 'Eve Anderson', location: "UAE", developer:"Soren", assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
+  //   {  projectCode: 'FM135', projectName: 'Frank Martinez', location: "UAE", developer:"Soren", assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
+  // ];
 
   const actions = [
     {
@@ -131,7 +143,7 @@ const ViewProject = (props: any) => {
         //console.log(`View clicked for row ${id}`);
         //console.log(`View clicked for row ${id}`);
         setIsViewDialogOpen(true);
-        setClientDetails(id);
+        setProjectDetails(id);
       },
     },
     {
@@ -174,6 +186,44 @@ const ViewProject = (props: any) => {
       ),
     },
   ];
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const projectService = ProjectService();
+      const select = '*';
+      const expand = '';
+      const results = await projectService.getProjectExpand('Project_Informations', select, expand);
+      setProjectData(results?.updatedResults[0].TableData);
+      setAllClientData(results?.updatedResults);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // console.log(, "data")
+
+  const tableData = projectData.map((item: any) => {
+    return {
+      Id: item.Id,
+      projectCode: item.projectCode,
+      projectName: item.projectName,
+      location: item.location,
+      developer: item.developer,
+      assignedClients: item.assignedClients,
+      modifiedDate: item?.modifiedDate,
+      modifiedBy: item?.modifiedBy,
+    };
+  })
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+  React.useEffect(() => {
+    fetchData();
+  }, [isViewDialogOpen]);
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >  
@@ -232,13 +282,22 @@ const ViewProject = (props: any) => {
         </Box>
         <Box >
           <GridTable
-            rows={rows}
+            // rows={rows}
+            // headCells={headCells}
+            // props={props}
+            // actions={actions}
+            // searchQuery={searchQuery}
+            // setSelected={setSelected}
+            // selected={selected} />
+            rows={tableData}
             headCells={headCells}
             props={props}
-            actions={actions}
             searchQuery={searchQuery}
             setSelected={setSelected}
-            selected={selected} />
+            selected={selected}
+            actions={actions}
+            isLoading={isLoading}
+            AllClientData={AllClientData}/>
         </Box>
       </Stack>}
       {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />}
@@ -248,8 +307,9 @@ const ViewProject = (props: any) => {
       {isViewDialogOpen &&
         <ViewParticularProject
           props={props}
-          clientDetails={clientDetails}
+          projectDetails={projectDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}
+          setProjectDetails={setProjectDetails}
         />}
     </Box>
   );

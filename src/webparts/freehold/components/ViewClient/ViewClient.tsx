@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack } from '@mui/material';
+import { Breadcrumbs, Box, Stack, Dialog, DialogActions, DialogContent, DialogTitle, Grid,  MenuItem, TextField, IconButton } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -18,6 +18,11 @@ import DeleteDialog from "../Delete/Delete";
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import ViewParticularClient from './ViewParticularClient';
 import ClientService from "../../Services/Business/ClientService";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useTheme } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close";
+
+
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -61,6 +66,9 @@ const ViewClient = (props: any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = React.useState(false);
+  const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
+
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -88,6 +96,10 @@ const ViewClient = (props: any) => {
     fetchData()
   };
 
+  const handleFilterClick = () => {
+    setOpen(true);
+};
+
 
 
   const closeUploadDialog = () => {
@@ -98,6 +110,17 @@ const ViewClient = (props: any) => {
 
     setIsDeleteDialogOpen(false);
   };
+
+  const theme = useTheme();
+
+    const handleClear = () => {
+      // Implement clear functionality here
+  };
+
+  const handleApply = () => {
+      // Implement apply functionality here
+  };
+
 
   const IconStyles = (icon: any) => {
     return (
@@ -202,7 +225,7 @@ const ViewClient = (props: any) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
-      const results = await clientService.getClientExpand('Client_Information', select, expand);
+      const results = await clientService.getClientExpand('Client_Informations', select, expand);
       setClientData(results?.updatedResults[0].TableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -284,8 +307,93 @@ const ViewClient = (props: any) => {
               message="Assign Staff"
             />
           </Box>
+          <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <CustomSearch handleSearchChange={handleSearchChange} />
+          <IconButton
+                                        onClick={handleFilterClick}
+                                    >
+                                        <FilterAltIcon />
+                                    </IconButton>
         </Box>
+
+
+        <Dialog
+    open={open}
+    fullWidth={true}
+    maxWidth={"sm"}
+>
+    <DialogTitle>
+        <div className="d-flex flex-column">
+            <div className="d-flex justify-content-between align-items-center relative">
+                <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
+                    Filter
+                </h4>
+            </div>
+            <div style={{
+                height: '4px', width: '100%',
+                backgroundColor: theme.palette.primary.main
+            }} />
+        </div>
+    </DialogTitle>
+
+    <IconButton
+        aria-label="close"
+        onClick={() => { setOpen(false); }}
+        sx={{
+            position: "absolute",
+            right: "14px",
+            top: "8px",
+            color: (theme: any) => theme.palette.grey[500],
+        }}
+    >
+        <CloseIcon />
+    </IconButton>
+    <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
+        <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+            {/* Assign Staff Dropdown */}
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    fullWidth
+                    label="Assign Staff"
+                    select
+                    // value={assignStaffValue}
+                    // onChange={(event) => setAssignStaffValue(event.target.value)}
+                    variant="outlined"
+                >
+                    {assignStaffOptions.map((option:any) => (
+                        <MenuItem key={option} value={option}>
+                            {option}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </Grid>
+            {/* People Picker Field */}
+            <Grid item xs={12} sm={6}>
+                {/* Implement your people picker component here */}
+                {/* Example: <PeoplePickerField onSelect={handleStaffSelection} /> */}
+            </Grid>
+        </Grid>
+        <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+            <MuiButton variant="outlined" onClick={handleClear}>
+                Clear
+            </MuiButton>
+            <MuiButton
+                onClick={handleApply}
+                variant="contained"
+                color="primary"
+                sx={{
+                    maxWidth: '150px',
+                    float: 'right',
+                }}
+            >
+                Apply
+            </MuiButton>
+        </DialogActions>
+    </DialogContent>
+</Dialog>
+        </Box>
+       
+      
         <Box >
           <GridTable
             rows={tableData}
@@ -304,7 +412,7 @@ const ViewClient = (props: any) => {
       }
       {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} />}
       {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />}
-      <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} />
+      <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData}/>
 
       {isDeleteDialogOpen &&
         <DeleteDialog clientDetails={clientDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
