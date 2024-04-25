@@ -112,8 +112,8 @@ const ViewProject = (props: any) => {
   };
 
   const headCells = [
-    { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'projectCode', numeric: false, disablePadding: true, label: 'Project Number' },
+    // { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
+    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Number' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
     { id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
@@ -122,6 +122,8 @@ const ViewProject = (props: any) => {
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
     { id: 'action', numeric: false, disablePadding: true, label: 'Action' },
   ];
+
+  console.log(AllClientData, "AllClientData");
 
 
   // const rows = [
@@ -194,7 +196,8 @@ const ViewProject = (props: any) => {
       const select = '*';
       const expand = '';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
-      setProjectData(results?.updatedResults[0].TableData);
+      console.log(results,"result")
+      setProjectData(results?.updatedResults[0].TableData);   
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
     } catch (error) {
@@ -208,7 +211,7 @@ const ViewProject = (props: any) => {
   const tableData = projectData.map((item: any) => {
     return {
       Id: item.Id,
-      projectCode: item.projectCode,
+      projectNumber: item.projectNumber,
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
@@ -217,6 +220,8 @@ const ViewProject = (props: any) => {
       modifiedBy: item?.modifiedBy,
     };
   })
+
+  console.log(tableData, "data")
 
   React.useEffect(() => {
     fetchData();
@@ -297,7 +302,8 @@ const ViewProject = (props: any) => {
             selected={selected}
             actions={actions}
             isLoading={isLoading}
-            AllClientData={AllClientData}/>
+            AllClientData={AllClientData}
+            />
         </Box>
       </Stack>}
       {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />}

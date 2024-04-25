@@ -14,13 +14,13 @@ import ClientService from '../../Services/Business/ClientService';
 interface UploadDocumentProps {
     open: boolean;
     onClose: () => void;
-    particularClientAllData: any 
+    particularClientAllData: any
 }
 
 const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [files, setFiles] = useState<File[]>([]); 
-    const { handleSubmit } = useForm(); 
+    const [files, setFiles] = useState<File[]>([]);
+    const { handleSubmit } = useForm();
     console.log(particularClientAllData, "ClientData")
 
 
@@ -36,10 +36,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     //         }
     //     }
     // };
-    
+
     const fetchData = async () => {
         if (particularClientAllData.length > 0) {
-            const clientService: any = ClientService(); 
+            const clientService: any = ClientService();
             const folderGUID = particularClientAllData[0].GUID;
             try {
                 const results = await clientService.getDocumentsFromFolder(folderGUID);
@@ -51,19 +51,19 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             console.warn("No data in particularClientAllData");
         }
     };
-    
-    
-   
+
+
+
     useEffect(() => {
         fetchData();
-      }, [particularClientAllData]);
+    }, [particularClientAllData]);
 
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
     };
 
-    
+
     const fileInfoArray = files?.map((file: any) => ({
         lastModified: file.lastModified,
         lastModifiedDate: file.lastModifiedDate,
@@ -71,27 +71,27 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         size: file.size,
         type: file.type,
         webkitRelativePath: file.webkitRelativePath
-      }));
-    
-      console.log(fileInfoArray, 'fileInfoArray');
+    }));
 
-      const handleSave = handleSubmit(async (data: any) => {
+    console.log(fileInfoArray, 'fileInfoArray');
+
+    const handleSave = handleSubmit(async (data: any) => {
         try {
             const apiResponse = ClientService();
-    
+
             console.log(particularClientAllData[0].name, "name");
             console.log(fileInfoArray);
             await apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray);
 
 
-            
+
             handleCancel();
-            setFiles([]); 
+            setFiles([]);
         } catch (error) {
             console.error("Failed to add client and document:", error);
         }
     });
-    
+
 
 
     const handleCancel = () => {

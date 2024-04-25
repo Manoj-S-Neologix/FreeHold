@@ -7,21 +7,21 @@ const ProjectService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
 
-    const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
-        if (spServiceInstance) {
-            const response = await spServiceInstance.createLibrary(libraryName);
-            await spServiceInstance.uploadDocument(libraryName, file);
-            console.log(response, "ClientLibraryGUIDClientLibraryGUID");
-            const results = await spServiceInstance.updateListItem(listName, Id,
-                {
-                    ClientLibraryGUID: response.data.Id,
-                    ClientLibraryPath: response.data.ParentWebUrl+"/"+libraryName
-                }
-            );
-            return results;
+    // const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
+    //     if (spServiceInstance) {
+    //         const response = await spServiceInstance.createLibrary(libraryName);
+    //         await spServiceInstance.uploadDocument(libraryName, file);
+    //         console.log(response, "ClientLibraryGUIDClientLibraryGUID");
+    //         const results = await spServiceInstance.updateListItem(listName, Id,
+    //             {
+    //                 ClientLibraryGUID: response.data.Id,
+    //                 ClientLibraryPath: response.data.ParentWebUrl+"/"+libraryName
+    //             }
+    //         );
+    //         return results;
 
-        }
-    };
+    //     }
+    // };
 
     const getProject = async (ListName: string) => {
         if (spServiceInstance) {
@@ -35,9 +35,9 @@ const ProjectService = () => {
             const TableData = results.map((item: any) => {
                 return {
                     Id: item.Id,
-                    projectCode: item.ProjectNumber,
+                    projectNumber: item.ProjectNumber,
                     projectName: item.ProjectName,
-                    location: item.Locatiot,
+                    location: item.Location,
                     developer:item.Developer,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
@@ -46,17 +46,18 @@ const ProjectService = () => {
             });
             const updatedResults = results.map((item: any) => {
                 return {
-                    // name: item.Title,
-                    // email: item.ClientEmail,
+                    projectNumber: item.ProjectNumber,
+                    projectName: item.ProjectName,
+                    location: item.Location,
+                    developer: item.Developer,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
                     assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
-                    contact: item.ClientContact,
                     GUID: item.ClientLibraryGUID,
 
                     Author: {
                         Name: item.Author.Title,
-                        Email: item.Author.EMail
+                        // Email: item.Author.EMail
                     },
                     assignedStaff: item.AssignedStaff &&
                         item.AssignedStaff.map((staff: any) => {
@@ -69,77 +70,77 @@ const ProjectService = () => {
                     TableData
                 };
             });
-            
+            console.log(updatedResults,"results")
             return { updatedResults };
         }
     };
 
-    const updateClient = async (ListName: string, itemId: number, itemData: any) => {
-        if (spServiceInstance) {
-            const results = await spServiceInstance.updateListItem(
-                ListName,
-                itemId,
-                itemData);
-            console.log(results, "results");
-            return results;
-        }
-    };
+    // const updateClient = async (ListName: string, itemId: number, itemData: any) => {
+    //     if (spServiceInstance) {
+    //         const results = await spServiceInstance.updateListItem(
+    //             ListName,
+    //             itemId,
+    //             itemData);
+    //         console.log(results, "results");
+    //         return results;
+    //     }
+    // };
 
-    const addClient = async (ListName: string, itemData: any) => {
-        if (spServiceInstance) {
-            const results = await spServiceInstance.addListItem(ListName, itemData);
-            return results.data;
-        }
-    };
+    // const addClient = async (ListName: string, itemData: any) => {
+    //     if (spServiceInstance) {
+    //         const results = await spServiceInstance.addListItem(ListName, itemData);
+    //         return results.data;
+    //     }
+    // };
 
-    const deleteClient = async (ListName: string, itemId: number) => {
+    // const deleteClient = async (ListName: string, itemId: number) => {
 
-        if (spServiceInstance) {
-            const results = await spServiceInstance.deleteListItem(ListName, itemId);
-            console.log(results, "results");
-            return results;
-        }
+    //     if (spServiceInstance) {
+    //         const results = await spServiceInstance.deleteListItem(ListName, itemId);
+    //         console.log(results, "results");
+    //         return results;
+    //     }
     
-    };
+    // };
 
-    const deleteLibrary = async (LibraryName: string) => {
+    // const deleteLibrary = async (LibraryName: string) => {
 
-        if (spServiceInstance) {
-            const results = await spServiceInstance.deleteLibrary(LibraryName);
-            console.log(results, "results");
-            return results;
-        }
+    //     if (spServiceInstance) {
+    //         const results = await spServiceInstance.deleteLibrary(LibraryName);
+    //         console.log(results, "results");
+    //         return results;
+    //     }
     
-    };
+    // };
 
-            const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
-               if(spServiceInstance){
-                    const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
-                    console.log('Retrieved files:', files);
-                  }
-            };
+    //         const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
+    //            if(spServiceInstance){
+    //                 const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
+    //                 console.log('Retrieved files:', files);
+    //               }
+    //         };
 
 
-            const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
+    //         const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
  
-                if (spServiceInstance) {
-                    const results = await spServiceInstance.uploadDocument(libraryGuid, file);
-                    console.log(results, "results");
-                }
-            };
+    //             if (spServiceInstance) {
+    //                 const results = await spServiceInstance.uploadDocument(libraryGuid, file);
+    //                 console.log(results, "results");
+    //             }
+    //         };
 
 
 
     return {
         getProject,
-        updateClient,
+        // updateClient,
         getProjectExpand,
-        addClient,
-        deleteClient,
-        uploadDocument,
-        deleteLibrary,
-        getDocumentsFromFolder,
-        addDocumentsToFolder
+        // addClient,
+        // deleteClient,
+        // uploadDocument,
+        // deleteLibrary,
+        // getDocumentsFromFolder,
+        // addDocumentsToFolder
     };
 };
 

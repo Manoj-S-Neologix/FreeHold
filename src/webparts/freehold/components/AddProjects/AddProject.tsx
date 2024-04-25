@@ -93,9 +93,9 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             {/* <Button onClick={handleCancel} variant="contained">Cancel</Button>
         <Button onClick={handleSave} variant="contained"> Save </Button> */}
-            <Button variant="outlined" onClick={handleCancel}>
+            {/* <Button variant="outlined" onClick={handleCancel}>
               Cancel
-            </Button>
+            </Button> */}
             <Button
               onClick={handleSave}
               variant="contained"
@@ -105,7 +105,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
                 float: 'right',
               }}
             >
-              Save
+              Add
             </Button>
 
           </DialogActions>

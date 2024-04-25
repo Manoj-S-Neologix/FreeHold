@@ -328,8 +328,8 @@ const ViewUpload: React.FC<UploadDocumentProps> = ({ open, onClose }) => {
                   </TableHead>
                   <TableBody>
                     {[
-                      { id: 1, name: 'Folder Name', modifiedDate: '2024-04-22', modifiedBy: 'User 1', uploadDate: '2024-04-20' },
-                      { id: 2, name: 'Document Name', modifiedDate: '2024-04-21', modifiedBy: 'User 2', uploadDate: '2024-04-19' },
+                      { id: 1, name: 'Manoj', modifiedDate: '2024-04-22', modifiedBy: 'User 1', uploadDate: '2024-04-20' },
+                      { id: 2, name: 'Valarmathi', modifiedDate: '2024-04-21', modifiedBy: 'User 2', uploadDate: '2024-04-19' },
                     ].map((document) => (
                       <TableRow key={document.id}>
                         <TableCell>{document.name}</TableCell>
