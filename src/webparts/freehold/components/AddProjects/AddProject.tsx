@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,6 +10,8 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack } from '@mui/material';
+import ProjectService from '../../Services/Business/ProjectService';
+import {Controller, useForm } from "react-hook-form";
 
 interface AddClientDialogProps {
   open: boolean;
@@ -16,16 +19,68 @@ interface AddClientDialogProps {
 }
 
 const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
+  const [files, setFiles] = useState<File[]>([]);
+  // const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+  const { control, handleSubmit, formState: { errors }, trigger } = useForm();
 
 
   const handleCancel = () => {
     onClose();
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
 
-    onClose();
-  };
+  //   onClose();
+  // };
+  
+  const fileInfoArray = files?.map((file: any) => ({
+    lastModified: file.lastModified,
+    lastModifiedDate: file.lastModifiedDate,
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    webkitRelativePath: file.webkitRelativePath
+  }));
+
+  console.log(fileInfoArray, 'fileInfoArray');
+
+
+  const handleSave = handleSubmit(async (data) => {
+    try {
+
+      const apiResponse = ProjectService();
+
+      const dataObj = {
+        Title: data.title,
+        ProjectNumber: data.projectNumber,
+        Location: data.location,
+        Developer:data.developer
+      };
+      // false && await addListItem('Clients', dataObj);
+
+      const response = await apiResponse.addProject("Project_Informations", dataObj);
+      const fileInfoArray = files.map((file: any) => ({
+        lastModified: file.lastModified,
+        lastModifiedDate: file.lastModifiedDate,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        webkitRelativePath: file.webkitRelativePath
+      }));
+      console.log(response, fileInfoArray, 'responseresponseresponse');
+      // await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
+      handleCancel();
+
+      setFiles([]);
+      // showToast(`Client Added Successfully !`, "success");
+
+      handleCancel();
+    } catch (error) {
+      //showToast(`Failed to add client and document.`, "error");
+
+    }
+  });
+
 
   return (
     <Box sx={{ width: '100', padding: '20px' }} >
@@ -66,29 +121,159 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
           >
             <CloseIcon />
           </IconButton>
+
           <DialogContent >
+          <form onSubmit={handleSave}>
             <div style={{ display: 'flex', marginBottom: '20px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
-                <label htmlFor="clientName">Project Number*</label>
-                <TextField id="clientName" margin="dense" size="small" fullWidth />
+                <label htmlFor="projectNumber">Project Number*</label>
+                {/* <TextField id="clientName" margin="dense" size="small" fullWidth /> */}
+                <Controller
+                      name="projectNumber"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'Project Number is required',
+                        minLength: {
+                          value: 3,
+                          message: "Project Number must be at least 3 characters.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "Project Number must be at most 100 characters.",
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="projectNumber"
+                          margin="dense"
+                          size="small"
+                          fullWidth
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            field.onChange(value);
+                            await trigger('projectNumber');
+                          }}
+                          error={!!errors.title}
+                          helperText={errors.projectNumber && errors.projectNumber.message}
+                        />
+                      )}
+                    />
               </div>
               <div style={{ flex: 1 }}>
-                <label htmlFor="clientDetails">Project Name</label>
-                <TextField id="clientDetails" margin="dense" size="small" fullWidth />
+                <label htmlFor="projectName">Project Name</label>
+                {/* <TextField id="clientDetails" margin="dense" size="small" fullWidth /> */}
+                <Controller
+                      name="title"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'Project Name is required',
+                        minLength: {
+                          value: 3,
+                          message: "Project Name must be at least 3 characters.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "Client Name must be at most 100 characters.",
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="projectName"
+                          margin="dense"
+                          size="small"
+                          fullWidth
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            field.onChange(value);
+                            await trigger('title');
+                          }}
+                          error={!!errors.title}
+                          helperText={errors.title && errors.title.message}
+                        />
+                      )}
+                    />
               </div>
             </div>
             <div style={{ display: 'flex', marginBottom: '10px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
-              <label htmlFor="Location">Location</label>
-              <TextField id="Location" margin="dense" size="small" fullWidth />
+              <label htmlFor="location">Location</label>
+              {/* <TextField id="Location" margin="dense" size="small" fullWidth /> */}
+              <Controller
+                      name="location"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'location is required',
+                        minLength: {
+                          value: 3,
+                          message: "location must be at least 3 characters.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "location must be at most 100 characters.",
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="location"
+                          margin="dense"
+                          size="small"
+                          fullWidth
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            field.onChange(value);
+                            await trigger('location');
+                          }}
+                          error={!!errors.title}
+                          helperText={errors.location && errors.location.message}
+                        />
+                      )}
+                    />
               </div>
               <div style={{ flex: 1 }}>
-                <label htmlFor="Developer">Developer</label>
-                <TextField id="Developer" margin="dense" size="small" fullWidth />
+                <label htmlFor="developer">Developer</label>
+                {/* <TextField id="Developer" margin="dense" size="small" fullWidth /> */}
+                <Controller
+                      name="developer"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'Project Number is required',
+                        minLength: {
+                          value: 3,
+                          message: "Project Number must be at least 3 characters.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "Project Number must be at most 100 characters.",
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="developer"
+                          margin="dense"
+                          size="small"
+                          fullWidth
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            field.onChange(value);
+                            await trigger('developer');
+                          }}
+                          error={!!errors.title}
+                          helperText={errors.developer && errors.developer.message}
+                        />
+                      )}
+                    />
               </div>
             </div>
 
-
+          </form>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
             {/* <Button onClick={handleCancel} variant="contained">Cancel</Button>

@@ -18,7 +18,6 @@ import ViewUpload from '../ProjectUpload/ProjectUpload';
 import AssignClient from "../AssignClient/AssignClient";
 import ViewParticularProject from "./ViewParticularProject";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-// import ClientService from '../../Services/Business/ClientService';
 import ProjectService from '../../Services/Business/ProjectService';
 
 
@@ -63,12 +62,6 @@ const ViewProject = (props: any) => {
   const [projectData, setProjectData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
 
-
-
-
-
-
-
   const navigate = useNavigate();
 
   const handleSearchChange = (event: any) => {
@@ -103,6 +96,8 @@ const ViewProject = (props: any) => {
     console.log('Filter icon clicked');
 };
 
+
+
   const IconStyles = (icon: any) => {
     return (
       <div>
@@ -110,6 +105,7 @@ const ViewProject = (props: any) => {
       </div >
     );
   };
+ 
 
   const headCells = [
     // { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
@@ -125,17 +121,9 @@ const ViewProject = (props: any) => {
 
   console.log(AllClientData, "AllClientData");
 
+ 
 
-  // const rows = [
-  //   {  projectCode: 'JD123', projectName: 'John Doe', location: "UAE", developer:"Soren", assignedClients: 'Smith Martinez', modifiedDate: '01/02/2023', modifiedBy: 'Mateo Soren' },
-  //   {  projectCode: 'JS456', projectName: 'Jane Smith', location: "UAE", developer:"Soren", assignedClients: 'Diego Charlie', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-  //   {  projectCode: 'AJ789',projectName: 'Alice Johnson', location: "UAE", developer:"Soren", assignedClients: 'Marco Doe', modifiedDate: '04/04/2024', modifiedBy: 'Mateo Soren' },
-  //   { projectCode: 'BB321', projectName: 'Bob Brown', location: "UAE", developer:"Soren", assignedClients: 'Altair Martinez', modifiedDate: '07/01/2024', modifiedBy: 'Mateo Soren' },
-  //   { projectCode: 'CD654',  projectName: 'Charlie Davis', location: "UAE", developer:"Soren", assignedClients: 'Martinez', modifiedDate: '10/04/2024', modifiedBy: 'Mateo Soren' },
-  //   {  projectCode: 'DW987', projectName: 'David Wilson', location: "UAE", developer:"Soren", assignedClients: 'Antonio Rabin', modifiedDate: '15/04/2024', modifiedBy: 'Mateo Soren' }, 
-  //   {  projectCode: 'EA246', projectName: 'Eve Anderson', location: "UAE", developer:"Soren", assignedClients: 'Etahn Martin', modifiedDate: '12/02/2024', modifiedBy: 'Mateo Soren' },
-  //   {  projectCode: 'FM135', projectName: 'Frank Martinez', location: "UAE", developer:"Soren", assignedClients: 'Henry ', modifiedDate: '11/03/2024', modifiedBy: 'Mateo Soren' },
-  // ];
+
 
   const actions = [
     {
@@ -143,9 +131,13 @@ const ViewProject = (props: any) => {
       icon: <VisibilityIcon />,
       handler: (id: any) => {
         //console.log(`View clicked for row ${id}`);
-        //console.log(`View clicked for row ${id}`);
+
         setIsViewDialogOpen(true);
         setProjectDetails(id);
+
+        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        // setParticularClientAllData(uniqueClientData);
+
       },
     },
     {
@@ -193,12 +185,18 @@ const ViewProject = (props: any) => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*';
-      const expand = '';
+      const select = '*,Author/Title,Author/EMail';
+      const expand = 'Author';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
       console.log(results,"result")
-      setProjectData(results?.updatedResults[0].TableData);   
-      setAllClientData(results?.updatedResults);
+      if (results && results.updatedResults && results.updatedResults.length > 0) {
+        setProjectData(results.updatedResults[0].TableData);   
+        setAllClientData(results.updatedResults);
+      } else {
+        // Handle case where no data is returned
+        setProjectData([]);
+        setAllClientData([]);
+      }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

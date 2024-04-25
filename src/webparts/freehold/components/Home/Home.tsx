@@ -11,6 +11,8 @@ import {
 } from '../Route/index';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
+// import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 const colorCodes = {
     primary: "#125895",
@@ -20,7 +22,9 @@ const colorCodes = {
 const Home = (props: any) => {
     return (
         <React.Fragment>
+            {/* <ToastContainer /> */}
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
+              
                 <HashRouter basename='/'>
                     <Header props={props} />
                     <Search props={props} />

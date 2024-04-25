@@ -17,13 +17,17 @@ import { addListItem } from '../../Services/Core/ClientService';
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
-//import { showToast } from "../../hooks/toastify";
+// import { showToast } from "../../hooks/toastify";
+// import 'react-toastify/dist/ReactToastify.css';
+// import {  toast } from 'react-toastify';
+
 
 
 const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+  // const notify = () => toast("Wow so easy !");
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -50,6 +54,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
 
   const handleSave = handleSubmit(async (data) => {
     try {
+
       const apiResponse = ClientService();
 
       const dataObj = {
@@ -73,7 +78,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       handleCancel();
 
       setFiles([]);
-      //showToast(`Client Added Successfully !`, "success");
+      // showToast(`Client Added Successfully !`, "success");
 
       handleCancel();
     } catch (error) {
@@ -240,6 +245,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
             >
               Add
             </Button>
+            {/* <button onClick={notify}>Notify !</button> */}
             {/* <Button variant="outlined" onClick={handleCancel}>
               Clear
             </Button> */}
