@@ -91,10 +91,11 @@ const ClientService = () => {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
+                    console.log(staff, "staffEMail");
                     const staffDetails = {
                         Id: staff.Id,
                         Name: staff.Title,
-                        Email: staff.EMail && await getPersonByEmail(staff.EMail)
+                        Email: staff.Id && await getPersonById(staff.Id)
                     };
                     return staffDetails;
                 }));
@@ -108,6 +109,7 @@ const ClientService = () => {
                     assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
                     contact: item.ClientContact,
                     GUID: item.ClientLibraryGUID,
+                    webURL:item.ClientLibraryPath,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
@@ -173,6 +175,15 @@ const ClientService = () => {
         if (spServiceInstance) {
             const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
             console.log('Retrieved files:', files);
+            return files;
+        }
+    };
+
+    const deleteFile = async (libraryGuid: any, fileId: any) => {
+        if (spServiceInstance) {
+            const files = await spServiceInstance.deleteFile(libraryGuid, fileId);
+            console.log('Retrieved files:', files);
+            return files;
         }
     };
 
@@ -182,6 +193,14 @@ const ClientService = () => {
             const results = await spServiceInstance.getPersonByEmail(email);
             console.log(results, "results");
             return results;
+        }
+    };
+    const getPersonById = async (id: number) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getPersonById(id);
+            console.log(results, "resultsgetPersonById");
+            return results.Email;
         }
     };
     const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
@@ -203,8 +222,10 @@ const ClientService = () => {
         uploadDocument,
         deleteLibrary,
         getDocumentsFromFolder,
+        deleteFile,
         getPersonByEmail,
-        addDocumentsToFolder
+        addDocumentsToFolder,
+        getPersonById
     };
 };
 

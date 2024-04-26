@@ -11,63 +11,63 @@ import { Box, Stack } from '@mui/material';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import ClientService from "../../Services/Business/ClientService";
 
-const AddStaffDialog = ({ open, onClose, props, particularClientAllData }: any) => {
+const AddStaffDialog = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
 
 
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-
-    console.log(particularClientAllData);
+    const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
 
     useEffect(() => {
-        // Pre-populate selected persons if already assigned
-        if (particularClientAllData && particularClientAllData.assignedStaff) {
-            setSelectedPersons(particularClientAllData.assignedStaff.map((staff: any) => ({
-                id: staff.Id,
-                text: staff.Name,
-                secondaryText: staff.Email,
-                imageUrl: `https://freeholddxb.sharepoint.com/_layouts/15/userphoto.aspx?size=M&accountname=${encodeURIComponent(staff.Email)}`
-            })));
-        }
-
-    }, []);
-    useEffect(() => {
-        // Pre-populate selected persons if already assigned
-        if (particularClientAllData && particularClientAllData.assignedStaff) {
-            setSelectedPersons(particularClientAllData.assignedStaff.map((staff: any) => ({
-                id: staff.Id,
-                text: staff.Name,
-                secondaryText: staff.Email,
-                imageUrl: `https://freeholddxb.sharepoint.com/_layouts/15/userphoto.aspx?size=M&accountname=${encodeURIComponent(staff.Email)}`
-            })));
-        }
-
+        const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
+            item.assignedStaff.map((assignStaff: any) => assignStaff.Email)
+        );
+        setSelectedPersons(assignedStaffEmails);
     }, [particularClientAllData]);
 
+
+    console.log(particularClientAllData, selected, selectedPersons, "particularClientAllData");
 
     const handleCancel = () => {
         onClose();
     };
 
-    console.log("Selected persons:", selectedPersons);
+
     const handleSave = async () => {
         const dataObj = {
             AssignedStaffId: {
-                results: selectedPersons
+                results: selectedPersonsId
             }
         };
-        ClientService().updateClient(
-            "Client_Informations",
-            particularClientAllData[0].Id,
-            dataObj
-        ).then((response: any) => {
-            console.log("Success:", response);
-            onClose();
+        if (selected?.length === 0) {
+            ClientService().updateClient(
+                "Client_Informations",
+                particularClientAllData[0].Id,
+                dataObj
+            ).then((response: any) => {
+                console.log("Success:", response);
+                onClose();
 
-        }).catch((error: any) => {
-            console.error("Error:", error);
-        });
+            }).catch((error: any) => {
+                console.error("Error:", error);
+            });
+        }
+        else {
+            for (const item of selected) {
+                ClientService().updateClient(
+                    "Client_Informations",
+                    item,
+                    dataObj
+                ).then((response: any) => {
+                    console.log("Success:", response);
+                    onClose();
+
+                }).catch((error: any) => {
+                    console.error("Error:", error);
+                });
+
+            }
+        }
     };
-
 
 
     const handlePeoplePickerChange = async (items: any[]) => {
@@ -78,7 +78,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData }: any) 
             console.log(getID.Id, "getIDgetID");
             selectedPersonsIds.push(getID.Id);
         }
-        setSelectedPersons(selectedPersonsIds);
+        setSelectedPersonsId(selectedPersonsIds);
     };
 
 
@@ -133,7 +133,8 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData }: any) 
                             principalTypes={[PrincipalType.User]}
                             resolveDelay={1000}
                             onChange={handlePeoplePickerChange}
-                            defaultSelectedUsers={selectedPersons}
+                            defaultSelectedUsers={selected?.length > 0 ? [] : exsistingPersons || selectedPersons || []}
+
                         />
 
                     </DialogContent>

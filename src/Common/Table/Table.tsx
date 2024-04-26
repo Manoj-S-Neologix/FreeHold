@@ -73,7 +73,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
 
     const handleSelectAllClick = (event: any) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n: any, idx: any) => idx + 1);
+            const newSelected = rows.map((n: any, idx: any) => n.Id);
             setSelected(newSelected);
             return;
         }
@@ -141,17 +141,17 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                         filteredRows
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             .map((row: any, idx: any) => {
-                                                const isItemSelected = isSelected(idx + 1);
-                                                const labelId = `enhanced-table-checkbox-${idx + 1}`;
+                                                const isItemSelected = isSelected(row.Id);
+                                                const labelId = `enhanced-table-checkbox-${row.Id}`;
 
                                                 return (
                                                     <TableRow
                                                         hover
-                                                        onClick={(event) => handleClick(event, idx + 1)}
+                                                        onClick={(event) => handleClick(event, row.Id)}
                                                         role="checkbox"
                                                         aria-checked={isItemSelected}
                                                         tabIndex={-1}
-                                                        key={idx + 1}
+                                                        key={row.Id}
                                                         selected={isItemSelected}
                                                         sx={{ cursor: 'pointer', height: "55px" }}
                                                     >
@@ -187,7 +187,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                             </TableCell>
                                                         ))} */}
                                                         {headCells.map((headCell: any) => (
-                                                            row.hasOwnProperty(headCell.id) &&  
+                                                            row.hasOwnProperty(headCell.id) &&
                                                             <TableCell
                                                                 key={headCell.id}
                                                                 component="th"
@@ -195,8 +195,8 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                 padding="none"
                                                             >
                                                                 {searchQuery && row[headCell.id] &&
-                                                                 typeof row[headCell.id] === 'string' && 
-                                                                 row[headCell.id].toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                    typeof row[headCell.id] === 'string' &&
+                                                                    row[headCell.id].toLowerCase().includes(searchQuery.toLowerCase()) ? (
                                                                     <>
                                                                         {row[headCell.id].toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
                                                                             <React.Fragment key={index}>
@@ -261,7 +261,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                     {isLoading &&
                                         <TableRow>
                                             <TableCell colSpan={7} align="center">
-                                                <CircularProgress />
+                                                <CircularProgress size={20} />
                                             </TableCell>
                                         </TableRow>
                                     }

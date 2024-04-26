@@ -10,6 +10,8 @@ export type SPServiceType = {
     deleteLibrary: (libraryName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
     getPersonByEmail: (email: string) => Promise<any>;
+    getPersonById: (id: number) => Promise<any>;
+    deleteFile: (libraryName: string, fileId: number) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -105,14 +107,32 @@ const SPService: SPServiceType = {
 
     getDocumentsFromFolder: async (libraryGuid: string): Promise<any> => {
 
-        const files = await web.lists.getById(libraryGuid).items.get();
+        const files = await web.lists.getById(libraryGuid).items.select(
+            "FileLeafRef",
+            "FileRef",
+            "File_x0020_Type",
+            'Created',
+            'Editor/Id',
+            'Editor/Title',
+            "File", "Id"
+        ).expand("File", "Editor").getAll();
         console.log('Retrieved files:', files);
+        return files;
+    },
 
-
+    deleteFile: async (libraryGuid: string, fileId: number): Promise<any> => {
+        const files = await web.lists.getById(libraryGuid).items.getById(fileId).recycle();
+        console.log('Retrieved files:', files);
+        return files;
     },
 
     getPersonByEmail: async (email: any): Promise<any> => {
         const results = await web.siteUsers.getByEmail(email).get();
+        return results;
+    },
+
+    getPersonById: async (id: any): Promise<any> => {
+        const results = await web.siteUsers.getById(id).get();
         return results;
     }
 

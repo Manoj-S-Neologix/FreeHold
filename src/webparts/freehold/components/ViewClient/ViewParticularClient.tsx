@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumbs, Box, Stack, TextField } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
@@ -54,11 +54,20 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel }: any) => {
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData }: any) => {
     // const [selected, setSelected] = React.useState<any>([]);
 
     // const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
+    const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
+    useEffect(() => {
+        const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
+            item.assignedStaff.map((assignStaff: any) => assignStaff.Email)
+        );
+        setSelectedPersons(assignedStaffEmails);
+    }, []);
+
     // const [addClientDialog, setAddClientDialog] = useState(false);
     // // const { handleSubmit, control } = useForm();
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
@@ -75,7 +84,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
-    console.log(clientDetails,"clientdetails")
+    console.log(clientDetails, "clientdetails");
     // const handleSearchChange = (event: any) => {
     //     setSearchQuery(event.target.value);
     // };
@@ -270,7 +279,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                <TableRow>
+                                    <TableRow>
                                         <TableCell component="th" scope="row">Email</TableCell>
                                         {!isEdit ? (
                                             <TableCell>{clientDetails.email}</TableCell>
@@ -338,42 +347,42 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 variant="outlined"
                                                 label=""
                                             /> */}
-                                                               <Controller
-                                                                name="contact"
-                                                                control={control}
-                                                                defaultValue=""
-                                                                rules={{
-                                                                    required: 'Client Contact is required',
-                                                                    pattern: {
-                                                                    value: /^[0-9]{10}$/,
-                                                                    message: 'Invalid contact number'
-                                                                    }
-                                                                }}
-                                                                render={({ field }) => (
-                                                                    <TextField
-                                                                    {...field}
-                                                                    id="clientContact"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    // fullWidth
-                                                                    value={editData.contact}
-                                                                    onChange={async (e: any) => {
-                                                                        const value = e.target.value.replace(/\D/g, '');
-                                                                        field.onChange(value);
-                                                                        await trigger("contact");
-                                                                        setEditData({ ...editData, contact: value });
-                                                                    }}
-                                                                    error={!!errors.contact}
-                                                                    helperText={errors.contact && errors.contact.message}
-                                                                    />
-                                                                )}
-                                                                />
+                                                <Controller
+                                                    name="contact"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Client Contact is required',
+                                                        pattern: {
+                                                            value: /^[0-9]{10}$/,
+                                                            message: 'Invalid contact number'
+                                                        }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="clientContact"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.contact}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value.replace(/\D/g, '');
+                                                                field.onChange(value);
+                                                                await trigger("contact");
+                                                                setEditData({ ...editData, contact: value });
+                                                            }}
+                                                            error={!!errors.contact}
+                                                            helperText={errors.contact && errors.contact.message}
+                                                        />
+                                                    )}
+                                                />
 
                                             </TableCell>
                                         )}
                                     </TableRow>
                                     <TableRow>
-                                      
+
                                         <TableCell component="th" scope="row">Name</TableCell>
                                         <TableCell>{clientDetails.name}</TableCell>
                                         {/* {!isEdit ? (
@@ -388,7 +397,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 variant="outlined"
                                                 label=""
                                             /> */}
-                                                {/* <Controller
+                                        {/* <Controller
                                                     name="title"
                                                     control={control}
                                                     defaultValue=""
@@ -425,7 +434,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             </TableCell>
                                         )}  */}
                                     </TableRow>
-                                   
+
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified Date</TableCell>
                                         <TableCell>{clientDetails.modifiedDate}</TableCell>
@@ -548,7 +557,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                     open={isDeleteDialogOpen}
                     onClose={handleDeleteDialogClose} />} */}
 
-           <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
+            <AddStaffDialog exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
 
         </Box>
     );

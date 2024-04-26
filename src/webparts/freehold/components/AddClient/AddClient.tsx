@@ -4,22 +4,19 @@ import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-import { Box, Stack, Grid } from '@mui/material';
-// import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
+import { Box, Stack, Grid, CircularProgress } from '@mui/material';
 import { addListItem } from '../../Services/Core/ClientService';
-// import DeleteDialog from "../Delete/Delete";
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
-// import { showToast } from "../../hooks/toastify";
-// import 'react-toastify/dist/ReactToastify.css';
-// import {  toast } from 'react-toastify';
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+
+
 
 
 
@@ -27,7 +24,19 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
-  // const notify = () => toast("Wow so easy !");
+  const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+
+  const textFieldWidth = {
+    xs: 12,
+    sm: 6,
+    md: 6,
+    lg: 4,
+    xl: 3,
+    margin: "8px",
+  };
+
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -49,12 +58,23 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     webkitRelativePath: file.webkitRelativePath
   }));
 
-  console.log(fileInfoArray, 'fileInfoArray');
+  console.log(fileInfoArray, selectedPersons, 'fileInfoArray');
+
+  const handlePeoplePickerChange = async (items: any[]) => {
+    console.log(items, "itemsitemsitemsitems");
+    const selectedPersonsIds = [];
+    for (const item of items) {
+      const getID = await ClientService().getPersonByEmail(item.secondaryText);
+      console.log(getID.Id, "getIDgetID");
+      selectedPersonsIds.push(getID.Id);
+    }
+    setSelectedPersons(selectedPersonsIds);
+  };
 
 
   const handleSave = handleSubmit(async (data) => {
     try {
-
+      setLoading(true);
       const apiResponse = ClientService();
 
       const dataObj = {
@@ -75,6 +95,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       }));
       console.log(response, fileInfoArray, 'responseresponseresponse');
       await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
+      setLoading(false);
       handleCancel();
 
       setFiles([]);
@@ -82,16 +103,17 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
 
       handleCancel();
     } catch (error) {
+      setLoading(false);
       //showToast(`Failed to add client and document.`, "error");
 
     }
   });
 
   return (
-    <Box sx={{ width: '100', padding: '20px' }}>
+    <Box>
       <Stack direction="column" spacing={2}>
         <Dialog open={open} maxWidth='sm' fullWidth  >
-          <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+          <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', position: 'relative' }}>
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between align-items-center relative">
                 <h4 style={{ margin: '0', color: '#125895' }}>
@@ -100,7 +122,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
               <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
             </div>
           </DialogTitle>
-          <IconButton
+          {!loading && <IconButton
             aria-label="close"
             onClick={handleCancel}
             sx={{
@@ -111,150 +133,236 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
             }}
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton>}
           <DialogContent>
-            <form onSubmit={handleSave}>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
-                    <Controller
-                      name="title"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: 'Client Name is required',
-                        minLength: {
-                          value: 3,
-                          message: "Client Name must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Client Name must be at most 100 characters.",
-                        }
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="clientName"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger('title');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.title && errors.title.message}
-                        />
-                      )}
-                    />
-                  </div>
+            <Box component="form">
+              <Grid container spacing={4}>
+                <Grid
+                  item
+                  xs={textFieldWidth.xs}
+                  sm={textFieldWidth.sm}
+                  md={textFieldWidth.sm}
+                  lg={textFieldWidth.sm}
+                  xl={textFieldWidth.sm}
+                >
+                  <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="title"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Client Name is required',
+                      minLength: {
+                        value: 3,
+                        message: "Client Name must be at least 3 characters.",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Client Name must be at most 100 characters.",
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="clientName"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          await trigger('title');
+                        }}
+                        error={!!errors.title}
+                        helperText={errors.title && errors.title.message}
+                      />
+                    )}
+                  />
                 </Grid>
-                <Grid item sm={6}>
-                  <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="clientEmail">Client Email<span style={{ color: 'red' }}>*</span></label>
-                    <Controller
-                      name="email"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: "Email Id is required.",
-                        minLength: {
-                          value: 5,
-                          message: "Email address must be at least 5 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Email address must be at most 100 characters.",
-                        },
-                        pattern: {
-                          value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i,
-                          message: "Invalid email address",
-                        },
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="clientEmail"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e: any) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger("email");
-                          }}
-                          error={!!errors.email}
-                          helperText={errors.email && errors.email.message}
-                        />
-                      )}
-                    />
+                <Grid
+                  item
+                  xs={textFieldWidth.xs}
+                  sm={textFieldWidth.sm}
+                  md={textFieldWidth.sm}
+                  lg={textFieldWidth.sm}
+                  xl={textFieldWidth.sm}
+                >
+
+                  <label htmlFor="clientEmail">Client Email<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="email"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "Email Id is required.",
+                      minLength: {
+                        value: 5,
+                        message: "Email address must be at least 5 characters.",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Email address must be at most 100 characters.",
+                      },
+                      pattern: {
+                        value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i,
+                        message: "Invalid email address",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="clientEmail"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e: any) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          await trigger("email");
+                        }}
+                        error={!!errors.email}
+                        helperText={errors.email && errors.email.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={textFieldWidth.xs}
+                  sm={textFieldWidth.sm}
+                  md={textFieldWidth.sm}
+                  lg={textFieldWidth.sm}
+                  xl={textFieldWidth.sm}
+                >
+                  <label htmlFor="clientContact">Contact Number<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="contact"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Client Contact is required',
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: 'Invalid contact number'
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="clientContact"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e: any) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          field.onChange(value);
+                          await trigger("contact");
+                        }}
+                        error={!!errors.contact}
+                        helperText={errors.contact && errors.contact.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={textFieldWidth.xs}
+                  sm={textFieldWidth.sm}
+                  md={textFieldWidth.sm}
+                  lg={textFieldWidth.sm}
+                  xl={textFieldWidth.sm}
+                >
+                  <label htmlFor="AssignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="contact"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Assigned Staff is required',
+                    }}
+                    render={({ field }) => (
+                      <PeoplePicker
+                        styles={{
+                          input: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px"
+                          },
+                          itemsWrapper: {
+                            'ms-PickerPersona-container': {
+                              width: '100%',
+                              backgroundColor: 'white !important'
+                            },
+
+                          },
+                          root: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px",
+
+                            'ms-BasePicker-text': {
+                              width: '100%',
+                              borderRadius: '5px'
+                            }
+                          },
+
+
+
+                        }}
+                        {...field}
+                        context={props.props.props.context as any}
+                        personSelectionLimit={4}
+                        required={true}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        onChange={handlePeoplePickerChange}
+                        defaultSelectedUsers={selectedPersons}
+                      />
+                    )}
+                  />
+                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                </Grid>
+                <Grid
+                  item
+                  xs={textFieldWidth.xs}
+                  sm={textFieldWidth.xs}
+                  md={textFieldWidth.xs}
+                  lg={textFieldWidth.xs}
+                  xl={textFieldWidth.xs}
+                >
+                  <div >
+                    <label htmlFor="clientDocuments">Client Documents</label>
+                    <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} />
+                    {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                 </Grid>
               </Grid>
-              <div style={{ marginBottom: '20px' }}>
-                <label htmlFor="clientContact">Contact Number<span style={{ color: 'red' }}>*</span></label>
-                <Controller
-                  name="contact"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: 'Client Contact is required',
-                    pattern: {
-                      value: /^[0-9]{10}$/,
-                      message: 'Invalid contact number'
-                    }
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="clientContact"
-                      margin="dense"
-                      size="small"
-                      fullWidth
-                      onChange={async (e: any) => {
-                        const value = e.target.value.replace(/\D/g, '');
-                        field.onChange(value);
-                        await trigger("contact");
-                      }}
-                      error={!!errors.contact}
-                      helperText={errors.contact && errors.contact.message}
-                    />
-                  )}
-                />
-              </div>
-              <div >
-                <label htmlFor="clientDocuments">Client Documents</label>
-                <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} />
-                {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
-              </div>
-            </form>
+            </Box>
+            <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              spacing={3}
+            >
+              <Button variant="contained"
+                sx={{ width: loading ? '150px' : 'auto' }}
+                onClick={handleSave} disabled={loading}>
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Save"
+                )}
+              </Button>
+              {!loading && <Button variant="outlined" onClick={handleCancel}  >Clear</Button>}
+            </Stack>
           </DialogContent>
 
-          <DialogActions sx={{ padding: '10px', marginRight: '14px', mt: '0px' }}>
-            <Button
-              onClick={handleSave}
-              variant="contained"
-              color="primary"
-              sx={{
-                maxWidth: '150px',
-                float: 'right',
-              }}
-            >
-              Add
-            </Button>
-            {/* <button onClick={notify}>Notify !</button> */}
-            {/* <Button variant="outlined" onClick={handleCancel}>
-              Clear
-            </Button> */}
-          </DialogActions>
         </Dialog>
 
       </Stack>
 
-    </Box>
+    </Box >
   );
 };
 

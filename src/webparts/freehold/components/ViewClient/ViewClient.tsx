@@ -108,7 +108,6 @@ const ViewClient = (props: any) => {
   };
 
   const handleDeleteDialogClose = () => {
-
     setIsDeleteDialogOpen(false);
   };
 
@@ -156,6 +155,8 @@ const ViewClient = (props: any) => {
         // Filter out unique client data
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
         setParticularClientAllData(uniqueClientData);
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
       },
     },
 
@@ -232,6 +233,7 @@ const ViewClient = (props: any) => {
       setClientData(results?.updatedResults[0].TableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
+      setSelected([]);
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
@@ -250,17 +252,12 @@ const ViewClient = (props: any) => {
     };
   });
 
-
-
-
-
-
   React.useEffect(() => {
     fetchData();
   }, []);
-  React.useEffect(() => {
-    fetchData();
-  }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
+  // React.useEffect(() => {
+  // 
+  // }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
 
 
 
@@ -413,8 +410,8 @@ const ViewClient = (props: any) => {
 
       </Stack>
       }
-      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} />}
-      {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} />}
+      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} />}
+      {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} />}
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />
 
       {isDeleteDialogOpen &&
@@ -427,6 +424,7 @@ const ViewClient = (props: any) => {
           setIsEdit={setIsEdit}
           setClientDetails={setClientDetails}
           isEdit={isEdit}
+          particularClientAllData={particularClientAllData} selected={selected}
         />}
     </Box>
 

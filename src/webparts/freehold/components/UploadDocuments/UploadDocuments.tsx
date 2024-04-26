@@ -4,24 +4,27 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { Button as MuiButton, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button as MuiButton, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
-import DeleteDialog from "../Delete/Delete";
 import ClientService from '../../Services/Business/ClientService';
+import styles from "./UploadDocuments.module.scss";
+import formatDate from "../../hooks/dateFormat";
 
 interface UploadDocumentProps {
     open: boolean;
     onClose: () => void;
-    particularClientAllData: any
+    particularClientAllData: any;
 }
 
 const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [deleteId, setDeleteId] = useState<number>(0);
     const [files, setFiles] = useState<File[]>([]);
+    const [fileData, setFileData] = useState<any[]>([]);
     const { handleSubmit } = useForm();
-    console.log(particularClientAllData, "ClientData")
+    console.log(particularClientAllData, "ClientData");
 
 
     // const fetchData = async () => {
@@ -43,7 +46,8 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             const folderGUID = particularClientAllData[0].GUID;
             try {
                 const results = await clientService.getDocumentsFromFolder(folderGUID);
-                console.log(results, "lib name");
+                console.log(results, "File Datas");
+                setFileData(results);
             } catch (error) {
                 console.error("Error fetching documents:", error);
             }
@@ -51,6 +55,21 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             console.warn("No data in particularClientAllData");
         }
     };
+
+
+    console.log(fileData, "fileData");
+
+    const mappedFiles = fileData.map((file: any) => ({
+        id: file.Id,
+        fileName: file.FileLeafRef,
+        url: file.FileRef,
+        fileType: file.File_x0020_Type,
+        created: file.Created,
+        editorName: file.Editor.Title,
+        editorId: file.Editor.Id
+    }));
+
+    console.log(mappedFiles);
 
 
 
@@ -92,6 +111,33 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         }
     });
 
+    // const handleSave = handleSubmit((data: any) => {
+    //     const apiResponse = ClientService();
+    //     console.log(particularClientAllData[0].name, "name");
+    //     console.log(fileInfoArray);
+
+    //     apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
+    //         .then(() => {
+    //             handleCancel();
+    //             setFiles([]);
+    //             console.log("Documents added successfully!");
+    //         })
+    //         .catch(error => {
+    //             console.error("Failed to add client and document:", error);
+    //         });
+    // });
+
+    const handleDelete = () => {
+        const apiResponse = ClientService();
+        apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
+            .then(() => {
+                setIsDeleteDialogOpen(false);
+                console.log("File deleted successfully!");
+            })
+            .catch(error => {
+                console.error("Failed to delete document:", error);
+            });
+    };
 
 
     const handleCancel = () => {
@@ -161,16 +207,23 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {[
-                                            { id: 1, name: 'Document 1', uploadedDate: '2024-04-22', uploadedBy: 'User 1' },
-                                            { id: 2, name: 'Document 2', uploadedDate: '2024-04-21', uploadedBy: 'User 2' },
-                                        ].map((document) => (
-                                            <TableRow key={document.id}>
-                                                <TableCell>{document.name}</TableCell>
-                                                <TableCell>{document.uploadedDate}</TableCell>
-                                                <TableCell>{document.uploadedBy}</TableCell>
+                                        {mappedFiles.map((file: any) => (
+                                            <TableRow key={file.fileName}>
                                                 <TableCell>
-                                                    <IconButton onClick={() => setIsDeleteDialogOpen(true)}>
+                                                    <Box sx={{
+                                                        cursor: 'pointer',
+                                                        textDecoration: 'underline',
+                                                        color: 'primary'
+                                                    }} onClick={() => window.open(particularClientAllData[0].webURL, '_blank')}>
+                                                        {file.fileName}
+                                                    </Box>
+                                                </TableCell>
+                                                <TableCell>{formatDate(file.created)}</TableCell>
+                                                <TableCell>{file.editorName}</TableCell>
+                                                <TableCell>
+                                                    <IconButton onClick={() => {
+                                                        setIsDeleteDialogOpen(true); setDeleteId(file.id);
+                                                    }}>
                                                         <DeleteIcon color="error" />
                                                     </IconButton>
                                                 </TableCell>
@@ -183,7 +236,59 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                     </DialogContent>
                 </Dialog>
                 {isDeleteDialogOpen && (
-                    <DeleteDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} clientDetails={""} />
+                    <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
+                        <DialogTitle className={styles.addTitle}
+                            style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                            <div className="d-flex flex-column">
+                                <div className="d-flex justify-content-between
+                               align-items-center relative">
+                                    <h4 style={{ margin: '0', color: '#125895' }}>
+                                        Delete Document</h4>
+                                </div>
+                                <div style={{
+                                    height: '4px', width: '100%',
+                                    backgroundColor: '#125895'
+                                }} />
+                            </div>
+                        </DialogTitle>
+                        <IconButton
+                            aria-label="close"
+                            onClick={handleCloseDeleteDialog}
+                            sx={{
+                                position: "absolute",
+                                right: "14px",
+                                top: "8px",
+                                color: (theme: any) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <DialogContent >
+
+                            <div style={{ marginLeft: '7px' }}>
+                                Are you sure you want to delete document
+                                <strong style={{ marginLeft: '2px' }}>
+                                </strong>
+                                ?
+                            </div>
+                        </DialogContent>
+                        <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                            <Button
+                                onClick={handleDelete}
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    maxWidth: '150px',
+                                    float: 'right',
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button variant="outlined" onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 )}
             </Stack>
         </Box>
