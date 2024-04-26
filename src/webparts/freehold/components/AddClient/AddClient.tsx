@@ -49,6 +49,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     onClose();
   };
 
+  
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
     lastModifiedDate: file.lastModifiedDate,
@@ -351,10 +352,10 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                 {loading ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
-                  "Save"
+                  "Add"
                 )}
               </Button>
-              {!loading && <Button variant="outlined" onClick={handleCancel}  >Clear</Button>}
+              {/* {!loading && <Button variant="outlined" onClick={handleCancel}  >Clear</Button>} */}
             </Stack>
           </DialogContent>
 

@@ -81,16 +81,17 @@ const ProjectService = () => {
             return { updatedResults, TableData };
         }
     };
-    // const updateClient = async (ListName: string, itemId: number, itemData: any) => {
-    //     if (spServiceInstance) {
-    //         const results = await spServiceInstance.updateListItem(
-    //             ListName,
-    //             itemId,
-    //             itemData);
-    //         console.log(results, "results");
-    //         return results;
-    //     }
-    // };
+
+    const updateClient = async (ListName: string, itemId: number, itemData: any) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.updateListItem(
+                ListName,
+                itemId,
+                itemData);
+            console.log(results, "results");
+            return results;
+        }
+    };
 
     const addProject = async (ListName: string, itemData: any) => {
         if (spServiceInstance) {
@@ -99,32 +100,32 @@ const ProjectService = () => {
         }
     };
 
-    // const deleteClient = async (ListName: string, itemId: number) => {
+    const deleteProject = async (ListName: string, itemId: number) => {
 
-    //     if (spServiceInstance) {
-    //         const results = await spServiceInstance.deleteListItem(ListName, itemId);
-    //         console.log(results, "results");
-    //         return results;
-    //     }
+        if (spServiceInstance) {
+            const results = await spServiceInstance.deleteListItem(ListName, itemId);
+            console.log(results, "results");
+            return results;
+        }
 
-    // };
+    };
 
-    // const deleteLibrary = async (LibraryName: string) => {
+    const deleteLibrary = async (LibraryName: string) => {
 
-    //     if (spServiceInstance) {
-    //         const results = await spServiceInstance.deleteLibrary(LibraryName);
-    //         console.log(results, "results");
-    //         return results;
-    //     }
+        if (spServiceInstance) {
+            const results = await spServiceInstance.deleteLibrary(LibraryName);
+            console.log(results, "results");
+            return results;
+        }
 
-    // };
+    };
 
-    //         const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
-    //            if(spServiceInstance){
-    //                 const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
-    //                 console.log('Retrieved files:', files);
-    //               }
-    //         };
+    const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
+               if(spServiceInstance){
+                    const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
+                    console.log('Retrieved files:', files);
+                  }
+            };
 
     const getPersonByEmail = async (email: string) => {
 
@@ -132,6 +133,15 @@ const ProjectService = () => {
             const results = await spServiceInstance.getPersonByEmail(email);
             console.log(results, "results");
             return results;
+        }
+    };
+
+    const getPersonById = async (id: number) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getPersonById(id);
+            console.log(results, "resultsgetPersonById");
+            return results.Email;
         }
     };
 
@@ -148,13 +158,17 @@ const ProjectService = () => {
 
     return {
         getProject,
-        // updateClient,
+        updateClient,
         getProjectExpand,
         addProject,
-        // deleteClient,
+        getPersonByEmail,
+        getDocumentsFromFolder,
+        deleteProject,
+        getPersonById,
+        
         // uploadDocument,
-        // deleteLibrary,
-        // getDocumentsFromFolder,
+        deleteLibrary,
+       
         // addDocumentsToFolder
     };
 };

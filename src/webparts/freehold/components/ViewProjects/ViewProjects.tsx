@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, IconButton } from '@mui/material';
+import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -19,6 +19,13 @@ import AssignClient from "../AssignClient/AssignClient";
 import ViewParticularProject from "./ViewParticularProject";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ProjectService from '../../Services/Business/ProjectService';
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { Controller, useForm } from "react-hook-form";
+import DeleteDialog from '../Delete/Delete';
+import { useTheme } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close";
+
+
 
 
 
@@ -56,11 +63,23 @@ const ViewProject = (props: any) => {
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [projectDetails, setProjectDetails] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
+  const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
+
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const { control, formState: { errors } } = useForm();
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+
+
 
   const navigate = useNavigate();
 
@@ -78,6 +97,7 @@ const ViewProject = (props: any) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialogOpen(false);
+    fetchData();
   };
 
   const openAssignClientDialog = () => {
@@ -86,16 +106,32 @@ const ViewProject = (props: any) => {
 
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
+    fetchData();
+  };
+  
+  const handleFilterClick = () => {
+    setOpen(true);
   };
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
   };
 
-  const handleFilterClick = () => {
-    console.log('Filter icon clicked');
+
+
+const handleDeleteDialogClose = () => {
+  setIsDeleteDialogOpen(false);
 };
 
+const theme = useTheme();
+
+const handleClear = () => {
+  // Implement clear functionality here
+};
+
+const handleApply = () => {
+  // Implement apply functionality here
+};
 
 
   const IconStyles = (icon: any) => {
@@ -129,14 +165,16 @@ const ViewProject = (props: any) => {
     {
       label: 'View',
       icon: <VisibilityIcon />,
-      handler: (id: any) => {
-        //console.log(`View clicked for row ${id}`);
-
+      handler: (data: any) => {
+        
         setIsViewDialogOpen(true);
-        setProjectDetails(id);
+        setProjectDetails(data);
+        console.log();
 
-        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        // setParticularClientAllData(uniqueClientData);
+        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        setParticularClientAllData(uniqueClientData);
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
 
       },
     },
@@ -144,6 +182,10 @@ const ViewProject = (props: any) => {
       label: 'Edit',
       icon: <EditIcon />,
       handler: (id: any) => {
+       
+        setIsViewDialogOpen(true);
+        setProjectDetails(id);
+        setIsEdit(true);
         //console.log(`Edit clicked for row ${id}`);
       },
     },
@@ -151,6 +193,8 @@ const ViewProject = (props: any) => {
       label: 'Delete',
       icon: <DeleteIcon />,
       handler: (id: any) => {
+        setIsDeleteDialogOpen(true);
+        setProjectDetails(id);
         //console.log(`Delete clicked for row ${id}`);
       },
     },
@@ -166,7 +210,12 @@ const ViewProject = (props: any) => {
           }}
         />
       ),
+      handler: async (data: any) => {
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
+        await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
     },
+  },
     {
       label: 'Assign Client',
       button: (
@@ -178,8 +227,25 @@ const ViewProject = (props: any) => {
           }}
         />
       ),
+      handler: async (data: any) => {
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
+      },
     },
   ];
+  const handlePeoplePickerChange = async (items: any[]) => {
+    console.log(items, "itemsitemsitemsitems");
+    const selectedPersonsIds = [];
+    for (const item of items) {
+      const getID = await ProjectService().getPersonByEmail(item.secondaryText);
+      console.log(getID.Id, "getIDgetID");
+      selectedPersonsIds.push(getID.Id);
+    }
+    setSelectedPersons(selectedPersonsIds);
+  };
+
+  console.log(particularClientAllData, "Data");
+
 
   const fetchData = async () => {
     try {
@@ -224,9 +290,10 @@ const ViewProject = (props: any) => {
   React.useEffect(() => {
     fetchData();
   }, []);
-  React.useEffect(() => {
-    fetchData();
-  }, [isViewDialogOpen]);
+
+  // React.useEffect(() => {
+  //   fetchData();
+  // }, [isViewDialogOpen]);
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >  
@@ -245,6 +312,7 @@ const ViewProject = (props: any) => {
             </StyledBreadcrumb>
           </Breadcrumbs>
         </Box>
+
         <Box style={{
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"
@@ -283,6 +351,107 @@ const ViewProject = (props: any) => {
                     </IconButton>
                     </Box>
         </Box>
+        <Dialog
+            open={open}
+            fullWidth={true}
+            maxWidth={"sm"}
+          >
+            <DialogTitle>
+              <div className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-center relative">
+                  <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
+                    Filter
+                  </h4>
+                </div>
+                <div style={{
+                  height: '4px', width: '100%',
+                  backgroundColor: theme.palette.primary.main
+                }} />
+              </div>
+            </DialogTitle>
+
+            <IconButton
+              aria-label="close"
+              onClick={() => { setOpen(false); }}
+              sx={{
+                position: "absolute",
+                right: "14px",
+                top: "8px",
+                color: (theme: any) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
+       
+         <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+   
+          <Grid item xs={12} sm={6}>
+            <label htmlFor="assignedStaffId">Assigned Client<span style={{ color: 'red' }}>*</span></label>
+            <Controller
+              name="assignedStaffId"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: 'Assigned Client is required',
+              }}
+              render={({ field }) => (
+                <PeoplePicker
+                  styles={{
+                    input: {
+                      width: '100%',
+                      height: '30px',
+                      paddingTop: "10px"
+                    },
+                    itemsWrapper: {
+                      'ms-PickerPersona-container': {
+                        width: '100%',
+                        backgroundColor: 'white !important'
+                      },
+                    },
+                    root: {
+                      width: '100%',
+                      height: '30px',
+                      paddingTop: "10px",
+                      'ms-BasePicker-text': {
+                        width: '100%',
+                        borderRadius: '5px'
+                      }
+                    },
+                  }}
+                  {...field}
+                  context={props.props.props.context as any}
+                  personSelectionLimit={4}
+                  required={true}
+                  showHiddenInUI={false}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000}
+                  onChange={handlePeoplePickerChange}
+                  defaultSelectedUsers={selectedPersons}
+                />
+              )}
+            />
+            {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+          </Grid>
+        </Grid>
+              <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+                <MuiButton variant="outlined" onClick={handleClear}>
+                  Clear
+                </MuiButton>
+                <MuiButton
+                  onClick={handleApply}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    maxWidth: '150px',
+                    float: 'right',
+                  }}
+                >
+                  Apply
+                </MuiButton>
+              </DialogActions>
+            </DialogContent>
+          </Dialog>
         <Box >
           <GridTable
             // rows={rows}
@@ -304,16 +473,24 @@ const ViewProject = (props: any) => {
             />
         </Box>
       </Stack>}
-      {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} />}
-      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
-        props={props} />}
-      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} />}
+      {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} fetchData={fetchData} 
+      props={props} />}
+
+      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData}  selected={selected} props={props} />}
+
+      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />}
+      {isDeleteDialogOpen &&
+        // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+                <DeleteDialog clientDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
       {isViewDialogOpen &&
         <ViewParticularProject
           props={props}
           projectDetails={projectDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}
+          setIsEdit={setIsEdit}
           setProjectDetails={setProjectDetails}
+          isEdit={isEdit}
+          particularClientAllData={particularClientAllData} selected={selected}
         />}
     </Box>
   );

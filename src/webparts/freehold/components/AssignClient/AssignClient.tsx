@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,22 +9,73 @@ import CloseIcon from '@mui/icons-material/Close';
 import styles from './AssignClient.module.scss';
 import { Box, Stack } from '@mui/material';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import ProjectService from '../../Services/Business/ProjectService';
 
-const AssignClient = ({ open, onClose, props }: any) => {
+const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+    const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
+
+    useEffect(() => {
+        const assignedClientEmails = particularClientAllData?.flatMap((item: any) =>
+            item.assignedClient.map((assignClient: any) => assignClient.Email)
+        );
+        setSelectedPersons(assignedClientEmails);
+    }, [particularClientAllData]);
 
     //console.log(props, "propsprops");
+    console.log(particularClientAllData, selected, selectedPersons, "particularClientAllData");
+
 
     const handleCancel = () => {
         onClose();
     };
 
     const handleSave = async () => {
-        // Perform save operation here
+        const dataObj = {
+            AssignedStaffId: {
+                results: selectedPersonsId
+            }
+        };
+        if (selected?.length === 0) {
+            ProjectService().updateClient(
+                "Project_Informations",
+                particularClientAllData[0].Id,
+                dataObj
+            ).then((response: any) => {
+                console.log("Success:", response);
+                onClose();
+
+            }).catch((error: any) => {
+                console.error("Error:", error);
+            });
+        }
+        else {
+            for (const item of selected) {
+                ProjectService().updateClient(
+                    "Project_Informations",
+                    item,
+                    dataObj
+                ).then((response: any) => {
+                    console.log("Success:", response);
+                    onClose();
+
+                }).catch((error: any) => {
+                    console.error("Error:", error);
+                });
+
+            }
+        }
     };
 
-    const handlePeoplePickerChange = (items: any[]) => {
-        setSelectedPersons(items);
+    const handlePeoplePickerChange = async (items: any[]) => {
+        console.log(items, "itemsitemsitemsitems");
+        const selectedPersonsIds = [];
+        for (const item of items) {
+            const getID = await ProjectService().getPersonByEmail(item.secondaryText);
+            console.log(getID.Id, "getIDgetID");
+            selectedPersonsIds.push(getID.Id);
+        }
+        setSelectedPersonsId(selectedPersonsIds);
     };
     console.log("Selected persons:", selectedPersons);
 
@@ -86,6 +137,8 @@ const AssignClient = ({ open, onClose, props }: any) => {
                             principalTypes={[PrincipalType.User]}
                             resolveDelay={1000}
                             onChange={handlePeoplePickerChange}
+                            defaultSelectedUsers={selected?.length > 0 ? [] : exsistingPersons || selectedPersons || []}
+
                         />
 
                     </DialogContent>

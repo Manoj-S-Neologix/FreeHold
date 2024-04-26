@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { Button as MuiButton, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
+import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  CircularProgress } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
@@ -23,7 +23,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [deleteId, setDeleteId] = useState<number>(0);
     const [files, setFiles] = useState<File[]>([]);
     const [fileData, setFileData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
     const { handleSubmit } = useForm();
+    
+
     console.log(particularClientAllData, "ClientData");
 
 
@@ -96,6 +99,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     const handleSave = handleSubmit(async (data: any) => {
         try {
+            setLoading(true);
             const apiResponse = ClientService();
 
             console.log(particularClientAllData[0].name, "name");
@@ -103,11 +107,13 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             await apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray);
 
 
-
+            setLoading(false);
             handleCancel();
             setFiles([]);
         } catch (error) {
+            setLoading(false);
             console.error("Failed to add client and document:", error);
+            
         }
     });
 
@@ -159,7 +165,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             }} />
                         </div>
                     </DialogTitle>
-                    <IconButton
+                    {!loading &&  <IconButton
                         aria-label="close"
                         onClick={handleCancel}
                         sx={{
@@ -170,7 +176,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                         }}
                     >
                         <CloseIcon />
-                    </IconButton>
+                    </IconButton>}
 
                     <DialogContent>
                         <Stack direction={"column"} spacing={2}>
@@ -182,7 +188,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                 />
                             </Box>
                             <DialogActions sx={{ px: 0, mr: 0 }}>
-                                <MuiButton
+                                {/* <MuiButton
                                     onClick={handleSave}
                                     type="submit"
                                     variant="contained"
@@ -194,7 +200,24 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     variant="outlined"
                                 >
                                     Cancel
-                                </MuiButton>
+                                </MuiButton> */}
+                                  <Stack
+                                direction="row"
+                                justifyContent="end"
+                                alignItems="center"
+                                spacing={3}
+                                >
+                                <Button variant="contained"
+                                    sx={{ width: loading ? '150px' : 'auto' }}
+                                    onClick={handleSave} disabled={loading} type="submit">
+                                    {loading ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                    ) : (
+                                    "Save"
+                                    )}
+                                </Button>
+                                {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                                </Stack>
                             </DialogActions>
                             <TableContainer>
                                 <Table>
@@ -251,7 +274,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                 }} />
                             </div>
                         </DialogTitle>
-                        <IconButton
+                        {!loading && <IconButton
                             aria-label="close"
                             onClick={handleCloseDeleteDialog}
                             sx={{
@@ -262,7 +285,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             }}
                         >
                             <CloseIcon />
-                        </IconButton>
+                        </IconButton>}
                         <DialogContent >
 
                             <div style={{ marginLeft: '7px' }}>
@@ -273,7 +296,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             </div>
                         </DialogContent>
                         <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-                            <Button
+                            {/* <Button
                                 onClick={handleDelete}
                                 variant="contained"
                                 color="primary"
@@ -286,8 +309,25 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             </Button>
                             <Button variant="outlined" onClick={handleCancel}>
                                 Cancel
-                            </Button>
-                        </DialogActions>
+                            </Button> */}
+                                <Stack
+                                    direction="row"
+                                    justifyContent="end"
+                                    alignItems="center"
+                                    spacing={3}
+                                    >
+                                    <Button variant="contained"  color="primary"
+                                        sx={{ width: loading ? '150px' : 'auto' }}
+                                        onClick={handleDelete} disabled={loading}>
+                                        {loading ? (
+                                        <CircularProgress size={20} color="inherit" />
+                                        ) : (
+                                        "Delete"
+                                        )}
+                                    </Button>
+                        {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                                    </Stack>
+                                    </DialogActions>
                     </Dialog>
                 )}
             </Stack>

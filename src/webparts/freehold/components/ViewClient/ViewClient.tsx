@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, TextField, IconButton } from '@mui/material';
+import { Breadcrumbs, Box, Stack, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -21,6 +21,10 @@ import ClientService from "../../Services/Business/ClientService";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { Controller, useForm } from "react-hook-form";
+
+
 
 
 
@@ -60,6 +64,8 @@ const ViewClient = (props: any) => {
   const [clientData, setClientData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -67,7 +73,9 @@ const ViewClient = (props: any) => {
   const [clientDetails, setClientDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
-  const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
+  // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
+  const { control, formState: { errors } } = useForm();
+
 
   const navigate = useNavigate();
 
@@ -220,6 +228,16 @@ const ViewClient = (props: any) => {
       },
     },
   ];
+  const handlePeoplePickerChange = async (items: any[]) => {
+    console.log(items, "itemsitemsitemsitems");
+    const selectedPersonsIds = [];
+    for (const item of items) {
+      const getID = await ClientService().getPersonByEmail(item.secondaryText);
+      console.log(getID.Id, "getIDgetID");
+      selectedPersonsIds.push(getID.Id);
+    }
+    setSelectedPersons(selectedPersonsIds);
+  };
 
   console.log(particularClientAllData, "Data");
 
@@ -251,6 +269,8 @@ const ViewClient = (props: any) => {
       assignedStaff: item?.assignStaff,
     };
   });
+
+
 
   React.useEffect(() => {
     fetchData();
@@ -349,30 +369,57 @@ const ViewClient = (props: any) => {
               <CloseIcon />
             </IconButton>
             <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-                {/* Assign Staff Dropdown */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Assign Staff"
-                    select
-                    // value={assignStaffValue}
-                    // onChange={(event) => setAssignStaffValue(event.target.value)}
-                    variant="outlined"
-                  >
-                    {assignStaffOptions.map((option: any) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                {/* People Picker Field */}
-                <Grid item xs={12} sm={6}>
-                  {/* Implement your people picker component here */}
-                  {/* Example: <PeoplePickerField onSelect={handleStaffSelection} /> */}
-                </Grid>
-              </Grid>
+       
+         <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+   
+          <Grid item xs={12} sm={6}>
+            <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
+            <Controller
+              name="assignedStaffId"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: 'Assigned Staff is required',
+              }}
+              render={({ field }) => (
+                <PeoplePicker
+                  styles={{
+                    input: {
+                      width: '100%',
+                      height: '30px',
+                      paddingTop: "10px"
+                    },
+                    itemsWrapper: {
+                      'ms-PickerPersona-container': {
+                        width: '100%',
+                        backgroundColor: 'white !important'
+                      },
+                    },
+                    root: {
+                      width: '100%',
+                      height: '30px',
+                      paddingTop: "10px",
+                      'ms-BasePicker-text': {
+                        width: '100%',
+                        borderRadius: '5px'
+                      }
+                    },
+                  }}
+                  {...field}
+                  context={props.props.props.context as any}
+                  personSelectionLimit={4}
+                  required={true}
+                  showHiddenInUI={false}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000}
+                  onChange={handlePeoplePickerChange}
+                  defaultSelectedUsers={selectedPersons}
+                />
+              )}
+            />
+            {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+          </Grid>
+        </Grid>
               <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
                 <MuiButton variant="outlined" onClick={handleClear}>
                   Clear

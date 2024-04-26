@@ -9,29 +9,28 @@ import TextField from '@mui/material/TextField';
 // import styles from "./AddProject.module.scss";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, CircularProgress } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import {Controller, useForm } from "react-hook-form";
 
 interface AddClientDialogProps {
   open: boolean;
   onClose: () => void;
+  fetchData: () => Promise<void>;
+  props: any;
 }
+
 
 const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
   const [files, setFiles] = useState<File[]>([]);
-  // const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
-  const { control, handleSubmit, formState: { errors }, trigger } = useForm();
+  const [loading, setLoading] = useState(false);
+  const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
 
 
   const handleCancel = () => {
     onClose();
+    reset();
   };
-
-  // const handleSave = () => {
-
-  //   onClose();
-  // };
   
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
@@ -47,7 +46,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
 
   const handleSave = handleSubmit(async (data) => {
     try {
-
+      setLoading(true);
       const apiResponse = ProjectService();
 
       const dataObj = {
@@ -69,6 +68,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
       }));
       console.log(response, fileInfoArray, 'responseresponseresponse');
       // await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
+      setLoading(false);
       handleCancel();
 
       setFiles([]);
@@ -77,6 +77,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
       handleCancel();
     } catch (error) {
       //showToast(`Failed to add client and document.`, "error");
+      setLoading(false);
 
     }
   });
@@ -86,15 +87,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
     <Box sx={{ width: '100', padding: '20px' }} >
       <Stack direction='column' spacing={2} >
         <Dialog open={open} onClose={onClose} >
-          {/* <DialogTitle style={{textAlign: 'center'}}>Project Name</DialogTitle > */}
-          {/* <DialogTitle  style={{ textAlign: 'center', marginLeft: '7px', position: 'relative', color:'#125895' }}>
-            Add Project
-            <hr style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '80px', border: '1px solid black' }} />
-            <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle> */}
-          {/* <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}> */}
+
           <DialogTitle >
 
             <div className="d-flex flex-column">
@@ -109,7 +102,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
               }} />
             </div>
           </DialogTitle>
-          <IconButton
+          {!loading && <IconButton
             aria-label="close"
             onClick={handleCancel}
             sx={{
@@ -120,14 +113,13 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
             }}
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton>}
 
           <DialogContent >
           <form onSubmit={handleSave}>
             <div style={{ display: 'flex', marginBottom: '20px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
                 <label htmlFor="projectNumber">Project Number*</label>
-                {/* <TextField id="clientName" margin="dense" size="small" fullWidth /> */}
                 <Controller
                       name="projectNumber"
                       control={control}
@@ -163,7 +155,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
               </div>
               <div style={{ flex: 1 }}>
                 <label htmlFor="projectName">Project Name</label>
-                {/* <TextField id="clientDetails" margin="dense" size="small" fullWidth /> */}
                 <Controller
                       name="title"
                       control={control}
@@ -201,7 +192,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
             <div style={{ display: 'flex', marginBottom: '10px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
               <label htmlFor="location">Location</label>
-              {/* <TextField id="Location" margin="dense" size="small" fullWidth /> */}
               <Controller
                       name="location"
                       control={control}
@@ -237,7 +227,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
               </div>
               <div style={{ flex: 1 }}>
                 <label htmlFor="developer">Developer</label>
-                {/* <TextField id="Developer" margin="dense" size="small" fullWidth /> */}
                 <Controller
                       name="developer"
                       control={control}
@@ -276,22 +265,23 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
           </form>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-            {/* <Button onClick={handleCancel} variant="contained">Cancel</Button>
-        <Button onClick={handleSave} variant="contained"> Save </Button> */}
-            {/* <Button variant="outlined" onClick={handleCancel}>
-              Cancel
-            </Button> */}
-            <Button
-              onClick={handleSave}
-              variant="contained"
-              color="primary"
-              sx={{
-                maxWidth: '150px',
-                float: 'right',
-              }}
+              <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              spacing={3}
             >
-              Add
-            </Button>
+              <Button variant="contained"
+                sx={{ width: loading ? '150px' : 'auto' }}
+                onClick={handleSave} disabled={loading}>
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Add"
+                )}
+              </Button>
+              {/* {!loading && <Button variant="outlined" onClick={handleCancel}  >Clear</Button>} */}
+            </Stack>
 
           </DialogActions>
         </Dialog>

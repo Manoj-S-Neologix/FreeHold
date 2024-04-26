@@ -9,21 +9,25 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './Delete.module.scss';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, CircularProgress } from '@mui/material';
 import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
 import { Delete } from '@mui/icons-material';
 import ClientService from '../../Services/Business/ClientService';
+// import ProjectService from '../../Services/Business/ProjectService';
 
 
 interface DeleteDialogProps {
   open: boolean;
   onClose: () => void;
   clientDetails: any;
+  // projectDetails: any;
 }
 
 const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetails }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+
 
   const handleDeleteFile = (index: number) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -39,14 +43,16 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
 
   const handleSave = async () => {
   try{
+    setLoading(true);
+
     await handledeleteClient(clientDetails.Id, clientDetails.name)
     onClose();
   }
   catch{
+    setLoading(false);
     console.error();
     
   }
-
     false && await handleAddClientSubmit();
   };
 
@@ -91,6 +97,8 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
         // console.log(response, "delete response");
         console.log('Client deleted successfully');
         // navigateToClient();
+        
+
     } catch (error) {
         console.error('Error deleting client:', error);
     }
@@ -123,7 +131,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
               }} />
             </div>
           </DialogTitle>
-          <IconButton
+          {!loading && <IconButton
             aria-label="close"
             onClick={handleCancel}
             sx={{
@@ -134,7 +142,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
             }}
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton>}
           <DialogContent >
             {false && <div style={{ marginBottom: '20px' }}>
               <label htmlFor="clientName">Client Name<span style={{ color: 'red' }}>*</span></label>
@@ -173,7 +181,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
             </div>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-            <Button
+            {/* <Button
               onClick={handleSave}
               variant="contained"
               color="primary"
@@ -186,7 +194,24 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
             </Button>
             <Button variant="outlined" onClick={handleCancel}>
               Cancel
-            </Button>
+            </Button> */}
+               <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              spacing={3}
+            >
+              <Button variant="contained"  color="primary"
+                sx={{ width: loading ? '150px' : 'auto' }}
+                onClick={handleSave} disabled={loading}>
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+              {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+            </Stack>
           </DialogActions>
         </Dialog>
       </Stack>
