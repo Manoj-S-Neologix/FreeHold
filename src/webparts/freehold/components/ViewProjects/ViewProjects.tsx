@@ -190,7 +190,7 @@ const ViewProject = (props: any) => {
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
       console.log(results,"result")
       if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.updatedResults[0].TableData);   
+        setProjectData(results.TableData);   
         setAllClientData(results.updatedResults);
       } else {
         // Handle case where no data is returned

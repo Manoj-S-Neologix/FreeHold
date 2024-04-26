@@ -59,11 +59,13 @@ function EnhancedTableHead(props: any) {
     );
 }
 
-const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells, actions, isLoading }: any) => {
+const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData, headCells, actions, isLoading }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    console.log(rows, tableData, "rowsrows");
 
     const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -186,6 +188,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, headCells,
                                                                 )}
                                                             </TableCell>
                                                         ))} */}
+                                                        {console.log(headCells, row, "headCellsheadCells")}
                                                         {headCells.map((headCell: any) => (
                                                             row.hasOwnProperty(headCell.id) &&
                                                             <TableCell
