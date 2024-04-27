@@ -10,6 +10,8 @@ import styles from './AddStaff.module.scss';
 import { Box, Stack } from '@mui/material';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import ClientService from "../../Services/Business/ClientService";
+import toast from 'react-hot-toast';
+
 
 const AddStaffDialog = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
 
@@ -32,40 +34,79 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData, selecte
     };
 
 
+    // const handleSave = async () => {
+    //     const dataObj = {
+    //         AssignedStaffId: {
+    //             results: selectedPersonsId
+    //         }
+    //     };
+    //     if (selected?.length === 0) {
+    //         ClientService().updateClient(
+    //             "Client_Informations",
+    //             particularClientAllData[0].Id,
+    //             dataObj
+    //         ).then((response: any) => {
+    //             console.log("Success:", response);
+    //             onClose();
+
+    //         }).catch((error: any) => {
+    //             console.error("Error:", error);
+    //         });
+    //     }
+    //     else {
+    //         for (const item of selected) {
+    //             ClientService().updateClient(
+    //                 "Client_Informations",
+    //                 item,
+    //                 dataObj
+    //             ).then((response: any) => {
+    //                 console.log("Success:", response);
+    //                 onClose();
+
+    //             }).catch((error: any) => {
+    //                 console.error("Error:", error);
+    //             });
+
+    //         }
+    //     }
+    // };
+
+
     const handleSave = async () => {
         const dataObj = {
             AssignedStaffId: {
                 results: selectedPersonsId
             }
         };
-        if (selected?.length === 0) {
-            ClientService().updateClient(
-                "Client_Informations",
-                particularClientAllData[0].Id,
-                dataObj
-            ).then((response: any) => {
+        const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons.Id
+
+        console.log(ID, particularClientAllData, exsistingPersons)
+
+        try {
+            if (selected?.length === 0) {
+                const response = await ClientService().updateClient(
+                    "Client_Informations",
+                    particularClientAllData[0].Id,
+                    dataObj
+                );
                 console.log("Success:", response);
                 onClose();
-
-            }).catch((error: any) => {
-                console.error("Error:", error);
-            });
-        }
-        else {
-            for (const item of selected) {
-                ClientService().updateClient(
-                    "Client_Informations",
-                    item,
-                    dataObj
-                ).then((response: any) => {
+                toast.success('Staff updated successfully!');
+            } else {
+                for (const item of selected) {
+                    const response = await ClientService().updateClient(
+                        "Client_Informations",
+                        item,
+                        dataObj
+                    );
                     console.log("Success:", response);
                     onClose();
-
-                }).catch((error: any) => {
-                    console.error("Error:", error);
-                });
-
+                }
+                toast.success('Staff updated successfully!');
             }
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error(`Failed to update staff(s): ${error}`);
         }
     };
 

@@ -11,6 +11,8 @@ import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import styles from "./UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
+import toast from 'react-hot-toast';
+
 
 interface UploadDocumentProps {
     open: boolean;
@@ -83,6 +85,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
+        fetchData();
     };
 
 
@@ -98,23 +101,24 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     console.log(fileInfoArray, 'fileInfoArray');
 
     const handleSave = handleSubmit(async (data: any) => {
-        try {
-            setLoading(true);
-            const apiResponse = ClientService();
-
-            console.log(particularClientAllData[0].name, "name");
-            console.log(fileInfoArray);
-            await apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray);
-
-
-            setLoading(false);
-            handleCancel();
-            setFiles([]);
-        } catch (error) {
-            setLoading(false);
-            console.error("Failed to add client and document:", error);
-            
-        }
+        setLoading(true);
+        const apiResponse = ClientService();
+    
+        console.log(particularClientAllData[0].name, "name");
+        console.log(fileInfoArray);
+    
+        apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
+            .then(() => {
+                setLoading(false);
+                handleCancel();
+                setFiles([]);
+                toast.success('Documents Added Successfully!');
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.error("Failed to add client and document:", error);
+                toast.error(`Failed to add client and document: ${error}`);
+            });
     });
 
     // const handleSave = handleSubmit((data: any) => {
@@ -133,18 +137,32 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     //         });
     // });
 
+    // const handleDelete = () => {
+    //     const apiResponse = ClientService();
+    //     apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
+    //         .then(() => {
+    //             setIsDeleteDialogOpen(false);
+    //             console.log("File deleted successfully!");
+    //         })
+    //         .catch(error => {
+    //             console.error("Failed to delete document:", error);
+    //         });
+    // };
+
     const handleDelete = () => {
         const apiResponse = ClientService();
+    
         apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
             .then(() => {
                 setIsDeleteDialogOpen(false);
                 console.log("File deleted successfully!");
+                toast.success('File deleted successfully!');
             })
             .catch(error => {
                 console.error("Failed to delete document:", error);
+                toast.error(`Failed to delete document: ${error}`);
             });
     };
-
 
     const handleCancel = () => {
         onClose();

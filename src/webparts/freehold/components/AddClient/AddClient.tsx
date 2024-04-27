@@ -139,9 +139,11 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         .catch(error => reject(error));
     });
 
+    console.log(uploadPromise, "uploadPromise")
     // Create item in the list after document upload
     uploadPromise
       .then((uploadDocumentResponse: any) => {
+        console.log(uploadDocumentResponse, "uploadDocumentResponse")
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
@@ -159,7 +161,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         setLoading(false);
         const errorMessage = error || 'An error occurred while adding client and document.';
         return toast.error(`Failed to add client and document. ${errorMessage}`);
-        
+
       });
   });
 

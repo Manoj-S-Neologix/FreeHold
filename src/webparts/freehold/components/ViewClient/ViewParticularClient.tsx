@@ -17,6 +17,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
+import toast from 'react-hot-toast';
+
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -45,12 +47,16 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData }: any) => {
-    // const [selected, setSelected] = React.useState<any>([]);
-
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData }: any) => {
+    // const [selected] = React.useState<any>([]);
+console.log(particularClientAllData,"particularClientAllData")
     // const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    // const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
@@ -87,8 +93,31 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     // update code start
 
+    // const handleUpdate = handleSubmit(async (data) => {
+    //     try {
+    //         const apiResponse = ClientService();
+
+    //         const updatedData = {
+    //             Title: editData.title,
+    //             ClientEmail: editData.email,
+    //             ClientContact: editData.contact,
+    //         };
+
+    //         const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
+    //         console.log(response, updatedData, 'responseresponseresponse');
+    //         // handleCancel();
+    //         // console.log("Update response:", response);
+    //         reset();
+    //         navigateToClient();
+    //     } catch (error) {
+    //         console.error('Error updating client details:', error);
+    //         // setIsError(true);
+    //     }
+    // });
+
     const handleUpdate = handleSubmit(async (data) => {
         try {
+
             const apiResponse = ClientService();
 
             const updatedData = {
@@ -98,16 +127,18 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             };
 
             const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-            console.log(response, updatedData, 'responseresponseresponse');
-            // handleCancel();
-            // console.log("Update response:", response);
+
+            console.log('Update Client Response:', response);
+
             reset();
             navigateToClient();
+            toast.success('Client Updated Successfully!');
         } catch (error) {
             console.error('Error updating client details:', error);
-            // setIsError(true);
+            toast.error('Failed to update client details. Please try again.');
         }
     });
+
 
     // update code end
 
@@ -117,6 +148,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     const closeAddStaffDialog = () => {
         setHandleStaffDialog(false);
+        setSelectedPersons([]);
     };
 
 
@@ -263,6 +295,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             </TableCell>
                                         )}
                                     </TableRow>
+
+
+
                                     <TableRow>
 
                                         <TableCell component="th" scope="row">Name</TableCell>
@@ -280,6 +315,41 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         <TableCell>{clientDetails.modifiedBy}</TableCell>
 
                                     </TableRow>
+
+                                    {/*                                     
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Assigned Staff
+                                        </TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>
+                                         {clientDetails.assignedStaff}
+                                            </TableCell>
+                    
+                                        ) : (
+                                            <TableCell onClick={() => { setHandleStaffDialog(true); }}>
+                                                <Controller
+                                                    name="assignedStaff"
+                                                    control={control}
+                                                    defaultValue={clientDetails.assignedStaff}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="assignedStaff"
+                                                            margin="dense"
+                                                            size="small"
+                                                            value={editData.assignedStaff}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                setEditData({ ...editData, assignedStaff: value });
+                                                                field.onChange(value);
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </TableCell>
+                                        )}
+                                    </TableRow> */}
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell
@@ -294,12 +364,24 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             {clientDetails.assignedStaff}
                                         </TableCell>}
                                     </TableRow>
+
                                     {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">
-                                            <MuiButton type="submit" variant="contained" color="primary"
+                                            {/* <MuiButton type="submit" variant="contained" color="primary"
                                                 onClick={handleUpdate}
                                             >
                                                 Update
+                                            </MuiButton> */}
+                                            <MuiButton type="submit"
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => {
+                                                    setLoading(true);
+                                                    handleUpdate();
+                                                }}
+                                                disabled={loading}
+                                            >
+                                                {loading ? 'Updating...' : 'Update'}
                                             </MuiButton>
                                             <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
                                                 onClick={navigateToClient}
@@ -317,7 +399,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
             </Stack>
 
-            <AddStaffDialog exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
+            <AddStaffDialog
+                particularClientAllData={particularClientAllData} selected={clientDetails}
+                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
 
         </Box>
     );
