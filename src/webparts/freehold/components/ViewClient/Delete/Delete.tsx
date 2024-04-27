@@ -10,10 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './Delete.module.scss';
 import { Box, Stack, CircularProgress } from '@mui/material';
-import { createFolderInLibrary, uploadDocumentToLibrary, addListItem } from '../../Services/Core/ClientService';
 import { Delete } from '@mui/icons-material';
-import ClientService from '../../Services/Business/ClientService';
-// import ProjectService from '../../Services/Business/ProjectService';
+import { addListItem, createFolderInLibrary, uploadDocumentToLibrary } from "../../../Services/Core/ClientService";
+import ClientService from "../../../Services/Business/ClientService";
 
 
 interface DeleteDialogProps {
@@ -33,7 +32,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  console.log(clientDetails, 'details')
+  console.log(clientDetails, 'details');
 
   const handleCancel = () => {
     setFiles([]);
@@ -42,17 +41,17 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
   };
 
   const handleSave = async () => {
-  try{
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    await handledeleteClient(clientDetails.Id, clientDetails.name)
-    onClose();
-  }
-  catch{
-    setLoading(false);
-    console.error();
-    
-  }
+      await handledeleteClient(clientDetails.Id, clientDetails.name);
+      onClose();
+    }
+    catch {
+      setLoading(false);
+      console.error();
+
+    }
     false && await handleAddClientSubmit();
   };
 
@@ -88,24 +87,24 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
     }
   };
 
-   //delete code start
+  //delete code start
 
-   const handledeleteClient = async (clientId:any, Title:any) => {
+  const handledeleteClient = async (clientId: any, Title: any) => {
     try {
-        await ClientService().deleteClient("Client_Informations", clientId);
-        await ClientService().deleteLibrary(Title);
-        // console.log(response, "delete response");
-        console.log('Client deleted successfully');
-        // navigateToClient();
-        
+      await ClientService().deleteClient("Client_Informations", clientId);
+      await ClientService().deleteLibrary(Title);
+      // console.log(response, "delete response");
+      console.log('Client deleted successfully');
+      // navigateToClient();
+
 
     } catch (error) {
-        console.error('Error deleting client:', error);
+      console.error('Error deleting client:', error);
     }
-};
+  };
 
 
-//delete code end
+  //delete code end
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -195,13 +194,13 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
             <Button variant="outlined" onClick={handleCancel}>
               Cancel
             </Button> */}
-               <Stack
+            <Stack
               direction="row"
               justifyContent="end"
               alignItems="center"
               spacing={3}
             >
-              <Button variant="contained"  color="primary"
+              <Button variant="contained" color="primary"
                 sx={{ width: loading ? '150px' : 'auto' }}
                 onClick={handleSave} disabled={loading}>
                 {loading ? (

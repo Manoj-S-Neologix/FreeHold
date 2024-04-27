@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { IFreeholdProps } from './IFreeholdProps';
 import Home from "./Home/Home";
+import { Toaster } from 'react-hot-toast';
 
 const FreeHold: React.FC<IFreeholdProps> = (props: any) => {
   //console.log(props, "propsprops");
@@ -8,10 +9,10 @@ const FreeHold: React.FC<IFreeholdProps> = (props: any) => {
 
   return (
     <>
-
+      <Toaster position="top-right" />
       <Home props={props} />
 
-      
+
     </>
   );
 };

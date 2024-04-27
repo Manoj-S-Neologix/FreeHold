@@ -251,19 +251,19 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
                                             })
                                     ) : (
                                         !isLoading && <TableRow>
-                                            <TableCell colSpan={7} align="center">
+                                            <TableCell colSpan={8} align="center">
                                                 No Records Found
                                             </TableCell>
                                         </TableRow>
                                     )}
                                     {!isLoading && emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={7} />
+                                            <TableCell colSpan={8} />
                                         </TableRow>
                                     )}
                                     {isLoading &&
                                         <TableRow>
-                                            <TableCell colSpan={7} align="center">
+                                            <TableCell colSpan={8} align="center">
                                                 <CircularProgress size={20} />
                                             </TableCell>
                                         </TableRow>

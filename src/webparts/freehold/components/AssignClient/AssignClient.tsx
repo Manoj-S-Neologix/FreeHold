@@ -7,24 +7,42 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AssignClient.module.scss';
-import { Box, Stack } from '@mui/material';
-import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { Box, MenuItem, Stack, TextField } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
+import ClientService from "../../Services/Business/ClientService";
+import toast from "react-hot-toast";
 
 const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
-    const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-    const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
-
-    useEffect(() => {
-        const assignedClientEmails = particularClientAllData?.flatMap((item: any) =>
-            item.assignedClient.map((assignClient: any) => assignClient.Email)
-        );
-        setSelectedPersons(assignedClientEmails);
-    }, [particularClientAllData]);
+    const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
+    const [getClient, setGetClient] = useState<any[]>([]);
 
     //console.log(props, "propsprops");
-    console.log(particularClientAllData, selected, selectedPersons, "particularClientAllData");
 
+    const clientService = ClientService();
+    const clientListName = "Client_Informations";
+    const selectQuery = "Id,Title";
+
+    const apiCall = (async () => {
+        await clientService.getClientExpandApi(clientListName, selectQuery, "")
+            .then((data) => {
+                if (data) {
+                    const mappedData = data.map((item: any) => ({
+                        id: item.Id,
+                        name: item.Title,
+                    }));
+                    setGetClientDetails(mappedData);
+                }
+
+            }).catch((error: any) => {
+                toast.error(error.message);
+            });
+    });
+
+    console.log(getClientDetails, "getClientDetails");
+
+    useEffect(() => {
+        apiCall();
+    }, []);
 
     const handleCancel = () => {
         onClose();
@@ -33,7 +51,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const handleSave = async () => {
         const dataObj = {
             AssignedStaffId: {
-                results: selectedPersonsId
+                results: "selectedPersonsId"
             }
         };
         if (selected?.length === 0) {
@@ -67,17 +85,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         }
     };
 
-    const handlePeoplePickerChange = async (items: any[]) => {
-        console.log(items, "itemsitemsitemsitems");
-        const selectedPersonsIds = [];
-        for (const item of items) {
-            const getID = await ProjectService().getPersonByEmail(item.secondaryText);
-            console.log(getID.Id, "getIDgetID");
-            selectedPersonsIds.push(getID.Id);
-        }
-        setSelectedPersonsId(selectedPersonsIds);
-    };
-    console.log("Selected persons:", selectedPersons);
+    console.log(getClient, "getClientgetClient");
+
 
 
     return (
@@ -116,31 +125,21 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                         <CloseIcon />
                     </IconButton>
                     <DialogContent >
-                        <PeoplePicker
-                            styles={{
-                                input: {
-                                    width: '100%',
-                                    height: '40px',
-                                    marginBottom: '10px'
-                                },
-                                itemsWrapper: {
-                                    'ms-PickerPersona-container': {
-                                        width: '100%',
-                                        backgroundColor: 'white !important'
-                                    }
-                                }
+                        <TextField
+                            label="Assign Client"
+                            variant="outlined"
+                            fullWidth
+                            select
+                            onChange={(e: any) => {
+                                setGetClient(e.target.value);
                             }}
-                            context={props.props.props.context as any}
-                            personSelectionLimit={4}
-                            required={true}
-                            showHiddenInUI={false}
-                            principalTypes={[PrincipalType.User]}
-                            resolveDelay={1000}
-                            onChange={handlePeoplePickerChange}
-                            defaultSelectedUsers={selected?.length > 0 ? [] : exsistingPersons || selectedPersons || []}
-
-                        />
-
+                        >
+                            {getClientDetails?.map((item: any) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    {item.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </DialogContent>
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button

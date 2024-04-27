@@ -15,6 +15,7 @@ import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import toast from 'react-hot-toast';
 
 
 
@@ -49,7 +50,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     onClose();
   };
 
-  
+
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
     lastModifiedDate: file.lastModifiedDate,
@@ -73,19 +74,57 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   };
 
 
+  // const handleSave = handleSubmit(async (data) => {
+  //   try {
+  //     setLoading(true);
+  //     const apiResponse = ClientService();
+
+  //     const dataObj = {
+  //       Title: data.title,
+  //       ClientEmail: data.email,
+  //       ClientContact: data.contact,
+  //     };
+  //     false && await addListItem('Clients', dataObj);
+
+  //     const response = await apiResponse.addClient("Client_Informations", dataObj);
+  //     const fileInfoArray = files.map((file: any) => ({
+  //       lastModified: file.lastModified,
+  //       lastModifiedDate: file.lastModifiedDate,
+  //       name: file.name,
+  //       size: file.size,
+  //       type: file.type,
+  //       webkitRelativePath: file.webkitRelativePath
+  //     }));
+  //     console.log(response, fileInfoArray, 'responseresponseresponse');
+  //     await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
+  //     setLoading(false);
+  //     handleCancel();
+
+  //     setFiles([]);
+  //     // showToast(`Client Added Successfully !`, "success");
+
+  //     handleCancel();
+  //   } catch (error) {
+  //     setLoading(false);
+  //     //showToast(`Failed to add client and document.`, "error");
+
+  //   }
+  // });
+
+
   const handleSave = handleSubmit(async (data) => {
-    try {
-      setLoading(true);
-      const apiResponse = ClientService();
+    setLoading(true);
+    const apiResponse = ClientService();
 
-      const dataObj = {
-        Title: data.title,
-        ClientEmail: data.email,
-        ClientContact: data.contact,
-      };
-      false && await addListItem('Clients', dataObj);
+    const dataObj = {
+      Title: data.title,
+      ClientEmail: data.email,
+      ClientContact: data.contact,
+    };
 
-      const response = await apiResponse.addClient("Client_Informations", dataObj);
+    false && addListItem('Clients', dataObj);
+
+    const uploadPromise: any = new Promise((resolve, reject) => {
       const fileInfoArray = files.map((file: any) => ({
         lastModified: file.lastModified,
         lastModifiedDate: file.lastModifiedDate,
@@ -94,21 +133,36 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         type: file.type,
         webkitRelativePath: file.webkitRelativePath
       }));
-      console.log(response, fileInfoArray, 'responseresponseresponse');
-      await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
-      setLoading(false);
-      handleCancel();
 
-      setFiles([]);
-      // showToast(`Client Added Successfully !`, "success");
+      apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
+        .then(response => resolve(response))
+        .catch(error => reject(error));
+    });
 
-      handleCancel();
-    } catch (error) {
-      setLoading(false);
-      //showToast(`Failed to add client and document.`, "error");
-
-    }
+    // Create item in the list after document upload
+    uploadPromise
+      .then((uploadDocumentResponse: any) => {
+        const updatedDataObj = {
+          ...dataObj,
+          ClientLibraryGUID: uploadDocumentResponse.data.Id,
+          ClientLibraryPath: data.ParentWebUrl + "/" + dataObj.Title
+        };
+        return apiResponse.addClient("Client_Informations", updatedDataObj);
+      })
+      .then(() => {
+        setLoading(false);
+        handleCancel();
+        setFiles([]);
+        return toast.success('Client Added Successfully !');
+      })
+      .catch((error: any) => {
+        setLoading(false);
+        const errorMessage = error || 'An error occurred while adding client and document.';
+        return toast.error(`Failed to add client and document. ${errorMessage}`);
+        
+      });
   });
+
 
   return (
     <Box>

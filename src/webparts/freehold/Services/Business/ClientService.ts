@@ -18,18 +18,12 @@ const ClientService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
 
-    const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
+    const uploadDocument = async (libraryName: string, file: any, listName: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.createLibrary(libraryName);
             await spServiceInstance.uploadDocument(libraryName, file);
             console.log(response, "ClientLibraryGUIDClientLibraryGUID");
-            const results = await spServiceInstance.updateListItem(listName, Id,
-                {
-                    ClientLibraryGUID: response.data.Id,
-                    ClientLibraryPath: response.data.ParentWebUrl + "/" + libraryName
-                }
-            );
-            return results;
+            return response;
 
         }
     };
@@ -91,7 +85,6 @@ const ClientService = () => {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
-                    console.log(staff, "staffEMail");
                     const staffDetails = {
                         Id: staff.Id,
                         Name: staff.Title,
@@ -109,7 +102,7 @@ const ClientService = () => {
                     assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
                     contact: item.ClientContact,
                     GUID: item.ClientLibraryGUID,
-                    webURL:item.ClientLibraryPath,
+                    webURL: item.ClientLibraryPath,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
@@ -129,6 +122,12 @@ const ClientService = () => {
             }));
 
             return { updatedResults };
+        }
+    };
+    const getClientExpandApi = async (ListName: string, select: string, expand: string) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
+            return results;
         }
     };
 
@@ -225,7 +224,8 @@ const ClientService = () => {
         deleteFile,
         getPersonByEmail,
         addDocumentsToFolder,
-        getPersonById
+        getPersonById,
+        getClientExpandApi
     };
 };
 

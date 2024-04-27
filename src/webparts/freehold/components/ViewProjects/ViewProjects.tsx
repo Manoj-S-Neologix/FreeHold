@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from '@mui/material';
+import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -21,7 +21,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ProjectService from '../../Services/Business/ProjectService';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
-import DeleteDialog from '../Delete/Delete';
+import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -108,30 +108,32 @@ const ViewProject = (props: any) => {
     setHandleClientDialog(false);
     fetchData();
   };
-  
+
   const handleFilterClick = () => {
     setOpen(true);
   };
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
+    fetchData();
   };
 
 
 
-const handleDeleteDialogClose = () => {
-  setIsDeleteDialogOpen(false);
-};
+  const handleDeleteDialogClose = () => {
+    setIsDeleteDialogOpen(false);
+    fetchData();
+  };
 
-const theme = useTheme();
+  const theme = useTheme();
 
-const handleClear = () => {
-  // Implement clear functionality here
-};
+  const handleClear = () => {
+    // Implement clear functionality here
+  };
 
-const handleApply = () => {
-  // Implement apply functionality here
-};
+  const handleApply = () => {
+    // Implement apply functionality here
+  };
 
 
   const IconStyles = (icon: any) => {
@@ -141,7 +143,7 @@ const handleApply = () => {
       </div >
     );
   };
- 
+
 
   const headCells = [
     // { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
@@ -157,7 +159,7 @@ const handleApply = () => {
 
   console.log(AllClientData, "AllClientData");
 
- 
+
 
 
 
@@ -166,7 +168,7 @@ const handleApply = () => {
       label: 'View',
       icon: <VisibilityIcon />,
       handler: (data: any) => {
-        
+
         setIsViewDialogOpen(true);
         setProjectDetails(data);
         console.log();
@@ -182,7 +184,7 @@ const handleApply = () => {
       label: 'Edit',
       icon: <EditIcon />,
       handler: (id: any) => {
-       
+
         setIsViewDialogOpen(true);
         setProjectDetails(id);
         setIsEdit(true);
@@ -214,8 +216,8 @@ const handleApply = () => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
         await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
+      },
     },
-  },
     {
       label: 'Assign Client',
       button: (
@@ -254,9 +256,9 @@ const handleApply = () => {
       const select = '*,Author/Title,Author/EMail';
       const expand = 'Author';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
-      console.log(results,"result")
+      console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.TableData);   
+        setProjectData(results.TableData);
         setAllClientData(results.updatedResults);
       } else {
         // Handle case where no data is returned
@@ -283,9 +285,9 @@ const handleApply = () => {
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
-  })
+  });
 
-  console.log(tableData, "data")
+  console.log(tableData, "data");
 
   React.useEffect(() => {
     fetchData();
@@ -296,62 +298,62 @@ const handleApply = () => {
   // }, [isViewDialogOpen]);
 
   return (
-    <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >  
+    <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
       {!isViewDialogOpen &&
-      <Stack direction='column' sx={{ gap: "30px" }} >
-        <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="medium" />}
-            aria-label="breadcrumb"
-          >
-            <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
-              Home
-            </StyledBreadcrumb>
-            <StyledBreadcrumb disabled>
-              Project
-            </StyledBreadcrumb>
-          </Breadcrumbs>
-        </Box>
-
-        <Box style={{
-          margin: '0px', display: "flex", alignItems: "center",
-          justifyContent: "space-between"
-        }}>
-          <Box sx={{
-            display: "flex", alignItems: "center",
-            width: "22%", justifyContent: "space-between"
-          }}>
-            <Button
-              handleClick={openAddClientDialog}
-              style={{
-                maxWidth: "200px", whiteSpace: "pre",
-                background: "#125895", color: "#fff"
-              }}
-              message="Add Project"
-              Icon={
-                IconStyles(<AddIcon
-                  sx={{
-                    color: "white",
-                    fontSize: "20px !important",
-
-                  }} />)
-              }
-            />
-            <Button
-              handleClick={openAssignClientDialog}
-              disabled={selected.length === 0}
-              style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
-              message="Assign Client"
-            />
+        <Stack direction='column' sx={{ gap: "30px" }} >
+          <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="medium" />}
+              aria-label="breadcrumb"
+            >
+              <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
+                Home
+              </StyledBreadcrumb>
+              <StyledBreadcrumb disabled>
+                Project
+              </StyledBreadcrumb>
+            </Breadcrumbs>
           </Box>
-          <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <CustomSearch handleSearchChange={handleSearchChange} />
-          <IconButton onClick={handleFilterClick}> 
-                        <FilterAltIcon />
-                    </IconButton>
-                    </Box>
-        </Box>
-        <Dialog
+
+          <Box style={{
+            margin: '0px', display: "flex", alignItems: "center",
+            justifyContent: "space-between"
+          }}>
+            <Box sx={{
+              display: "flex", alignItems: "center",
+              width: "22%", justifyContent: "space-between"
+            }}>
+              <Button
+                handleClick={openAddClientDialog}
+                style={{
+                  maxWidth: "200px", whiteSpace: "pre",
+                  background: "#125895", color: "#fff"
+                }}
+                message="Add Project"
+                Icon={
+                  IconStyles(<AddIcon
+                    sx={{
+                      color: "white",
+                      fontSize: "20px !important",
+
+                    }} />)
+                }
+              />
+              <Button
+                handleClick={openAssignClientDialog}
+                disabled={selected.length === 0}
+                style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
+                message="Assign Client"
+              />
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <CustomSearch handleSearchChange={handleSearchChange} />
+              <IconButton onClick={handleFilterClick}>
+                <FilterAltIcon />
+              </IconButton>
+            </Box>
+          </Box>
+          <Dialog
             open={open}
             fullWidth={true}
             maxWidth={"sm"}
@@ -383,57 +385,57 @@ const handleApply = () => {
               <CloseIcon />
             </IconButton>
             <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-       
-         <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-   
-          <Grid item xs={12} sm={6}>
-            <label htmlFor="assignedStaffId">Assigned Client<span style={{ color: 'red' }}>*</span></label>
-            <Controller
-              name="assignedStaffId"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: 'Assigned Client is required',
-              }}
-              render={({ field }) => (
-                <PeoplePicker
-                  styles={{
-                    input: {
-                      width: '100%',
-                      height: '30px',
-                      paddingTop: "10px"
-                    },
-                    itemsWrapper: {
-                      'ms-PickerPersona-container': {
-                        width: '100%',
-                        backgroundColor: 'white !important'
-                      },
-                    },
-                    root: {
-                      width: '100%',
-                      height: '30px',
-                      paddingTop: "10px",
-                      'ms-BasePicker-text': {
-                        width: '100%',
-                        borderRadius: '5px'
-                      }
-                    },
-                  }}
-                  {...field}
-                  context={props.props.props.context as any}
-                  personSelectionLimit={4}
-                  required={true}
-                  showHiddenInUI={false}
-                  principalTypes={[PrincipalType.User]}
-                  resolveDelay={1000}
-                  onChange={handlePeoplePickerChange}
-                  defaultSelectedUsers={selectedPersons}
-                />
-              )}
-            />
-            {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
-          </Grid>
-        </Grid>
+
+              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+
+                <Grid item xs={12} sm={6}>
+                  <label htmlFor="assignedStaffId">Assigned Client<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="assignedStaffId"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Assigned Client is required',
+                    }}
+                    render={({ field }) => (
+                      <PeoplePicker
+                        styles={{
+                          input: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px"
+                          },
+                          itemsWrapper: {
+                            'ms-PickerPersona-container': {
+                              width: '100%',
+                              backgroundColor: 'white !important'
+                            },
+                          },
+                          root: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px",
+                            'ms-BasePicker-text': {
+                              width: '100%',
+                              borderRadius: '5px'
+                            }
+                          },
+                        }}
+                        {...field}
+                        context={props.props.props.context as any}
+                        personSelectionLimit={4}
+                        required={true}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        onChange={handlePeoplePickerChange}
+                        defaultSelectedUsers={selectedPersons}
+                      />
+                    )}
+                  />
+                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                </Grid>
+              </Grid>
               <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
                 <MuiButton variant="outlined" onClick={handleClear}>
                   Clear
@@ -452,36 +454,36 @@ const handleApply = () => {
               </DialogActions>
             </DialogContent>
           </Dialog>
-        <Box >
-          <GridTable
-            // rows={rows}
-            // headCells={headCells}
-            // props={props}
-            // actions={actions}
-            // searchQuery={searchQuery}
-            // setSelected={setSelected}
-            // selected={selected} />
-            rows={tableData}
-            headCells={headCells}
-            props={props}
-            searchQuery={searchQuery}
-            setSelected={setSelected}
-            selected={selected}
-            actions={actions}
-            isLoading={isLoading}
-            AllClientData={AllClientData}
+          <Box >
+            <GridTable
+              // rows={rows}
+              // headCells={headCells}
+              // props={props}
+              // actions={actions}
+              // searchQuery={searchQuery}
+              // setSelected={setSelected}
+              // selected={selected} />
+              rows={tableData}
+              headCells={headCells}
+              props={props}
+              searchQuery={searchQuery}
+              setSelected={setSelected}
+              selected={selected}
+              actions={actions}
+              isLoading={isLoading}
+              AllClientData={AllClientData}
             />
-        </Box>
-      </Stack>}
-      {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} fetchData={fetchData} 
-      props={props} />}
+          </Box>
+        </Stack>}
+      {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} fetchData={fetchData}
+        props={props} />}
 
-      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData}  selected={selected} props={props} />}
+      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
-                <DeleteDialog clientDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+        <DeleteDialog clientDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
       {isViewDialogOpen &&
         <ViewParticularProject
           props={props}

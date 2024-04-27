@@ -23,7 +23,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Checkbox from '@mui/material/Checkbox';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
-import DeleteDialog from '../Delete/Delete';
+import DeleteDialog from '../ViewClient/Delete/Delete';
 
 interface UploadDocumentProps {
   open: boolean;

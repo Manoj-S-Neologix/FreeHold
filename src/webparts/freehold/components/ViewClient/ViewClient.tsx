@@ -14,7 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteDialog from "../Delete/Delete";
+import DeleteDialog from "./Delete/Delete";
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import ViewParticularClient from './ViewParticularClient';
 import ClientService from "../../Services/Business/ClientService";
@@ -113,10 +113,12 @@ const ViewClient = (props: any) => {
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
+    fetchData();
   };
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
+    fetchData();
   };
 
   const theme = useTheme();
@@ -257,6 +259,17 @@ const ViewClient = (props: any) => {
       console.error('Error fetching data:', error);
     }
   };
+  const modifiedAssignedStaff = (data: any) => {
+    if (!data) return null;
+    const words = data.split(' ');
+    return (
+      <Box>
+        {words.map((word: string, index: number) => (
+          <p key={index}>{word}</p>
+        ))}
+      </Box>
+    );
+  };
 
   const tableData = clientData.map((item: any) => {
     return {
@@ -266,7 +279,7 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignedStaff: item?.assignStaff,
+      assignedStaff: modifiedAssignedStaff(item?.assignStaff),
     };
   });
 
@@ -369,57 +382,57 @@ const ViewClient = (props: any) => {
               <CloseIcon />
             </IconButton>
             <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-       
-         <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-   
-          <Grid item xs={12} sm={6}>
-            <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
-            <Controller
-              name="assignedStaffId"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: 'Assigned Staff is required',
-              }}
-              render={({ field }) => (
-                <PeoplePicker
-                  styles={{
-                    input: {
-                      width: '100%',
-                      height: '30px',
-                      paddingTop: "10px"
-                    },
-                    itemsWrapper: {
-                      'ms-PickerPersona-container': {
-                        width: '100%',
-                        backgroundColor: 'white !important'
-                      },
-                    },
-                    root: {
-                      width: '100%',
-                      height: '30px',
-                      paddingTop: "10px",
-                      'ms-BasePicker-text': {
-                        width: '100%',
-                        borderRadius: '5px'
-                      }
-                    },
-                  }}
-                  {...field}
-                  context={props.props.props.context as any}
-                  personSelectionLimit={4}
-                  required={true}
-                  showHiddenInUI={false}
-                  principalTypes={[PrincipalType.User]}
-                  resolveDelay={1000}
-                  onChange={handlePeoplePickerChange}
-                  defaultSelectedUsers={selectedPersons}
-                />
-              )}
-            />
-            {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
-          </Grid>
-        </Grid>
+
+              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+
+                <Grid item xs={12} sm={6}>
+                  <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="assignedStaffId"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Assigned Staff is required',
+                    }}
+                    render={({ field }) => (
+                      <PeoplePicker
+                        styles={{
+                          input: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px"
+                          },
+                          itemsWrapper: {
+                            'ms-PickerPersona-container': {
+                              width: '100%',
+                              backgroundColor: 'white !important'
+                            },
+                          },
+                          root: {
+                            width: '100%',
+                            height: '30px',
+                            paddingTop: "10px",
+                            'ms-BasePicker-text': {
+                              width: '100%',
+                              borderRadius: '5px'
+                            }
+                          },
+                        }}
+                        {...field}
+                        context={props.props.props.context as any}
+                        personSelectionLimit={4}
+                        required={true}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        onChange={handlePeoplePickerChange}
+                        defaultSelectedUsers={selectedPersons}
+                      />
+                    )}
+                  />
+                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                </Grid>
+              </Grid>
               <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
                 <MuiButton variant="outlined" onClick={handleClear}>
                   Clear
