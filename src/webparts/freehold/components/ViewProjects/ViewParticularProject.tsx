@@ -15,6 +15,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AssignClient from "../AssignClient/AssignClient";
+import { Controller,  useForm} from "react-hook-form";
+
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -52,6 +54,20 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
     const closeAssignClientDialog = () => {
         setHandleClientDialog(false);
     };
+
+    const { control, setValue, formState: { errors }, trigger } = useForm();
+    setValue('projectName', projectDetails.projectName);
+    setValue('projectNumber', projectDetails.projectNumber);
+    setValue('location', projectDetails.location);
+    setValue('developer', projectDetails.developer);
+
+    const [editData, setEditData] = React.useState<any>({
+        projectName: projectDetails.projectName,
+        projectNumber: projectDetails.projectNumber,
+        location: projectDetails.location,
+        developer: projectDetails.developer
+
+    });
 
 
     // console.log(projectDetails, "projectDetails");
@@ -115,35 +131,163 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                             </TableHead>
                             <TableBody>
                                 <TableRow>
-                                    <TableCell component="th" scope="row">Number</TableCell>
+                                    <TableCell component="th" scope="row">Project Number</TableCell>
                                     {!isEdit ? (
                                         <TableCell>{projectDetails.projectNumber}</TableCell>
                                     ) : (
                                         <TableCell>
-                                            <TextField
-                                                sx={{ pt: 1 }}
-                                                label="Project Code"
-                                                size="small"
-                                                value={projectDetails.projectNumber}
-                                                variant="outlined"
-                                            />
-                                        </TableCell>
+                                                     <Controller
+                                                            name="project Number"
+                                                            control={control}
+                                                            defaultValue=""
+                                                            rules={{
+                                                                required: 'Project Number is required',
+                                                                pattern: {
+                                                                    value: /^[0-9]+$/,
+                                                                    message: 'Invalid project number'
+                                                                }
+                                                            }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    id="projectNumber"
+                                                                    margin="dense"
+                                                                    size="small"
+                                                                    // fullWidth
+                                                                    value={editData.projectNumber}
+                                                                    onChange={async (e: any) => {
+                                                                        const value = e.target.value.replace(/\D/g, '');
+                                                                        field.onChange(value);
+                                                                        await trigger("projectNumber");
+                                                                        setEditData({ ...editData, projectNumber: value });
+                                                                    }}
+                                                                    error={!!errors.projectNumber}
+                                                                    helperText={errors.projectNumber && errors.projectNumber.message}
+                                                                />
+                                                            )}
+                                                        />
+
+                                                        </TableCell>
                                     )}
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell component="th" scope="row">Name</TableCell>
+                                    <TableCell component="th" scope="row">Project Name</TableCell>
                                     {!isEdit ? (
                                         <TableCell>{projectDetails.projectName}</TableCell>
                                     ) : (
                                         <TableCell>
-                                            <TextField
-                                                sx={{ pt: 1 }}
-                                                label="Project Name"
-                                                size="small"
-                                                value={projectDetails.projectName}
-                                                variant="outlined"
-                                            />
-                                        </TableCell>
+                                        <Controller
+                                               name="project Name"
+                                               control={control}
+                                               defaultValue=""
+                                               rules={{
+                                                   required: 'Project Name is required',
+                                                   pattern: {
+                                                    value: /^[a-zA-Z\s-]+$/,
+                                                       message: 'Invalid project name'
+                                                   }
+                                               }}
+                                               render={({ field }) => (
+                                                   <TextField
+                                                       {...field}
+                                                       id="project Name"
+                                                       margin="dense"
+                                                       size="small"
+                                                       // fullWidth
+                                                       value={editData.projectName}
+                                                       onChange={async (e: any) => {
+                                                           const value = e.target.value.replace(/\D/g, '');
+                                                           field.onChange(value);
+                                                           await trigger("project Name");
+                                                           setEditData({ ...editData, projectName: value });
+                                                       }}
+                                                       error={!!errors.projectName}
+                                                       helperText={errors.projectName && errors.projectName.message}
+                                                   />
+                                               )}
+                                           />
+
+                                           </TableCell>
+                                    )}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Location</TableCell>
+                                    {!isEdit ? (
+                                        <TableCell>{projectDetails.location}</TableCell>
+                                    ) : (
+                                        <TableCell>
+                                                     <Controller
+                                                            name="Location"
+                                                            control={control}
+                                                            defaultValue=""
+                                                            rules={{
+                                                                required: 'Project Number is required',
+                                                                pattern: {
+                                                                    value: /^[a-zA-Z\s-]+$/,
+                                                                    message: 'Invalid project number'
+                                                                }
+                                                            }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    id="location"
+                                                                    margin="dense"
+                                                                    size="small"
+                                                                    // fullWidth
+                                                                    value={editData.location}
+                                                                    onChange={async (e: any) => {
+                                                                        const value = e.target.value.replace(/\D/g, '');
+                                                                        field.onChange(value);
+                                                                        await trigger("location");
+                                                                        setEditData({ ...editData, location: value });
+                                                                    }}
+                                                                    error={!!errors.location}
+                                                                    helperText={errors.location && errors.location.message}
+                                                                />
+                                                            )}
+                                                        />
+
+                                                        </TableCell>
+                                    )}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell component="th" scope="row">Developer</TableCell>
+                                    {!isEdit ? (
+                                        <TableCell>{projectDetails.developer}</TableCell>
+                                    ) : (
+                                        <TableCell>
+                                                     <Controller
+                                                            name="Developer"
+                                                            control={control}
+                                                            defaultValue=""
+                                                            rules={{
+                                                                required: 'Developer is required',
+                                                                pattern: {
+                                                                    value: /^[a-zA-Z\s-]+$/,
+                                                                    message: 'Invalid Developer'
+                                                                }
+                                                            }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    id="developer"
+                                                                    margin="dense"
+                                                                    size="small"
+                                                                    // fullWidth
+                                                                    value={editData.developer}
+                                                                    onChange={async (e: any) => {
+                                                                        const value = e.target.value.replace(/\D/g, '');
+                                                                        field.onChange(value);
+                                                                        await trigger("developer");
+                                                                        setEditData({ ...editData, developer: value });
+                                                                    }}
+                                                                    error={!!errors.developer}
+                                                                    helperText={errors.developer && errors.developer.message}
+                                                                />
+                                                            )}
+                                                        />
+
+                                                        </TableCell>
                                     )}
                                 </TableRow>
 

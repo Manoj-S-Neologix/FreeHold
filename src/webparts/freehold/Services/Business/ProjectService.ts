@@ -30,6 +30,14 @@ const ProjectService = () => {
         }
     };
 
+    const addClient = async (ListName: string, itemData: any) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.addListItem(ListName, itemData);
+            return results.data;
+        }
+    };
+    
+
     const getProjectExpand = async (ListName: string, select: string, expand: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
@@ -46,7 +54,7 @@ const ProjectService = () => {
 
 
                 return {
-                    name: item.Title,
+                    // name: item.Title,
                     projectName: item.Title,
                     projectNumber: item.ProjectNumber,
                     location: item.Location,
@@ -101,6 +109,16 @@ const ProjectService = () => {
     };
 
     const deleteProject = async (ListName: string, itemId: number) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.deleteListItem(ListName, itemId);
+            console.log(results, "results");
+            return results;
+        }
+
+    };
+
+    const deleteClient = async (ListName: string, itemId: number) => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteListItem(ListName, itemId);
@@ -168,6 +186,8 @@ const ProjectService = () => {
         
         // uploadDocument,
         deleteLibrary,
+        deleteClient,
+        addClient
        
         // addDocumentsToFolder
     };

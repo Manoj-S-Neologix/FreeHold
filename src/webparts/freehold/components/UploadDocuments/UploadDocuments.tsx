@@ -4,13 +4,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  CircularProgress } from "@mui/material";
+import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import styles from "./UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
+import toast from 'react-hot-toast';
+
 
 interface UploadDocumentProps {
     open: boolean;
@@ -25,23 +27,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [fileData, setFileData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const { handleSubmit } = useForm();
-    
+
 
     console.log(particularClientAllData, "ClientData");
 
-
-    // const fetchData = async () => {
-    //     if (particularClientAllData.length > 0) {
-    //         const clientService: any = ClientService(); 
-    //         const folderGUID = particularClientAllData[0].GUID;
-    //         try {
-    //             const results = await clientService.getDocumentsFromFolder(folderGUID);
-    //             console.log(results, "lib name");
-    //         } catch (error) {
-    //             console.error("Error fetching documents:", error);
-    //         }
-    //     }
-    // };
 
     const fetchData = async () => {
         if (particularClientAllData.length > 0) {
@@ -78,11 +67,12 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     useEffect(() => {
         fetchData();
-    }, [particularClientAllData]);
+    }, [particularClientAllData, files]);
 
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
+        fetchData();
     };
 
 
@@ -98,53 +88,45 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     console.log(fileInfoArray, 'fileInfoArray');
 
     const handleSave = handleSubmit(async (data: any) => {
-        try {
-            setLoading(true);
-            const apiResponse = ClientService();
+        setLoading(true);
+        const apiResponse = ClientService();
 
-            console.log(particularClientAllData[0].name, "name");
-            console.log(fileInfoArray);
-            await apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray);
+        console.log(particularClientAllData[0].name, "name");
+        console.log(fileInfoArray);
 
+        apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
+            .then(() => {
+                setLoading(false);
+                // handleCancel();
+                setFiles([]);
+                toast.success('Documents Added Successfully!');
+                fetchData();
+               
 
-            setLoading(false);
-            handleCancel();
-            setFiles([]);
-        } catch (error) {
-            setLoading(false);
-            console.error("Failed to add client and document:", error);
-            
-        }
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.error("Failed to add client and document:", error);
+                toast.error(`Failed to add client and document: ${error}`);
+            });
+          
     });
 
-    // const handleSave = handleSubmit((data: any) => {
-    //     const apiResponse = ClientService();
-    //     console.log(particularClientAllData[0].name, "name");
-    //     console.log(fileInfoArray);
-
-    //     apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
-    //         .then(() => {
-    //             handleCancel();
-    //             setFiles([]);
-    //             console.log("Documents added successfully!");
-    //         })
-    //         .catch(error => {
-    //             console.error("Failed to add client and document:", error);
-    //         });
-    // });
 
     const handleDelete = () => {
         const apiResponse = ClientService();
+
         apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
             .then(() => {
                 setIsDeleteDialogOpen(false);
                 console.log("File deleted successfully!");
+                toast.success('File deleted successfully!');
             })
             .catch(error => {
                 console.error("Failed to delete document:", error);
+                toast.error(`Failed to delete document: ${error}`);
             });
     };
-
 
     const handleCancel = () => {
         onClose();
@@ -165,7 +147,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             }} />
                         </div>
                     </DialogTitle>
-                    {!loading &&  <IconButton
+                    {!loading && <IconButton
                         aria-label="close"
                         onClick={handleCancel}
                         sx={{
@@ -201,22 +183,22 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                 >
                                     Cancel
                                 </MuiButton> */}
-                                  <Stack
-                                direction="row"
-                                justifyContent="end"
-                                alignItems="center"
-                                spacing={3}
+                                <Stack
+                                    direction="row"
+                                    justifyContent="end"
+                                    alignItems="center"
+                                    spacing={3}
                                 >
-                                <Button variant="contained"
-                                    sx={{ width: loading ? '150px' : 'auto' }}
-                                    onClick={handleSave} disabled={loading} type="submit">
-                                    {loading ? (
-                                    <CircularProgress size={20} color="inherit" />
-                                    ) : (
-                                    "Save"
-                                    )}
-                                </Button>
-                                {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                                    <Button variant="contained"
+                                        sx={{ width: loading ? '150px' : 'auto' }}
+                                        onClick={handleSave} disabled={loading} type="submit">
+                                        {loading ? (
+                                            <CircularProgress size={20} color="inherit" />
+                                        ) : (
+                                            "Save"
+                                        )}
+                                    </Button>
+                                    {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
                                 </Stack>
                             </DialogActions>
                             <TableContainer>
@@ -237,8 +219,12 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                                         cursor: 'pointer',
                                                         textDecoration: 'underline',
                                                         color: 'primary'
-                                                    }} onClick={() => window.open(particularClientAllData[0].webURL, '_blank')}>
+                                                    }}
+                                                        onClick={() => {
+                                                            window.open(file.url, '_blank');
+                                                        }}   >
                                                         {file.fileName}
+
                                                     </Box>
                                                 </TableCell>
                                                 <TableCell>{formatDate(file.created)}</TableCell>
@@ -310,24 +296,24 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                             <Button variant="outlined" onClick={handleCancel}>
                                 Cancel
                             </Button> */}
-                                <Stack
-                                    direction="row"
-                                    justifyContent="end"
-                                    alignItems="center"
-                                    spacing={3}
-                                    >
-                                    <Button variant="contained"  color="primary"
-                                        sx={{ width: loading ? '150px' : 'auto' }}
-                                        onClick={handleDelete} disabled={loading}>
-                                        {loading ? (
+                            <Stack
+                                direction="row"
+                                justifyContent="end"
+                                alignItems="center"
+                                spacing={3}
+                            >
+                                <Button variant="contained" color="primary"
+                                    sx={{ width: loading ? '150px' : 'auto' }}
+                                    onClick={handleDelete} disabled={loading}>
+                                    {loading ? (
                                         <CircularProgress size={20} color="inherit" />
-                                        ) : (
+                                    ) : (
                                         "Delete"
-                                        )}
-                                    </Button>
-                        {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
-                                    </Stack>
-                                    </DialogActions>
+                                    )}
+                                </Button>
+                                {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                            </Stack>
+                        </DialogActions>
                     </Dialog>
                 )}
             </Stack>

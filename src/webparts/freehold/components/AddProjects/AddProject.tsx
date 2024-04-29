@@ -12,6 +12,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack, CircularProgress } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import {Controller, useForm } from "react-hook-form";
+import toast from 'react-hot-toast';
+
 
 interface AddClientDialogProps {
   open: boolean;
@@ -73,11 +75,14 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
 
       setFiles([]);
       // showToast(`Client Added Successfully !`, "success");
+      toast.success('Project Added Successfully !');
 
       handleCancel();
     } catch (error) {
       //showToast(`Failed to add client and document.`, "error");
       setLoading(false);
+      const errorMessage = error.message || 'An error occurred while adding the project.';
+      toast.error(`Failed to add the project. ${errorMessage}`);
 
     }
   });

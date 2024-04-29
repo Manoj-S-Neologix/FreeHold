@@ -13,6 +13,8 @@ import { Box, Stack, CircularProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { addListItem, createFolderInLibrary, uploadDocumentToLibrary } from "../../../Services/Core/ClientService";
 import ClientService from "../../../Services/Business/ClientService";
+import toast from 'react-hot-toast';
+
 
 
 interface DeleteDialogProps {
@@ -89,19 +91,35 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
 
   //delete code start
 
-  const handledeleteClient = async (clientId: any, Title: any) => {
-    try {
-      await ClientService().deleteClient("Client_Informations", clientId);
-      await ClientService().deleteLibrary(Title);
-      // console.log(response, "delete response");
-      console.log('Client deleted successfully');
-      // navigateToClient();
+  // const handledeleteClient = async (clientId: any, Title: any) => {
+  //   try {
+  //     await ClientService().deleteClient("Client_Informations", clientId);
+  //     await ClientService().deleteLibrary(Title);
+  //     console.log('Client deleted successfully');
 
 
-    } catch (error) {
-      console.error('Error deleting client:', error);
-    }
+  //   } catch (error) {
+  //     console.error('Error deleting client:', error);
+  //   }
+  // };
+
+  const handledeleteClient = (clientId:any, title:any) => {
+    ClientService().deleteClient("Client_Informations", clientId)
+      .then(() => {
+        return ClientService().deleteLibrary(title);
+      })
+      .then(() => {
+        toast.success('Client Deleted Successfully !');
+        console.log('Client deleted successfully');
+      })
+      .catch((error) => {
+        const errorMessage = error || 'An error occurred while deleting client and associated document.';
+        toast.error(`Failed to delete client and associated document. ${errorMessage}`);
+        console.error('Error deleting client:', error);
+      });
   };
+  
+  
 
 
   //delete code end

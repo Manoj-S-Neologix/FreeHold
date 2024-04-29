@@ -115,11 +115,15 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const handleSave = handleSubmit(async (data) => {
     setLoading(true);
     const apiResponse = ClientService();
+    console.log(data, selectedPersons, "staff")
 
     const dataObj = {
       Title: data.title,
       ClientEmail: data.email,
       ClientContact: data.contact,
+      AssignedStaffId: {
+        results: selectedPersons
+    }
     };
 
     false && addListItem('Clients', dataObj);
@@ -139,13 +143,15 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         .catch(error => reject(error));
     });
 
+    console.log(uploadPromise, "uploadPromise")
     // Create item in the list after document upload
     uploadPromise
       .then((uploadDocumentResponse: any) => {
+        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse")
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
-          ClientLibraryPath: data.ParentWebUrl + "/" + dataObj.Title
+          ClientLibraryPath: uploadDocumentResponse.data.ParentWebUrl + "/" + dataObj.Title
         };
         return apiResponse.addClient("Client_Informations", updatedDataObj);
       })
@@ -159,7 +165,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         setLoading(false);
         const errorMessage = error || 'An error occurred while adding client and document.';
         return toast.error(`Failed to add client and document. ${errorMessage}`);
-        
+
       });
   });
 
