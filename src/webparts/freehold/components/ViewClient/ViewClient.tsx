@@ -25,9 +25,6 @@ import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/People
 import { Controller, useForm } from "react-hook-form";
 
 
-
-
-
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === 'light'
@@ -230,6 +227,7 @@ const ViewClient = (props: any) => {
       },
     },
   ];
+  
   const handlePeoplePickerChange = async (items: any[]) => {
     console.log(items, "itemsitemsitemsitems");
     const selectedPersonsIds = [];
@@ -241,6 +239,8 @@ const ViewClient = (props: any) => {
     setSelectedPersons(selectedPersonsIds);
   };
 
+  
+  
   console.log(particularClientAllData, "Data");
 
   const fetchData = async () => {

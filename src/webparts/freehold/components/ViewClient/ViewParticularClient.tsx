@@ -63,6 +63,9 @@ console.log(particularClientAllData,"particularClientAllData")
             item.assignedStaff.map((assignStaff: any) => assignStaff.Email)
         );
         setSelectedPersons(assignedStaffEmails);
+
+        console.log('Assigned Staff Emails:', assignedStaffEmails);
+        
     }, []);
 
     // const [addClientDialog, setAddClientDialog] = useState(false);
@@ -71,13 +74,22 @@ console.log(particularClientAllData,"particularClientAllData")
     setValue('title', clientDetails.name);
     setValue('email', clientDetails.email);
     setValue('contact', clientDetails.contact);
+    setValue('assignedStaff', clientDetails.assignedStaff);
 
     const [editData, setEditData] = React.useState<any>({
         title: clientDetails.name,
         email: clientDetails.email,
-        contact: clientDetails.contact
+        contact: clientDetails.contact,
+        assignedStaff: clientDetails.assignedStaff
+
+
 
     });
+
+
+
+
+
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
@@ -120,10 +132,13 @@ console.log(particularClientAllData,"particularClientAllData")
 
             const apiResponse = ClientService();
 
+  
+
             const updatedData = {
-                Title: editData.title,
+                Name: editData.title,
                 ClientEmail: editData.email,
                 ClientContact: editData.contact,
+                AssignedStaff: editData.assignedStaff
             };
 
             const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
@@ -301,7 +316,27 @@ console.log(particularClientAllData,"particularClientAllData")
                                     <TableRow>
 
                                         <TableCell component="th" scope="row">Name</TableCell>
-                                        <TableCell>{clientDetails.name}</TableCell>
+                                        <TableCell>
+                                            {!isEdit ? (
+                                                clientDetails.name
+                                            ) : (
+                                                <Controller
+                                                    name="title"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{ required: 'Name is required' }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            // fullWidth
+                                                            size="small"
+                                                            error={!!errors.title}
+                                                            helperText={errors.title && errors.title.message}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        </TableCell>
 
                                     </TableRow>
 
@@ -316,41 +351,7 @@ console.log(particularClientAllData,"particularClientAllData")
 
                                     </TableRow>
 
-                                    {/*                                     
-                                    <TableRow>
-                                        <TableCell component="th" scope="row">
-                                            Assigned Staff
-                                        </TableCell>
-                                        {!isEdit ? (
-                                            <TableCell>
-                                         {clientDetails.assignedStaff}
-                                            </TableCell>
-                    
-                                        ) : (
-                                            <TableCell onClick={() => { setHandleStaffDialog(true); }}>
-                                                <Controller
-                                                    name="assignedStaff"
-                                                    control={control}
-                                                    defaultValue={clientDetails.assignedStaff}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            id="assignedStaff"
-                                                            margin="dense"
-                                                            size="small"
-                                                            value={editData.assignedStaff}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value;
-                                                                setEditData({ ...editData, assignedStaff: value });
-                                                                field.onChange(value);
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
-                                            </TableCell>
-                                        )}
-                                    </TableRow> */}
-                                    <TableRow>
+                                    {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell
                                             onClick={() => { setHandleStaffDialog(true); }}
@@ -363,7 +364,53 @@ console.log(particularClientAllData,"particularClientAllData")
                                         >
                                             {clientDetails.assignedStaff}
                                         </TableCell>}
+                                    </TableRow> */}
+
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Assigned Staff</TableCell>
+                                        { isEdit && <TableCell
+                                              sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                           onClick={() => { setHandleStaffDialog(true); }}
+                                        >
+                                            {clientDetails.assignedStaff}
+                                        </TableCell>}
+                                        {!isEdit && <TableCell
+                                            // sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                            // onClick={() => { setHandleStaffDialog(true); }}
+                                        >
+                                            {clientDetails.assignedStaff}
+                                        </TableCell>}
                                     </TableRow>
+
+                                            {/* <TableRow>
+                                                <TableCell component="th" scope="row">Assigned Staff</TableCell>
+                                                <TableCell>
+                                                    {!isEdit ? (
+                                                        clientDetails.assignedStaff
+                                                    ) : (
+                                                        <Controller
+                                                            name="assignedStaff"
+                                                            control={control}
+                                                            defaultValue={clientDetails.assignedStaff}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    id="assignedStaff"
+                                                                    margin="dense"
+                                                                    size="small"
+                                                                    value={editData.assignedStaff}
+                                                                    onChange={(e) => {
+                                                                        const value = e.target.value;
+                                                                        setEditData({ ...editData, assignedStaff: value });
+                                                                        field.onChange(value);
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    )}
+                                                </TableCell>
+                                            </TableRow> */}
+
 
                                     {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">
@@ -401,7 +448,7 @@ console.log(particularClientAllData,"particularClientAllData")
 
             <AddStaffDialog
                 particularClientAllData={particularClientAllData} selected={clientDetails}
-                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
+                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog}  />
 
         </Box>
     );
