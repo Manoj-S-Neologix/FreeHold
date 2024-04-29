@@ -6,7 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AddClientDialog from '../AddClient/AddClient';
 import AddStaffDialog from '../AddStaff/AddStaff';
 import GridTable from "../../../../Common/Table/Table";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
@@ -70,14 +70,46 @@ const ViewClient = (props: any) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [clientDetails, setClientDetails] = useState({});
+  const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
 
-
+  const { editClientId, viewClientId } = useParams();
   const navigate = useNavigate();
+
+
+  const fetchDataByuserId = async () => {
+    if (viewClientId) {
+      setIsViewDialogOpen(true);
+      const data = await fetchDataById(viewClientId);
+      console.log(data, "datadatadata");
+
+      if (data && data.length > 0) {
+        console.log(data, "datadatadata");
+        setClientDetails(data[0]?.TableData.pop()); // Assuming data is an object
+        setParticularClientAllData(data[0]?.TableData.pop());
+        navigate('/ViewClient/' + String(data[0]?.Id));
+      }
+    }
+    if (editClientId) {
+      setIsEdit(true);
+      setIsViewDialogOpen(true);
+      const data = await fetchDataById(editClientId);
+      if (data) {
+        console.log(data);
+        // setClientDetails(data[0]);
+        // setParticularClientAllData(data[0]);
+        // navigate('/EditClient/' + String(data[0]?.Id));
+      }
+    }
+  };
+
+
+
+
+
 
   const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);
@@ -160,7 +192,7 @@ const ViewClient = (props: any) => {
       handler: (data: any) => {
         setIsViewDialogOpen(true);
         setClientDetails(data);
-        console.log();
+        navigate('/ViewClient/' + data.Id);
 
         // Filter out unique client data
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
@@ -176,11 +208,12 @@ const ViewClient = (props: any) => {
     {
       label: 'Edit',
       icon: <EditIcon />,
-      handler: (id: any) => {
-        //console.log(`Edit clicked for row ${id}`);
+      handler: (data: any) => {
+        //console.log(`Edit clicked for row ${data}`);
         setIsViewDialogOpen(true);
-        setClientDetails(id);
+        setClientDetails(data);
         setIsEdit(true);
+        navigate('/EditClient/' + data.Id);
       },
     },
     {
@@ -249,7 +282,8 @@ const ViewClient = (props: any) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
-      const results = await clientService.getClientExpand('Client_Informations', select, expand);
+      const filter = "";
+      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
       setClientData(results?.updatedResults[0].TableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -259,6 +293,26 @@ const ViewClient = (props: any) => {
       console.error('Error fetching data:', error);
     }
   };
+
+  const fetchDataById = async (id: any) => {
+    try {
+      setIsLoading(true);
+      const clientService = ClientService();
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
+      const expand = 'AssignedStaff,Author';
+      const filter = `Id eq '${id}'`;
+      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+      // setClientData(results?.updatedResults[0].TableData);
+      // setAllClientData(results?.updatedResults);
+      setIsLoading(false);
+      setSelected([]);
+      return results?.updatedResults;
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  };
+
   const modifiedAssignedStaff = (data: any) => {
     if (!data) return null;
     const words = data.split(' ');
@@ -288,6 +342,10 @@ const ViewClient = (props: any) => {
   React.useEffect(() => {
     fetchData();
   }, []);
+  React.useEffect(() => {
+    if (editClientId || viewClientId)
+      fetchDataByuserId();
+  }, [editClientId, viewClientId]);
   // React.useEffect(() => {
   // 
   // }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);

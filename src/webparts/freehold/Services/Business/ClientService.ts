@@ -80,9 +80,9 @@ const ClientService = () => {
     //     }
     // };
 
-    const getClientExpand = async (ListName: string, select: string, expand: string) => {
+    const getClientExpand = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
                     const staffDetails = {
@@ -117,6 +117,7 @@ const ClientService = () => {
                         modifiedDate: formatDate(tableItem.Modified),
                         modifiedBy: tableItem.Author.Title,
                         assignStaff: (tableItem.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
+                        assignedStaff: assignedStaffDetails
                     }))
                 };
             }));
@@ -124,9 +125,10 @@ const ClientService = () => {
             return { updatedResults };
         }
     };
-    const getClientExpandApi = async (ListName: string, select: string, expand: string) => {
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            console.log(results, "results");
             return results;
         }
     };

@@ -285,13 +285,22 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         {isEdit && <TableCell
                                             onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignedStaff}
+                                            <ul>
+                                                {clientDetails?.assignedStaff?.map((staff: any) => (
+                                                    <li key={staff}>{staff?.Name}</li>
+                                                ))}
+                                            </ul>
                                         </TableCell>}
                                         {!isEdit && <TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
                                             onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignedStaff}
+                                            <ul>
+                                                {clientDetails?.assignedStaff?.map((staff: any) => (
+                                                    <li key={staff}>{staff?.Name}</li>
+                                                ))}
+                                            </ul>
+
                                         </TableCell>}
                                     </TableRow>
                                     {isEdit && <TableRow>
