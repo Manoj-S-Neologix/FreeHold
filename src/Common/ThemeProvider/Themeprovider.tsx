@@ -59,16 +59,23 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
             MuiTableSortLabel: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: "#000",
+                        backgroundColor: primary,
                         color: secondary,
                         '&.MuiActive': {
-                            backgroundColor: "#000",
+                            backgroundColor: primary,
                             color: secondary,
                         },
                         '&.MuiSvgIcon-root': {
-                            backgroundColor: "#000",
+                            backgroundColor: primary,
                             color: secondary,
-                        }
+                        },
+                        '&.Mui-active': {
+                            color: secondary, 
+                            '& .MuiSvgIcon-root': {
+                                color: secondary, 
+                            },
+                        },
+                        
                     },
                 }
             },
