@@ -28,6 +28,8 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  // const [showDetails, setShowDetails] = useState(true);
+
 
 
   const handleDeleteFile = (index: number) => {
@@ -111,6 +113,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
       .then(() => {
         toast.success('Client Deleted Successfully !');
         console.log('Client deleted successfully');
+        setFiles([]);
       })
       .catch((error) => {
         const errorMessage = error || 'An error occurred while deleting client and associated document.';
