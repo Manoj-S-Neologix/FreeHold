@@ -18,6 +18,9 @@ import Paper from '@mui/material/Paper';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -49,7 +52,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData }: any) => {
     // const [selected] = React.useState<any>([]);
-console.log(particularClientAllData,"particularClientAllData")
+    console.log(particularClientAllData, "particularClientAllData");
     // const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
@@ -65,7 +68,7 @@ console.log(particularClientAllData,"particularClientAllData")
         setSelectedPersons(assignedStaffEmails);
 
         console.log('Assigned Staff Emails:', assignedStaffEmails);
-        
+
     }, []);
 
     // const [addClientDialog, setAddClientDialog] = useState(false);
@@ -129,10 +132,10 @@ console.log(particularClientAllData,"particularClientAllData")
 
     const handleUpdate = handleSubmit(async (data) => {
         try {
-
+            setLoading(true);
             const apiResponse = ClientService();
 
-  
+
 
             const updatedData = {
                 Name: editData.title,
@@ -147,8 +150,10 @@ console.log(particularClientAllData,"particularClientAllData")
 
             reset();
             navigateToClient();
+            setLoading(false);
             toast.success('Client Updated Successfully!');
         } catch (error) {
+            setLoading(false);
             console.error('Error updating client details:', error);
             toast.error('Failed to update client details. Please try again.');
         }
@@ -377,21 +382,33 @@ console.log(particularClientAllData,"particularClientAllData")
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                        { isEdit && <TableCell
-                                              sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                           onClick={() => { setHandleStaffDialog(true); }}
+                                        {isEdit && <TableCell
+                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                            onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignedStaff}
+                                            {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
+                                                <ListItem key={index} component="div" disablePadding>
+                                                    <ListItemButton>
+                                                        <ListItemText primary={staff.Name} />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            ))}
                                         </TableCell>}
                                         {!isEdit && <TableCell
-                                            // sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            // onClick={() => { setHandleStaffDialog(true); }}
+                                        // sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                        // onClick={() => { setHandleStaffDialog(true); }}
                                         >
-                                            {clientDetails.assignedStaff}
+                                            {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
+                                                <ListItem key={index} component="div" disablePadding>
+                                                    <ListItemButton>
+                                                        <ListItemText primary={staff.Name} />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            ))}
                                         </TableCell>}
                                     </TableRow>
 
-                                            {/* <TableRow>
+                                    {/* <TableRow>
                                                 <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                                 <TableCell>
                                                     {!isEdit ? (
@@ -432,7 +449,6 @@ console.log(particularClientAllData,"particularClientAllData")
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={() => {
-                                                    setLoading(true);
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}
@@ -457,7 +473,7 @@ console.log(particularClientAllData,"particularClientAllData")
 
             <AddStaffDialog
                 particularClientAllData={particularClientAllData} selected={clientDetails}
-                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog}  />
+                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
 
         </Box>
     );

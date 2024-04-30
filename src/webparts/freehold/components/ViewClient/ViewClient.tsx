@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import React, { useState } from 'react';
 import { Breadcrumbs, Box, Stack, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
@@ -73,20 +74,34 @@ const ViewClient = (props: any) => {
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
 
-  const { editClientId, viewClientId } = useParams();
+  let { editClientId, viewClientId } = useParams();
   const navigate = useNavigate();
 
 
   const fetchDataByuserId = async () => {
     if (viewClientId) {
-      setIsViewDialogOpen(true);
+
       const data = await fetchDataById(viewClientId);
       console.log(data, "datadatadata");
 
       if (data && data.length > 0) {
-        console.log(data, "datadatadata");
-        setClientDetails(data[0]?.TableData.pop()); // Assuming data is an object
-        setParticularClientAllData(data[0]?.TableData.pop());
+        console.log(data[0].Id, "datadatadata");
+        const ID = data[0].Id;
+        const clientDetails = data[0]?.TableData.pop();
+        console.log(clientDetails, "datadatadata");
+        setClientDetails(clientDetails); // Assuming data is an object
+        console.log("datadatadata", AllClientData);
+        const getValue = AllClientData.map((data: any) => {
+          if (data.Id === ID) {
+            return data;
+          }
+          return;
+        });
+
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
+        setParticularClientAllData(getUnique);
+        console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
+        setIsViewDialogOpen(true);
         navigate('/ViewClient/' + String(data[0]?.Id));
       }
     }
@@ -95,16 +110,20 @@ const ViewClient = (props: any) => {
       setIsViewDialogOpen(true);
       const data = await fetchDataById(editClientId);
       if (data) {
-        console.log(data);
-        // setClientDetails(data[0]);
-        // setParticularClientAllData(data[0]);
-        // navigate('/EditClient/' + String(data[0]?.Id));
+        const ID = data[0].Id;
+        const clientDetails = data[0]?.TableData.pop();
+        console.log(clientDetails, "datadatadata");
+        setClientDetails(clientDetails);
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
+        setParticularClientAllData(getUnique);
+        navigate('/EditClient/' + String(data[0]?.Id));
       }
     }
   };
 
 
 
+  console.log(particularClientAllData, "getUniquegetUnique");
 
 
 
@@ -175,7 +194,7 @@ const ViewClient = (props: any) => {
     { id: 'contact', numeric: false, disablePadding: true, label: 'Contact Number' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
-    { id: 'assignedStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
+    { id: 'assignStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
     { id: 'action', numeric: false, disablePadding: true, label: 'Actions' },
   ];
 
@@ -186,16 +205,24 @@ const ViewClient = (props: any) => {
     {
       label: 'View',
       icon: <VisibilityIcon />,
-      handler: (data: any) => {
-        setIsViewDialogOpen(true);
-        setClientDetails(data);
-        navigate('/ViewClient/' + data.Id);
+      handler: async (data: any) => {
+        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        // setParticularClientAllData(uniqueClientData);
+        // setIsViewDialogOpen(true);
+        // setClientDetails(data);
+        viewClientId = String(data.Id);
+        if (data.Id) {
+          console.log(data, "AllClientDataAllClientData");
+          await fetchDataByuserId();
+        }
+        // navigate('/ViewClient/' + viewClientId);
 
-        // Filter out unique client data
-        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        setParticularClientAllData(uniqueClientData);
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
+
+        // // Filter out unique client data
+        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        // setParticularClientAllData(uniqueClientData);
+        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        // setParticularClientAllData(getUnique);
       },
     },
 
@@ -205,12 +232,21 @@ const ViewClient = (props: any) => {
     {
       label: 'Edit',
       icon: <EditIcon />,
-      handler: (data: any) => {
-        //console.log(`Edit clicked for row ${data}`);
-        setIsViewDialogOpen(true);
-        setClientDetails(data);
-        setIsEdit(true);
-        navigate('/EditClient/' + data.Id);
+      handler: async (data: any) => {
+        // //console.log(`Edit clicked for row ${data}`);
+        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        // setParticularClientAllData(getUnique);
+        // setIsViewDialogOpen(true);
+        // setClientDetails(data);
+        // setIsEdit(true);
+        // editClientId = String(data.Id);
+        // navigate('/EditClient/' + editClientId);
+        // console.log(data, "AllClientDataAllClientData");
+        editClientId = String(data.Id);
+        if (data.Id) {
+          console.log(data, "AllClientDataAllClientData");
+          await fetchDataByuserId();
+        }
       },
     },
     {
@@ -260,7 +296,7 @@ const ViewClient = (props: any) => {
       },
     },
   ];
-  
+
   const handlePeoplePickerChange = async (items: any[]) => {
     console.log(items, "itemsitemsitemsitems");
     const selectedPersonsIds = [];
@@ -272,9 +308,9 @@ const ViewClient = (props: any) => {
     setSelectedPersons(selectedPersonsIds);
   };
 
-  
-  
-  console.log(particularClientAllData, "Data");
+
+
+  console.log(particularClientAllData, "DataparticularClientAllData");
 
   const fetchData = async () => {
     try {
@@ -301,9 +337,12 @@ const ViewClient = (props: any) => {
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
       const expand = 'AssignedStaff,Author';
       const filter = `Id eq '${id}'`;
+      const filtered = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
+      setAllClientData(filteredResults?.updatedResults);
       // setClientData(results?.updatedResults[0].TableData);
-      // setAllClientData(results?.updatedResults);
+      //setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
       return results?.updatedResults;
@@ -313,17 +352,17 @@ const ViewClient = (props: any) => {
     }
   };
 
-  const modifiedAssignedStaff = (data: any) => {
-    if (!data) return null;
-    const words = data.split(' ');
-    return (
-      <Box>
-        {words.map((word: string, index: number) => (
-          <p key={index}>{word}</p>
-        ))}
-      </Box>
-    );
-  };
+  // const modifiedAssignedStaff = (data: any) => {
+  //   if (!data) return null;
+  //   const words = data.split(' ');
+  //   return (
+  //     <Box>
+  //       {words.map((word: string, index: number) => (
+  //         <p key={index}>{word}</p>
+  //       ))}
+  //     </Box>
+  //   );
+  // };
 
   const tableData = clientData.map((item: any) => {
     return {
@@ -333,7 +372,8 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignedStaff: modifiedAssignedStaff(item?.assignStaff),
+      assignStaff: item?.assignStaff,
+      assignedStaff: item?.assignedStaff,
     };
   });
 

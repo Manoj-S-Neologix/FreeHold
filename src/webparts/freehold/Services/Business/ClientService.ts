@@ -117,7 +117,7 @@ const ClientService = () => {
                         modifiedDate: formatDate(tableItem.Modified),
                         modifiedBy: tableItem.Author.Title,
                         assignStaff: (tableItem.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
-                        assignedStaff: assignedStaffDetails
+                        assignedStaff:assignedStaffDetails
                     }))
                 };
             }));
