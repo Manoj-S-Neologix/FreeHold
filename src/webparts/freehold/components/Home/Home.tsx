@@ -24,7 +24,7 @@ const Home = (props: any) => {
         <React.Fragment>
             {/* <ToastContainer /> */}
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
-              
+
                 <HashRouter basename='/'>
                     <Header props={props} />
                     <Search props={props} />
@@ -38,6 +38,14 @@ const Home = (props: any) => {
                         />
                         <Route
                             path='/ViewClient'
+                            element={<ViewClient props={props} />}
+                        />
+                        <Route
+                            path='/ViewClient/:viewClientId'
+                            element={<ViewClient props={props} />}
+                        />
+                        <Route
+                            path='/EditClient/:editClientId'
                             element={<ViewClient props={props} />}
                         />
                         <Route

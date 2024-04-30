@@ -27,7 +27,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData, selecte
     }, [particularClientAllData]);
 
 
-    console.log(particularClientAllData, selected, selectedPersons, "particularClientAllData");
+    console.log(particularClientAllData, selected, selectedPersons, "particularClientAllDataparticularClientAllData");
 
     const handleCancel = () => {
         onClose();
