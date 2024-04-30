@@ -573,7 +573,9 @@ const ViewClient = (props: any) => {
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />
 
       {isDeleteDialogOpen &&
-        <DeleteDialog clientDetails={clientDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+        <DeleteDialog clientDetails={clientDetails} 
+        open={isDeleteDialogOpen} 
+        onClose={handleDeleteDialogClose} />}
       {isViewDialogOpen &&
         <ViewParticularClient
           props={props}

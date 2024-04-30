@@ -427,6 +427,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 setLoading(false);
                 // handleCancel();
                 setFiles([]);
+                setUploadFiles([]);
                 toast.success('Documents Added Successfully!');
                 fetchData();
                
@@ -495,7 +496,9 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     files ={uploadFiles} setFiles={setUploadFiles}
                                     onFilesAdded={(files: File[]) => {
                                         setFiles(prevFiles => [...prevFiles, ...files]); // Add uploaded files to state
+                                        setUploadFiles(prevFiles => [...prevFiles, ...files]);
                                     }}
+
                                 />
                             </Box>
                             <DialogActions sx={{ px: 0, mr: 0 }}>

@@ -394,9 +394,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 </ListItem>
                                             ))}
                                         </TableCell>}
-                                        {!isEdit && <TableCell
-                                        // sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        // onClick={() => { setHandleStaffDialog(true); }}
+                                        {!isEdit && <TableCell className="default-cursor"
                                         >
                                             {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
                                                 <ListItem key={index} component="div" disablePadding>

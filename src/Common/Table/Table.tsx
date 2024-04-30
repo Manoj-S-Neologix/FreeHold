@@ -288,3 +288,5 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
 };
 
 export default GridTable;
+
+
