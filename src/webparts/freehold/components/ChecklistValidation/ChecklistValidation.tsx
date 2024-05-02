@@ -235,7 +235,7 @@ const ChecklistValidation = (props: any) => {
             <FormControl sx={{display:'flex', justifyContent:'center', alignItems:'center', width:'maxContent'}}>
               <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}}>Search</Button>
             </FormControl>
-             <div style={{display:'flex', position:'relative', margin:'20px', flexDirection:'column', justifyContent:'center'}}>
+             <div style={{display:'flex', position:'relative', margin:'2s0px', flexDirection:'column', justifyContent:'center'}}>
                {renderNode(nodes)}
             </div>
           </Box>

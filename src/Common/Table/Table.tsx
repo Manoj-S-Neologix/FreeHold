@@ -543,6 +543,81 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                                                             </TableCell>
                                                         ))}
 
+
+
+{/* Table width adjustng */}
+
+                                                      {/* {headCells.map((headCell: any) => (
+                                                            row.hasOwnProperty(headCell.id) &&
+                                                            <TableCell
+                                                                key={headCell.id}
+                                                                component="th"
+                                                                scope="row"
+                                                                padding="none"
+                                                            >
+                                                                {searchQuery && row[headCell.id] &&
+                                                                    typeof row[headCell.id].name === 'string' && // Accessing 'name' property from 'row[headCell.id]'
+                                                                    row[headCell.id].name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                    <>
+                                                                        {row[headCell.id].name.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
+                                                                            <React.Fragment key={index}>
+                                                                                {index > 0 && (
+                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                                )}
+                                                                                {part}
+                                                                            </React.Fragment>
+                                                                        ))}
+                                                                    </>
+                                                                ) : (
+                                                                    row[headCell.id] && row[headCell.id].name ? row[headCell.id].name : '-' // Accessing 'name' property from 'row[headCell.id]'
+                                                                )}
+                                                            </TableCell>
+                                                        ))} */}
+
+
+
+{/* 
+{headCells.map((headCell: any) => (
+    row.hasOwnProperty(headCell.id) &&
+    <TableCell
+        key={headCell.id}
+        component="th"
+        scope="row"
+        padding="none"
+    >
+        {headCell.id === 'name' && row[headCell.id] && typeof row[headCell.id].name === 'string' && (
+            searchQuery && row[headCell.id].name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                <>
+                    {row[headCell.id].name.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
+                        <React.Fragment key={index}>
+                            {index > 0 && (
+                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                            )}
+                            {part}
+                        </React.Fragment>
+                    ))}
+                </>
+            ) : (
+                row[headCell.id].name // Display name if it's a string and doesn't match search
+            )
+        )}
+
+        {['email', 'contact', 'modifiedDate', 'modifiedBy', 'assignStaff'].includes(headCell.id) && (
+            row[headCell.id] && row[headCell.id][headCell.id]
+        )}
+    </TableCell>
+))} */}
+
+
+
+
+
+
+
+
+
+
+
                                                         <TableCell width={"40%"} align="left" padding="none">
                                                             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                                                 <Box sx={{

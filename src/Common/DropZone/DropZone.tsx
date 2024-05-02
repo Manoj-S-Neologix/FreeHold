@@ -93,3 +93,6 @@ const dropzoneStyle: React.CSSProperties = {
     // width: 'calc(100vw - 500px)',
     outline: 'none',
 };
+
+
+
