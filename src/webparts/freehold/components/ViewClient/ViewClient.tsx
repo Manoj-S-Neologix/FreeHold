@@ -377,6 +377,20 @@ const ViewClient = (props: any) => {
     };
   });
 
+  // const tableData = clientData.map((item: any) => {
+  //   return {
+  //     Id: {Id: item. Id, width: 60 },
+  //     name: { name: item. name, width: 60 },
+  //     email: { email: item.email, width: 60 },
+  //     contact: { contact: item.contact, width: 30 },
+  //     modifiedDate: { modifiedDate: item.modifiedDate, width: 30 }, 
+  //     modifiedBy: { modifiedBy: item. modifiedBy, width: 30 }, 
+  //     assignStaff: { assignStaff: item?.assignStaff, width: 130 }, 
+  //     assignedStaff: { assignedStaff: item?.assignedStaff, width: 130 },
+
+  //   };
+  // });
+
 
 
   React.useEffect(() => {
