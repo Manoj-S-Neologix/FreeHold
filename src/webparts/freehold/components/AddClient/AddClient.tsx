@@ -10,8 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
 import { Box, Stack, Grid, CircularProgress } from '@mui/material';
-import { addListItem } from '../../Services/Core/ClientService';
-import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+// import { addListItem } from '../../Services/Core/ClientService';
+// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
@@ -43,6 +43,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
+
+  console.log(files,'files')
 
   const handleCancel = () => {
     setFiles([]);
@@ -127,7 +129,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       }
     };
 
-    false && addListItem('Clients', dataObj);
+    // false && addListItem('Clients', dataObj);
 
     const uploadPromise: any = new Promise((resolve, reject) => {
       const fileInfoArray = files.map((file: any) => ({
@@ -395,8 +397,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                 >
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
-                    <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} />
-                    {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} />}
+                    {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
+                    {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} setFiles={setFiles} files={files} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                 </Grid>

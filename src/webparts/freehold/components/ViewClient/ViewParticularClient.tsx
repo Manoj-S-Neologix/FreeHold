@@ -427,35 +427,6 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             </TableCell>}
                                     </TableRow>
 
-                                    {/* <TableRow>
-                                                <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                                <TableCell>
-                                                    {!isEdit ? (
-                                                        clientDetails.assignedStaff
-                                                    ) : (
-                                                        <Controller
-                                                            name="assignedStaff"
-                                                            control={control}
-                                                            defaultValue={clientDetails.assignedStaff}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    id="assignedStaff"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    value={editData.assignedStaff}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value;
-                                                                        setEditData({ ...editData, assignedStaff: value });
-                                                                        field.onChange(value);
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        />
-                                                    )}
-                                                </TableCell>
-                                            </TableRow> */}
-
 
                                     {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">

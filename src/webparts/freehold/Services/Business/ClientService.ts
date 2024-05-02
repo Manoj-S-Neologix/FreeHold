@@ -14,6 +14,18 @@ export const updatedData = async (siteUrl: string, listName: string, Id: number,
     }
 };
 
+// Add list items
+export const addListItem = async (siteUrl: string, listName: string, listData: any): Promise<any> => {
+    try {
+      const web = new SP(siteUrl);
+      const addedItem = await web.lists.getByTitle(listName).items.add(listData);
+      return addedItem;
+    } catch (error) {
+      console.error("Error adding client:", error);
+      throw error;
+    }
+  };
+
 const ClientService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
@@ -218,6 +230,7 @@ const ClientService = () => {
     };
 
 
+  
 
     return {
         getClient,
@@ -232,7 +245,8 @@ const ClientService = () => {
         getPersonByEmail,
         addDocumentsToFolder,
         getPersonById,
-        getClientExpandApi
+        getClientExpandApi,
+    
     };
 };
 

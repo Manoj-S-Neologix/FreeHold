@@ -282,12 +282,30 @@ const ViewClient = (props: any) => {
 
         />
       ),
+      
       handler: async (data: any) => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
         await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
 
       },
+
+      // handler: async (data: any) => {
+      //   const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+      //   setParticularClientAllData(getUnique);
+      //   if (getUnique.length > 0) {
+      //     const folderGUID = getUnique[0].GUID;
+      //     try {
+      //       const results = await ClientService().getDocumentsFromFolder(folderGUID);
+      //       console.log('Documents fetched successfully:', results);
+      //     } catch (error) {
+      //       console.error('Error fetching documents:', error);
+      //     }
+      //   } else {
+      //     console.warn('No client data found for the provided ID');
+      //   }
+      // },
+      
     },
     {
       label: 'Assign Staff',

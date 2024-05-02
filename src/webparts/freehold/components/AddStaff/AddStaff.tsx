@@ -281,6 +281,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                                     }
                                 }
                             }}
+                            // searchTextLimit={5}
                             personSelectionLimit={50}
                             context={props.props.props.context as any}
                             showHiddenInUI={false}
