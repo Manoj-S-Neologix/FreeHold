@@ -10,12 +10,13 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
 import { Box, Stack, Grid, CircularProgress } from '@mui/material';
-import { addListItem } from '../../Services/Core/ClientService';
-import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+// import { addListItem } from '../../Services/Core/ClientService';
+// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import toast from 'react-hot-toast';
+import DropZone from "../../../../Common/DropZone/DropZone";
 
 
 
@@ -42,6 +43,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
+
+  console.log(files,'files')
 
   const handleCancel = () => {
     setFiles([]);
@@ -115,7 +118,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const handleSave = handleSubmit(async (data) => {
     setLoading(true);
     const apiResponse = ClientService();
-    console.log(data, selectedPersons, "staff")
+    console.log(data, selectedPersons, "staff");
 
     const dataObj = {
       Title: data.title,
@@ -123,10 +126,10 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       ClientContact: data.contact,
       AssignedStaffId: {
         results: selectedPersons
-    }
+      }
     };
 
-    false && addListItem('Clients', dataObj);
+    // false && addListItem('Clients', dataObj);
 
     const uploadPromise: any = new Promise((resolve, reject) => {
       const fileInfoArray = files.map((file: any) => ({
@@ -143,11 +146,11 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         .catch(error => reject(error));
     });
 
-    console.log(uploadPromise, "uploadPromise")
+    console.log(uploadPromise, "uploadPromise");
     // Create item in the list after document upload
     uploadPromise
       .then((uploadDocumentResponse: any) => {
-        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse")
+        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse");
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
@@ -394,7 +397,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                 >
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
-                    <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} />
+                    {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
+                    {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} setFiles={setFiles} files={files} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                 </Grid>

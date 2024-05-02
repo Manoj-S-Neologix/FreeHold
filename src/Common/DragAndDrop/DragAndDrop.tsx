@@ -189,6 +189,8 @@ const DragAndDropUpload: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, set
     }
   };
 
+  
+
   return (
     <div>
       <div

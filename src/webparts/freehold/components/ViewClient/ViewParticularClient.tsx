@@ -18,9 +18,6 @@ import Paper from '@mui/material/Paper';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -50,9 +47,9 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData }: any) => {
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData }: any) => {
     // const [selected] = React.useState<any>([]);
-    console.log(particularClientAllData, "particularClientAllData");
+    console.log(particularClientAllData, clientDetails, "particularClientAllData");
     // const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
@@ -73,11 +70,16 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     // const [addClientDialog, setAddClientDialog] = useState(false);
     // // const { handleSubmit, control } = useForm();
-    const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
-    setValue('title', clientDetails.name);
-    setValue('email', clientDetails.email);
-    setValue('contact', clientDetails.contact);
-    setValue('assignedStaff', clientDetails.assignedStaff);
+    const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm(
+        {
+            defaultValues: {
+                title: clientDetails.name,
+                email: clientDetails.email,
+                contact: clientDetails.contact,
+                assignedStaff: clientDetails.assignedStaff
+            }
+        }
+    );
 
     const [editData, setEditData] = React.useState<any>({
         title: clientDetails.name,
@@ -89,9 +91,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     });
 
+    const clientDetailsId: any[] = [];
+    clientDetails?.assignedStaff?.map((data: any) => {
+        return clientDetailsId.push(data.Id);
+    });
 
 
-
+    console.log(clientDetailsId, "clientDetailsIdclientDetailsId");
 
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
@@ -134,14 +140,11 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         try {
             setLoading(true);
             const apiResponse = ClientService();
-
-
-
             const updatedData = {
-                Name: editData.title,
+                Title: editData.title,
                 ClientEmail: editData.email,
                 ClientContact: editData.contact,
-                AssignedStaff: editData.assignedStaff
+                // AssignedStaff: editData.assignedStaff
             };
 
             const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
@@ -149,9 +152,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             console.log('Update Client Response:', response);
 
             reset();
-            navigateToClient();
+            // navigateToClient();
             setLoading(false);
             toast.success('Client Updated Successfully!');
+            fetchData();
+            initialFetchData();
+            setIsEdit(false);
         } catch (error) {
             setLoading(false);
             console.error('Error updating client details:', error);
@@ -335,6 +341,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                             {...field}
                                                             // fullWidth
                                                             size="small"
+                                                            value={editData.title}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger('title');
+                                                                setEditData({ ...editData, title: value });
+                                                            }}
                                                             error={!!errors.title}
                                                             helperText={errors.title && errors.title.message}
                                                         />
@@ -382,58 +395,37 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                        {isEdit && <TableCell
-                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            onClick={() => { setHandleStaffDialog(true); }}
-                                        >
-                                            {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
-                                                <ListItem key={index} component="div" disablePadding>
-                                                    <ListItemButton>
-                                                        <ListItemText primary={staff.Name} />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            ))}
+                                        {isEdit && <TableCell className="default-cursor">
+                                            <ul
+                                                onClick={() => { setHandleStaffDialog(true); }}
+                                                className="default-cursor" style={{
+                                                    textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                    listStyleType: "none", padding: 0
+                                                }}>
+                                                {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
+                                                    <li className="default-cursor" style={{ textDecoration: "none" }}
+                                                        key={index}>
+                                                        <span>{staff.Name}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </TableCell>}
-                                        {!isEdit && <TableCell className="default-cursor"
-                                        >
-                                            {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
-                                                <ListItem key={index} component="div" disablePadding>
-                                                    <ListItemButton>
-                                                        <ListItemText primary={staff.Name} />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            ))}
-                                        </TableCell>}
+                                        {!isEdit &&
+                                            <TableCell className="default-cursor">
+                                                <ul className="default-cursor" style={{
+                                                    textDecoration: "none",
+                                                    listStyleType: "none",
+                                                    padding: 0
+                                                }}>
+                                                    {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
+                                                        <li className="default-cursor" style={{ textDecoration: "none" }}
+                                                            key={index}>
+                                                            <span>{staff.Name}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </TableCell>}
                                     </TableRow>
-
-                                    {/* <TableRow>
-                                                <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                                <TableCell>
-                                                    {!isEdit ? (
-                                                        clientDetails.assignedStaff
-                                                    ) : (
-                                                        <Controller
-                                                            name="assignedStaff"
-                                                            control={control}
-                                                            defaultValue={clientDetails.assignedStaff}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    id="assignedStaff"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    value={editData.assignedStaff}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value;
-                                                                        setEditData({ ...editData, assignedStaff: value });
-                                                                        field.onChange(value);
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        />
-                                                    )}
-                                                </TableCell>
-                                            </TableRow> */}
 
 
                                     {isEdit && <TableRow>
@@ -469,9 +461,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
             </Stack>
 
-            <AddStaffDialog
-                particularClientAllData={particularClientAllData} selected={clientDetails}
-                exsistingPersons={selectedPersons} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} />
+            {handleStaffDialog && <AddStaffDialog
+                particularClientAllData={particularClientAllData}
+                exsistingPersons={selectedPersons}
+                props={props}
+                open={handleStaffDialog} onClose={closeAddStaffDialog}
+                fetchData={fetchData} />}
 
         </Box>
     );

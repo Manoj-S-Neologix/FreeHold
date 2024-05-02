@@ -14,6 +14,18 @@ export const updatedData = async (siteUrl: string, listName: string, Id: number,
     }
 };
 
+// Add list items
+export const addListItem = async (siteUrl: string, listName: string, listData: any): Promise<any> => {
+    try {
+      const web = new SP(siteUrl);
+      const addedItem = await web.lists.getByTitle(listName).items.add(listData);
+      return addedItem;
+    } catch (error) {
+      console.error("Error adding client:", error);
+      throw error;
+    }
+  };
+
 const ClientService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
@@ -93,6 +105,8 @@ const ClientService = () => {
                     return staffDetails;
                 }));
 
+                const assignedStaff = assignedStaffDetails;
+
                 return {
                     name: item.Title,
                     email: item.ClientEmail,
@@ -107,22 +121,25 @@ const ClientService = () => {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
                     },
-                    assignedStaff: assignedStaffDetails,
+                    assignedStaff,
                     Id: item.Id,
-                    TableData: results.map((tableItem: any) => ({
-                        Id: tableItem.Id,
-                        name: tableItem.Title,
-                        email: tableItem.ClientEmail,
-                        contact: tableItem.ClientContact,
-                        modifiedDate: formatDate(tableItem.Modified),
-                        modifiedBy: tableItem.Author.Title,
-                        assignStaff: (tableItem.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
-                        assignedStaff:assignedStaffDetails
-                    }))
                 };
             }));
 
-            return { updatedResults };
+            const tableData = updatedResults.map((item: any) => {
+                return {
+                    Id: item.Id,
+                    name: item.name,
+                    email: item.email,
+                    contact: item.contact,
+                    modifiedDate: item.modifiedDate,
+                    modifiedBy: item.modifiedBy,
+                    assignStaff: item.assignStaff,
+                    assignedStaff: item.assignedStaff
+                };
+            });
+            console.log(updatedResults, tableData, "updatedResults");
+            return { updatedResults, tableData };
         }
     };
     const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
@@ -213,6 +230,7 @@ const ClientService = () => {
     };
 
 
+  
 
     return {
         getClient,
@@ -227,7 +245,8 @@ const ClientService = () => {
         getPersonByEmail,
         addDocumentsToFolder,
         getPersonById,
-        getClientExpandApi
+        getClientExpandApi,
+    
     };
 };
 

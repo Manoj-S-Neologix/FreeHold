@@ -54,7 +54,8 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 }));
 
 const ViewClient = (props: any) => {
-  const [selected, setSelected] = React.useState<any>([]);
+  const [selected, setSelected] = React.useState<any[]>([]);
+  const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
@@ -87,7 +88,7 @@ const ViewClient = (props: any) => {
       if (data && data.length > 0) {
         console.log(data[0].Id, "datadatadata");
         const ID = data[0].Id;
-        const clientDetails = data[0]?.TableData.pop();
+        const clientDetails = data[0];
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails); // Assuming data is an object
         console.log("datadatadata", AllClientData);
@@ -111,11 +112,18 @@ const ViewClient = (props: any) => {
       const data = await fetchDataById(editClientId);
       if (data) {
         const ID = data[0].Id;
-        const clientDetails = data[0]?.TableData.pop();
+        const clientDetails = data[0];
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails);
+        const getValue = AllClientData.map((data: any) => {
+          if (data.Id === ID) {
+            return data;
+          }
+          return;
+        });
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
         setParticularClientAllData(getUnique);
+        console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
         navigate('/EditClient/' + String(data[0]?.Id));
       }
     }
@@ -272,12 +280,30 @@ const ViewClient = (props: any) => {
 
         />
       ),
+      
       handler: async (data: any) => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
         await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
 
       },
+
+      // handler: async (data: any) => {
+      //   const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+      //   setParticularClientAllData(getUnique);
+      //   if (getUnique.length > 0) {
+      //     const folderGUID = getUnique[0].GUID;
+      //     try {
+      //       const results = await ClientService().getDocumentsFromFolder(folderGUID);
+      //       console.log('Documents fetched successfully:', results);
+      //     } catch (error) {
+      //       console.error('Error fetching documents:', error);
+      //     }
+      //   } else {
+      //     console.warn('No client data found for the provided ID');
+      //   }
+      // },
+      
     },
     {
       label: 'Assign Staff',
@@ -310,7 +336,7 @@ const ViewClient = (props: any) => {
 
 
 
-  console.log(particularClientAllData, "DataparticularClientAllData");
+  console.log(particularClientAllData, clientData, AllClientData, "DataparticularClientAllData");
 
   const fetchData = async () => {
     try {
@@ -320,7 +346,7 @@ const ViewClient = (props: any) => {
       const expand = 'AssignedStaff,Author';
       const filter = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
-      setClientData(results?.updatedResults[0].TableData);
+      setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
@@ -340,7 +366,7 @@ const ViewClient = (props: any) => {
       const filtered = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
       const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
-      setAllClientData(filteredResults?.updatedResults);
+      setAllClientData(filteredResults?.tableData);
       // setClientData(results?.updatedResults[0].TableData);
       //setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -377,20 +403,18 @@ const ViewClient = (props: any) => {
     };
   });
 
-  // const tableData = clientData.map((item: any) => {
-  //   return {
-  //     Id: {Id: item. Id, width: 60 },
-  //     name: { name: item. name, width: 60 },
-  //     email: { email: item.email, width: 60 },
-  //     contact: { contact: item.contact, width: 30 },
-  //     modifiedDate: { modifiedDate: item.modifiedDate, width: 30 }, 
-  //     modifiedBy: { modifiedBy: item. modifiedBy, width: 30 }, 
-  //     assignStaff: { assignStaff: item?.assignStaff, width: 130 }, 
-  //     assignedStaff: { assignedStaff: item?.assignedStaff, width: 130 },
-
-  //   };
-  // });
-
+  const tableDataWidth = clientData.map((item: any) => {
+    return {
+      Id: { value: item.Id, width: "50px" },
+      name: { value: item.name, width: "130px" },
+      email: { value: item.email, width: "230px" },
+      contact: { value: item.contact, width: "150px" },
+      modifiedDate: { value: item.modifiedDate, width: "150px" },
+      modifiedBy: { value: item.modifiedBy, width: "150px" },
+      assignStaff: { value: item?.assignStaff, width: "150px" },
+      assignedStaff: { value: item?.assignedStaff, width: "80%" },
+    };
+  });
 
 
   React.useEffect(() => {
@@ -399,6 +423,7 @@ const ViewClient = (props: any) => {
   React.useEffect(() => {
     if (editClientId || viewClientId)
       fetchDataByuserId();
+    console.log(editClientId, viewClientId, "editClientId, viewClientId");
   }, [editClientId, viewClientId]);
   // React.useEffect(() => {
   // 
@@ -428,7 +453,7 @@ const ViewClient = (props: any) => {
           margin: '0px', display: "flex", alignItems: "center",
           justifyContent: "space-between"
         }}>
-          <Box sx={{ display: "flex", alignItems: "center", width: "21%", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "20px", justifyContent: "space-between" }}>
             <Button
               handleClick={openAddClientDialog}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
@@ -444,7 +469,7 @@ const ViewClient = (props: any) => {
             />
             <Button
               handleClick={openAddStaffDialog}
-              disabled={selected.length === 0}
+              disabled={selected.length <= 1}
               style={{
                 maxWidth: "200px", whiteSpace: "pre",
                 background: "#dba236", color: "#000"
@@ -573,23 +598,25 @@ const ViewClient = (props: any) => {
             props={props}
             searchQuery={searchQuery}
             setSelected={setSelected}
+            setSelectedDetails={setSelectedDetails}
             selected={selected}
             actions={actions}
             isLoading={isLoading}
             AllClientData={AllClientData}
+            tableDataWidth={tableDataWidth}
           />
         </Box>
 
       </Stack>
       }
       {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} />}
-      {handleStaffDialog && <AddStaffDialog props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} />}
+      {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
       <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />
 
       {isDeleteDialogOpen &&
-        <DeleteDialog clientDetails={clientDetails} 
-        open={isDeleteDialogOpen} 
-        onClose={handleDeleteDialogClose} />}
+        <DeleteDialog clientDetails={clientDetails}
+          open={isDeleteDialogOpen}
+          onClose={handleDeleteDialogClose} />}
       {isViewDialogOpen &&
         <ViewParticularClient
           props={props}
@@ -598,6 +625,8 @@ const ViewClient = (props: any) => {
           setIsEdit={setIsEdit}
           setClientDetails={setClientDetails}
           isEdit={isEdit}
+          fetchData={fetchDataByuserId}
+          initialFetchData={fetchData}
           particularClientAllData={particularClientAllData} selected={selected}
         />}
     </Box>

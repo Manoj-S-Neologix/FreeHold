@@ -7,11 +7,13 @@ import DialogActions from '@mui/material/DialogActions';
 import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import styles from "./UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
 import toast from 'react-hot-toast';
+import DropZone from '../../../../Common/DropZone/DropZone';
+
 
 
 interface UploadDocumentProps {
@@ -29,7 +31,14 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const { handleSubmit } = useForm();
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
 
+    const handleFileInput = (selectedFiles: File[]) => {
+        console.log(selectedFiles, "selectedFiles")
+        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    };
 
+
+
+    console.log(files,"files");
 
     console.log(particularClientAllData, "ClientData");
 
@@ -41,6 +50,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             try {
                 const results = await clientService.getDocumentsFromFolder(folderGUID);
                 console.log(results, "File Datas");
+                console.log("Folder GUID:", folderGUID);
                 setFileData(results);
             } catch (error) {
                 console.error("Error fetching documents:", error);
@@ -50,8 +60,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         }
     };
 
+   
 
     console.log(fileData, "fileData");
+
+
 
     const mappedFiles = fileData.map((file: any) => ({
         id: file.Id,
@@ -72,13 +85,14 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     }, [particularClientAllData, files]);
 
 
+
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
         fetchData();
     };
 
 
-    const fileInfoArray = files?.map((file: any) => ({
+    const fileInfoArray = uploadFiles?.map((file: any) => ({
         lastModified: file.lastModified,
         lastModifiedDate: file.lastModifiedDate,
         name: file.name,
@@ -88,6 +102,8 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     }));
 
     console.log(fileInfoArray, 'fileInfoArray');
+
+    console.log(uploadFiles, "uploadFiles")
 
     const handleSave = handleSubmit(async (data: any) => {
         setLoading(true);
@@ -166,14 +182,35 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                     <DialogContent>
                         <Stack direction={"column"} spacing={2}>
                             <Box>
-                                <DragAndDropUpload
+                                {/* <DragAndDropUpload
                                     files ={uploadFiles} setFiles={setUploadFiles}
                                     onFilesAdded={(files: File[]) => {
                                         setFiles(prevFiles => [...prevFiles, ...files]); // Add uploaded files to state
                                         setUploadFiles(prevFiles => [...prevFiles, ...files]);
                                     }}
 
+                                /> */}
+
+
+                                  {/* <DropZone
+                                  
+                                    files={uploadFiles}
+                                    setFiles={setUploadFiles}
+                                    onFilesAdded={(files: File[]) => {
+                                    setUploadFiles([...uploadFiles, ...files]); 
+                                    }}
+                                /> */}
+         
+                                        <DropZone
+                                onFilesAdded={handleFileInput}
+                                files={uploadFiles}
+                                setFiles={setUploadFiles}
                                 />
+
+                            {/* <DropZone onFilesAdded={handleFileInput} 
+                            files={uploadFiles} setFiles={setUploadFiles}
+                            /> */}
+                     
                             </Box>
                             <DialogActions sx={{ px: 0, mr: 0 }}>
                                 {/* <MuiButton

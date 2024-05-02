@@ -60,23 +60,26 @@ export const ThemeProvider = ({ primary, secondary, children }: ThemeProps) => {
                 styleOverrides: {
                     root: {
                         backgroundColor: primary,
-                        color: secondary,
+                        color: '#fff',
                         '&.MuiActive': {
                             backgroundColor: primary,
-                            color: secondary,
+                            color: '#fff',
                         },
                         '&.MuiSvgIcon-root': {
                             backgroundColor: primary,
-                            color: secondary,
+                            color: '#fff',
                         },
                         '&.Mui-active': {
-                            color: secondary, 
+                            color: '#fff',
                             '& .MuiSvgIcon-root': {
-                                color: secondary, 
+                                color: '#fff',
                             },
                         },
-                        
-                    },
+                        '&:hover': {
+                            backgroundColor: primary,
+                            color: '#fff',
+                        },
+                    }
                 }
             },
 
