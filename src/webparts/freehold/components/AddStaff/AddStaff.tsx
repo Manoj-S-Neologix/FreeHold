@@ -281,14 +281,13 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                                     }
                                 }
                             }}
-                            searchTextLimit={5}
                             personSelectionLimit={50}
                             context={props.props.props.context as any}
                             showHiddenInUI={false}
                             principalTypes={[PrincipalType.User]}
                             resolveDelay={1000}
                             onChange={handlePeoplePickerChange}
-                            defaultSelectedUsers={selected.length > 1 ? [] : selectedPersons}
+                            defaultSelectedUsers={selected && selected.length > 1 ? [] : selectedPersons}
 
                         />
 

@@ -57,6 +57,7 @@ const ViewClient = (props: any) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchQueryCall, setSearchQueryCall] = useState('');
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -91,7 +92,7 @@ const ViewClient = (props: any) => {
         const clientDetails = data[0];
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails); // Assuming data is an object
-        console.log("datadatadata", AllClientData);
+        console.log("datadatadata", AllClientData, ID);
         const getValue = AllClientData.map((data: any) => {
           if (data.Id === ID) {
             return data;
@@ -180,11 +181,12 @@ const ViewClient = (props: any) => {
   const theme = useTheme();
 
   const handleClear = () => {
-    // Implement clear functionality here
+    setSearchQueryCall('');
   };
 
   const handleApply = () => {
-    // Implement apply functionality here
+    setSearchQuery(searchQueryCall);
+    setOpen(false);
   };
 
 
@@ -305,15 +307,11 @@ const ViewClient = (props: any) => {
     },
   ];
 
-  const handlePeoplePickerChange = async (items: any[]) => {
+
+
+  const searchPeopleInTable = async (items: any[]) => {
     console.log(items, "itemsitemsitemsitems");
-    const selectedPersonsIds = [];
-    for (const item of items) {
-      const getID = await ClientService().getPersonByEmail(item.secondaryText);
-      console.log(getID.Id, "getIDgetID");
-      selectedPersonsIds.push(getID.Id);
-    }
-    setSelectedPersons(selectedPersonsIds);
+    setSelectedPersons(items);
   };
 
 
@@ -349,6 +347,7 @@ const ViewClient = (props: any) => {
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
       const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
       setAllClientData(filteredResults?.tableData);
+
       // setClientData(results?.updatedResults[0].TableData);
       //setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -504,7 +503,7 @@ const ViewClient = (props: any) => {
 
               <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={12}>
                   <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
                   <Controller
                     name="assignedStaffId"
@@ -514,39 +513,44 @@ const ViewClient = (props: any) => {
                       required: 'Assigned Staff is required',
                     }}
                     render={({ field }) => (
-                      <PeoplePicker
-                        styles={{
-                          input: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px"
-                          },
-                          itemsWrapper: {
-                            'ms-PickerPersona-container': {
-                              width: '100%',
-                              backgroundColor: 'white !important'
-                            },
-                          },
-                          root: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px",
-                            'ms-BasePicker-text': {
-                              width: '100%',
-                              borderRadius: '5px'
-                            }
-                          },
-                        }}
-                        {...field}
-                        context={props.props.props.context as any}
-                        personSelectionLimit={4}
-                        required={true}
-                        showHiddenInUI={false}
-                        principalTypes={[PrincipalType.User]}
-                        resolveDelay={1000}
-                        onChange={handlePeoplePickerChange}
-                        defaultSelectedUsers={selectedPersons}
-                      />
+                      <>
+                        {
+
+                          <PeoplePicker
+                            styles={{
+                              input: {
+                                width: '100%',
+                                height: '30px',
+                                paddingTop: "10px"
+                              },
+                              itemsWrapper: {
+                                'ms-PickerPersona-container': {
+                                  width: '100%',
+                                  backgroundColor: 'white !important'
+                                },
+                              },
+                              root: {
+                                width: '100%',
+                                height: '30px',
+                                paddingTop: "10px",
+                                'ms-BasePicker-text': {
+                                  width: '100%',
+                                  borderRadius: '5px'
+                                }
+                              },
+                            }}
+                            {...field}
+                            context={props.props.props.context as any}
+                            personSelectionLimit={4}
+                            required={true}
+                            showHiddenInUI={false}
+                            principalTypes={[PrincipalType.User]}
+                            resolveDelay={1000}
+                            onChange={searchPeopleInTable}
+                            defaultSelectedUsers={selectedPersons}
+                          />}
+
+                      </>
                     )}
                   />
                   {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
