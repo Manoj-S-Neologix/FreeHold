@@ -620,7 +620,9 @@ const ViewClient = (props: any) => {
       {isDeleteDialogOpen &&
         <DeleteDialog clientDetails={clientDetails}
           open={isDeleteDialogOpen}
-          onClose={handleDeleteDialogClose} />}
+          onClose={handleDeleteDialogClose} 
+          fetchData={fetchData}
+          />}
       {isViewDialogOpen &&
         <ViewParticularClient
           props={props}

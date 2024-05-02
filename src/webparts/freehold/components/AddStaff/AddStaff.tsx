@@ -243,7 +243,10 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         <Box sx={{ width: '100', padding: '20px' }}>
             <Stack direction="column" spacing={2}>
                 <Dialog open={open} maxWidth='sm' fullWidth>
-                    <DialogTitle className={styles.addTitle} style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                    <DialogTitle className={styles.addTitle} 
+                    style={{ textAlign: 'center', 
+                    marginLeft: '7px', 
+                    position: 'relative' }}>
                         <div className="d-flex flex-column">
                             <div className="d-flex justify-content-between align-items-center relative">
                                 <h4 style={{ margin: '0', color: '#125895' }}>Assign Staff</h4>
