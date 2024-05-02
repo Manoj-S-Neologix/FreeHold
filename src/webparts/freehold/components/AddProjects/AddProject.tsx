@@ -23,7 +23,7 @@ interface AddClientDialogProps {
 }
 
 
-const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => {
+const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetchData }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
@@ -71,12 +71,12 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
       console.log(response, fileInfoArray, 'responseresponseresponse');
       // await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
       setLoading(false);
-      handleCancel();
+      // handleCancel();
 
       setFiles([]);
       // showToast(`Client Added Successfully !`, "success");
       toast.success('Project Added Successfully !');
-
+      fetchData();
       handleCancel();
     } catch (error) {
       //showToast(`Failed to add client and document.`, "error");
@@ -124,7 +124,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
           <form onSubmit={handleSave}>
             <div style={{ display: 'flex', marginBottom: '20px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
-                <label htmlFor="projectNumber">Project Number*</label>
+                <label htmlFor="projectNumber">Project Number<span style={{ color: 'red' }}>*</span></label>
                 <Controller
                       name="projectNumber"
                       control={control}
@@ -159,7 +159,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
                     />
               </div>
               <div style={{ flex: 1 }}>
-                <label htmlFor="projectName">Project Name</label>
+                <label htmlFor="projectName">Project Name<span style={{ color: 'red' }}>*</span></label>
                 <Controller
                       name="title"
                       control={control}
@@ -196,7 +196,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
             </div>
             <div style={{ display: 'flex', marginBottom: '10px' }}>
               <div style={{ marginRight: '20px', flex: 1 }}>
-              <label htmlFor="location">Location</label>
+              <label htmlFor="location">Location<span style={{ color: 'red' }}>*</span></label>
               <Controller
                       name="location"
                       control={control}
@@ -231,7 +231,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose }) => 
                     />
               </div>
               <div style={{ flex: 1 }}>
-                <label htmlFor="developer">Developer</label>
+                <label htmlFor="developer">Developer<span style={{ color: 'red' }}>*</span></label>
                 <Controller
                       name="developer"
                       control={control}

@@ -55,7 +55,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             }
         };
         if (selected?.length === 0) {
-            ProjectService().updateClient(
+            ProjectService().updateProject(
                 "Project_Informations",
                 particularClientAllData[0].Id,
                 dataObj
@@ -69,7 +69,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         }
         else {
             for (const item of selected) {
-                ProjectService().updateClient(
+                ProjectService().updateProject(
                     "Project_Informations",
                     item,
                     dataObj

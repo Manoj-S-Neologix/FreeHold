@@ -90,7 +90,7 @@ const ProjectService = () => {
         }
     };
 
-    const updateClient = async (ListName: string, itemId: number, itemData: any) => {
+    const updateProject = async (ListName: string, itemId: number, itemData: any) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.updateListItem(
                 ListName,
@@ -163,6 +163,14 @@ const ProjectService = () => {
         }
     };
 
+    const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.uploadDocument(libraryGuid, file);
+            console.log(results, "results");
+        }
+    };
+
 
     //         const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
 
@@ -176,7 +184,7 @@ const ProjectService = () => {
 
     return {
         getProject,
-        updateClient,
+        updateProject,
         getProjectExpand,
         addProject,
         getPersonByEmail,
@@ -187,7 +195,8 @@ const ProjectService = () => {
         // uploadDocument,
         deleteLibrary,
         deleteClient,
-        addClient
+        addClient,
+        addDocumentsToFolder
        
         // addDocumentsToFolder
     };
