@@ -93,6 +93,8 @@ const ClientService = () => {
                     return staffDetails;
                 }));
 
+                const assignedStaff = assignedStaffDetails;
+
                 return {
                     name: item.Title,
                     email: item.ClientEmail,
@@ -107,22 +109,25 @@ const ClientService = () => {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
                     },
-                    assignedStaff: assignedStaffDetails,
+                    assignedStaff,
                     Id: item.Id,
-                    TableData: results.map((tableItem: any) => ({
-                        Id: tableItem.Id,
-                        name: tableItem.Title,
-                        email: tableItem.ClientEmail,
-                        contact: tableItem.ClientContact,
-                        modifiedDate: formatDate(tableItem.Modified),
-                        modifiedBy: tableItem.Author.Title,
-                        assignStaff: (tableItem.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
-                        assignedStaff:assignedStaffDetails
-                    }))
                 };
             }));
 
-            return { updatedResults };
+            const tableData = updatedResults.map((item: any) => {
+                return {
+                    Id: item.Id,
+                    name: item.name,
+                    email: item.email,
+                    contact: item.contact,
+                    modifiedDate: item.modifiedDate,
+                    modifiedBy: item.modifiedBy,
+                    assignStaff: item.assignStaff,
+                    assignedStaff: item.assignedStaff
+                };
+            });
+            console.log(updatedResults, tableData, "updatedResults");
+            return { updatedResults, tableData };
         }
     };
     const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {

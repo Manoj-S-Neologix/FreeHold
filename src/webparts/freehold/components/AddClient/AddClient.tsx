@@ -16,6 +16,7 @@ import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import toast from 'react-hot-toast';
+import DropZone from "../../../../Common/DropZone/DropZone";
 
 
 
@@ -115,7 +116,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const handleSave = handleSubmit(async (data) => {
     setLoading(true);
     const apiResponse = ClientService();
-    console.log(data, selectedPersons, "staff")
+    console.log(data, selectedPersons, "staff");
 
     const dataObj = {
       Title: data.title,
@@ -123,7 +124,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       ClientContact: data.contact,
       AssignedStaffId: {
         results: selectedPersons
-    }
+      }
     };
 
     false && addListItem('Clients', dataObj);
@@ -143,11 +144,11 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         .catch(error => reject(error));
     });
 
-    console.log(uploadPromise, "uploadPromise")
+    console.log(uploadPromise, "uploadPromise");
     // Create item in the list after document upload
     uploadPromise
       .then((uploadDocumentResponse: any) => {
-        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse")
+        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse");
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
@@ -395,6 +396,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
                     <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} />
+                    {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                 </Grid>

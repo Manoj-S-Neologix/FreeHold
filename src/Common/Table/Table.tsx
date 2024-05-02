@@ -315,15 +315,18 @@ interface Action {
 }
 
 function EnhancedTableHead(props: any) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, headCells,  onRequestSort } = props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, headCells, onRequestSort } = props;
 
-    const createSortHandler = (property:any) => (event: React.MouseEvent<unknown>) =>  {
+    const createSortHandler = (property: any) => (event: React.MouseEvent<unknown>) => {
+        if (property === 'action') {
+            return;
+        }
         onRequestSort(property);
     };
 
     return (
         <TableHead sx={{ backgroundColor: "#125895", color: "#fff", maxWidth: '100%' }}>
-             <TableRow>
+            <TableRow>
                 <TableCell padding="checkbox" sx={{ backgroundColor: "#125895", color: "#fff" }}>
                     <Checkbox
                         sx={{
@@ -338,14 +341,14 @@ function EnhancedTableHead(props: any) {
                     />
                 </TableCell>
                 {headCells.map((headCell: any) => (
-                    <TableCell
+                    headCell.id !== 'action' ? <TableCell
                         key={headCell.id}
                         sx={{ backgroundColor: "#125895", color: "#fff", fontWeight: 600 }}
                         align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                     >
                         {headCell.disableSorting ? (
-                            headCell.label // Render label directly if sorting is disabled
+                            headCell.label
                         ) : (
                             <TableSortLabel
                                 active={orderBy === headCell.id}
@@ -354,15 +357,21 @@ function EnhancedTableHead(props: any) {
                             >
                                 {headCell.label}
                             </TableSortLabel>
-                          )} 
-                    </TableCell>
+                        )}
+                    </TableCell> :
+                        <TableCell key={headCell.id}
+                            sx={{ backgroundColor: "#125895", color: "#fff", fontWeight: 600 }}
+                            align={headCell.numeric ? 'right' : 'left'}
+                            padding={headCell.disablePadding ? 'none' : 'normal'}>
+                            {headCell.label}
+                        </TableCell>
                 ))}
             </TableRow>
         </TableHead>
     );
 }
 
-const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData, headCells, actions, isLoading }: any) => {
+const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
@@ -380,12 +389,25 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
         if (event.target.checked) {
             const newSelected = rows.map((n: any, idx: any) => n.Id);
             setSelected(newSelected);
+            const newSelectedDetails = rows.map((n: any, idx: any) => {
+                if (n.assignedStaff) {
+                    return n.assignedStaff.map((staff: any) => ({
+                        Id: n.Id,
+                        StaffId: staff.Id
+                    }));
+                }
+                return [];
+            }).flat(); // To flatten the array of arrays into a single array
+            console.log(newSelectedDetails, "newSelected");
+            setSelectedDetails(newSelectedDetails);
             return;
         }
         setSelected([]);
+        setSelectedDetails([]);
+
     };
 
-    
+
     const handleClick = (event: any, id: any) => {
         const selectedIndex = selected.indexOf(id);
         let newSelected: any[] = [];
@@ -438,13 +460,21 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
         )
         : sortedRows;
 
+    const getWidth = (id: any) => {
+        return (
+            tableDataWidth.map(
+                (item: any) => (item.hasOwnProperty(id)
+                    ? item[id].width
+                    : "auto"))
+        );
+    };
     return (
         <Box>
             <Grid container>
                 <Grid item xs={12}>
-                    <Paper sx={{ width: '100%', mb: 2 }}>
-                        <TableContainer>
-                            <Table>
+                    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                            <Table stickyHeader>
                                 <EnhancedTableHead
                                     headCells={headCells}
                                     numSelected={selected.length}
@@ -473,7 +503,7 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
                                                         selected={isItemSelected}
                                                         sx={{ cursor: 'pointer', height: "55px" }}
                                                     >
-                                                        <TableCell padding="checkbox">
+                                                        <TableCell padding="checkbox" sx={{ paddingRight: "10px" }}>
                                                             <Checkbox
                                                                 checked={isItemSelected}
                                                                 inputProps={{
@@ -486,11 +516,13 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
                                                             row.hasOwnProperty(headCell.id) &&
                                                             <TableCell
                                                                 key={headCell.id}
-                                                                component="th"
+                                                                component="td"
                                                                 scope="row"
                                                                 padding="none"
-                                                                style={{ width: headCell.width }}
-                                                                // style={{ width: headCell.width || 'auto' }} // Set width based on headCell.width or default to 'auto'
+                                                                sx={{
+                                                                    minWidth: getWidth(headCell.id),
+                                                                }}
+
                                                             >
                                                                 {searchQuery && row[headCell.id] &&
                                                                     typeof row[headCell.id] === 'string' &&
@@ -512,8 +544,11 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
                                                         ))}
 
                                                         <TableCell width={"40%"} align="left" padding="none">
-                                                            <div className="d-flex align-items-center w-100">
-                                                                <div style={{ display: 'flex', gap: '10px' }}>
+                                                            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                                                <Box sx={{
+                                                                    display: 'flex', gap: '10px',
+                                                                    minWidth: '500px !important'
+                                                                }}>
                                                                     {actions.map((action: Action, index: number) => (
                                                                         action.button ? (
                                                                             <IconButton
@@ -538,8 +573,8 @@ const GridTable = ({ props, searchQuery, setSelected, selected, rows, tableData,
                                                                             </Tooltip>
                                                                         )
                                                                     ))}
-                                                                </div>
-                                                            </div>
+                                                                </Box>
+                                                            </Box>
                                                         </TableCell>
                                                     </TableRow>
                                                 );

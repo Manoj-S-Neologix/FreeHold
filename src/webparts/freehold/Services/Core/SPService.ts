@@ -19,7 +19,7 @@ export type SPServiceType = {
         listTitle: string,
         select: string,
         expand: string,
-        filter: string | number | undefined) => Promise<any[]>;
+        filter: string | number | any) => Promise<any[]>;
 };
 
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
