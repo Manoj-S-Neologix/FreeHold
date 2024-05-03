@@ -1,5 +1,5 @@
-import { Box, Breadcrumbs, Button, Typography } from '@mui/material';
-import React from 'react';
+import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
+import React, { useRef, useState } from 'react';
 import { emphasize, styled } from '@mui/material/styles';
 import { Button as MuiButton } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -8,11 +8,10 @@ import { useNavigate } from 'react-router-dom';
 // import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+// import AccordionDetails from '@mui/material/AccordionDetails';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -48,79 +47,88 @@ const commonStyles = {
   height: '8rem',
 }
 
-const nodes = {
-  id: 1,
-  name: "Project 1",
-  children: [
-    {
-      id: 2,
-      name: "Client 1",
-      children: [
-        {
-          id: 4,
-          name: "Unit 1",
-        },
-        {
-          id: 5,
-          name: "Unit 2",
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: "Client 2",
-      children: [
-        {
-          id: 10,
-          name: "Unit 3",
-        },
-        {
-          id: 13,
-          name: "Unit 4",
-        }
-      ]
-    }
-  ]
-};
+// const nodes = {
+//   id: 1,
+//   name: "Project 1",
+//   children: [
+//     {
+//       id: 2,
+//       name: "Client 1",
+//       children: [
+//         {
+//           id: 4,
+//           name: "Unit 1",
+//         },
+//         {
+//           id: 5,
+//           name: "Unit 2",
+//         }
+//       ]
+//     },
+//     {
+//       id: 3,
+//       name: "Client 2",
+//       children: [
+//         {
+//           id: 10,
+//           name: "Unit 3",
+//         },
+//         {
+//           id: 13,
+//           name: "Unit 4",
+//         }
+//       ]
+//     }
+//   ]
+// };
 
-const renderChildren = (children: any[]) => {
-  return (
-    <Accordion>
-      {children.map((c) => (
-        <>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} key={c.id}>
-            <Typography key={c.id}>{c.name}</Typography>
-          </AccordionSummary>
-          <AccordionDetails key={c.id}></AccordionDetails>
-        </>
-      ))}
-    </Accordion>
-  );
-};
+// const renderChildren = (children: any[]) => {
+//   return (
+//     <Accordion>
+//       {children.map((c) => (
+//         <>
+//           <AccordionSummary expandIcon={<ExpandMoreIcon />} key={c.id}>
+//             <Typography key={c.id}>{c.name}</Typography>
+//           </AccordionSummary>
+//           <AccordionDetails key={c.id}></AccordionDetails>
+//         </>
+//       ))}
+//     </Accordion>
+//   );
+// };
 
-const renderNode = (node: any) => {
-  return (
-    <Accordion key={node.id}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} key={node.id}>
-        <Typography>{node.name}</Typography>
-      </AccordionSummary>
-      <AccordionDetails key={node.id}>
-        {renderChildren(node.children)}
-      </AccordionDetails>
-    </Accordion>
-  );
-};
+// const renderNode = (node: any) => {
+//   return (
+//     <Accordion key={node.id}>
+//       <AccordionSummary expandIcon={<ExpandMoreIcon />} key={node.id}>
+//         <Typography>{node.name}</Typography>
+//       </AccordionSummary>
+//       <AccordionDetails key={node.id}>
+//         {renderChildren(node.children)}
+//       </AccordionDetails>
+//     </Accordion>
+//   );
+// };
 
 const ChecklistValidation = (props: any) => {
+  const ProjectRef = useRef<HTMLInputElement>(null);
+  const ClientRef = useRef<HTMLInputElement>(null);
+  const UnitRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate('/');
   };
-  const [age, setAge] = React.useState('');
+  const [projectValue, setProjectValue] = useState<string>('');
+  const [clientValue, setClientValue] = useState<string>('');
+  const [unitValue, setUnitValue] = useState<string>('');
+  const handleSearch = () => {
+    setProjectValue(ProjectRef.current?.value || '');
+    setClientValue(ClientRef.current?.value || '');
+    setUnitValue(UnitRef.current?.value || '')
+  }
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
+  
+  
   return (
     <div>
       <Box>
@@ -143,100 +151,95 @@ const ChecklistValidation = (props: any) => {
                 Project
                   <Box>
                     <FormControl>
-                      {/* <InputLabel id="demo-simple-select-label">Project</InputLabel> */}
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Project"
-                        onChange={handleChange}
-                        sx={{
-                          display: 'flex',
-                          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
-                          color: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                          border: '1px solid',
-                          borderColor: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                          borderRadius: 2,
-                          width:'15rem',
-                          height:'2rem'
-                        }}
-                        placeholder='project'
+                      <TextField 
+                      id="Project"
+                      fullWidth
+                      variant="outlined"
+                      select
+                      size="small"
+                      required
+                      label=""
+                      inputRef={ProjectRef}
+                      sx={{
+                        width:'15rem',
+                        height:'2rem'
+                      }}
                       >
-                        <MenuItem>Project 1</MenuItem>
-                        <MenuItem>Project 2</MenuItem>
-                        <MenuItem>Project 3</MenuItem>
-                      </Select>
+                        <MenuItem value="Project A">Project A</MenuItem>
+                        <MenuItem value="Project B">Project B</MenuItem>
+                        <MenuItem value="Project C">Project C</MenuItem>
+                      </TextField>
                     </FormControl>
                   </Box>
               </Typography>
               <Typography>Client
                 <Box>
                     <FormControl fullWidth>
-                      {/* <InputLabel id="demo-simple-select-label">Client</InputLabel> */}
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Client"
-                        onChange={handleChange}
-                        sx={{
-                          display: 'flex',
-                          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
-                          color: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                          border: '1px solid',
-                          borderColor: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                          borderRadius: 2,
-                          width:'15rem',
-                          height:'2rem'
-                        }}
+                      <TextField 
+                      id="Client"
+                      fullWidth
+                      variant="outlined"
+                      select
+                      size="small"
+                      inputRef={ClientRef}
+                      required
+                      label=""
+                      sx={{
+                        width:'15rem',
+                        height:'2rem'
+                      }}
                       >
-                        <MenuItem>Client 1</MenuItem>
-                        <MenuItem>Client 2</MenuItem>
-                        <MenuItem>Client 3</MenuItem>
-                      </Select>
+                        <MenuItem value="Client A">Client A</MenuItem>
+                        <MenuItem value="Client B">Client B</MenuItem>
+                        <MenuItem value="Client C">Client C</MenuItem>
+                      </TextField>
                     </FormControl>
                   </Box>
               </Typography>
               <Typography>Unit
               <Box >
                     <FormControl fullWidth>
-                      {/* <InputLabel id="demo-simple-select-label">Unit</InputLabel> */}
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Unit"
-                        onChange={handleChange}
-                        sx={{
-                          display: 'flex',
-                          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
-                          color: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                          border: '1px solid',
-                          borderColor: (theme) =>
-                            theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                          borderRadius: 2,
-                          width:'15rem',
-                          height:'2rem'
-                        }}
+                      <TextField 
+                      id="Unit"
+                      fullWidth
+                      variant="outlined"
+                      select
+                      size="small"
+                      inputRef={UnitRef}
+                      required
+                      label=""
+                      sx={{
+                        width:'15rem',
+                        height:'2rem'
+                      }}
                       >
-                        <MenuItem>Unit 1</MenuItem>
-                        <MenuItem>Unit 2</MenuItem>
-                        <MenuItem>Unit 3</MenuItem>
-                      </Select>
+                        <MenuItem value="Unit A">Unit A</MenuItem>
+                        <MenuItem value="Unit B">Unit B</MenuItem>
+                        <MenuItem value="Unit C">Unit C</MenuItem>
+                      </TextField>
                     </FormControl>
                   </Box>
               </Typography>
             </div>
             <FormControl sx={{display:'flex', justifyContent:'center', alignItems:'center', width:'maxContent'}}>
-              <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}}>Search</Button>
+              <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}} onClick={handleSearch}>Search</Button>
             </FormControl>
              <div style={{display:'flex', position:'relative', margin:'20px', flexDirection:'column', justifyContent:'center'}}>
-               {renderNode(nodes)}
+               <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>{projectValue}</Typography>
+                </AccordionSummary>
+               </Accordion>
+               <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>{clientValue}</Typography>
+                </AccordionSummary>
+               </Accordion>
+               <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>{unitValue}</Typography>
+                </AccordionSummary>
+               </Accordion>
             </div>
           </Box>
         </Box>
