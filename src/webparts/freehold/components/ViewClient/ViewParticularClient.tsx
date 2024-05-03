@@ -157,6 +157,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             // AssignedStaff: editData.assignedStaff
         };
 
+        
         apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
             .then(() => {
                 reset();
@@ -174,6 +175,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             });
     });
 
+    // console.log('Update Client Response:', response);
 
 
     // update code end

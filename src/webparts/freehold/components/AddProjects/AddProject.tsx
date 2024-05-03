@@ -88,6 +88,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
   });
 
 
+  
   return (
     // <Box sx={{ width: '100', padding: '20px' }} >
     <Box  >

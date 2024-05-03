@@ -335,9 +335,9 @@ const ViewProject = (props: any) => {
             justifyContent: "space-between"
           }}>
             <Box sx={{
-              display: "flex", alignItems: "center",
-              width: "22%", justifyContent: "space-between"
+              display: "flex", alignItems: "center", gap: "20px", justifyContent: "space-between" 
             }}>
+
               <Button
                 handleClick={openAddClientDialog}
                 style={{
