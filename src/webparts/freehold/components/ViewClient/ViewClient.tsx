@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, Dialog, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
+import { Breadcrumbs, Box, Stack, Dialog, DialogContent, DialogTitle, Grid, IconButton, Chip, Avatar } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -66,7 +66,7 @@ const ViewClient = (props: any) => {
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
 
-
+  const [filterPersonShown, setFilterPersonShown] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -182,11 +182,14 @@ const ViewClient = (props: any) => {
 
   const handleClear = () => {
     setSearchQueryCall('');
+    setSelectedPersons([]);
+    setOpen(false);
   };
 
   const handleApply = () => {
     setSearchQuery(searchQueryCall);
     setOpen(false);
+    setFilterPersonShown(true);
   };
 
 
@@ -379,17 +382,17 @@ const ViewClient = (props: any) => {
     }
   };
 
-  const modifiedAssignedStaff = (data: any) => {
-    if (!data) return null;
-    const words = data?.split(',');
-    return (
-      <Box>
-        {words.map((word: string, index: number) => (
-          <p key={index}>{word}</p>
-        ))}
-      </Box>
-    );
-  };
+  // const modifiedAssignedStaff = (data: any) => {
+  //   if (!data) return null;
+  //   const words = data?.split(',');
+  //   return (
+  //     <Box>
+  //       {words.map((word: string, index: number) => (
+  //         <p key={index}>{word}</p>
+  //       ))}
+  //     </Box>
+  //   );
+  // };
 
   const tableData = clientData.map((item: any) => {
     return {
@@ -399,7 +402,7 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff: modifiedAssignedStaff(item?.assignStaff),
+      assignStaff: item?.assignStaff,
       assignedStaff: item?.assignedStaff,
     };
   });
@@ -426,6 +429,8 @@ const ViewClient = (props: any) => {
       fetchDataByuserId();
     console.log(editClientId, viewClientId, "editClientId, viewClientId");
   }, [editClientId, viewClientId]);
+
+
   // React.useEffect(() => {
   // 
   // }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
@@ -480,11 +485,25 @@ const ViewClient = (props: any) => {
           </Box>
           <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <CustomSearch handleSearchChange={handleSearchChange} />
-            <IconButton
+            {!filterPersonShown ? <IconButton
               onClick={handleFilterClick}
             >
               <FilterAltIcon />
-            </IconButton>
+            </IconButton> :
+              <Chip
+                sx={{ marginLeft: 2, }}
+                avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
+                label={searchQueryCall}
+                onDelete={() => {
+                  setSearchQuery('');
+                  setSearchQueryCall('');
+                  setSelectedPersons([]);
+                  setOpen(false);
+                  setFilterPersonShown(false);
+                }}
+                variant="outlined"
+              />
+            }
           </Box>
 
 
@@ -509,7 +528,7 @@ const ViewClient = (props: any) => {
 
             <IconButton
               aria-label="close"
-              onClick={() => { setOpen(false); }}
+              onClick={() => { handleClear(); }}
               sx={{
                 position: "absolute",
                 right: "14px",

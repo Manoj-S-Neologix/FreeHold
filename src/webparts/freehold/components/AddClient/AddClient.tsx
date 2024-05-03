@@ -140,8 +140,9 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         type: file.type,
         webkitRelativePath: file.webkitRelativePath
       }));
+      console.log(fileInfoArray);
 
-      apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
+      apiResponse.uploadDocument(data.title, files, 'Client_Informations')
         .then(response => resolve(response))
         .catch(error => reject(error));
     });

@@ -119,7 +119,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         console.log(particularClientAllData[0].webURL, "name");
         console.log(fileInfoArray);
 
-        apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, fileInfoArray)
+        apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles)
             .then(() => {
                 setLoading(false);
                 // handleCancel();
