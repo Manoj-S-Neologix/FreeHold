@@ -65,7 +65,7 @@
 //     const [page, setPage] = React.useState(0);
 //     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-//     console.log(rows, tableData, "rowsrows");
+//     //console.log(rows, tableData, "rowsrows");
 
 //     const handleRequestSort = (property: string) => {
 //         const isAsc = orderBy === property && order === 'asc';
@@ -188,7 +188,7 @@
 //                                                                 )}
 //                                                             </TableCell>
 //                                                         ))} */}
-//                                                         {console.log(headCells, row, "headCellsheadCells")}
+//                                                         {//console.log(headCells, row, "headCellsheadCells")}
 //                                                         {headCells.map((headCell: any) => (
 //                                                             row.hasOwnProperty(headCell.id) &&
 //                                                             <TableCell
@@ -377,7 +377,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    console.log(rows, tableData, "rowsrows");
+    //console.log(rows, tableData, "rowsrows");
 
     const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -398,7 +398,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                 }
                 return [];
             }).flat(); // To flatten the array of arrays into a single array
-            console.log(newSelectedDetails, "newSelected");
+            //console.log(newSelectedDetails, "newSelected");
             setSelectedDetails(newSelectedDetails);
             return;
         }
@@ -473,7 +473,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
             <Grid container>
                 <Grid item xs={12}>
                     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                        <TableContainer sx={{ maxHeight: 440 }}>
+                        <TableContainer sx={{ maxHeight: 780 }}>
                             <Table stickyHeader>
                                 <EnhancedTableHead
                                     headCells={headCells}
@@ -511,43 +511,44 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                                                                 }}
                                                             />
                                                         </TableCell>
-                                                        {console.log(headCells, row, "headCellsheadCells")}
-                                                        {headCells.map((headCell: any) => (
-                                                            row.hasOwnProperty(headCell.id) &&
-                                                            <TableCell
-                                                                key={headCell.id}
-                                                                component="td"
-                                                                scope="row"
-                                                                padding="none"
-                                                                sx={{
-                                                                    minWidth: getWidth(headCell.id),
-                                                                }}
+                                                        {
+                                                            headCells.map((headCell: any) => (
+                                                                row.hasOwnProperty(headCell.id) &&
+                                                                <TableCell
+                                                                    key={headCell.id}
+                                                                    component="td"
+                                                                    scope="row"
+                                                                    padding="none"
+                                                                    sx={{
+                                                                        minWidth: getWidth(headCell.id),
+                                                                    }}
 
-                                                            >
-                                                                {searchQuery && row[headCell.id] &&
-                                                                    typeof row[headCell.id] === 'string' &&
-                                                                    row[headCell.id].toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row[headCell.id].toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
-                                                                            <React.Fragment key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </React.Fragment>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row[headCell.id] ? row[headCell.id] : '-'
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
+                                                                >
+                                                                    {searchQuery && row[headCell.id] &&
+                                                                        typeof row[headCell.id] === 'string' &&
+                                                                        row[headCell.id].toLowerCase().includes(searchQuery.toLowerCase()) ? (
+                                                                        <>
+                                                                            {row[headCell.id].toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
+                                                                                <React.Fragment key={index}>
+                                                                                    {index > 0 && (
+                                                                                        <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
+                                                                                    )}
+                                                                                    {part}
+                                                                                </React.Fragment>
+                                                                            ))}
+                                                                        </>
+                                                                    ) : (
+                                                                        row[headCell.id] ? row[headCell.id] : '-'
+                                                                    )}
+                                                                </TableCell>
+                                                            ))
+                                                        }
 
 
 
-{/* Table width adjustng */}
+                                                        {/* Table width adjustng */}
 
-                                                      {/* {headCells.map((headCell: any) => (
+                                                        {/* {headCells.map((headCell: any) => (
                                                             row.hasOwnProperty(headCell.id) &&
                                                             <TableCell
                                                                 key={headCell.id}
@@ -576,7 +577,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
 
 
 
-{/* 
+                                                        {/* 
 {headCells.map((headCell: any) => (
     row.hasOwnProperty(headCell.id) &&
     <TableCell

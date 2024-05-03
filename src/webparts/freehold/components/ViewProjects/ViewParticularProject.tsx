@@ -16,6 +16,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AssignClient from "../AssignClient/AssignClient";
 import { Controller,  useForm} from "react-hook-form";
+import ProjectService from '../../Services/Business/ProjectService';
+import toast from 'react-hot-toast';
+
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -45,9 +48,13 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: any) => {
-    const [isEdit, setIsEdit] = useState(false);
+const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData,isEdit, setIsEdit,  }: any) => {
+    // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
+    const [loading, setLoading] = useState(false);
+    // const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
+
+
 
     const navigate = useNavigate();
 
@@ -55,11 +62,12 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
         setHandleClientDialog(false);
     };
 
-    const { control, setValue, formState: { errors }, trigger } = useForm();
+    const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
     setValue('projectName', projectDetails.projectName);
     setValue('projectNumber', projectDetails.projectNumber);
     setValue('location', projectDetails.location);
     setValue('developer', projectDetails.developer);
+
 
     const [editData, setEditData] = React.useState<any>({
         projectName: projectDetails.projectName,
@@ -76,10 +84,56 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
         navigate('/');
     };
 
-    const navigateToClient = () => {
+    const navigateToProject = () => {
         navigate('/ViewProjects');
         setIsViewDialogOpen(false);
     };
+
+    const handleUpdate = handleSubmit(async (data) => {
+        console.log(editData,"data")
+        try {
+            setLoading(true);
+            const apiResponse = ProjectService();
+            const updatedData = {
+                Title: editData.projectName,
+                projectName: editData.projectName,
+                ProjectNumber: editData.projectNumber,
+                Location: editData.location,
+                Developer:editData.developer
+                // AssignedStaff: editData.assignedStaff
+            };
+
+           
+            const response = await apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData);
+
+            console.log('Update Client Response:', response);
+
+            reset();
+            // navigateToClient();
+            setLoading(false);
+            toast.success('Client Updated Successfully!');
+            fetchData();
+            initialFetchData();
+            setIsEdit(false);
+        } catch (error) {
+            setLoading(false);
+            console.error('Error updating client details:', error);
+            toast.error('Failed to update client details. Please try again.');
+        }
+    });
+
+    // const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm(
+    //     {
+    //         defaultValues: {
+    //             title: projectDetails.projectName,
+    //             projectNumber: projectDetails.ProjectNumber,
+    //             location: projectDetails.location,
+    //             developer: projectDetails.developer
+    //         }
+    //     }
+    // );
+
+
 
     return (
         <Box>
@@ -92,7 +146,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                         <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
                             Home
                         </StyledBreadcrumb>
-                        <StyledBreadcrumb onClick={navigateToClient}>
+                        <StyledBreadcrumb onClick={navigateToProject}>
                             Project
                         </StyledBreadcrumb>
                         <StyledBreadcrumb disabled>
@@ -101,6 +155,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                     </Breadcrumbs>
                 </Box>
                 <Box>
+                <form onSubmit={handleUpdate}>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
                             <TableHead>
@@ -137,7 +192,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                                     ) : (
                                         <TableCell>
                                                      <Controller
-                                                            name="project Number"
+                                                            name="projectNumber"
                                                             control={control}
                                                             defaultValue=""
                                                             rules={{
@@ -183,7 +238,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                                                rules={{
                                                    required: 'Project Name is required',
                                                    pattern: {
-                                                    value: /^[a-zA-Z\s-]+$/,
+                                                    value: /^[a-zA-Z\s]+$/,
                                                        message: 'Invalid project name'
                                                    }
                                                }}
@@ -311,7 +366,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                                     <TableCell component="th" scope="row">Modified By</TableCell>
                                     <TableCell>{projectDetails.modifiedBy}</TableCell>
                                 </TableRow>
-                                {isEdit && <TableRow>
+                                {/* {isEdit && <TableRow>
                                     <TableCell component="th" scope="row">
                                         <MuiButton variant="contained" color="primary">
                                             Update
@@ -322,18 +377,46 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen }: a
                                             Cancel
                                         </MuiButton>
                                     </TableCell>
-                                </TableRow>}
+                                </TableRow>} */}
+                                            {isEdit && <TableRow>
+                                        <TableCell component="th" scope="row">
+
+                                            <MuiButton type="submit"
+                                                variant="contained"
+                                                color="primary"
+                                                
+                                                onClick={() => {
+                                                    console.log("data")
+                                                    handleUpdate();
+                                                }}
+                                                disabled={loading}
+                                            >
+                                                {loading ? 'Updating...' : 'Update'}
+                                            </MuiButton>
+                                            <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
+                                                onClick={navigateToProject}
+                                            >
+                                                Cancel
+                                            </MuiButton>
+                                        </TableCell>
+                                    </TableRow>}
 
 
                             </TableBody>
 
                         </Table>
                     </TableContainer>
+                    </form>
                 </Box>
 
             </Stack>
-            {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog}
-                props={props} />}
+            {handleClientDialog && <AssignClient 
+            // particularClientAllData={particularClientAllData}
+            // exsistingPersons={selectedPersons}
+            open={handleClientDialog} 
+            onClose={closeAssignClientDialog}
+            props={props}  
+            fetchData={fetchData} />}
         </Box>
     );
 };

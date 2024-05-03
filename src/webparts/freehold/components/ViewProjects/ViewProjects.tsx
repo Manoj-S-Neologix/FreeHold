@@ -97,7 +97,7 @@ const ViewProject = (props: any) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialogOpen(false);
-    fetchData();
+    // fetchData();
   };
 
   const openAssignClientDialog = () => {
@@ -106,7 +106,7 @@ const ViewProject = (props: any) => {
 
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
-    fetchData();
+    // fetchData();
   };
 
   const handleFilterClick = () => {
@@ -115,14 +115,14 @@ const ViewProject = (props: any) => {
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
-    fetchData();
+    // fetchData();
   };
 
 
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
-    fetchData();
+    // fetchData();
   };
 
   const theme = useTheme();
@@ -175,6 +175,7 @@ const ViewProject = (props: any) => {
 
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
         setParticularClientAllData(uniqueClientData);
+        
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
 
@@ -288,6 +289,20 @@ const ViewProject = (props: any) => {
   });
 
   console.log(tableData, "data");
+
+  const tableDataWidth = projectData.map((item: any) => {
+    return {
+      Id: { value: item.Id, width: "50px" },
+      projectNumber: { value: item.projectNumber, width: "180px" },
+      projectName: { value: item.projectName, width: "150px" },
+      location: { value: item.location, width: "150px" },
+      developer: { value: item.developer, width: "150px" },
+      assignedClients: { value: item?.assignedClients, width: "150px" },
+      modifiedDate: { value: item.modifiedDate, width: "150px" },
+      modifiedBy: { value: item.modifiedBy, width: "150px" },
+      // assignedStaff: { value: item?.assignedStaff, width: "80%" },
+    };
+  });
 
   React.useEffect(() => {
     fetchData();
@@ -472,6 +487,8 @@ const ViewProject = (props: any) => {
               actions={actions}
               isLoading={isLoading}
               AllClientData={AllClientData}
+              tableDataWidth={tableDataWidth}
+
             />
           </Box>
         </Stack>}
@@ -483,7 +500,9 @@ const ViewProject = (props: any) => {
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
-        <DeleteDialog clientDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
+        <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} 
+         fetchData={fetchData} 
+         />}
       {isViewDialogOpen &&
         <ViewParticularProject
           props={props}

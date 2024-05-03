@@ -381,7 +381,7 @@ const Search = (props: any) => {
                                 </Grid>
                             </Stack>
                             <DialogActions sx={{ px: 0, mr: 0 }}>
-                                 <MuiButton
+                                <MuiButton
                                     type="submit"
                                     variant="contained"
                                 >
@@ -393,7 +393,7 @@ const Search = (props: any) => {
                                 >
                                     Cancel
                                 </MuiButton>
-                               
+
                             </DialogActions>
                         </form>
                     )}
@@ -440,7 +440,7 @@ const Search = (props: any) => {
                                     </Grid>
                                 </Grid>
                                 <DialogActions sx={{ px: 0, mr: 0 }}>
-                                <MuiButton
+                                    <MuiButton
                                         type="submit"
                                         variant="contained"
                                     >
@@ -452,7 +452,7 @@ const Search = (props: any) => {
                                     >
                                         Cancel
                                     </MuiButton>
-                                    
+
                                 </DialogActions>
                             </Stack>
                         </form>

@@ -22,9 +22,11 @@ interface DeleteDialogProps {
   onClose: () => void;
   clientDetails: any;
   // projectDetails: any;
+  fetchData: () => Promise<void>;
+
 }
 
-const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetails }) => {
+const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetails, fetchData }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -114,6 +116,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
         toast.success('Client Deleted Successfully !');
         console.log('Client deleted successfully');
         setFiles([]);
+        fetchData();
       })
       .catch((error) => {
         const errorMessage = error || 'An error occurred while deleting client and associated document.';

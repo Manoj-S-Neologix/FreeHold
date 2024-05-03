@@ -17,24 +17,33 @@ export const updatedData = async (siteUrl: string, listName: string, Id: number,
 // Add list items
 export const addListItem = async (siteUrl: string, listName: string, listData: any): Promise<any> => {
     try {
-      const web = new SP(siteUrl);
-      const addedItem = await web.lists.getByTitle(listName).items.add(listData);
-      return addedItem;
+        const web = new SP(siteUrl);
+        const addedItem = await web.lists.getByTitle(listName).items.add(listData);
+        return addedItem;
     } catch (error) {
-      console.error("Error adding client:", error);
-      throw error;
+        console.error("Error adding client:", error);
+        throw error;
     }
-  };
+};
 
 const ClientService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
 
-    const uploadDocument = async (libraryName: string, file: any, listName: any, Id?: any) => {
+    const uploadDocument = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.createLibrary(libraryName);
             await spServiceInstance.uploadDocument(libraryName, file);
-            console.log(response, "ClientLibraryGUIDClientLibraryGUID");
+            //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
+            return response;
+
+        }
+    };
+
+    const uploadDocumentInLibrary = async (libraryName: string, file: any, listName?: any, Id?: any) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.uploadDocument(libraryName, file);
+            //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
             return response;
 
         }
@@ -138,14 +147,14 @@ const ClientService = () => {
                     assignedStaff: item.assignedStaff
                 };
             });
-            console.log(updatedResults, tableData, "updatedResults");
+            //console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
         }
     };
     const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
-            console.log(results, "results");
+            //console.log(results, "results");
             return results;
         }
     };
@@ -157,7 +166,7 @@ const ClientService = () => {
                 ListName,
                 itemId,
                 itemData);
-            console.log(results, "results");
+            //console.log(results, "results");
             return results;
         }
     };
@@ -173,7 +182,7 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteListItem(ListName, itemId);
-            console.log(results, "results");
+            //console.log(results, "results");
             return results;
         }
 
@@ -183,7 +192,7 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteLibrary(LibraryName);
-            console.log(results, "results");
+            //console.log(results, "results");
             return results;
         }
 
@@ -192,7 +201,7 @@ const ClientService = () => {
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
             const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
-            console.log('Retrieved files:', files);
+            //console.log('Retrieved files:', files);
             return files;
         }
     };
@@ -200,7 +209,7 @@ const ClientService = () => {
     const deleteFile = async (libraryGuid: any, fileId: any) => {
         if (spServiceInstance) {
             const files = await spServiceInstance.deleteFile(libraryGuid, fileId);
-            console.log('Retrieved files:', files);
+            //console.log('Retrieved files:', files);
             return files;
         }
     };
@@ -209,7 +218,7 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getPersonByEmail(email);
-            console.log(results, "results");
+            //console.log(results, "results");
             return results;
         }
     };
@@ -217,7 +226,7 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getPersonById(id);
-            console.log(results, "resultsgetPersonById");
+            //console.log(results, "resultsgetPersonById");
             return results.Email;
         }
     };
@@ -225,12 +234,13 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.uploadDocument(libraryGuid, file);
-            console.log(results, "results");
+            //console.log(results, "results");
+            return results;
         }
     };
 
 
-  
+
 
     return {
         getClient,
@@ -239,6 +249,7 @@ const ClientService = () => {
         addClient,
         deleteClient,
         uploadDocument,
+        uploadDocumentInLibrary,
         deleteLibrary,
         getDocumentsFromFolder,
         deleteFile,
@@ -246,7 +257,7 @@ const ClientService = () => {
         addDocumentsToFolder,
         getPersonById,
         getClientExpandApi,
-    
+
     };
 };
 
