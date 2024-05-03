@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
+import { Breadcrumbs, Box, Stack, Dialog, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -57,6 +57,7 @@ const ViewClient = (props: any) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchQueryCall, setSearchQueryCall] = useState('');
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -91,7 +92,7 @@ const ViewClient = (props: any) => {
         const clientDetails = data[0];
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails); // Assuming data is an object
-        console.log("datadatadata", AllClientData);
+        console.log("datadatadata", AllClientData, ID);
         const getValue = AllClientData.map((data: any) => {
           if (data.Id === ID) {
             return data;
@@ -110,6 +111,7 @@ const ViewClient = (props: any) => {
       setIsEdit(true);
       setIsViewDialogOpen(true);
       const data = await fetchDataById(editClientId);
+      console.log(data, "datadatadata");
       if (data) {
         const ID = data[0].Id;
         const clientDetails = data[0];
@@ -122,7 +124,7 @@ const ViewClient = (props: any) => {
           return;
         });
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
-        setParticularClientAllData(getUnique);
+        setParticularClientAllData([clientDetails]);
         console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
         navigate('/EditClient/' + String(data[0]?.Id));
       }
@@ -158,7 +160,6 @@ const ViewClient = (props: any) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialog(false);
-    fetchData();
   };
 
   const handleFilterClick = () => {
@@ -169,22 +170,23 @@ const ViewClient = (props: any) => {
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
-    fetchData();
+
   };
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
-    fetchData();
+
   };
 
   const theme = useTheme();
 
   const handleClear = () => {
-    // Implement clear functionality here
+    setSearchQueryCall('');
   };
 
   const handleApply = () => {
-    // Implement apply functionality here
+    setSearchQuery(searchQueryCall);
+    setOpen(false);
   };
 
 
@@ -280,7 +282,7 @@ const ViewClient = (props: any) => {
 
         />
       ),
-      
+
       handler: async (data: any) => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
@@ -303,7 +305,7 @@ const ViewClient = (props: any) => {
       //     console.warn('No client data found for the provided ID');
       //   }
       // },
-      
+
     },
     {
       label: 'Assign Staff',
@@ -323,20 +325,18 @@ const ViewClient = (props: any) => {
     },
   ];
 
-  const handlePeoplePickerChange = async (items: any[]) => {
-    console.log(items, "itemsitemsitemsitems");
-    const selectedPersonsIds = [];
-    for (const item of items) {
-      const getID = await ClientService().getPersonByEmail(item.secondaryText);
-      console.log(getID.Id, "getIDgetID");
-      selectedPersonsIds.push(getID.Id);
-    }
-    setSelectedPersons(selectedPersonsIds);
+
+
+
+  const searchPeopleInTable = async (items: any[]) => {
+    console.log(items[0].text, "itemsitemsitemsitems");
+    setSearchQueryCall(items[0].text);
+    setSelectedPersons(items);
   };
 
 
 
-  console.log(particularClientAllData, clientData, AllClientData, "DataparticularClientAllData");
+  console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
 
   const fetchData = async () => {
     try {
@@ -367,6 +367,7 @@ const ViewClient = (props: any) => {
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
       const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
       setAllClientData(filteredResults?.tableData);
+
       // setClientData(results?.updatedResults[0].TableData);
       //setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -378,17 +379,17 @@ const ViewClient = (props: any) => {
     }
   };
 
-  // const modifiedAssignedStaff = (data: any) => {
-  //   if (!data) return null;
-  //   const words = data.split(' ');
-  //   return (
-  //     <Box>
-  //       {words.map((word: string, index: number) => (
-  //         <p key={index}>{word}</p>
-  //       ))}
-  //     </Box>
-  //   );
-  // };
+  const modifiedAssignedStaff = (data: any) => {
+    if (!data) return null;
+    const words = data?.split(',');
+    return (
+      <Box>
+        {words.map((word: string, index: number) => (
+          <p key={index}>{word}</p>
+        ))}
+      </Box>
+    );
+  };
 
   const tableData = clientData.map((item: any) => {
     return {
@@ -398,7 +399,7 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff: item?.assignStaff,
+      assignStaff: modifiedAssignedStaff(item?.assignStaff),
       assignedStaff: item?.assignedStaff,
     };
   });
@@ -519,73 +520,80 @@ const ViewClient = (props: any) => {
               <CloseIcon />
             </IconButton>
             <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
+              <Stack spacing={4}>
+                <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+                  <Grid style={{ marginBottom: "2rem" }} item xs={12} sm={12}>
+                    <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
+                    <Controller
+                      name="assignedStaffId"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: 'Assigned Staff is required',
+                      }}
+                      render={({ field }) => (
+                        <>
+                          {
 
-              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+                            <PeoplePicker
+                              styles={{
+                                input: {
+                                  width: '100%',
+                                  height: '30px',
+                                  paddingTop: "10px"
+                                },
+                                itemsWrapper: {
+                                  'ms-PickerPersona-container': {
+                                    width: '100%',
+                                    backgroundColor: 'white !important'
+                                  },
+                                },
+                                root: {
+                                  width: '100%',
+                                  height: '30px',
+                                  paddingTop: "10px",
+                                  'ms-BasePicker-text': {
+                                    width: '100%',
+                                    borderRadius: '5px'
+                                  }
+                                },
+                              }}
+                              {...field}
+                              context={props.props.props.context as any}
+                              personSelectionLimit={1}
+                              required={true}
+                              showHiddenInUI={false}
+                              principalTypes={[PrincipalType.User]}
+                              resolveDelay={1000}
+                              onChange={searchPeopleInTable}
+                              defaultSelectedUsers={selectedPersons}
+                            />}
 
-                <Grid item xs={12} sm={6}>
-                  <label htmlFor="assignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
-                  <Controller
-                    name="assignedStaffId"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                      required: 'Assigned Staff is required',
-                    }}
-                    render={({ field }) => (
-                      <PeoplePicker
-                        styles={{
-                          input: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px"
-                          },
-                          itemsWrapper: {
-                            'ms-PickerPersona-container': {
-                              width: '100%',
-                              backgroundColor: 'white !important'
-                            },
-                          },
-                          root: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px",
-                            'ms-BasePicker-text': {
-                              width: '100%',
-                              borderRadius: '5px'
-                            }
-                          },
+                        </>
+                      )}
+                    />
+                    {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '15px' }}>
+                      <MuiButton variant="outlined" onClick={handleClear}>
+                        Clear
+                      </MuiButton>
+                      <MuiButton
+                        onClick={() => { handleApply(); }}
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          maxWidth: '150px',
+                          float: 'right',
                         }}
-                        {...field}
-                        context={props.props.props.context as any}
-                        personSelectionLimit={4}
-                        required={true}
-                        showHiddenInUI={false}
-                        principalTypes={[PrincipalType.User]}
-                        resolveDelay={1000}
-                        onChange={handlePeoplePickerChange}
-                        defaultSelectedUsers={selectedPersons}
-                      />
-                    )}
-                  />
-                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                      >
+                        Apply
+                      </MuiButton>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
-                <MuiButton variant="outlined" onClick={handleClear}>
-                  Clear
-                </MuiButton>
-                <MuiButton
-                  onClick={handleApply}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    maxWidth: '150px',
-                    float: 'right',
-                  }}
-                >
-                  Apply
-                </MuiButton>
-              </DialogActions>
+              </Stack>
             </DialogContent>
           </Dialog>
         </Box>
@@ -611,14 +619,15 @@ const ViewClient = (props: any) => {
       }
       {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} />}
       {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
-      <UploadDocument open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />
+      <UploadDocument open={uploadDialogOpen}
+        onClose={closeUploadDialog} particularClientAllData={particularClientAllData} fetchDatas={fetchData} />
 
       {isDeleteDialogOpen &&
         <DeleteDialog clientDetails={clientDetails}
           open={isDeleteDialogOpen}
-          onClose={handleDeleteDialogClose} 
+          onClose={handleDeleteDialogClose}
           fetchData={fetchData}
-          />}
+        />}
       {isViewDialogOpen &&
         <ViewParticularClient
           props={props}

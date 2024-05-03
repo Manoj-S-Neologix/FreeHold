@@ -44,7 +44,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
-  console.log(files,'files')
+  console.log(files, 'files');
 
   const handleCancel = () => {
     setFiles([]);
@@ -162,6 +162,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         setLoading(false);
         handleCancel();
         setFiles([]);
+        fetchData();
         return toast.success('Client Added Successfully !');
       })
       .catch((error: any) => {

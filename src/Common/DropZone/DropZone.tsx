@@ -28,6 +28,12 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+    React.useEffect(() => {
+        if (setFiles) {
+            setFiles([]);
+        }
+    }, []);
+
     return (
         <div>
             <Box sx={{
@@ -65,7 +71,7 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
             </Box>
             {files && files.length > 0 && (
                 <div>
-                    <h4>Uploaded files:</h4>
+                    <h4 style={{ margin: 0 }}>Uploaded files:</h4>
                     <ul>
                         {files && files.length > 0 && files.map((file: any, index: any) => (
                             <li key={index}>

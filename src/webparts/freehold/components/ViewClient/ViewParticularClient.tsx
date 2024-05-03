@@ -49,14 +49,14 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData }: any) => {
     // const [selected] = React.useState<any>([]);
-    console.log(particularClientAllData, clientDetails, "particularClientAllData");
+    //console.log(particularClientAllData, clientDetails, "particularClientAllData");
     // const [searchQuery, setSearchQuery] = useState('');
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 
     // const [loading, setLoading] = useState(false);
-
+    console.log(selectedPersons, particularClientAllData, "ViewParticularClient");
 
     useEffect(() => {
         const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
@@ -64,13 +64,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         );
         setSelectedPersons(assignedStaffEmails);
 
-        console.log('Assigned Staff Emails:', assignedStaffEmails);
+        //console.log('Assigned Staff Emails:', assignedStaffEmails);
 
     }, []);
 
     // const [addClientDialog, setAddClientDialog] = useState(false);
     // // const { handleSubmit, control } = useForm();
-    const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm(
+    const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm(
         {
             defaultValues: {
                 title: clientDetails.name,
@@ -86,30 +86,41 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         email: clientDetails.email,
         contact: clientDetails.contact,
         assignedStaff: clientDetails.assignedStaff
-
-
-
     });
 
     const clientDetailsId: any[] = [];
     clientDetails?.assignedStaff?.map((data: any) => {
         return clientDetailsId.push(data.Id);
     });
+    React.useEffect(() => {
+        if (clientDetails) {
+            const datas: any = {
+                title: clientDetails.name,
+                email: clientDetails.email,
+                contact: clientDetails.contact,
+                assignedStaff: clientDetails.assignedStaff
+            };
+            setEditData(datas);
+            setValue("title", datas.title);
+            setValue("email", datas.email);
+            setValue("contact", datas.contact);
+        }
+    }, [clientDetails]);
 
 
-    console.log(clientDetailsId, "clientDetailsIdclientDetailsId");
+    //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
 
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
-    console.log(clientDetails, "clientdetails");
+    //console.log(clientDetails, "clientdetails");
     // const handleSearchChange = (event: any) => {
     //     setSearchQuery(event.target.value);
     // };
 
 
 
-    // console.log(clientDetails, editData, "clientDetails");
+    // //console.log(clientDetails, editData, "clientDetails");
 
 
     // update code start
@@ -125,9 +136,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     //         };
 
     //         const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-    //         console.log(response, updatedData, 'responseresponseresponse');
+    //         //console.log(response, updatedData, 'responseresponseresponse');
     //         // handleCancel();
-    //         // console.log("Update response:", response);
+    //         // //console.log("Update response:", response);
     //         reset();
     //         navigateToClient();
     //     } catch (error) {
@@ -137,33 +148,32 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     // });
 
     const handleUpdate = handleSubmit(async (data) => {
-        try {
-            setLoading(true);
-            const apiResponse = ClientService();
-            const updatedData = {
-                Title: editData.title,
-                ClientEmail: editData.email,
-                ClientContact: editData.contact,
-                // AssignedStaff: editData.assignedStaff
-            };
+        setLoading(true);
+        const apiResponse = ClientService();
+        const updatedData = {
+            Title: editData.title,
+            ClientEmail: editData.email,
+            ClientContact: editData.contact,
+            // AssignedStaff: editData.assignedStaff
+        };
 
-            const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-
-            console.log('Update Client Response:', response);
-
-            reset();
-            // navigateToClient();
-            setLoading(false);
-            toast.success('Client Updated Successfully!');
-            fetchData();
-            initialFetchData();
-            setIsEdit(false);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error updating client details:', error);
-            toast.error('Failed to update client details. Please try again.');
-        }
+        apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
+            .then(() => {
+                reset();
+                // navigateToClient();
+                setLoading(false);
+                toast.success('Client Updated Successfully!');
+                fetchData();
+                initialFetchData();
+                setIsEdit(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.error('Error updating client details:', error);
+                toast.error('Failed to update client details. Please try again.');
+            });
     });
+
 
 
     // update code end

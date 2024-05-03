@@ -38,7 +38,7 @@ const SPService: SPServiceType = {
     createLibrary: async (libraryName: string): Promise<any> => {
         try {
             const list = await web.lists.add(libraryName, "Document Library", 101);
-            console.log(`Document Library created with ID: ${list.data.Id}`);
+            //console.log(`Document Library created with ID: ${list.data.Id}`);
             return list;
         } catch (error) {
             console.error("Error creating Document Library:", error);
@@ -51,7 +51,7 @@ const SPService: SPServiceType = {
     uploadDocument: async (libraryName: string, files: any): Promise<any> => {
         try {
             const library = web.getFolderByServerRelativeUrl(libraryName);
-            console.log(files, "filesfilesfiles");
+            //console.log(files, "filesfilesfiles");
             for (const file of files) {
                 console.log(files, "filesfilesfilesInside");
                 const document = await library.files.add(file.name, file, true);
@@ -116,13 +116,13 @@ const SPService: SPServiceType = {
             'Editor/Title',
             "File", "Id"
         ).expand("File", "Editor").getAll();
-        console.log('Retrieved files:', files);
+        //console.log('Retrieved files:', files);
         return files;
     },
 
     deleteFile: async (libraryGuid: string, fileId: number): Promise<any> => {
         const files = await web.lists.getById(libraryGuid).items.getById(fileId).recycle();
-        console.log('Retrieved files:', files);
+        //console.log('Retrieved files:', files);
         return files;
     },
 
