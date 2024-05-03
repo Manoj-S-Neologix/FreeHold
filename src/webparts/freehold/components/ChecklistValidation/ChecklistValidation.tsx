@@ -43,7 +43,6 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 const commonStyles = {
   bgcolor: 'background.paper',
   m: 1,
-  width: '80%',
   height: '8rem',
 }
 
@@ -131,7 +130,7 @@ const ChecklistValidation = (props: any) => {
   
   return (
     <div>
-      <Box>
+      <Box sx={{ width: '100', padding: '20px' }}>
         <Breadcrumbs
             separator={<NavigateNextIcon fontSize="medium" />}
             aria-label="breadcrumb"
