@@ -28,8 +28,8 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     }, [particularClientAllData]);
 
 
-
-    console.log(selectedPersons, selected, selectedDetails, particularClientAllData, "particularClientAllDataparticularClientAllData");
+    console.log(exsistingPersons, particularClientAllData, "ADDStaff");
+    //console.log(selectedPersons, selected, selectedDetails, particularClientAllData, "particularClientAllDataparticularClientAllData");
 
     const handleCancel = () => {
         onClose();
@@ -48,7 +48,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //             particularClientAllData[0].Id,
     //             dataObj
     //         ).then((response: any) => {
-    //             console.log("Success:", response);
+    //             //console.log("Success:", response);
     //             onClose();
 
     //         }).catch((error: any) => {
@@ -62,7 +62,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //                 item,
     //                 dataObj
     //             ).then((response: any) => {
-    //                 console.log("Success:", response);
+    //                 //console.log("Success:", response);
     //                 onClose();
 
     //             }).catch((error: any) => {
@@ -82,7 +82,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //     };
     //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons.Id
 
-    //     console.log(ID, particularClientAllData, exsistingPersons)
+    //     //console.log(ID, particularClientAllData, exsistingPersons)
 
     //     try {
     //         if (selected?.length === 0) {
@@ -91,7 +91,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //                 particularClientAllData[0].Id,
     //                 dataObj
     //             );
-    //             console.log("Success:", response);
+    //             //console.log("Success:", response);
     //             onClose();
     //             toast.success('Staff updated successfully!');
     //         } else {
@@ -101,7 +101,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //                     item,
     //                     dataObj
     //                 );
-    //                 console.log("Success:", response);
+    //                 //console.log("Success:", response);
     //                 onClose();
     //             }
     //             toast.success('Staff updated successfully!');
@@ -121,14 +121,14 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
 
 
-        console.log(ID, particularClientAllData, exsistingPersons, dataObj, selected, "APICall");
+        //console.log(ID, particularClientAllData, exsistingPersons, dataObj, selected, "APICall");
 
 
         if (selected === undefined || selected?.length === 0) {
             ClientService()
-                .updateClient("Client_Informations", particularClientAllData[0].Id, dataObj)
+                .updateClient("Client_Informations", ID, dataObj)
                 .then((response) => {
-                    console.log("Success:", response);
+                    //console.log("Success:", response);
                     onClose();
                     setSelectedPersons([]); setSelectedPersonsId([]);
                     toast.success('Staff updated successfully!');
@@ -166,13 +166,13 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //     };
     //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons.Id;
 
-    //     console.log(ID, particularClientAllData, exsistingPersons);
+    //     //console.log(ID, particularClientAllData, exsistingPersons);
 
     //     if (selected?.length === 0) {
     //         ClientService()
     //             .updateClient("Client_Informations", particularClientAllData[0].Id, dataObj)
     //             .then((response) => {
-    //                 console.log("Success:", response);
+    //                 //console.log("Success:", response);
     //                 onClose();
     //                 setSelectedPersons([]); setSelectedPersonsId([]);
     //                 toast.success('Staff updated successfully!');
@@ -186,7 +186,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //             return ClientService()
     //                 .updateClient("Client_Informations", item, dataObj)
     //                 .then((response) => {
-    //                     console.log("Success:", response);
+    //                     //console.log("Success:", response);
     //                 })
     //                 .catch((error) => {
     //                     console.error("Error:", error);
@@ -208,14 +208,14 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     // };
 
     const handlePeoplePickerChange = async (items: any[]) => {
-        console.log(items, "itemsitemsitemsitems");
+        //console.log(items, "itemsitemsitemsitems");
         const selectedPersonsIds = [];
         if (selected && selected.length > 0 &&
             selectedDetails && selectedDetails.length > 0) {
             selected.forEach((selItem: any) => {
                 selectedDetails.forEach((selDetail: any) => {
                     if (selItem === selDetail.Id) {
-                        console.log(selDetail.Id, selDetail.StaffId);
+                        //console.log(selDetail.Id, selDetail.StaffId);
                         selectedPersonsIds.push(selDetail.StaffId);
                     }
                 });
@@ -224,7 +224,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
 
         for (const item of items) {
             const getID = await ClientService().getPersonByEmail(item.secondaryText);
-            console.log(getID.Id, "getIDgetID");
+            //console.log(getID.Id, "getIDgetID");
             selectedPersonsIds.push(getID.Id);
         }
 
@@ -243,10 +243,12 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         <Box sx={{ width: '100', padding: '20px' }}>
             <Stack direction="column" spacing={2}>
                 <Dialog open={open} maxWidth='sm' fullWidth>
-                    <DialogTitle className={styles.addTitle} 
-                    style={{ textAlign: 'center', 
-                    marginLeft: '7px', 
-                    position: 'relative' }}>
+                    <DialogTitle className={styles.addTitle}
+                        style={{
+                            textAlign: 'center',
+                            marginLeft: '7px',
+                            position: 'relative'
+                        }}>
                         <div className="d-flex flex-column">
                             <div className="d-flex justify-content-between align-items-center relative">
                                 <h4 style={{ margin: '0', color: '#125895' }}>Assign Staff</h4>
@@ -272,10 +274,12 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                     <DialogContent >
                         <PeoplePicker
                             styles={{
+                                root: {
+                                    marginTop: "10px"
+                                },
                                 input: {
                                     width: '100%',
                                     height: '30px',
-                                    marginBottom: '10px'
                                 },
                                 itemsWrapper: {
                                     'ms-PickerPersona-container': {

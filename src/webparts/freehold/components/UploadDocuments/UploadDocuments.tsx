@@ -20,10 +20,12 @@ interface UploadDocumentProps {
     open: boolean;
     onClose: () => void;
     particularClientAllData: any;
+    fetchDatas: () => any;
 }
 
-const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData }) => {
+const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData, fetchDatas }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [deleteId, setDeleteId] = useState<number>(0);
     const [files, setFiles] = useState<File[]>([]);
     const [fileData, setFileData] = useState<any[]>([]);
@@ -32,13 +34,16 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
 
     const handleFileInput = (selectedFiles: File[]) => {
-        console.log(selectedFiles, "selectedFiles")
+        console.log(selectedFiles, "selectedFiles");
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     };
 
+    React.useEffect(() => {
+        setFiles([]);
+    }, []);
 
 
-    console.log(files,"files");
+    console.log(files, "files");
 
     console.log(particularClientAllData, "ClientData");
 
@@ -52,7 +57,9 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 console.log(results, "File Datas");
                 console.log("Folder GUID:", folderGUID);
                 setFileData(results);
+                setIsLoading(false);
             } catch (error) {
+                setIsLoading(false);
                 console.error("Error fetching documents:", error);
             }
         } else {
@@ -60,7 +67,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         }
     };
 
-   
+
 
     console.log(fileData, "fileData");
 
@@ -103,16 +110,16 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     console.log(fileInfoArray, 'fileInfoArray');
 
-    console.log(uploadFiles, "uploadFiles")
+    console.log(uploadFiles, "uploadFiles");
 
     const handleSave = handleSubmit(async (data: any) => {
         setLoading(true);
         const apiResponse = ClientService();
 
-        console.log(particularClientAllData[0].name, "name");
+        console.log(particularClientAllData[0].webURL, "name");
         console.log(fileInfoArray);
 
-        apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
+        apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, fileInfoArray)
             .then(() => {
                 setLoading(false);
                 // handleCancel();
@@ -120,7 +127,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 setUploadFiles([]);
                 toast.success('Documents Added Successfully!');
                 fetchData();
-               
+
 
             })
             .catch((error) => {
@@ -128,7 +135,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 console.error("Failed to add client and document:", error);
                 toast.error(`Failed to add client and document: ${error}`);
             });
-          
+
     });
 
 
@@ -140,6 +147,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 setIsDeleteDialogOpen(false);
                 console.log("File deleted successfully!");
                 toast.success('File deleted successfully!');
+                fetchData();
             })
             .catch(error => {
                 console.error("Failed to delete document:", error);
@@ -148,6 +156,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     };
 
     const handleCancel = () => {
+        fetchDatas();
         onClose();
     };
 
@@ -192,7 +201,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                 /> */}
 
 
-                                  {/* <DropZone
+                                {/* <DropZone
                                   
                                     files={uploadFiles}
                                     setFiles={setUploadFiles}
@@ -200,19 +209,19 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     setUploadFiles([...uploadFiles, ...files]); 
                                     }}
                                 /> */}
-         
-                                        <DropZone
-                                onFilesAdded={handleFileInput}
-                                files={uploadFiles}
-                                setFiles={setUploadFiles}
+
+                                <DropZone
+                                    onFilesAdded={handleFileInput}
+                                    files={uploadFiles}
+                                    setFiles={setUploadFiles}
                                 />
 
-                            {/* <DropZone onFilesAdded={handleFileInput} 
+                                {/* <DropZone onFilesAdded={handleFileInput} 
                             files={uploadFiles} setFiles={setUploadFiles}
                             /> */}
-                     
+
                             </Box>
-                            <DialogActions sx={{ px: 0, mr: 0 }}>
+                            {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
                                 {/* <MuiButton
                                     onClick={handleSave}
                                     type="submit"
@@ -234,7 +243,9 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                 >
                                     <Button variant="contained"
                                         sx={{ width: loading ? '150px' : 'auto' }}
-                                        onClick={handleSave} disabled={loading} type="submit">
+                                        onClick={handleSave} disabled={loading
+                                        }
+                                        type="submit">
                                         {loading ? (
                                             <CircularProgress size={20} color="inherit" />
                                         ) : (
@@ -243,7 +254,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     </Button>
                                     {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
                                 </Stack>
-                            </DialogActions>
+                            </DialogActions>}
                             <TableContainer>
                                 <Table>
                                     <TableHead>
@@ -255,7 +266,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {mappedFiles.map((file: any) => (
+                                        {!isLoading && mappedFiles.length > 0 ? mappedFiles.map((file: any) => (
                                             <TableRow key={file.fileName}>
                                                 <TableCell>
                                                     <Box sx={{
@@ -280,7 +291,19 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                                     </IconButton>
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
+                                        )) :
+                                            !isLoading && <TableRow>
+                                                <TableCell colSpan={8} align="center">
+                                                    No Records Found
+                                                </TableCell>
+                                            </TableRow>}
+                                        {isLoading &&
+                                            <TableRow>
+                                                <TableCell colSpan={8} align="center">
+                                                    <CircularProgress size={20} />
+                                                </TableCell>
+                                            </TableRow>
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
