@@ -88,12 +88,15 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
   });
 
 
+  
   return (
-    <Box sx={{ width: '100', padding: '20px' }} >
-      <Stack direction='column' spacing={2} >
-        <Dialog open={open} onClose={onClose} >
+    // <Box sx={{ width: '100', padding: '20px' }} >
+    <Box  >
 
-          <DialogTitle >
+      <Stack direction='column' spacing={2} >
+        <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth  >
+
+          <DialogTitle style={{ textAlign: 'center', position: 'relative' }}>
 
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between

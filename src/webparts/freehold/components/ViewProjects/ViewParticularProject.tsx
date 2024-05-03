@@ -15,7 +15,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AssignClient from "../AssignClient/AssignClient";
-import { Controller,  useForm} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import ProjectService from '../../Services/Business/ProjectService';
 import toast from 'react-hot-toast';
 
@@ -48,7 +48,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData,isEdit, setIsEdit,  }: any) => {
+const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit, }: any) => {
     // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -62,11 +62,24 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
         setHandleClientDialog(false);
     };
 
-    const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm();
-    setValue('projectName', projectDetails.projectName);
-    setValue('projectNumber', projectDetails.projectNumber);
-    setValue('location', projectDetails.location);
-    setValue('developer', projectDetails.developer);
+    const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm(
+        {
+            // setValue('projectName', projectDetails.projectName);
+            // setValue('projectNumber', projectDetails.projectNumber);
+            // setValue('location', projectDetails.location);
+            // setValue('developer', projectDetails.developer);
+
+            defaultValues: {
+                title: projectDetails.projectName,
+                projectNumber: projectDetails.projectNumber,
+                location: projectDetails.location,
+                developer: projectDetails.developer
+                // contact: clientDetails.contact,
+                // assignedStaff: clientDetails.assignedStaff
+            }
+
+        }
+    );
 
 
     const [editData, setEditData] = React.useState<any>({
@@ -76,6 +89,27 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
         developer: projectDetails.developer
 
     });
+
+    // const projectDetailsId: any[] = [];
+    // projectDetails?.map((data: any) => {
+    //     return projectDetailsId.push(data.Id);
+    // });
+
+    React.useEffect(() => {
+        if (projectDetails) {
+            const datas: any = {
+                title: projectDetails.projectName,
+                projectNumber: projectDetails.projectNumber,
+                location: projectDetails.location,
+                developer: projectDetails.developer
+            };
+            setEditData(datas);
+            setValue("title", datas.title);
+            setValue("projectNumber", datas.projectNumber);
+            setValue("location", datas.location);
+            setValue("developer", datas.developer)
+        }
+    }, [projectDetails]);
 
 
     // console.log(projectDetails, "projectDetails");
@@ -89,38 +123,101 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
         setIsViewDialogOpen(false);
     };
 
+    // const handleUpdate = handleSubmit(async (data) => {
+    //     console.log(editData,"data")
+    //     try {
+    //         setLoading(true);
+    //         const apiResponse = ProjectService();
+    //         const updatedData = {
+    //             Title: editData.projectName,
+    //             projectName: editData.projectName,
+    //             ProjectNumber: editData.projectNumber,
+    //             Location: editData.location,
+    //             Developer:editData.developer
+    //             // AssignedStaff: editData.assignedStaff
+    //         };
+
+
+    //         const response = await apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData);
+
+    //         console.log('Update Client Response:', response);
+
+    //         reset();
+    //         // navigateToClient();
+    //         setLoading(false);
+    //         toast.success('Client Updated Successfully!');
+    //         fetchData();
+    //         initialFetchData();
+    //         setIsEdit(false);
+    //     } catch (error) {
+    //         setLoading(false);
+    //         console.error('Error updating client details:', error);
+    //         toast.error('Failed to update client details. Please try again.');
+    //     }
+    // });
+
+
+
+    // const handleUpdate = handleSubmit(async (data) => {
+    //     // console.log('Starting update process...');
+    //     setLoading(true);
+    //     const apiResponse = ProjectService();
+    //     const updatedData = {
+    //         Title: editData.title,
+    //         // projectName: editData.projectName,
+    //         ProjectNumber: editData.projectNumber,
+    //         Location: editData.location,
+    //         Developer: editData.developer
+    //     };
+
+    //     apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
+    //         .then(() => {
+    //         console.log(updatedData,"updatedData")
+    //             reset();
+    //             setLoading(false);
+    //             toast.success('Project Updated Successfully!');
+    //             fetchData();
+    //             initialFetchData();
+    //             setIsEdit(false);
+    //         })
+    //         .catch((error) => {
+    //             setLoading(false);
+    //             console.error('Error updating project details:', error);
+    //             toast.error('Failed to update project details. Please try again.');
+    //         });
+    // });
+
     const handleUpdate = handleSubmit(async (data) => {
-        console.log(editData,"data")
-        try {
-            setLoading(true);
-            const apiResponse = ProjectService();
-            const updatedData = {
-                Title: editData.projectName,
-                projectName: editData.projectName,
-                ProjectNumber: editData.projectNumber,
-                Location: editData.location,
-                Developer:editData.developer
-                // AssignedStaff: editData.assignedStaff
-            };
-
-           
-            const response = await apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData);
-
-            console.log('Update Client Response:', response);
-
-            reset();
-            // navigateToClient();
-            setLoading(false);
-            toast.success('Client Updated Successfully!');
-            fetchData();
-            initialFetchData();
-            setIsEdit(false);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error updating client details:', error);
-            toast.error('Failed to update client details. Please try again.');
-        }
+        setLoading(true);
+    
+        const updatedData = {
+            Title: editData.title,
+            ProjectNumber: editData.projectNumber,
+            Location: editData.location,
+            Developer: editData.developer
+        };
+    
+        const apiResponse = ProjectService();
+        
+        apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
+            .then(() => {
+                reset();
+                setLoading(false);
+                toast.success('Project Updated Successfully!');
+                fetchData();
+                initialFetchData();
+                setIsEdit(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.error('Error updating project details:', error);
+                toast.error('Failed to update project details. Please try again.');
+            });
     });
+    
+
+
+
 
     // const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm(
     //     {
@@ -155,218 +252,219 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                     </Breadcrumbs>
                 </Box>
                 <Box>
-                <form onSubmit={handleUpdate}>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
-                            <TableHead>
-                                <TableRow>
+                    <form onSubmit={handleUpdate}>
+                        {/* <form> */}
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
+                                <TableHead>
+                                    <TableRow>
 
-                                    <TableCell
-                                        sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
-                                        component="th"
-                                        scope="row"
-                                    >Project Details</TableCell>
+                                        <TableCell
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            component="th"
+                                            scope="row"
+                                        >Project Details</TableCell>
 
-                                    <Box sx={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        marginTop: "10px",
-                                        marginRight: "10px"
-                                    }}>
-                                        {!isEdit && (
-                                            <Button
-                                                handleClick={() => setIsEdit(true)}
-                                                color="secondary"
-                                                Icon={<EditIcon />}
-                                                message="Edit"
-                                            />
+                                        <Box sx={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                            marginTop: "10px",
+                                            marginRight: "10px"
+                                        }}>
+                                            {!isEdit && (
+                                                <Button
+                                                    handleClick={() => setIsEdit(true)}
+                                                    color="secondary"
+                                                    Icon={<EditIcon />}
+                                                    message="Edit"
+                                                />
+                                            )}
+                                        </Box>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Project Number</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{projectDetails.projectNumber}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                <Controller
+                                                    name="projectNumber"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Project Number is required',
+                                                        pattern: {
+                                                            value: /^[0-9]+$/,
+                                                            message: 'Invalid project number'
+                                                        }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="projectNumber"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.projectNumber}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger("projectNumber");
+                                                                setEditData({ ...editData, projectNumber: value });
+                                                            }}
+                                                            error={!!errors.projectNumber}
+                                                            helperText={errors.projectNumber && errors.projectNumber.message}
+                                                        />
+                                                    )}
+                                                />
+
+                                            </TableCell>
                                         )}
-                                    </Box>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Project Number</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{projectDetails.projectNumber}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                                     <Controller
-                                                            name="projectNumber"
-                                                            control={control}
-                                                            defaultValue=""
-                                                            rules={{
-                                                                required: 'Project Number is required',
-                                                                pattern: {
-                                                                    value: /^[0-9]+$/,
-                                                                    message: 'Invalid project number'
-                                                                }
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Project Name</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{projectDetails.projectName}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                <Controller
+                                                    name="title"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Project Name is required',
+                                                        //    pattern: {
+                                                        //     value: /^[a-zA-Z\s]+$/,
+                                                        //        message: 'Invalid project name'
+                                                        //    }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="title"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.title}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger("title");
+                                                                setEditData({ ...editData, title: value });
                                                             }}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    id="projectNumber"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    // fullWidth
-                                                                    value={editData.projectNumber}
-                                                                    onChange={async (e: any) => {
-                                                                        const value = e.target.value.replace(/\D/g, '');
-                                                                        field.onChange(value);
-                                                                        await trigger("projectNumber");
-                                                                        setEditData({ ...editData, projectNumber: value });
-                                                                    }}
-                                                                    error={!!errors.projectNumber}
-                                                                    helperText={errors.projectNumber && errors.projectNumber.message}
-                                                                />
-                                                            )}
+                                                            error={!!errors.title}
+                                                            helperText={errors.title && errors.title.message}
                                                         />
+                                                    )}
+                                                />
 
-                                                        </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Project Name</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{projectDetails.projectName}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                        <Controller
-                                               name="project Name"
-                                               control={control}
-                                               defaultValue=""
-                                               rules={{
-                                                   required: 'Project Name is required',
-                                                   pattern: {
-                                                    value: /^[a-zA-Z\s]+$/,
-                                                       message: 'Invalid project name'
-                                                   }
-                                               }}
-                                               render={({ field }) => (
-                                                   <TextField
-                                                       {...field}
-                                                       id="project Name"
-                                                       margin="dense"
-                                                       size="small"
-                                                       // fullWidth
-                                                       value={editData.projectName}
-                                                       onChange={async (e: any) => {
-                                                           const value = e.target.value.replace(/\D/g, '');
-                                                           field.onChange(value);
-                                                           await trigger("project Name");
-                                                           setEditData({ ...editData, projectName: value });
-                                                       }}
-                                                       error={!!errors.projectName}
-                                                       helperText={errors.projectName && errors.projectName.message}
-                                                   />
-                                               )}
-                                           />
-
-                                           </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Location</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{projectDetails.location}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                                     <Controller
-                                                            name="Location"
-                                                            control={control}
-                                                            defaultValue=""
-                                                            rules={{
-                                                                required: 'Project Number is required',
-                                                                pattern: {
-                                                                    value: /^[a-zA-Z\s-]+$/,
-                                                                    message: 'Invalid project number'
-                                                                }
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Location</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{projectDetails.location}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                <Controller
+                                                    name="location"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Project Number is required',
+                                                        // pattern: {
+                                                        //     value: /^[a-zA-Z\s-]+$/,
+                                                        //     message: 'Invalid project number'
+                                                        // }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="location"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.location}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger("location");
+                                                                setEditData({ ...editData, location: value });
                                                             }}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    id="location"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    // fullWidth
-                                                                    value={editData.location}
-                                                                    onChange={async (e: any) => {
-                                                                        const value = e.target.value.replace(/\D/g, '');
-                                                                        field.onChange(value);
-                                                                        await trigger("location");
-                                                                        setEditData({ ...editData, location: value });
-                                                                    }}
-                                                                    error={!!errors.location}
-                                                                    helperText={errors.location && errors.location.message}
-                                                                />
-                                                            )}
+                                                            error={!!errors.location}
+                                                            helperText={errors.location && errors.location.message}
                                                         />
+                                                    )}
+                                                />
 
-                                                        </TableCell>
-                                    )}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Developer</TableCell>
-                                    {!isEdit ? (
-                                        <TableCell>{projectDetails.developer}</TableCell>
-                                    ) : (
-                                        <TableCell>
-                                                     <Controller
-                                                            name="Developer"
-                                                            control={control}
-                                                            defaultValue=""
-                                                            rules={{
-                                                                required: 'Developer is required',
-                                                                pattern: {
-                                                                    value: /^[a-zA-Z\s-]+$/,
-                                                                    message: 'Invalid Developer'
-                                                                }
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Developer</TableCell>
+                                        {!isEdit ? (
+                                            <TableCell>{projectDetails.developer}</TableCell>
+                                        ) : (
+                                            <TableCell>
+                                                <Controller
+                                                    name="developer"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{
+                                                        required: 'Developer is required',
+                                                        // pattern: {
+                                                        //     value: /^[a-zA-Z\s-]+$/,
+                                                        //     message: 'Invalid Developer'
+                                                        // }
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            id="developer"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.developer}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger("developer");
+                                                                setEditData({ ...editData, developer: value });
                                                             }}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    id="developer"
-                                                                    margin="dense"
-                                                                    size="small"
-                                                                    // fullWidth
-                                                                    value={editData.developer}
-                                                                    onChange={async (e: any) => {
-                                                                        const value = e.target.value.replace(/\D/g, '');
-                                                                        field.onChange(value);
-                                                                        await trigger("developer");
-                                                                        setEditData({ ...editData, developer: value });
-                                                                    }}
-                                                                    error={!!errors.developer}
-                                                                    helperText={errors.developer && errors.developer.message}
-                                                                />
-                                                            )}
+                                                            error={!!errors.developer}
+                                                            helperText={errors.developer && errors.developer.message}
                                                         />
+                                                    )}
+                                                />
 
-                                                        </TableCell>
-                                    )}
-                                </TableRow>
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
 
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Assign Client</TableCell>
-                                    <TableCell
-                                        sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        onClick={() => { setHandleClientDialog(true); }}
-                                    >
-                                        {projectDetails.assignedClients ?
-                                            projectDetails.assignedClients :
-                                            "Assign Client"
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Modified Date</TableCell>
-                                    <TableCell>{projectDetails.modifiedDate}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Modified By</TableCell>
-                                    <TableCell>{projectDetails.modifiedBy}</TableCell>
-                                </TableRow>
-                                {/* {isEdit && <TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Assign Client</TableCell>
+                                        <TableCell
+                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
+                                            onClick={() => { setHandleClientDialog(true); }}
+                                        >
+                                            {projectDetails.assignedClients ?
+                                                projectDetails.assignedClients :
+                                                "Assign Client"
+                                            }
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Modified Date</TableCell>
+                                        <TableCell>{projectDetails.modifiedDate}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Modified By</TableCell>
+                                        <TableCell>{projectDetails.modifiedBy}</TableCell>
+                                    </TableRow>
+                                    {/* {isEdit && <TableRow>
                                     <TableCell component="th" scope="row">
                                         <MuiButton variant="contained" color="primary">
                                             Update
@@ -378,15 +476,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         </MuiButton>
                                     </TableCell>
                                 </TableRow>} */}
-                                            {isEdit && <TableRow>
+                                    {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">
 
                                             <MuiButton type="submit"
                                                 variant="contained"
                                                 color="primary"
-                                                
+
                                                 onClick={() => {
-                                                    console.log("data")
+                                                    // console.log("data")
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}
@@ -402,21 +500,21 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>}
 
 
-                            </TableBody>
+                                </TableBody>
 
-                        </Table>
-                    </TableContainer>
+                            </Table>
+                        </TableContainer>
                     </form>
                 </Box>
 
             </Stack>
-            {handleClientDialog && <AssignClient 
-            // particularClientAllData={particularClientAllData}
-            // exsistingPersons={selectedPersons}
-            open={handleClientDialog} 
-            onClose={closeAssignClientDialog}
-            props={props}  
-            fetchData={fetchData} />}
+            {handleClientDialog && <AssignClient
+                // particularClientAllData={particularClientAllData}
+                // exsistingPersons={selectedPersons}
+                open={handleClientDialog}
+                onClose={closeAssignClientDialog}
+                props={props}
+                fetchData={fetchData} />}
         </Box>
     );
 };
