@@ -40,6 +40,18 @@ const ClientService = () => {
         }
     };
 
+    //UpdateLibraryName
+
+    const updateLibraryName = async (GUIDID:any, updatedlibraryName: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.updateLibraryName(GUIDID, updatedlibraryName);
+            return response;
+        }
+    };
+
+
+    //uploadDocumentInLibrary
+
     const uploadDocumentInLibrary = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocument(libraryName, file);
@@ -151,7 +163,7 @@ const ClientService = () => {
             return { updatedResults, tableData };
         }
     };
-    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any ) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
             //console.log(results, "results");
@@ -239,6 +251,7 @@ const ClientService = () => {
         }
     };
 
+    
 
 
 
@@ -257,6 +270,7 @@ const ClientService = () => {
         addDocumentsToFolder,
         getPersonById,
         getClientExpandApi,
+        updateLibraryName
 
     };
 };

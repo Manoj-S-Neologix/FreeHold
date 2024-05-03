@@ -147,18 +147,55 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     //     }
     // });
 
+
+    // working code
+
+    // const handleUpdate = handleSubmit(async (data) => {
+    //     setLoading(true);
+    //     const apiResponse = ClientService();
+
+    //     const updatedData = {
+    //         Title: editData.title,
+    //         ClientEmail: editData.email,
+    //         ClientContact: editData.contact,
+    //         // AssignedStaff: editData.assignedStaff
+    //     };
+       
+        
+    //     apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
+    //         .then(() => {
+    //             reset();
+    //             // navigateToClient();
+    //             setLoading(false);
+    //             toast.success('Client Updated Successfully!');
+    //             fetchData();
+    //             initialFetchData();
+    //             setIsEdit(false);
+    //         })
+    //         .catch((error) => {
+    //             setLoading(false);
+    //             console.error('Error updating client details:', error);
+    //             toast.error('Failed to update client details. Please try again.');
+    //         });
+    // });
+
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
         const apiResponse = ClientService();
+
         const updatedData = {
             Title: editData.title,
             ClientEmail: editData.email,
             ClientContact: editData.contact,
             // AssignedStaff: editData.assignedStaff
         };
+       
+        apiResponse.updateLibraryName(clientDetails.GUID, data.title)
 
-        
-        apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
+        .then(() => {
+            // Update library name (assuming data.title is the new library name)
+            return apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
+        })
             .then(() => {
                 reset();
                 // navigateToClient();

@@ -22,8 +22,9 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const clientListName = "Client_Informations";
     const selectQuery = "Id,Title";
 
+
     const apiCall = (async () => {
-        await clientService.getClientExpandApi(clientListName, selectQuery, "")
+        await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
             .then((data) => {
                 if (data) {
                     const mappedData = data.map((item: any) => ({

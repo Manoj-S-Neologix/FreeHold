@@ -12,6 +12,7 @@ export type SPServiceType = {
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
+    updateLibraryName: (GUIDID:any, updatedlibraryName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -19,7 +20,7 @@ export type SPServiceType = {
         listTitle: string,
         select: string,
         expand: string,
-        filter: string | number | any) => Promise<any[]>;
+        filter: any) => Promise<any[]>;
 };
 
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
@@ -47,6 +48,10 @@ const SPService: SPServiceType = {
     },
 
 
+
+
+
+
     // Upload Document to a library
     uploadDocument: async (libraryName: string, files: any): Promise<any> => {
         try {
@@ -61,6 +66,14 @@ const SPService: SPServiceType = {
             console.error("Error uploading document:", error);
             throw error;
         }
+    },
+
+
+     // Update library name
+     updateLibraryName: async (GUIDID:any, updatedlibraryName: string): Promise<any> => {
+    
+        const updateItem = await web.lists.getById(GUIDID).update({Title:updatedlibraryName})
+        return updateItem
     },
 
     // Add list items
