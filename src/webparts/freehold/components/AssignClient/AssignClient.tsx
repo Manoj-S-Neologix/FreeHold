@@ -457,7 +457,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                     ))}
                                 </Select>}
 
-                                {false && getClientDocumentsData.length > 0 && (
+                                { getClientDocumentsData.length > 0 && (
                                     <Grid item xs={12}>
                                         <Controller
                                             name="AssignClientDocuments"

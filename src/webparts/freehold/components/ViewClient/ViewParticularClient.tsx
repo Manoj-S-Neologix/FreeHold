@@ -107,6 +107,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         }
     }, [clientDetails]);
 
+    const projectnames =['project 1'];
+
 
     //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
 
@@ -231,6 +233,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         setIsViewDialogOpen(false);
         setIsEdit(false);
         navigate('/viewClient');
+        // fetchData();
+
     };
 
     return (
@@ -418,6 +422,44 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
                                     </TableRow>
 
+
+                                    <TableCell component="th" scope="row">Assigned Project</TableCell>
+                                        <TableCell>
+
+                                        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0}}>
+                                            {projectnames.map((projectName, index) => (
+                                                <li key={index}>{projectName}</li>
+                                            ))}
+                                        </ul>
+
+                                            {/* {!isEdit ? (
+                                                clientDetails.name
+                                            ) : (
+                                                <Controller
+                                                    name="title"
+                                                    control={control}
+                                                    defaultValue=""
+                                                    rules={{ required: 'Name is required' }}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            // fullWidth
+                                                            size="small"
+                                                            value={editData.title}
+                                                            onChange={async (e: any) => {
+                                                                const value = e.target.value;
+                                                                field.onChange(value);
+                                                                await trigger('title');
+                                                                setEditData({ ...editData, title: value });
+                                                            }}
+                                                            error={!!errors.title}
+                                                            helperText={errors.title && errors.title.message}
+                                                        />
+                                                    )}
+                                                />
+                                            )} */}
+                                        </TableCell>
+
                                     {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell
@@ -441,6 +483,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
                                         </TableCell>}
                                     </TableRow> */}
+
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
