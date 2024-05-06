@@ -22,7 +22,7 @@ interface DeleteDialogProps {
   onClose: () => void;
   clientDetails: any;
   // projectDetails: any;
-  fetchData: () => Promise<void>;
+  fetchData?: any;
 
 }
 
@@ -107,7 +107,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
   //   }
   // };
 
-  const handledeleteClient = (clientId:any, title:any) => {
+  const handledeleteClient = (clientId: any, title: any) => {
     ClientService().deleteClient("Client_Informations", clientId)
       .then(() => {
         return ClientService().deleteLibrary(title);
@@ -124,8 +124,8 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
         console.error('Error deleting client:', error);
       });
   };
-  
-  
+
+
 
 
   //delete code end

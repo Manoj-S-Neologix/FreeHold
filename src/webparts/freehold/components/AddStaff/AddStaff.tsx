@@ -112,6 +112,51 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     //     }
     // };
 
+    // const handleSave = async () => {
+    //     const dataObj = {
+    //         AssignedStaffId: {
+    //             results: selectedPersonsId
+    //         }
+    //     };
+    //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
+
+
+
+
+    //     if (selected === undefined || selected?.length === 0) {
+    //         ClientService()
+    //             .updateClient("Client_Informations", ID, dataObj)
+    //             .then((response) => {
+    //                 //console.log("Success:", response);
+    //                 onClose();
+    //                 setSelectedPersons([]); setSelectedPersonsId([]);
+    //                 toast.success('Staff updated successfully!');
+    //                 fetchData();
+    //                 handleCancel();
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error:", error);
+    //                 toast.error(`Failed to update staff(s): ${error}`);
+    //             });
+    //     } else {
+    //         for (const item of selected) {
+    //             ClientService()
+    //                 .updateClient("Client_Informations", item, dataObj)
+    //                 .then((response) => {
+    //                     onClose();
+    //                     setSelectedPersons([]); setSelectedPersonsId([]);
+    //                     toast.success('Staff updated successfully!');
+    //                     fetchData();
+    //                     handleCancel();
+    //                 })
+    //                 .catch((error) => {
+    //                     toast.error(`Failed to update staff(s): ${error}`);
+    //                 });
+    //         }
+    //     }
+    // };
+
+
     const handleSave = async () => {
         const dataObj = {
             AssignedStaffId: {
@@ -120,40 +165,23 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         };
         const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
 
-
-        //console.log(ID, particularClientAllData, exsistingPersons, dataObj, selected, "APICall");
-
-
-        if (selected === undefined || selected?.length === 0) {
-            ClientService()
-                .updateClient("Client_Informations", ID, dataObj)
-                .then((response) => {
-                    //console.log("Success:", response);
-                    onClose();
-                    setSelectedPersons([]); setSelectedPersonsId([]);
-                    toast.success('Staff updated successfully!');
-                    fetchData();
-                    handleCancel();
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    toast.error(`Failed to update staff(s): ${error}`);
-                });
-        } else {
-            for (const item of selected) {
-                ClientService()
-                    .updateClient("Client_Informations", item, dataObj)
-                    .then((response) => {
-                        onClose();
-                        setSelectedPersons([]); setSelectedPersonsId([]);
-                        toast.success('Staff updated successfully!');
-                        fetchData();
-                        handleCancel();
-                    })
-                    .catch((error) => {
-                        toast.error(`Failed to update staff(s): ${error}`);
-                    });
+        try {
+            if (!selected || selected.length === 0) {
+                await ClientService().updateClient("Client_Informations", ID, dataObj);
+            } else {
+                await Promise.all(selected.map((item: any) =>
+                    ClientService().updateClient("Client_Informations", item, dataObj)
+                ));
             }
+            onClose();
+            setSelectedPersons([]);
+            setSelectedPersonsId([]);
+            fetchData();
+            handleCancel();
+            toast.success('Staff updated successfully!');
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error(`Failed to update staff(s): ${error}`);
         }
     };
 

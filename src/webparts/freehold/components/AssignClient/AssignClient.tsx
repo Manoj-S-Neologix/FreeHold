@@ -323,11 +323,11 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         const createFolder = await ProjectService().createFolder(rootUrl, updatedData.AssignClient);
 
 
-        console.log(createFolder.data, "createFoldercreateFolder");
+        console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
         // once folder is created, upload files
         // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
 
-        const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, updatedData.libraryGUID, updatedData.collectionOfDocuments);
+        const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
         console.log(uploadDocument, "uploadDocumentuploadDocument");
         // console.log(updatedData, "handleSave");
         setLoading(false);
@@ -457,7 +457,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                     ))}
                                 </Select>}
 
-                                { getClientDocumentsData.length > 0 && (
+                                {getClientDocumentsData.length > 0 && (
                                     <Grid item xs={12}>
                                         <Controller
                                             name="AssignClientDocuments"

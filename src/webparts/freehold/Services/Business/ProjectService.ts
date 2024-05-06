@@ -52,6 +52,7 @@ const ProjectService = () => {
                     return clientInformation;
                 }));
 
+                console.log(item, "resultresult");
 
                 return {
                     // name: item.Title,
