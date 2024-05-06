@@ -11,6 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionSummary from '@mui/material/AccordionSummary';
+import Stack from '@mui/material/Stack';
 // import AccordionDetails from '@mui/material/AccordionDetails';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -42,7 +43,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const commonStyles = {
   bgcolor: 'background.paper',
-  m: 1,
+  width:'100%',
   height: '8rem',
 }
 
@@ -113,6 +114,7 @@ const ChecklistValidation = (props: any) => {
   const ProjectRef = useRef<HTMLInputElement>(null);
   const ClientRef = useRef<HTMLInputElement>(null);
   const UnitRef = useRef<HTMLInputElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate('/');
@@ -124,13 +126,15 @@ const ChecklistValidation = (props: any) => {
     setProjectValue(ProjectRef.current?.value || '');
     setClientValue(ClientRef.current?.value || '');
     setUnitValue(UnitRef.current?.value || '')
+    
   }
 
   
   
   return (
     <div>
-      <Box sx={{ width: '100', padding: '20px' }}>
+      <Box sx={{ width: '100', padding: '20px', marginTop:'10px' }}>
+      <Stack direction='column' sx={{ gap: "30px" }} >
         <Breadcrumbs
             separator={<NavigateNextIcon fontSize="medium" />}
             aria-label="breadcrumb"
@@ -142,10 +146,10 @@ const ChecklistValidation = (props: any) => {
             CheckListValidation
           </StyledBreadcrumb>
         </Breadcrumbs>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box sx={{ ...commonStyles, border: 1, borderRadius:2, borderColor:'primary.main' }}>
-            <div  style={{display:'flex', flexDirection:'row', alignItems:'center', 
-            justifyContent:'center', padding:'20px', gap:'20px', position:'relative'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start'}}>
+          <Box sx={{ ...commonStyles, border: 1, borderRadius:2, borderColor:'primary.main', mt : 1 }}>
+            <div  style={{display:'flex', flexDirection:'row', alignItems:'flex-start', 
+            justifyContent:'flex-start', padding:'20px', gap:'20px', position:'relative'}}>
               <Typography>
                 Project
                   <Box>
@@ -221,27 +225,34 @@ const ChecklistValidation = (props: any) => {
               </Typography>
             </div>
             <FormControl sx={{display:'flex', justifyContent:'center', alignItems:'center', width:'maxContent'}}>
-              <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}} onClick={handleSearch}>Search</Button>
+              <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}} onClick={()=>{
+                handleSearch();
+                setIsOpen(!isOpen);
+              }}>Search</Button>
             </FormControl>
-             <div style={{display:'flex', position:'relative', margin:'20px', flexDirection:'column', justifyContent:'center'}}>
-               <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+             {isOpen && <div style={{display:'flex', position:'relative', flexDirection:'column', justifyContent:'flex-start', marginTop : '15px'}}>
+              <Stack spacing={1}>
+               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
                   <Typography>{projectValue}</Typography>
                 </AccordionSummary>
                </Accordion>
-               <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
                   <Typography>{clientValue}</Typography>
                 </AccordionSummary>
                </Accordion>
-               <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
                   <Typography>{unitValue}</Typography>
                 </AccordionSummary>
                </Accordion>
-            </div>
+              </Stack>
+            </div>}
+             
           </Box>
         </Box>
+      </Stack>
       </Box>
     </div>
   );

@@ -210,7 +210,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             .catch((error) => {
                 setLoading(false);
                 console.error('Error updating client details:', error);
-                toast.error('Failed to update client details. Please try again.');
+                // toast.error('Failed to update client details. Please try again.');
             });
     });
 

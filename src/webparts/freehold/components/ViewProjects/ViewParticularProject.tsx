@@ -211,7 +211,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
             .catch((error) => {
                 setLoading(false);
                 console.error('Error updating project details:', error);
-                toast.error('Failed to update project details. Please try again.');
+                // toast.error('Failed to update project details. Please try again.');
             });
     });
     
