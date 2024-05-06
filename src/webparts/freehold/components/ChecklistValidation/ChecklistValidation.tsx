@@ -43,7 +43,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const commonStyles = {
   bgcolor: 'background.paper',
-  width:'100%',
+  width: '100%',
   height: '8rem',
 }
 
@@ -126,47 +126,49 @@ const ChecklistValidation = (props: any) => {
     setProjectValue(ProjectRef.current?.value || '');
     setClientValue(ClientRef.current?.value || '');
     setUnitValue(UnitRef.current?.value || '')
-    
+
   }
 
-  
-  
+
+
   return (
     <div>
-      <Box sx={{ width: '100', padding: '20px', marginTop:'10px' }}>
-      <Stack direction='column' sx={{ gap: "30px" }} >
-        <Breadcrumbs
+      <Box sx={{ width: '100', padding: '20px', marginTop: '10px' }}>
+        <Stack direction='column' sx={{ gap: "30px" }} >
+          <Breadcrumbs
             separator={<NavigateNextIcon fontSize="medium" />}
             aria-label="breadcrumb"
-        >
-          <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
-            Home
-          </StyledBreadcrumb>
-          <StyledBreadcrumb disabled>
-            CheckList Validation
-          </StyledBreadcrumb>
-        </Breadcrumbs>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start'}}>
-          <Box sx={{ ...commonStyles, border: 1, borderRadius:2, borderColor:'primary.main', mt : 1 }}>
-            <div  style={{display:'flex', flexDirection:'row', alignItems:'flex-start', 
-            justifyContent:'flex-start', padding:'20px', gap:'20px', position:'relative'}}>
-              <Typography>
-                Project
+          >
+            <StyledBreadcrumb onClick={navigateToHome} startIcon={<HomeIcon />} >
+              Home
+            </StyledBreadcrumb>
+            <StyledBreadcrumb disabled>
+              CheckList Validation
+            </StyledBreadcrumb>
+          </Breadcrumbs>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <Box sx={{ ...commonStyles, border: 1, borderRadius: 2, borderColor: 'primary.main', mt: 1 }}>
+              <div style={{
+                display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
+                justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
+              }}>
+                <Typography>
+                  Project
                   <Box>
                     <FormControl>
-                      <TextField 
-                      id="Project"
-                      fullWidth
-                      variant="outlined"
-                      select
-                      size="small"
-                      required
-                      label=""
-                      inputRef={ProjectRef}
-                      sx={{
-                        width:'15rem',
-                        height:'2rem'
-                      }}
+                      <TextField
+                        id="Project"
+                        fullWidth
+                        variant="outlined"
+                        select
+                        size="small"
+                        required
+                        label=""
+                        inputRef={ProjectRef}
+                        sx={{
+                          width: '15rem',
+                          height: '2rem'
+                        }}
                       >
                         <MenuItem value="Project A">Project A</MenuItem>
                         <MenuItem value="Project B">Project B</MenuItem>
@@ -174,23 +176,23 @@ const ChecklistValidation = (props: any) => {
                       </TextField>
                     </FormControl>
                   </Box>
-              </Typography>
-              <Typography>Client
-                <Box>
+                </Typography>
+                <Typography>Client
+                  <Box>
                     <FormControl fullWidth>
-                      <TextField 
-                      id="Client"
-                      fullWidth
-                      variant="outlined"
-                      select
-                      size="small"
-                      inputRef={ClientRef}
-                      required
-                      label=""
-                      sx={{
-                        width:'15rem',
-                        height:'2rem'
-                      }}
+                      <TextField
+                        id="Client"
+                        fullWidth
+                        variant="outlined"
+                        select
+                        size="small"
+                        inputRef={ClientRef}
+                        required
+                        label=""
+                        sx={{
+                          width: '15rem',
+                          height: '2rem'
+                        }}
                       >
                         <MenuItem value="Client A">Client A</MenuItem>
                         <MenuItem value="Client B">Client B</MenuItem>
@@ -198,23 +200,23 @@ const ChecklistValidation = (props: any) => {
                       </TextField>
                     </FormControl>
                   </Box>
-              </Typography>
-              <Typography>Unit
-              <Box >
+                </Typography>
+                <Typography>Unit
+                  <Box >
                     <FormControl fullWidth>
-                      <TextField 
-                      id="Unit"
-                      fullWidth
-                      variant="outlined"
-                      select
-                      size="small"
-                      inputRef={UnitRef}
-                      required
-                      label=""
-                      sx={{
-                        width:'15rem',
-                        height:'2rem'
-                      }}
+                      <TextField
+                        id="Unit"
+                        fullWidth
+                        variant="outlined"
+                        select
+                        size="small"
+                        inputRef={UnitRef}
+                        required
+                        label=""
+                        sx={{
+                          width: '15rem',
+                          height: '2rem'
+                        }}
                       >
                         <MenuItem value="Unit A">Unit A</MenuItem>
                         <MenuItem value="Unit B">Unit B</MenuItem>
@@ -222,37 +224,37 @@ const ChecklistValidation = (props: any) => {
                       </TextField>
                     </FormControl>
                   </Box>
-              </Typography>
-            </div>
-            <FormControl sx={{display:'flex', justifyContent:'center', alignItems:'center', width:'maxContent'}}>
-              <Button variant='contained' style={{height:'1.5rem', backgroundColor:'#dba236', color:'#000'}} onClick={()=>{
-                handleSearch();
-                setIsOpen(!isOpen);
-              }}>Search</Button>
-            </FormControl>
-             {isOpen && <div style={{display:'flex', position:'relative', flexDirection:'column', justifyContent:'flex-start', marginTop : '15px'}}>
-              <Stack spacing={1}>
-               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                  <Typography>{projectValue}</Typography>
-                </AccordionSummary>
-               </Accordion>
-               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                  <Typography>{clientValue}</Typography>
-                </AccordionSummary>
-               </Accordion>
-               <Accordion sx={{backgroundColor:'primary.main', color:'#fff'}}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                  <Typography>{unitValue}</Typography>
-                </AccordionSummary>
-               </Accordion>
-              </Stack>
-            </div>}
-             
+                </Typography>
+                <FormControl sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop:'2rem' }}>
+                  <Button variant='contained' style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }} onClick={() => {
+                    handleSearch();
+                    setIsOpen(!isOpen);
+                  }}>Search</Button>
+                </FormControl>
+              </div>
+              {isOpen && <div style={{ display: 'flex', position: 'relative', flexDirection: 'column', justifyContent: 'flex-start', marginTop: '2rem' }}>
+                <Stack spacing={1}>
+                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
+                      <Typography>{projectValue}</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
+                      <Typography>{clientValue}</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
+                      <Typography>{unitValue}</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+                </Stack>
+              </div>}
+
+            </Box>
           </Box>
-        </Box>
-      </Stack>
+        </Stack>
       </Box>
     </div>
   );
