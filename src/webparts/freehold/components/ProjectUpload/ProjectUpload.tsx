@@ -492,45 +492,45 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                 </Stack>
 
               </DialogActions>
-              <TableContainer >
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Document Name</TableCell>
-                      <TableCell>Uploaded Date</TableCell>
-                      <TableCell>Uploaded By</TableCell>
-                      <TableCell>Action</TableCell>
-
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
+              {
+                < TableContainer >
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Document Name</TableCell>
+                        <TableCell>Uploaded Date</TableCell>
+                        <TableCell>Uploaded By</TableCell>
+                        <TableCell>Action</TableCell>
+                      </TableRow>
+                    </TableHead>
                     <TableBody>
-                      {!isLoading && getClientDocumentsData.length > 0 && mappedFiles.length > 0 ? mappedFiles.map((file: any) => (
-                        <TableRow key={file.fileName}>
-                          <TableCell>
-                            <Box sx={{
-                              cursor: 'pointer',
-                              textDecoration: 'underline',
-                              color: 'primary'
-                            }}
-                              onClick={() => {
-                                window.open(file.url, '_blank');
-                              }}   >
-                              {file.fileName}
+                      {!isLoading && getClientDocumentsData.length > 0 &&
+                        mappedFiles.length > 0 ? mappedFiles.map((file: any) => (
+                          <TableRow key={file.fileName}>
+                            <TableCell>
+                              <Box sx={{
+                                cursor: 'pointer',
+                                textDecoration: 'underline',
+                                color: 'primary'
+                              }}
+                                onClick={() => {
+                                  window.open(file.url, '_blank');
+                                }}   >
+                                {file.fileName}
 
-                            </Box>
-                          </TableCell>
-                          <TableCell>{formatDate(file.created)}</TableCell>
-                          <TableCell>{file.editorName}</TableCell>
-                          <TableCell>
-                            <IconButton onClick={() => {
-                              setIsDeleteDialogOpen(true); setDeleteId(file.id);
-                            }}>
-                              <DeleteIcon color="error" />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )) :
+                              </Box>
+                            </TableCell>
+                            <TableCell>{formatDate(file.created)}</TableCell>
+                            <TableCell>{file.editorName}</TableCell>
+                            <TableCell>
+                              <IconButton onClick={() => {
+                                setIsDeleteDialogOpen(true); setDeleteId(file.id);
+                              }}>
+                                <DeleteIcon color="error" />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        )) :
                         !isLoading && <TableRow>
                           <TableCell colSpan={8} align="center">
                             No Records Found
@@ -539,14 +539,16 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       {isLoading &&
                         <TableRow>
                           <TableCell colSpan={8} align="center">
-                            <CircularProgress size={20} />
+                            {getClientDocumentsData.length > 0 ?
+                              <CircularProgress size={20} />
+                              : "select Client Name"
+                            }
                           </TableCell>
                         </TableRow>
                       }
                     </TableBody>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                  </Table>
+                </TableContainer>}
 
             </Stack>
           </DialogContent>
@@ -633,7 +635,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
         </Dialog>
 
       </Stack>
-    </Box>
+    </Box >
   );
 };
 
