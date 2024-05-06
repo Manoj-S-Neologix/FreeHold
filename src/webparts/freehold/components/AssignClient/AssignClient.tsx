@@ -331,6 +331,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         console.log(uploadDocument, "uploadDocumentuploadDocument");
         // console.log(updatedData, "handleSave");
         setLoading(false);
+        handleCancel();
     });
 
     console.log(getClient, "getClientgetClient");
