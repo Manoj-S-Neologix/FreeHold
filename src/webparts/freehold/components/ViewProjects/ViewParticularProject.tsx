@@ -48,7 +48,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit, }: any) => {
+const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit,particularClientAllData  }: any) => {
     // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -509,7 +509,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
             </Stack>
             {handleClientDialog && <AssignClient
-                // particularClientAllData={particularClientAllData}
+                particularClientAllData={particularClientAllData}
                 // exsistingPersons={selectedPersons}
                 open={handleClientDialog}
                 onClose={closeAssignClientDialog}

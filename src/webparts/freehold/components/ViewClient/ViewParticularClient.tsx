@@ -107,7 +107,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         }
     }, [clientDetails]);
 
-    const projectnames =['project 1'];
+    const projectnames = ['project 1'];
 
 
     //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
@@ -162,8 +162,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     //         ClientContact: editData.contact,
     //         // AssignedStaff: editData.assignedStaff
     //     };
-       
-        
+
+
     //     apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
     //         .then(() => {
     //             reset();
@@ -191,13 +191,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             ClientContact: editData.contact,
             // AssignedStaff: editData.assignedStaff
         };
-       
+
         apiResponse.updateLibraryName(clientDetails.GUID, data.title)
 
-        .then(() => {
-            // Update library name (assuming data.title is the new library name)
-            return apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-        })
+            .then(() => {
+                // Update library name (assuming data.title is the new library name)
+                return apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
+            })
             .then(() => {
                 reset();
                 // navigateToClient();
@@ -231,10 +231,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     const navigateToClient = () => {
         setIsViewDialogOpen(false);
-        setIsEdit(false);
-        navigate('/viewClient');
+        // setIsEdit(false);
+        navigate('/ViewClient');
         // fetchData();
-
     };
 
     return (
@@ -424,15 +423,15 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
 
                                     <TableCell component="th" scope="row">Assigned Project</TableCell>
-                                        <TableCell>
+                                    <TableCell>
 
-                                        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0}}>
+                                        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0 }}>
                                             {projectnames.map((projectName, index) => (
                                                 <li key={index}>{projectName}</li>
                                             ))}
                                         </ul>
 
-                                            {/* {!isEdit ? (
+                                        {/* {!isEdit ? (
                                                 clientDetails.name
                                             ) : (
                                                 <Controller
@@ -458,7 +457,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     )}
                                                 />
                                             )} */}
-                                        </TableCell>
+                                    </TableCell>
 
                                     {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
@@ -539,6 +538,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             </MuiButton>
                                             <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
                                                 onClick={navigateToClient}
+                                            
                                             >
                                                 Cancel
                                             </MuiButton>
