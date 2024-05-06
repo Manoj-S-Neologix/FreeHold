@@ -143,7 +143,7 @@ const ChecklistValidation = (props: any) => {
             Home
           </StyledBreadcrumb>
           <StyledBreadcrumb disabled>
-            CheckListValidation
+            CheckList Validation
           </StyledBreadcrumb>
         </Breadcrumbs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-start'}}>
