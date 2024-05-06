@@ -179,6 +179,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   console.log(uploadFiles, getGuid, "uploadFilesgetGuid");
 
   const getProjectName = particularClientAllData[0]?.projectName;
+  console.log(particularClientAllData, 'getProjectName..')
   const handleSave = handleSubmit(async (data: any) => {
     setLoading(true);
     const apiResponse = ProjectService();
@@ -186,22 +187,23 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
       libraryGUID: data.clientName,
       collectionOfDocuments: collectionOfDocuments,
-      projectName: particularClientAllData[0]?.projectName
+      projectName: particularClientAllData[0]?.projectName,
+      projectNumber: particularClientAllData[0]?.projectNumber
     };
 
     console.log(updatedData, getProjectName, "updatedData");
     const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
     console.log(response, "responseresponse");
     //create a folder in a library
-    const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectName;
+    const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectNumber;
     const createFolder = await ProjectService().createFolder(rootUrl, updatedData.clientName);
 
 
-    console.log(createFolder.data, "createFoldercreateFolder");
+    console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
     // once folder is created, upload files
     // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
 
-    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, updatedData.libraryGUID, updatedData.collectionOfDocuments);
+    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
     console.log(uploadDocument, "uploadDocumentuploadDocument");
     // console.log(updatedData, "handleSave");
 
@@ -370,7 +372,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       )}
                     />
                   </Grid>
-
+                  {console.log(getClientDocumentsData, 'getClientDocuments..')}
                   {false && getClientDocumentsData.length > 0 && (
                     <Grid item xs={12}>
                       <Controller
@@ -459,7 +461,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   setFiles={setUploadFiles}
                 />
               </Box>
-              <DialogActions sx={{ px: 0, mr: 0 }}>
+              {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
                 {/* <MuiButton
                                     onClick={handleSave}
                                     type="submit"
@@ -491,7 +493,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
                 </Stack>
 
-              </DialogActions>
+              </DialogActions>}
               {
                 < TableContainer >
                   <Table>
