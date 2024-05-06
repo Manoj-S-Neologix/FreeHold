@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
+import UploadDocument from '../UploadDocuments/UploadDocuments';
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -54,6 +55,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
 
     // const [loading, setLoading] = useState(false);
     console.log(selectedPersons, particularClientAllData, "ViewParticularClient");
@@ -114,6 +117,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
+
+
+    const closeUploadDialog = () => {
+        setUploadDialogOpen(false);
+    
+      };
 
     //console.log(clientDetails, "clientdetails");
     // const handleSearchChange = (event: any) => {
@@ -483,7 +492,22 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         </TableCell>}
                                     </TableRow> */}
 
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">View Document</TableCell>
+                                        <TableCell className="default-cursor">
+                                       
+                                     <Button
+                                        color="primary"
+                                        message="View Documents"
+                                        handleClick={ ()=> {
+                                            //console.log(`Upload Documents clicked for row ${id}`);
+                                            setUploadDialogOpen(true);
+                                        }}
 
+                                        />
+                                        </TableCell>
+                                    </TableRow>
+                                    
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell className="default-cursor">
@@ -538,7 +562,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             </MuiButton>
                                             <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
                                                 onClick={navigateToClient}
-                                            
+
                                             >
                                                 Cancel
                                             </MuiButton>
@@ -559,6 +583,13 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 props={props}
                 open={handleStaffDialog} onClose={closeAddStaffDialog}
                 fetchData={fetchData} />}
+
+                                        {uploadDialogOpen && <UploadDocument                                        
+                                        open={uploadDialogOpen}
+                                     onClose={closeUploadDialog} 
+                                     particularClientAllData={particularClientAllData} 
+                                     fetchDatas={fetchData} 
+                                     />}
 
         </Box>
     );
