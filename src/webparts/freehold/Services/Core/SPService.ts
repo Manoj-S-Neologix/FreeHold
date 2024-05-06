@@ -1,5 +1,5 @@
 import { Web } from "@pnp/sp/presets/all";
-import toast from 'react-hot-toast';
+// import toast from 'react-hot-toast';
 
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
@@ -40,9 +40,9 @@ const SPService: SPServiceType = {
 
     createLibrary: async (libraryName: string, libraryDescription?: string): Promise<any> => {
         try {
-            if (!libraryName) {
-                toast.error("Library name cannot be empty.");
-            }
+            // if (!libraryName) {
+            //     toast.error("Library name cannot be empty.");
+            // }
             // Check if library with the same name already exists
             const response = await web.lists.filter(`Title eq '${libraryName}'`).get();
 
@@ -50,7 +50,7 @@ const SPService: SPServiceType = {
                 // Create a new library since it doesn't exist
                 const list = await web.lists.add(libraryName, libraryDescription ? libraryDescription :
                     "Document Library", 101);
-                toast.success(`Document Library created with ID: ${list.data.Id}`);
+                // toast.success(`Document Library created with ID: ${list.data.Id}`);
                 return list;
             }
             else {
@@ -58,7 +58,9 @@ const SPService: SPServiceType = {
                 return response;
             }
         } catch (error) {
-            toast.error("Error creating or checking Document Library:", error);
+            // toast.error("Error creating or checking Document Library:", error);
+            console.error("Error creating Library:", error);
+            throw error;
         }
     },
 
@@ -182,10 +184,12 @@ const SPService: SPServiceType = {
 
         try {
             for (const file of files) {
-                const document = await web.lists.getById(file.FileRef)
-                    .items.getById(file.Id)
-                    .file
-                    .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, true);
+                // const document = await web.lists.getById(file.FileRef)
+                //     .items.getById(file.Id)
+                //     .file
+                //     .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, true);
+                const document = await web.
+                    getFileByServerRelativePath(file.FileRef).copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, false);
                 // Log or handle success
                 console.log(`Document ${file.FileLeafRef} copied successfully.`);
                 // Provide success feedback to the user
