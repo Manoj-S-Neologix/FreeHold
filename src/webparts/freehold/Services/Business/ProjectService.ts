@@ -36,7 +36,7 @@ const ProjectService = () => {
             return results.data;
         }
     };
-    
+
 
     const getProjectExpand = async (ListName: string, select: string, expand: string) => {
         if (spServiceInstance) {
@@ -139,11 +139,12 @@ const ProjectService = () => {
     };
 
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
-               if(spServiceInstance){
-                    const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
-                    console.log('Retrieved files:', files);
-                  }
-            };
+        if (spServiceInstance) {
+            const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
+            console.log('Retrieved files:', files);
+            return files;
+        }
+    };
 
     const getPersonByEmail = async (email: string) => {
 
@@ -163,11 +164,38 @@ const ProjectService = () => {
         }
     };
 
+    //Create a document library
+
+    const createLibrary = async (LibraryName: string, libraryDescription?: string) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.createLibrary(LibraryName, libraryDescription);
+            return results;
+        }
+    };
+
+    // Create a folder in the library
+
+    const createFolder = async (libraryGuid: string, folderName: string) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.createFolder(libraryGuid, folderName);
+            return results;
+        }
+    };
+
     const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.uploadDocument(libraryGuid, file);
             console.log(results, "results");
+        }
+    };
+
+    const copyDocuments = async (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.copyDocuments(sourceLibraryUrl, destinationLibraryUrl, files);
+            console.log(results, "results");
+            return results;
         }
     };
 
@@ -191,13 +219,15 @@ const ProjectService = () => {
         getDocumentsFromFolder,
         deleteProject,
         getPersonById,
-        
+        copyDocuments,
+        createFolder,
         // uploadDocument,
         deleteLibrary,
         deleteClient,
         addClient,
-        addDocumentsToFolder
-       
+        addDocumentsToFolder,
+        createLibrary
+
         // addDocumentsToFolder
     };
 };

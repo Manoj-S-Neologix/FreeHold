@@ -175,7 +175,7 @@ const ViewProject = (props: any) => {
 
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
         setParticularClientAllData(uniqueClientData);
-        
+
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
 
@@ -335,7 +335,7 @@ const ViewProject = (props: any) => {
             justifyContent: "space-between"
           }}>
             <Box sx={{
-              display: "flex", alignItems: "center", gap: "20px", justifyContent: "space-between" 
+              display: "flex", alignItems: "center", gap: "20px", justifyContent: "space-between"
             }}>
 
               <Button
@@ -497,12 +497,12 @@ const ViewProject = (props: any) => {
 
       {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
-      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} />}
+      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
-        <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} 
-         fetchData={fetchData} 
-         />}
+        <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}
+          fetchData={fetchData}
+        />}
       {isViewDialogOpen &&
         <ViewParticularProject
           props={props}

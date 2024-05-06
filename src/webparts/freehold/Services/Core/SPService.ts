@@ -1,7 +1,9 @@
 import { Web } from "@pnp/sp/presets/all";
+import toast from 'react-hot-toast';
 
 export type SPServiceType = {
-    createLibrary: (libraryName: string,) => Promise<any>;
+    createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
+    createFolder: (relativePath: string, folderName: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
@@ -12,7 +14,8 @@ export type SPServiceType = {
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
-    updateLibraryName: (GUIDID:any, updatedlibraryName: string) => Promise<any>;
+    updateLibraryName: (GUIDID: any, updatedlibraryName: string) => Promise<any>;
+    copyDocuments: (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -35,14 +38,38 @@ const SPService: SPServiceType = {
     },
 
 
-    //Create Library
-    createLibrary: async (libraryName: string): Promise<any> => {
+    createLibrary: async (libraryName: string, libraryDescription?: string): Promise<any> => {
         try {
-            const list = await web.lists.add(libraryName, "Document Library", 101);
-            //console.log(`Document Library created with ID: ${list.data.Id}`);
-            return list;
+            if (!libraryName) {
+                toast.error("Library name cannot be empty.");
+            }
+            // Check if library with the same name already exists
+            const response = await web.lists.filter(`Title eq '${libraryName}'`).get();
+
+            if (response.length === 0) {
+                // Create a new library since it doesn't exist
+                const list = await web.lists.add(libraryName, libraryDescription ? libraryDescription :
+                    "Document Library", 101);
+                toast.success(`Document Library created with ID: ${list.data.Id}`);
+                return list;
+            }
+            else {
+                //toast.error("Document Library already exists.");
+                return response;
+            }
         } catch (error) {
-            console.error("Error creating Document Library:", error);
+            toast.error("Error creating or checking Document Library:", error);
+        }
+    },
+
+
+    createFolder: async (relativePath: string, folderName: string): Promise<any> => {
+        try {
+            const folder = await web.getFolderByServerRelativePath(relativePath).folders.add(folderName);
+            return folder;
+        }
+        catch (error) {
+            console.error("Error creating folder:", error);
             throw error;
         }
     },
@@ -69,11 +96,11 @@ const SPService: SPServiceType = {
     },
 
 
-     // Update library name
-     updateLibraryName: async (GUIDID:any, updatedlibraryName: string): Promise<any> => {
-    
-        const updateItem = await web.lists.getById(GUIDID).update({Title:updatedlibraryName})
-        return updateItem
+    // Update library name
+    updateLibraryName: async (GUIDID: any, updatedlibraryName: string): Promise<any> => {
+
+        const updateItem = await web.lists.getById(GUIDID).update({ Title: updatedlibraryName });
+        return updateItem;
     },
 
     // Add list items
@@ -127,7 +154,9 @@ const SPService: SPServiceType = {
             'Created',
             'Editor/Id',
             'Editor/Title',
-            "File", "Id"
+            'Editor/EMail',
+            "*",
+            "File", "Id",
         ).expand("File", "Editor").getAll();
         //console.log('Retrieved files:', files);
         return files;
@@ -147,8 +176,27 @@ const SPService: SPServiceType = {
     getPersonById: async (id: any): Promise<any> => {
         const results = await web.siteUsers.getById(id).get();
         return results;
-    }
+    },
 
+    copyDocuments: async (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => {
+
+        try {
+            for (const file of files) {
+                const document = await web.lists.getById(file.FileRef)
+                    .items.getById(file.Id)
+                    .file
+                    .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, true);
+                // Log or handle success
+                console.log(`Document ${file.FileLeafRef} copied successfully.`);
+                // Provide success feedback to the user
+                return document;
+            }
+        } catch (error) {
+            // Handle error
+            console.error('Error copying documents:', error);
+            // Provide error feedback to the user
+        }
+    }
 
 
 
