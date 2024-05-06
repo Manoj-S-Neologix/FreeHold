@@ -512,6 +512,7 @@ const ViewProject = (props: any) => {
           setProjectDetails={setProjectDetails}
           isEdit={isEdit}
           particularClientAllData={particularClientAllData} selected={selected}
+          fetchData={fetchData}
         />}
     </Box>
   );
