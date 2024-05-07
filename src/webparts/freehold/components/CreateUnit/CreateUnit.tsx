@@ -1,172 +1,3 @@
-/* eslint-disable no-unused-expressions */
-// import React, { useEffect, useState } from 'react';
-// import Dialog from '@mui/material/Dialog';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogActions from '@mui/material/DialogActions';
-// import Button from '@mui/material/Button';
-// import IconButton from '@mui/material/IconButton';
-// import CloseIcon from '@mui/icons-material/Close';
-// import styles from './AssignClient.module.scss';
-// import { Box, MenuItem, Stack, TextField } from '@mui/material';
-// import ProjectService from '../../Services/Business/ProjectService';
-// import ClientService from "../../Services/Business/ClientService";
-// import toast from "react-hot-toast";
-
-// const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
-//     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
-//     const [getClient, setGetClient] = useState<any[]>([]);
-
-//     //console.log(props, "propsprops");
-
-//     const clientService = ClientService();
-//     const clientListName = "Client_Informations";
-//     const selectQuery = "Id,Title,ClientLibraryGUID";
-
-
-//     const apiCall = (async () => {
-//         await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
-//             .then((data) => {
-//                 if (data) {
-//                     const mappedData = data.map((item: any) => ({
-//                         id: item.Id,
-//                         name: item.Title,
-//                         libraryGUID: item.ClientLibraryGUID
-//                     }));
-//                     setGetClientDetails(mappedData);
-//                 }
-
-//             }).catch((error: any) => {
-//                 toast.error(error.message);
-//             });
-//     });
-
-//     console.log(getClientDetails, "getClientDetails");
-
-//     useEffect(() => {
-//         apiCall();
-//     }, []);
-
-//     const handleCancel = () => {
-//         onClose();
-//     };
-
-//     const handleSave = async () => {
-//         const dataObj = {
-//             AssignedStaffId: {
-//                 results: "selectedPersonsId"
-//             }
-//         };
-//         if (selected?.length === 0) {
-//             ProjectService().updateProject(
-//                 "Project_Informations",
-//                 particularClientAllData[0].Id,
-//                 dataObj
-//             ).then((response: any) => {
-//                 console.log("Success:", response);
-//                 onClose();
-
-//             }).catch((error: any) => {
-//                 console.error("Error:", error);
-//             });
-//         }
-//         else {
-//             for (const item of selected) {
-//                 ProjectService().updateProject(
-//                     "Project_Informations",
-//                     item,
-//                     dataObj
-//                 ).then((response: any) => {
-//                     console.log("Success:", response);
-//                     onClose();
-
-//                 }).catch((error: any) => {
-//                     console.error("Error:", error);
-//                 });
-
-//             }
-//         }
-//     };
-
-//     console.log(getClient, "getClientgetClient");
-
-
-
-//     return (
-//         <Box sx={{ width: '100', padding: '20px' }}>
-//             <Stack direction="column" spacing={2}>
-//                 <Dialog open={open} maxWidth='sm' fullWidth>
-//                     <DialogTitle className={styles.addTitle}
-//                         style={{
-//                             textAlign: 'center',
-//                             marginLeft: '7px', position: 'relative'
-//                         }}>
-//                         <div className="d-flex flex-column">
-//                             <div className="d-flex justify-content-between 
-//                             align-items-center relative">
-//                                 <h4
-//                                     style={{ margin: '0', color: '#125895' }}>
-//                                     Assign Client
-//                                 </h4>
-//                             </div>
-//                             <div style={{
-//                                 height: '4px', width: '100%',
-//                                 backgroundColor: '#125895'
-//                             }} />
-//                         </div>
-//                     </DialogTitle>
-//                     <IconButton
-//                         aria-label="close"
-//                         onClick={handleCancel}
-//                         sx={{
-//                             position: "absolute",
-//                             right: "14px",
-//                             top: "8px",
-//                             color: (theme: any) => theme.palette.grey[500],
-//                         }}
-//                     >
-//                         <CloseIcon />
-//                     </IconButton>
-//                     <DialogContent >
-//                         <TextField
-//                             label="Assign Client"
-//                             variant="outlined"
-//                             fullWidth
-//                             select
-//                             onChange={(e: any) => {
-//                                 setGetClient(e.target.value);
-//                             }}
-//                         >
-//                             {getClientDetails?.map((item: any) => (
-//                                 <MenuItem key={item.id} value={item.id}>
-//                                     {item.name}
-//                                 </MenuItem>
-//                             ))}
-//                         </TextField>
-//                     </DialogContent>
-//                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-//                         <Button
-//                             onClick={handleSave}
-//                             variant="contained"
-//                             color="primary"
-//                             sx={{
-//                                 maxWidth: '150px',
-//                                 float: 'right',
-//                             }}
-//                         >
-//                             Save
-//                         </Button>
-//                         <Button variant="outlined" onClick={handleCancel}>
-//                             Cancel
-//                         </Button>
-//                     </DialogActions>
-//                 </Dialog>
-//             </Stack>
-//         </Box>
-//     );
-// };
-
-// export default AssignClient;
 
 import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
@@ -176,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './AssignClient.module.scss';
+import styles from '../AssignClient/AssignClient.module.scss';
 import { Autocomplete, Box, CircularProgress, Grid, MenuItem, Stack, TextField } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
@@ -189,13 +20,16 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import CheckIcon from "@mui/icons-material/Check";
 import { Controller, useForm } from "react-hook-form";
 
-const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
+const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons,exsistingProjectLibrary }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
-    const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
+    // const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
+    // const [clientSelected, setClientSelected] = useState(false);
+    // const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
+
 
 
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
@@ -248,6 +82,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         setPersonName(
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
+            // setClientSelected(true); // Client is selected
+            // setSelectedUnit(null); // Reset selectedUnit
         );
     };
 
@@ -259,6 +95,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     }, []);
 
     const handleCancel = () => {
+        console.log("Cancel button clicked");
         onClose();
     };
 
@@ -311,13 +148,13 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
     const handleSave = handleSubmit(async (data) => {
         setLoading(true);
-        false && falseFunc();
+        falseFunc();
 
-        const dataObj = {
-            AssignedStaffId: {
-                results: selectedPersonsId  
-            }
-        };
+        // const dataObj = {
+        //     AssignedStaffId: {
+        //         results: selectedPersonsId  
+        //     }
+        // };
         
 
         const updatedData = {
@@ -327,46 +164,67 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             clientName: particularClientAllData[0]?.projectName
         };
 
-        const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].Id
-        const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
-        console.log(Id, ListID , "AssignID")
+      
+            // Use existing project library details to create unit documents
+            const { libraryGUID, projectLibraryPath } = exsistingProjectLibrary;
+
+            console.log(libraryGUID, "libraryGUID")
+        
+            // Construct the URL for the project library
+            const libraryUrl = `${projectLibraryPath}/${particularClientAllData[0]?.projectName}`;
+        
+            // Use SharePoint API to create folder and upload documents
+            const folderCreationResponse = await ProjectService().createFolder(libraryUrl, data.AssignClient);
+            const folderUrl = folderCreationResponse.data.ServerRelativeUrl;
+        
+            // Upload selected documents to the created folder
+            const documentUploadResponse = await ProjectService().copyDocuments(
+              folderCreationResponse.data.UniqueId,
+              folderUrl,
+              data.collectionOfDocuments
+            );
+        
+            console.log("Folder created and documents uploaded:", documentUploadResponse);
+        
+            // Close the dialog
+            onClose();
+
+
+        // const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].Id
+        // const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
+        // console.log(Id, ListID , "AssignID")
 
 
 
-        if (!selected || selected.length === 0) {
-            try {
-                await ProjectService().updateProject("Project_Informations", ListID, dataObj);
-                // setSelectedPersons([]);
-                setSelectedPersonsId([]);
+        // if (!selected || selected.length === 0) {
+        //     try {
+        //         await ProjectService().updateProject("Project_Informations", ListID, dataObj);
+        //         // setSelectedPersons([]);
+        //         setSelectedPersonsId([]);
     
-            } catch (error) {
-                console.error('Error updating project:', error);
-            }
-        }
+        //     } catch (error) {
+        //         console.error('Error updating project:', error);
+        //     }
+        // }
 
-       
-
-
-
+    
         console.log(updatedData, getProjectName, "updatedData");
 
         const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
         console.log(response, "responseresponse");
-        //create a folder in a library
-        const rootUrl = response[0].ParentWebUrl + "/" + updatedData.clientName;
-        const createFolder = await ProjectService().createFolder(rootUrl, updatedData.AssignClient);
+        const unitrootUrl = response[0].ParentWebUrl + "/" + updatedData.clientName;
+        const createFolder = await ProjectService().createFolder(unitrootUrl, updatedData.AssignClient);
 
 
         console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-        // once folder is created, upload files
-        // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
-
         const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
         console.log(uploadDocument, "uploadDocumentuploadDocument");
-        // console.log(updatedData, "handleSave");
         setLoading(false);
         handleCancel();
+        
+    
     });
+
 
     console.log(getClient, "getClientgetClient");
 
@@ -406,7 +264,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                             align-items-center relative">
                                 <h4
                                     style={{ margin: '0', color: '#125895' }}>
-                                    Assign Client
+                                    Create Unit
                                 </h4>
                             </div>
                             <div style={{
@@ -463,6 +321,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                             </TextField>)}
                                     />
                                 </Grid>
+
                                 {false && <InputLabel id="demo-multiple-chip-label"
                                     style={{ margin: '0', color: '#125895', width: '100' }}>Chip</InputLabel>}
                                 {false && <Select
@@ -492,17 +351,55 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                     ))}
                                 </Select>}
 
-                                {getClientDocumentsData.length > 0 && (
+                          
+                         {getClientDetails ? (
+                                <Grid item xs={12}>
+                                <Controller
+                                    name="AssignUnit"
+                                    control={control}
+                                    defaultValue={[]}
+                                    rules={{ required: 'Assign Unit is required' }}
+                                    render={({ field }) => (
+                                        <Autocomplete
+                                            multiple
+                                            options={Array.from({ length: 10 }, (_, i) => `Unit ${i + 1}`)}
+                                            getOptionLabel={(option) => option}
+                                            onChange={(e, value) => {
+                                                field.onChange(value);
+                                                setValue('AssignUnit', value);
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label="Select Unit"
+                                                    placeholder="Select Unit"
+                                                    error={!!errors?.AssignUnit}
+                                                    helperText={errors?.AssignUnit?.message}
+                                                />
+                                            )}
+                                            renderOption={(props, option, { selected }) => (
+                                                <MenuItem
+                                                    {...props}
+                                                    value={option}
+                                                    sx={{ justifyContent: 'space-between' }}
+                                                >
+                                                    {option}
+                                                    {selected ? <CheckIcon color="info" /> : null}
+                                                </MenuItem>
+                                            )}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                                ) : (
                                     <Grid item xs={12}>
                                         <Controller
                                             name="AssignClientDocuments"
                                             control={control}
                                             defaultValue={[]}
-                                            rules={{
-                                                required: 'Assign Client Documents is required',
-                                            }}
+                                            rules={{ required: 'Assign Client Documents is required' }}
                                             render={({ field }) => (
-
                                                 <Autocomplete
                                                     multiple
                                                     options={getClientDocumentsData}
@@ -513,14 +410,13 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                         field.onChange(value);
                                                         setValue('AssignClientDocuments', value);
                                                         const collectionOfDocuments: any = [];
-                                                        getClientDocumentsAllData?.map((item: any) => {
-                                                            console.log(item, value, value.includes(item.FileLeafRef));
+                                                        getClientDocumentsAllData?.forEach((item: any) => {
                                                             if (value.includes(item.FileLeafRef)) {
                                                                 collectionOfDocuments.push({
                                                                     Id: item.Id,
                                                                     GUID: item.GUID,
                                                                     FileLeafRef: item.FileLeafRef,
-                                                                    FileRef: item.FileRef
+                                                                    FileRef: item.FileRef,
                                                                 });
                                                             }
                                                         });
@@ -540,19 +436,17 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                         <MenuItem
                                                             {...props}
                                                             value={option}
-                                                            sx={{ justifyContent: "space-between" }}
+                                                            sx={{ justifyContent: 'space-between' }}
                                                         >
                                                             {option}
                                                             {selected ? <CheckIcon color="info" /> : null}
                                                         </MenuItem>
                                                     )}
                                                 />
-
                                             )}
                                         />
                                     </Grid>
                                 )}
-
                             </Grid>
                         </Box>
                     </DialogContent>
@@ -576,7 +470,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     );
 };
 
-export default AssignClient;
+export default CreateUnit;
 
 
 

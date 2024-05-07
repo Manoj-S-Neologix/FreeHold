@@ -24,6 +24,7 @@ import { Controller, useForm } from "react-hook-form";
 import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
+import CreateUnit from '../CreateUnit/CreateUnit';
 
 
 
@@ -62,6 +63,9 @@ const ViewProject = (props: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
+
+  const [handleUnitDialog, setHandleUnitDialog] = useState(false);
+
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [projectDetails, setProjectDetails] = useState({});
   const [projectData, setProjectData] = useState<any>([]);
@@ -108,6 +112,17 @@ const ViewProject = (props: any) => {
     setHandleClientDialog(false);
     // fetchData();
   };
+
+  // const openUnitDialog = () => {
+  //   setHandleClientDialog(true);
+  // };
+
+  const closeUnitDialog = () => {
+    setHandleClientDialog(false);
+    // fetchData();
+  };
+
+
 
   const handleFilterClick = () => {
     setOpen(true);
@@ -235,7 +250,24 @@ const ViewProject = (props: any) => {
         setParticularClientAllData(getUnique);
       },
     },
+    {
+      label: 'Create Unit',
+      button: (
+        <Button
+          color="secondary"
+          message="Create Unit"
+          handleClick={(id: any) => {
+            setHandleUnitDialog(!handleUnitDialog);
+          }}
+        />
+      ),
+      handler: async (data: any) => {
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
+      },
+    },
   ];
+
   const handlePeoplePickerChange = async (items: any[]) => {
     console.log(items, "itemsitemsitemsitems");
     const selectedPersonsIds = [];
@@ -496,6 +528,8 @@ const ViewProject = (props: any) => {
         props={props} />}
 
       {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+
+      {handleUnitDialog&& <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
       {isDeleteDialogOpen &&
