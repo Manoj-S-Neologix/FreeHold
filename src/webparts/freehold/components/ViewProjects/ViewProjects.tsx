@@ -12,6 +12,7 @@ import styles from './ViewProjects.module.scss';
 import GridTable from "../../../../Common/Table/Table";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewUpload from '../ProjectUpload/ProjectUpload';
@@ -207,6 +208,7 @@ const ViewProject = (props: any) => {
         //console.log(`Edit clicked for row ${id}`);
       },
     },
+
     {
       label: 'Delete',
       icon: <DeleteIcon />,
@@ -216,6 +218,17 @@ const ViewProject = (props: any) => {
         //console.log(`Delete clicked for row ${id}`);
       },
     },
+
+    {
+      label: 'Create Unit',
+      icon: <AcUnitIcon />,
+      handler: (id: any) => {
+        setHandleUnitDialog(true);
+        setProjectDetails(id);
+        //console.log(`Delete clicked for row ${id}`);
+      },
+    },
+
     {
       label: 'View Documents',
       button: (
@@ -250,22 +263,22 @@ const ViewProject = (props: any) => {
         setParticularClientAllData(getUnique);
       },
     },
-    {
-      label: 'Create Unit',
-      button: (
-        <Button
-          color="secondary"
-          message="Create Unit"
-          handleClick={(id: any) => {
-            setHandleUnitDialog(!handleUnitDialog);
-          }}
-        />
-      ),
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-      },
-    },
+    // {
+    //   label: 'Create Unit',
+    //   button: (
+    //     <Button
+    //       color="secondary"
+    //       message="Create Unit"
+    //       handleClick={(id: any) => {
+    //         setHandleUnitDialog(!handleUnitDialog);
+    //       }}
+    //     />
+    //   ),
+    //   handler: async (data: any) => {
+    //     const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+    //     setParticularClientAllData(getUnique);
+    //   },
+    // },
   ];
 
   const handlePeoplePickerChange = async (items: any[]) => {
