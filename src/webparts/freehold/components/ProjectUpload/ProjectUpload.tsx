@@ -51,7 +51,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   ////
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
   const [getClient, setGetClient] = useState<any[]>([]);
-  const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
+  const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
   const [deleteId, setDeleteId] = useState<number>(0);
 
 
@@ -105,6 +105,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   });
 
 
+  
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
@@ -118,6 +119,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       if (Array.isArray(results)) {
         setClientDocumentsData(results.map(item => item.FileLeafRef));
         setClientDocumentsAllData(results);
+        console.log(getClientDocumentsAllData, 'BBB')
       } else {
         console.error('Error: Retrieved data is not an array');
       }
@@ -176,18 +178,28 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   console.log(fileInfoArray, 'fileInfoArray');
 
-  console.log(uploadFiles, getGuid, "uploadFilesgetGuid");
+  console.log(uploadFiles, getGuid, getClientDetails, "uploadFilesgetGuid");
 
   const getProjectName = particularClientAllData[0]?.projectName;
   console.log(particularClientAllData, 'getProjectName..')
   const handleSave = handleSubmit(async (data: any) => {
     setLoading(true);
     const apiResponse = ProjectService();
+    const collectionOfDocuments: any = [];
+    getClientDocumentsData.map((data:any) => {
+      collectionOfDocuments.push({
+        Id: data.Id,
+        GUID: data.GUID,
+        FileLeafRef: data.FileLeafRef,
+        FileRef: data.FileRef
+      });
+    })
+    console.log(collectionOfDocuments, 'collection..')
     const updatedData = {
       clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
       libraryGUID: data.clientName,
       collectionOfDocuments: collectionOfDocuments,
-      projectName: particularClientAllData[0]?.projectName,
+      // projectName: particularClientAllData[0]?.projectName,
       projectNumber: particularClientAllData[0]?.projectNumber
     };
 
@@ -198,19 +210,18 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectNumber;
     const createFolder = await ProjectService().createFolder(rootUrl, updatedData.clientName);
 
-
     console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
     // once folder is created, upload files
     // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
 
-    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
+    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId,createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
     console.log(uploadDocument, "uploadDocumentuploadDocument");
     // console.log(updatedData, "handleSave");
 
     console.log(particularClientAllData[0].name, "name");
-    console.log(fileInfoArray);
+    console.log(fileInfoArray, 'fileinfo');
 
-    apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray)
+    apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray[0].name)
       .then(() => {
         setLoading(false);
         // handleCancel();
@@ -372,7 +383,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       )}
                     />
                   </Grid>
-                  {console.log(getClientDocumentsData, 'getClientDocuments..')}
+                  {console.log(getClientDocumentsData, getClientDocumentsAllData, 'getClientDocuments..')}
                   {false && getClientDocumentsData.length > 0 && (
                     <Grid item xs={12}>
                       <Controller
@@ -397,7 +408,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                 setValue('AssignClientDocuments', value);
                                 const collectionOfDocuments: any = [];
                                 getClientDocumentsAllData?.map((item: any) => {
-                                  console.log(item, value, value.includes(item.FileLeafRef));
+                                  console.log(item, value, value.includes(item.FileLeafRef), '...');
                                   if (value.includes(item.FileLeafRef)) {
                                     collectionOfDocuments.push({
                                       Id: item.Id,
@@ -405,6 +416,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                       FileLeafRef: item.FileLeafRef,
                                       FileRef: item.FileRef
                                     });
+                                    console.log(collectionOfDocuments, 'collectionOfDocuments///')
                                   }
                                 });
                                 setCollectionOfDocuments(collectionOfDocuments);
