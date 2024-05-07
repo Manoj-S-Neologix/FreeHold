@@ -48,7 +48,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData }: any) => {
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isOpen, setIsOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData }: any) => {
     // const [selected] = React.useState<any>([]);
     //console.log(particularClientAllData, clientDetails, "particularClientAllData");
     // const [searchQuery, setSearchQuery] = useState('');
@@ -208,13 +208,16 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 return apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
             })
             .then(() => {
-                reset();
-                // navigateToClient();
                 setLoading(false);
                 toast.success('Client Updated Successfully!');
                 fetchData();
                 initialFetchData();
+                navigateToClient();
                 setIsEdit(false);
+                reset();
+                // debugger
+                // setIsOpen(false);
+                
             })
             .catch((error) => {
                 setLoading(false);
@@ -242,6 +245,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         setIsViewDialogOpen(false);
         // setIsEdit(false);
         navigate('/ViewClient');
+        // setIsOpen(false);
         // fetchData();
     };
 
@@ -284,7 +288,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         }}>
                                             {!isEdit && (
                                                 <Button
-                                                    handleClick={() => setIsEdit(true)}
+                                                    handleClick={() => {
+                                                        setIsEdit(true);
+                                                        
+                                                    }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"
@@ -554,6 +561,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={() => {
+                                                    // debugger
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}

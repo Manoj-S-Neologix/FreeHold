@@ -70,6 +70,7 @@ const ViewClient = (props: any) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
@@ -109,6 +110,7 @@ const ViewClient = (props: any) => {
     }
     if (editClientId) {
       setIsEdit(true);
+      setIsOpen(true);
       setIsViewDialogOpen(true);
       const data = await fetchDataById(editClientId);
       console.log(data, "datadatadata");
@@ -653,8 +655,10 @@ const ViewClient = (props: any) => {
           clientDetails={clientDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}
           setIsEdit={setIsEdit}
+          setIsOpen={setIsOpen}
           setClientDetails={setClientDetails}
           isEdit={isEdit}
+          isOpen={isOpen}
           fetchData={fetchDataByuserId}
           initialFetchData={fetchData}
           particularClientAllData={particularClientAllData} selected={selected}
