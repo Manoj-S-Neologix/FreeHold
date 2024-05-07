@@ -210,9 +210,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             .then(() => {
                 setLoading(false);
                 toast.success('Client Updated Successfully!');
+                // navigateToClient();
+                navigateToClient();
                 fetchData();
                 initialFetchData();
-                navigateToClient();
                 setIsEdit(false);
                 reset();
                 // debugger

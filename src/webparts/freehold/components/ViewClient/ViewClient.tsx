@@ -430,6 +430,7 @@ const ViewClient = (props: any) => {
     if (editClientId || viewClientId)
       fetchDataByuserId();
     console.log(editClientId, viewClientId, "editClientId, viewClientId");
+    setIsViewDialogOpen(false);
   }, [editClientId, viewClientId]);
 
 
