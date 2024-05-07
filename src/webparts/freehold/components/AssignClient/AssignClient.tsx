@@ -263,7 +263,9 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const falseFunc = () => {
         const dataObj = {
             AssignedStaffId: {
-                results: "selectedPersonsId"
+                results: [
+
+                ]
             }
         };
 
@@ -315,7 +317,15 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             clientName: particularClientAllData[0]?.projectName
         };
 
+        const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].Id
+        const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
+
+        console.log(Id, ListID , "AssignID")
+
+
+
         console.log(updatedData, getProjectName, "updatedData");
+
         const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
         console.log(response, "responseresponse");
         //create a folder in a library
