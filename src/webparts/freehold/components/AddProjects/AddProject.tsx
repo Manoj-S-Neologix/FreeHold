@@ -315,7 +315,14 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
       };
       // false && await addListItem('Clients', dataObj);
 
-      const response = await apiResponse.addProject("Project_Informations", dataObj);
+      const library = await apiResponse.createLibrary(dataObj.ProjectNumber, "Project Library");
+      const updatedDataObj = {
+        ...dataObj,
+        ProjectLibraryGUID: library.data.Id,
+        ProjectLibraryPath: library.data.ParentWebUrl + "/" + dataObj.ProjectNumber
+      }
+      console.log(library,updatedDataObj, 'Projectlibrary');
+      const response = await apiResponse.addProject("Project_Informations", updatedDataObj);
       const fileInfoArray = files.map((file: any) => ({
         lastModified: file.lastModified,
         lastModifiedDate: file.lastModifiedDate,
