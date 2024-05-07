@@ -399,6 +399,10 @@ import toast from "react-hot-toast";
 import { Controller, useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+
 
 const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons,exsistingProjectLibrary }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
@@ -407,6 +411,8 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
     const [count, setCount] = useState(1);
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
+    const [showCount, setShowCount] = useState(false);
+
 
     const getProjectName = particularClientAllData[0]?.projectName;
 
@@ -445,10 +451,14 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         onClose();
     };
 
-      //Counter
-      const handleCount = (event:any) => {
-        setCount(Math.max(Number(event.target.value), 1));
+    const handleSwitchChange = (event:any) => {
+        setShowCount(event.target.checked);
       };
+
+      //Counter
+    //   const handleCount = (event:any) => {
+    //     setCount(Math.max(Number(event.target.value), 1));
+    //   };
 
       const handleCountChange = (value:any) => {
         setCount(Math.max(Number(value), 1));
@@ -660,56 +670,53 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             </TextField>)}
                                     />
                                 </Grid>
+                                <Grid>                      
+                              <FormControlLabel
+                                control={<Switch checked={showCount} onChange={handleSwitchChange} />}
+                                label="Is Unit Documents"
+                                />
+                                </Grid>   
 
-                         {/* {getClientDetails ? ( */}
-                 
-                            <Grid container spacing={1} alignItems="center" xs={12}>
+                         {showCount && (
+                        <Grid container spacing={1} alignItems="center">
                             <Grid item>
-                              <Button
+                            <Button
                                 variant="contained"
-                                onClick={() => setCount((prev) => prev - 1)}
+                                onClick={() => setCount((prev) => Math.max(prev - 1, 1))}
                                 disabled={count === 1}
-                              >
+                            >
                                 <RemoveIcon fontSize="small" />
-                              </Button>
+                            </Button>
                             </Grid>
                             <Grid item>
-                              <InputBase
+                            <InputBase
                                 size="small"
-                                onChange={handleCount}
                                 value={count}
                                 inputProps={{ 'aria-label': 'count' }}
-                              />
+                                onChange={(e) => handleCountChange(e.target.value)}
+                            />
                             </Grid>
                             <Grid item>
-                              <Button
+                            <Button
                                 variant="contained"
                                 onClick={() => setCount((prev) => prev + 1)}
-                              >
+                            >
                                 <AddIcon fontSize="small" />
-                              </Button>
+                            </Button>
                             </Grid>
-                          </Grid>
-                         {/* )} */}
+                        </Grid>
+                        )}
+
+                        {showCount &&
+                        [...Array(count)].map((_, index) => (
+                            <Grid item xs={12} key={index}>
+                            <TextField
+                                label={`Unit ${index + 1}`}
+                                variant="outlined"
+                                fullWidth
+                            />
                             </Grid>
-                            <Grid container spacing={2}>
-                            {/* <Grid item xs={12}>
-                                <TextField
-                                    label="Count"
-                                    type="number"
-                                    value={count}
-                                    onChange={(e) => handleCountChange(e.target.value)}
-                                    fullWidth
-                                    InputProps={{ inputProps: { min: 1 } }}
-                                />
-                            </Grid> */}
-                            {[...Array(count)].map((_, index) => (
-                                <Grid item xs={12} key={index}>
-                                    <TextField label={`Unit ${index + 1}`} variant="outlined" fullWidth 
-                                     onChange={(e) => handleCountChange(e.target.value)}
-                                    />
-                                </Grid>
-                            ))}
+                        ))}
                         </Grid>
                         </Box>
                     </DialogContent>
