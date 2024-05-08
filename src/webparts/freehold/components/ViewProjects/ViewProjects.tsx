@@ -119,7 +119,7 @@ const ViewProject = (props: any) => {
   // };
 
   const closeUnitDialog = () => {
-    setHandleClientDialog(false);
+    setHandleUnitDialog(false);
     // fetchData();
   };
 
@@ -167,7 +167,7 @@ const ViewProject = (props: any) => {
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
     { id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
-    { id: 'assignedClients', numeric: false, disablePadding: true, label: 'Assigned Clients' },
+    { id: 'assignClient', numeric: false, disablePadding: true, label: 'Assigned Client' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
     { id: 'action', numeric: false, disablePadding: true, label: 'Action' },
@@ -222,9 +222,14 @@ const ViewProject = (props: any) => {
     {
       label: 'Create Unit',
       icon: <AcUnitIcon />,
-      handler: (id: any) => {
+      handler: (data: any) => {
         setHandleUnitDialog(true);
-        setProjectDetails(id);
+        setProjectDetails(data);
+        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+        setParticularClientAllData(uniqueClientData);
+
+        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+        setParticularClientAllData(getUnique);
         //console.log(`Delete clicked for row ${id}`);
       },
     },
@@ -299,8 +304,8 @@ const ViewProject = (props: any) => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail';
-      const expand = 'Author';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID';
+      const expand = 'Author,AssignClient';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
@@ -319,6 +324,20 @@ const ViewProject = (props: any) => {
   };
 
   // console.log(, "data")
+  const hyperLink = (data: any, id: any) => {
+    return (
+      data !== '-' && <Box
+        onClick={() => {
+          navigate('/ViewClient/' + id);
+        }}
+        style={{
+          textDecoration: "underline", color: "blue", cursor: "pointer",
+          listStyleType: "none", padding: 0
+        }}>
+        {data}
+      </Box>
+    );
+  };
 
   const tableData = projectData.map((item: any) => {
     return {
@@ -327,7 +346,7 @@ const ViewProject = (props: any) => {
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
-      assignedClients: item.assignedClients,
+      assignClient: hyperLink(item.assignClient, item.Id),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
@@ -342,7 +361,7 @@ const ViewProject = (props: any) => {
       projectName: { value: item.projectName, width: "150px" },
       location: { value: item.location, width: "150px" },
       developer: { value: item.developer, width: "150px" },
-      assignedClients: { value: item?.assignedClients, width: "150px" },
+      assignClient: { value: item?.assignClient, width: "150px" },
       modifiedDate: { value: item.modifiedDate, width: "150px" },
       modifiedBy: { value: item.modifiedBy, width: "150px" },
       // assignedStaff: { value: item?.assignedStaff, width: "80%" },
@@ -540,9 +559,17 @@ const ViewProject = (props: any) => {
       {addClientDialogOpen && <AddProjectDialog open={addClientDialogOpen} onClose={closeAddClientDialog} fetchData={fetchData}
         props={props} />}
 
-      {handleClientDialog && <AssignClient open={handleClientDialog} onClose={closeAssignClientDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+      {handleClientDialog &&
+        <AssignClient
+          open={handleClientDialog}
+          onClose={closeAssignClientDialog}
+          particularClientAllData={particularClientAllData}
+          selected={selected}
+          props={props}
+          fetchData={fetchData}
+        />}
 
-      {handleUnitDialog&& <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+      {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
       {isDeleteDialogOpen &&

@@ -16,6 +16,9 @@ export type SPServiceType = {
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
     updateLibraryName: (GUIDID: any, updatedlibraryName: string) => Promise<any>;
     copyDocuments: (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => Promise<any>;
+    createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
+    getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
+    getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -200,8 +203,24 @@ const SPService: SPServiceType = {
             console.error('Error copying documents:', error);
             // Provide error feedback to the user
         }
-    }
+    },
 
+    createFolderInLibrary: async (libraryName: string, folderName: string): Promise<any> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+        const folder = await library.folders.add(folderName);
+        return folder;
+    },
+
+    getFolderInLibrary: async (libraryName: string, folderName: string): Promise<any> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+        const folder = await library.folders.getByName(folderName);
+        return folder;
+    },
+    getAllFoldersInLibrary: async (libraryName: string): Promise<any> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+        const folders = await library.folders();
+        return folders;
+    }
 
 
 

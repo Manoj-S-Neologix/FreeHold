@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 // import React, { useEffect, useState } from 'react';
 // import Dialog from '@mui/material/Dialog';
 // import DialogTitle from '@mui/material/DialogTitle';
@@ -31,7 +32,7 @@
 //     const clientListName = "Client_Informations";
 //     const selectQuery = "Id,Title,ClientLibraryGUID";
 
-    
+
 //     const apiCall = (async () => {
 //         await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
 //             .then((data) => {
@@ -122,7 +123,7 @@
 //         //         results: selectedPersonsId  
 //         //     }
 //         // };
-        
+
 
 //         const updatedData = {
 //             AssignClient: getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name,
@@ -131,31 +132,31 @@
 //             clientName: particularClientAllData[0]?.projectName
 //         };
 
-      
+
 
 //             const { libraryGUID, projectLibraryPath } = exsistingProjectLibrary;
 
 //             console.log(libraryGUID, "libraryGUID")
-        
+
 
 //             const libraryUrl = `${projectLibraryPath}/${particularClientAllData[0]?.projectName}`;
-        
+
 
 //             const folderCreationResponse = await ProjectService().createFolder(libraryUrl, data.AssignClient);
 //             const folderUrl = folderCreationResponse.data.ServerRelativeUrl;
-        
+
 
 //             const documentUploadResponse = await ProjectService().copyDocuments(
 //               folderCreationResponse.data.UniqueId,
 //               folderUrl,
 //               data.collectionOfDocuments
 //             );
-        
+
 //             console.log("Folder created and documents uploaded:", documentUploadResponse);
-    
+
 //             onClose();
 
-    
+
 //         console.log(updatedData, getProjectName, "updatedData");
 
 //         const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
@@ -169,14 +170,14 @@
 //         console.log(uploadDocument, "uploadDocumentuploadDocument");
 //         setLoading(false);
 //         handleCancel();
-        
-    
+
+
 //     });
 
 
 //     console.log(getClient, "getClientgetClient");
 
-    
+
 
 //     const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
 //     const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
@@ -274,7 +275,7 @@
 //                                 </Grid>
 
 //                          {/* {getClientDetails ? ( */}
-                 
+
 //                             <Grid container spacing={1} alignItems="center" xs={12}>
 //                             <Grid item>
 //                               <Button
@@ -392,7 +393,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from '../AssignClient/AssignClient.module.scss';
-import {  Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase } from '@mui/material';
+import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -400,28 +401,28 @@ import { Controller, useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Switch from '@mui/material/Switch';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 
-
-const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons,exsistingProjectLibrary }: any) => {
+const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, exsistingProjectLibrary }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
-    const [getClient, setGetClient] = useState<any[]>([]);
+    const [getClient, setGetClient] = useState<any>('');
     const [loading, setLoading] = useState(false);
-    const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
     const [count, setCount] = useState(1);
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
     const [showCount, setShowCount] = useState(false);
+    // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
 
 
-    const getProjectName = particularClientAllData[0]?.projectName;
-
+    const getProjectCode = particularClientAllData[0]?.projectNumber;
+    console.log(getProjectCode, "getProjectCode");
 
     const clientService = ClientService();
     const clientListName = "Client_Informations";
     const selectQuery = "Id,Title,ClientLibraryGUID";
 
-    
+
     const apiCall = (async () => {
         await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
             .then((data) => {
@@ -444,137 +445,123 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
 
     useEffect(() => {
         apiCall();
-    }, []);
+        if (particularClientAllData[0]?.ClientGUID) {
+            setShowCount(true);
+            setGetClient(particularClientAllData[0]?.ClientGUID);
+        } else {
+            setShowCount(false);
+            setGetClient([]);
+        }
+    }, [particularClientAllData]);
+
 
     const handleCancel = () => {
         console.log("Cancel button clicked");
         onClose();
     };
+    const deleteUnit = (indexToRemove: any) => {
+        setCount((prevCount) => prevCount - 1);
+        setValue(`unitName${indexToRemove}`, "");
+    };
 
-    const handleSwitchChange = (event:any) => {
+
+    const handleSwitchChange = (event: any) => {
         setShowCount(event.target.checked);
-      };
+        setCount(1);
+        reset();
+    };
 
-      //Counter
+    //Counter
     //   const handleCount = (event:any) => {
     //     setCount(Math.max(Number(event.target.value), 1));
     //   };
 
-      const handleCountChange = (value:any) => {
+    const handleCountChange = (value: any) => {
         setCount(Math.max(Number(value), 1));
     };
 
-    const falseFunc = () => {
-        const dataObj = {
-            AssignedStaffId: {
-                results: [
+    // const falseFunc = () => {
+    //     const dataObj = {
+    //         AssignedStaffId: {
+    //             results: [
 
-                ]
-            }
-        };
+    //             ]
+    //         }
+    //     };
 
-        if (selected?.length === 0) {
-            ProjectService().updateProject(
-                "Project_Informations",
-                particularClientAllData[0].Id,
-                dataObj
-            ).then((response: any) => {
-                console.log("Success:", response);
-                onClose();
-                reset();
-                setLoading(false);
+    //     if (selected?.length === 0) {
+    //         ProjectService().updateProject(
+    //             "Project_Informations",
+    //             particularClientAllData[0].Id,
+    //             dataObj
+    //         ).then((response: any) => {
+    //             console.log("Success:", response);
+    //             onClose();
+    //             reset();
+    //             setLoading(false);
 
-            }).catch((error: any) => {
-                console.error("Error:", error);
-                setLoading(false);
-            });
-        }
-        else {
-            setLoading(true);
-            for (const item of selected) {
-                ProjectService().updateProject(
-                    "Project_Informations",
-                    item,
-                    dataObj
-                ).then((response: any) => {
-                    console.log("Success:", response);
-                    onClose();
-                    reset();
-                    setLoading(false);
+    //         }).catch((error: any) => {
+    //             console.error("Error:", error);
+    //             setLoading(false);
+    //         });
+    //     }
+    //     else {
+    //         setLoading(true);
+    //         for (const item of selected) {
+    //             ProjectService().updateProject(
+    //                 "Project_Informations",
+    //                 item,
+    //                 dataObj
+    //             ).then((response: any) => {
+    //                 console.log("Success:", response);
+    //                 onClose();
+    //                 reset();
+    //                 setLoading(false);
 
-                }).catch((error: any) => {
-                    setLoading(false);
-                    console.error("Error:", error);
-                });
+    //             }).catch((error: any) => {
+    //                 setLoading(false);
+    //                 console.error("Error:", error);
+    //             });
 
-            }
-        }
-    };
-
+    //         }
+    //     }
+    // };
+    setValue("AssignClient", particularClientAllData[0]?.ClientGUID || '');
     const handleSave = handleSubmit(async (data) => {
         setLoading(true);
-        falseFunc();
+        const collectionOfUnits: any[] = [];
+        Object.entries(data).forEach(([key, value]) => {
+            if (key.startsWith("unitName") && value !== "") {
+                collectionOfUnits.push({ key: value });
+            }
+        });
 
-        // const dataObj = {
-        //     AssignedStaffId: {
-        //         results: selectedPersonsId  
-        //     }
-        // };
-        
+        const AssignClient = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name;
 
-        const updatedData = {
-            AssignClient: getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name,
-            libraryGUID: data.AssignClient,
-            collectionOfDocuments: collectionOfDocuments,
-            clientName: particularClientAllData[0]?.projectName
-        };
+        console.log(getProjectCode, AssignClient, collectionOfUnits, "handleSave");
 
-      
-
-            const { libraryGUID, projectLibraryPath } = exsistingProjectLibrary;
-
-            console.log(libraryGUID, "libraryGUID")
-        
-
-            const libraryUrl = `${projectLibraryPath}/${particularClientAllData[0]?.projectName}`;
-        
-
-            const folderCreationResponse = await ProjectService().createFolder(libraryUrl, data.AssignClient);
-            const folderUrl = folderCreationResponse.data.ServerRelativeUrl;
-        
-
-            const documentUploadResponse = await ProjectService().copyDocuments(
-              folderCreationResponse.data.UniqueId,
-              folderUrl,
-              data.collectionOfDocuments
-            );
-        
-            console.log("Folder created and documents uploaded:", documentUploadResponse);
-    
+        try {
+            const response = await ProjectService().createFolder(getProjectCode, AssignClient);
+            const folderCreationPromises = collectionOfUnits.map((unit) => {
+                return ProjectService().createFolder(response.data.ServerRelativeUrl, unit.key);
+            });
+            await Promise.all(folderCreationPromises);
+            setLoading(false);
+            toast.success("Units created successfully");
+            reset();
             onClose();
-
-    
-        console.log(updatedData, getProjectName, "updatedData");
-
-        const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
-        console.log(response, "responseresponse");
-        const unitrootUrl = response[0].ParentWebUrl + "/" + updatedData.clientName;
-        const createFolder = await ProjectService().createFolder(unitrootUrl, updatedData.AssignClient);
-
-
-        console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-        const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
-        console.log(uploadDocument, "uploadDocumentuploadDocument");
-        setLoading(false);
-        handleCancel();
-        
-    
+        } catch (error) {
+            setLoading(false);
+            toast.error(error.message);
+            console.error("Error:", error);
+        }
     });
+
 
 
     console.log(getClient, "getClientgetClient");
 
-    
+
 
     const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
     const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
@@ -596,7 +583,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     };
 
     console.log(getClientDocumentsAllData);
-    console.log(getClientDocumentsData, setCollectionOfDocuments, "document" )
+    console.log(getClientDocumentsData, "document");
 
 
     return (
@@ -653,6 +640,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 select
                                                 {...field}
                                                 required
+                                                disabled={particularClientAllData[0]?.ClientGUID ? true : false}
                                                 onChange={(e: any) => {
                                                     console.log(e.target.value);
                                                     setGetClient(e.target.value);
@@ -670,54 +658,130 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             </TextField>)}
                                     />
                                 </Grid>
-                                <Grid>                      
-                              <FormControlLabel
-                                control={<Switch checked={showCount} onChange={handleSwitchChange} />}
-                                label="Is Unit Documents"
-                                />
-                                </Grid>   
+                                <Grid item xs={6}>
+                                    <FormControlLabel
+                                        sx={{ mb: 1 }}
+                                        control={<Switch
+                                            disabled={getClient === ''}
+                                            checked={showCount}
+                                            onChange={handleSwitchChange} />}
+                                        label="Is Unit Documents"
+                                    />
+                                </Grid>
+                                {showCount && (
+                                    <Grid item xs={6}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'end'
+                                        }}>
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => setCount((prev) => Math.max(prev - 1, 1))}
+                                                disabled={count === 1}
+                                            >
+                                                <RemoveIcon fontSize="small" />
+                                            </Button>
+                                            <Controller
+                                                name={`unitCount${count}`}
+                                                control={control}
+                                                defaultValue={count}
+                                                render={({ field }) => (
+                                                    <InputBase
+                                                        sx={{
+                                                            width: "40px", textAlign: "center",
+                                                            '& input': { textAlign: 'center', p: 0, }
+                                                        }}
+                                                        size="small"
+                                                        value={field.value}
+                                                        inputProps={{ 'aria-label': 'count' }}
+                                                        onChange={(e) => {
+                                                            handleCountChange(e.target.value);
+                                                            field.onChange(e);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => setCount((prev) => prev + 1)}
+                                            >
+                                                <AddIcon fontSize="small" />
+                                            </Button>
+                                        </Box>
+                                    </Grid>
+                                )}
 
-                         {showCount && (
-                        <Grid container spacing={1} alignItems="center">
-                            <Grid item>
-                            <Button
-                                variant="contained"
-                                onClick={() => setCount((prev) => Math.max(prev - 1, 1))}
-                                disabled={count === 1}
-                            >
-                                <RemoveIcon fontSize="small" />
-                            </Button>
-                            </Grid>
-                            <Grid item>
-                            <InputBase
-                                size="small"
-                                value={count}
-                                inputProps={{ 'aria-label': 'count' }}
-                                onChange={(e) => handleCountChange(e.target.value)}
-                            />
-                            </Grid>
-                            <Grid item>
-                            <Button
-                                variant="contained"
-                                onClick={() => setCount((prev) => prev + 1)}
-                            >
-                                <AddIcon fontSize="small" />
-                            </Button>
-                            </Grid>
-                        </Grid>
-                        )}
+                                {getClient !== '' && showCount &&
+                                    <Box sx={{
+                                        minHeight: count >= 3 ? '205px' : 'auto',
+                                        width: '100%',
+                                        mt: 2,
+                                        pl: 4
+                                    }}>
+                                        {showCount &&
+                                            <Box sx={{
+                                                maxHeight: count >= 3 ? '200px' : 'auto',
+                                                overflowY: 'auto',
+                                                overflowX: 'hidden',
+                                                width: '100%',
+                                                display: 'grid',
+                                                gap: '20px', pt: 3,
+                                                pr: 1
+                                            }}>
+                                                {[...Array(count)].map((_, index) => (
+                                                    <Grid item xs={12} key={index} container spacing={1} alignItems="center">
+                                                        <Grid item xs={11}>
+                                                            <Controller
+                                                                name={`unitName${index}`}
+                                                                control={control}
+                                                                defaultValue=""
+                                                                rules={{
+                                                                    required: `Unit ${index + 1} is required`,
 
-                        {showCount &&
-                        [...Array(count)].map((_, index) => (
-                            <Grid item xs={12} key={index}>
-                            <TextField
-                                label={`Unit ${index + 1}`}
-                                variant="outlined"
-                                fullWidth
-                            />
+                                                                    maxLength: {
+                                                                        value: 50,
+                                                                        message: `Unit ${index + 1} 
+                                                                    cannot be longer than 50 characters`,
+                                                                    },
+                                                                    minLength: {
+                                                                        value: 3,
+                                                                        message: `Unit ${index + 1}
+                                                                     must be at least 3 characters`,
+                                                                    }
+                                                                }}
+                                                                render={({ field }) => (
+                                                                    <TextField
+                                                                        label={`Unit ${index + 1}`}
+                                                                        variant="outlined"
+                                                                        fullWidth
+                                                                        {...field}
+                                                                        required
+                                                                        error={!!errors?.[`unitName${index}`]}
+                                                                        helperText={errors?.[`unitName${index}`]?.message}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={1}>
+                                                            <Tooltip title="Delete Unit">
+                                                                <IconButton
+                                                                    disabled={count === 1}
+                                                                    aria-label={`Delete Unit ${index + 1}`}
+                                                                    onClick={() => deleteUnit(index)}
+                                                                >
+                                                                    <DeleteIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Grid>
+                                                    </Grid>
+                                                ))}
+                                            </Box>
+                                        }
+                                    </Box>}
+
+
                             </Grid>
-                        ))}
-                        </Grid>
                         </Box>
                     </DialogContent>
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>

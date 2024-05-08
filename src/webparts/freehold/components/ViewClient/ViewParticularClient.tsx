@@ -110,7 +110,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         }
     }, [clientDetails]);
 
-    const projectnames = ['project 1'];
+    const projectnames = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5'];
 
 
     //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
@@ -121,8 +121,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     const closeUploadDialog = () => {
         setUploadDialogOpen(false);
-    
-      };
+
+    };
 
     //console.log(clientDetails, "clientdetails");
     // const handleSearchChange = (event: any) => {
@@ -218,7 +218,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 reset();
                 // debugger
                 // setIsOpen(false);
-                
+
             })
             .catch((error) => {
                 setLoading(false);
@@ -284,20 +284,33 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         <Box sx={{
                                             display: "flex",
                                             justifyContent: "flex-end",
+                                            alignItems: "center",
+                                            float: "right",
+                                            gap: "10px",
                                             marginTop: "10px",
                                             marginRight: "10px"
                                         }}>
+                                            <Button
+                                                color="secondary"
+                                                message="View Documents"
+                                                handleClick={() => {
+                                                    setUploadDialogOpen(true);
+                                                }}
+
+                                            />
+                                            
                                             {!isEdit && (
                                                 <Button
                                                     handleClick={() => {
                                                         setIsEdit(true);
-                                                        
+
                                                     }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"
                                                 />
                                             )}
+
                                         </Box>
                                     </TableRow>
                                 </TableHead>
@@ -442,7 +455,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     <TableCell component="th" scope="row">Assigned Project</TableCell>
                                     <TableCell>
 
-                                        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0 }}>
+                                        <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
                                             {projectnames.map((projectName, index) => (
                                                 <li key={index}>{projectName}</li>
                                             ))}
@@ -500,22 +513,22 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         </TableCell>}
                                     </TableRow> */}
 
-                                    <TableRow>
+                                    {false && <TableRow>
                                         <TableCell component="th" scope="row">View Document</TableCell>
                                         <TableCell className="default-cursor">
-                                       
-                                     <Button
-                                        color="primary"
-                                        message="View Documents"
-                                        handleClick={ ()=> {
-                                            //console.log(`Upload Documents clicked for row ${id}`);
-                                            setUploadDialogOpen(true);
-                                        }}
 
-                                        />
+                                            <Button
+                                                color="primary"
+                                                message="View Documents"
+                                                handleClick={() => {
+                                                    //console.log(`Upload Documents clicked for row ${id}`);
+                                                    setUploadDialogOpen(true);
+                                                }}
+
+                                            />
                                         </TableCell>
-                                    </TableRow>
-                                    
+                                    </TableRow>}
+
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell className="default-cursor">
@@ -593,12 +606,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 open={handleStaffDialog} onClose={closeAddStaffDialog}
                 fetchData={fetchData} />}
 
-                                        {uploadDialogOpen && <UploadDocument                                        
-                                        open={uploadDialogOpen}
-                                     onClose={closeUploadDialog} 
-                                     particularClientAllData={particularClientAllData} 
-                                     fetchDatas={fetchData} 
-                                     />}
+            {uploadDialogOpen && <UploadDocument
+                open={uploadDialogOpen}
+                onClose={closeUploadDialog}
+                particularClientAllData={particularClientAllData}
+                fetchDatas={fetchData}
+            />}
 
         </Box>
     );

@@ -189,15 +189,12 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import CheckIcon from "@mui/icons-material/Check";
 import { Controller, useForm } from "react-hook-form";
 
-const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons }: any) => {
+const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, fetchData }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
-    const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
-
-
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
 
     const getProjectName = particularClientAllData[0]?.projectName;
@@ -254,10 +251,19 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
     console.log(getClientDetails, particularClientAllData, "getClientDetails");
 
+    setValue("AssignClient", particularClientAllData[0]?.ClientGUID || '');
+
+
+
     useEffect(() => {
         apiCall();
-    }, []);
-
+        if (particularClientAllData[0]?.ClientGUID) {
+            setGetClient(particularClientAllData[0]?.ClientGUID);
+            getDocumentsFromFolder(particularClientAllData[0]?.ClientGUID);
+        } else {
+            setGetClient([]);
+        }
+    }, [particularClientAllData]);
     const handleCancel = () => {
         onClose();
     };
@@ -278,6 +284,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                 dataObj
             ).then((response: any) => {
                 console.log("Success:", response);
+                fetchData();
                 onClose();
                 reset();
                 setLoading(false);
@@ -296,6 +303,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                     dataObj
                 ).then((response: any) => {
                     console.log("Success:", response);
+                    fetchData();
                     onClose();
                     reset();
                     setLoading(false);
@@ -309,17 +317,11 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         }
     };
 
-    const handleSave = handleSubmit(async (data) => {
+    const handleSave = handleSubmit((data) => {
         setLoading(true);
         false && falseFunc();
 
-        const dataObj = {
-            AssignedStaffId: {
-                results: selectedPersonsId  
-            }
-        };
-        
-
+        // Prepare updated data for saving
         const updatedData = {
             AssignClient: getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name,
             libraryGUID: data.AssignClient,
@@ -327,45 +329,43 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             clientName: particularClientAllData[0]?.projectName
         };
 
-        const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].Id
+        // Obtain the ID and ListID for updating project information
+        const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].id;
         const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
-        console.log(Id, ListID , "AssignID")
 
-
-
-        if (!selected || selected.length === 0) {
-            try {
-                await ProjectService().updateProject("Project_Informations", ListID, dataObj);
-                // setSelectedPersons([]);
-                setSelectedPersonsId([]);
-    
-            } catch (error) {
-                console.error('Error updating project:', error);
-            }
-        }
-
-       
-
-
-
+        // Log information for debugging
+        console.log(Id, ListID, "AssignID");
         console.log(updatedData, getProjectName, "updatedData");
 
-        const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
-        console.log(response, "responseresponse");
-        //create a folder in a library
-        const rootUrl = response[0].ParentWebUrl + "/" + updatedData.clientName;
-        const createFolder = await ProjectService().createFolder(rootUrl, updatedData.AssignClient);
+        // Create a library for the project and update project information
+        Promise.all([
+            ProjectService().createLibrary(getProjectName, "Project Document Library"),
+            ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: Id })
+        ])
+            .then(([libraryResponse, updateResponse]) => {
+                // Create a folder in the library
+                const rootUrl = libraryResponse[0].ParentWebUrl + "/" + updatedData.clientName;
+                return ProjectService().createFolder(rootUrl, updatedData.AssignClient);
+            })
+            .then((createFolder) => {
+                console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
 
+                // Upload documents to the created folder
+                return ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
+            })
+            .then((uploadDocument) => {
+                console.log(uploadDocument, "uploadDocumentuploadDocument");
 
-        console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-        // once folder is created, upload files
-        // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
-
-        const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
-        console.log(uploadDocument, "uploadDocumentuploadDocument");
-        // console.log(updatedData, "handleSave");
-        setLoading(false);
-        handleCancel();
+                // Fetch updated data and reset loading state
+                fetchData();
+                setLoading(false);
+                handleCancel();
+            })
+            .catch((error) => {
+                // Handle errors
+                console.error("Error occurred:", error);
+                setLoading(false);
+            });
     });
 
     console.log(getClient, "getClientgetClient");
@@ -446,6 +446,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                 select
                                                 {...field}
                                                 required
+                                                // disabled={particularClientAllData[0]?.ClientGUID ? true : false}
                                                 onChange={(e: any) => {
                                                     console.log(e.target.value);
                                                     setGetClient(e.target.value);

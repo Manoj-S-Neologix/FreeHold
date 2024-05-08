@@ -105,21 +105,30 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   });
 
 
-  
+
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
   const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
+  const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
+  const getProjectName = particularClientAllData[0]?.projectName;
+  const getProjectCode = particularClientAllData[0]?.projectNumber;
+
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log('Retrieved files:', results);
+      const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
+      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+      console.log('Retrieved files:', results,);
+      console.log('getFolders', getFolders);
+      setGetFoldersResponse(getFolders);
 
       // Ensure results is an array before setting state
       if (Array.isArray(results)) {
         setClientDocumentsData(results.map(item => item.FileLeafRef));
         setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB')
+        console.log(getClientDocumentsAllData, 'BBB');
       } else {
         console.error('Error: Retrieved data is not an array');
       }
@@ -180,21 +189,20 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   console.log(uploadFiles, getGuid, getClientDetails, "uploadFilesgetGuid");
 
-  const getProjectName = particularClientAllData[0]?.projectName;
-  console.log(particularClientAllData, 'getProjectName..')
+  console.log(particularClientAllData, 'getProjectName..');
   const handleSave = handleSubmit(async (data: any) => {
     setLoading(true);
     const apiResponse = ProjectService();
     const collectionOfDocuments: any = [];
-    getClientDocumentsData.map((data:any) => {
+    getClientDocumentsData.map((data: any) => {
       collectionOfDocuments.push({
         Id: data.Id,
         GUID: data.GUID,
         FileLeafRef: data.FileLeafRef,
         FileRef: data.FileRef
       });
-    })
-    console.log(collectionOfDocuments, 'collection..')
+    });
+    console.log(collectionOfDocuments, 'collection..');
     const updatedData = {
       clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
       libraryGUID: data.clientName,
@@ -214,7 +222,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     // once folder is created, upload files
     // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
 
-    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId,createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
+    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
     console.log(uploadDocument, "uploadDocumentuploadDocument");
     // console.log(updatedData, "handleSave");
 
@@ -376,9 +384,15 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           size="small"
                           required
                         >
-                          <MenuItem value="">None</MenuItem>
+                          {/* <MenuItem value="">None</MenuItem>
                           <MenuItem value="Option A">Option A</MenuItem>
-                          <MenuItem value="Option B">Option B</MenuItem>
+                          <MenuItem value="Option B">Option B</MenuItem> */}
+                          {getFoldersResponse.length > 0 &&
+                            getFoldersResponse.map((item: any, idx: any) => (
+                              <MenuItem key={idx} value={item?.Name}>
+                                {item?.Name}
+                              </MenuItem>
+                            ))}
                         </TextField>
                       )}
                     />
@@ -416,7 +430,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                       FileLeafRef: item.FileLeafRef,
                                       FileRef: item.FileRef
                                     });
-                                    console.log(collectionOfDocuments, 'collectionOfDocuments///')
+                                    console.log(collectionOfDocuments, 'collectionOfDocuments///');
                                   }
                                 });
                                 setCollectionOfDocuments(collectionOfDocuments);

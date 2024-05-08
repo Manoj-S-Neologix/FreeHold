@@ -429,8 +429,8 @@ const ViewClient = (props: any) => {
   React.useEffect(() => {
     if (editClientId || viewClientId)
       fetchDataByuserId();
-    console.log(editClientId, viewClientId, "editClientId, viewClientId");
-    setIsViewDialogOpen(false);
+    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
+    // setIsViewDialogOpen(false);
   }, [editClientId, viewClientId]);
 
 

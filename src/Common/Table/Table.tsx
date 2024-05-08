@@ -623,7 +623,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                                                             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                                                 <Box sx={{
                                                                     display: 'flex', gap: '10px',
-                                                                    minWidth: '500px !important'
+                                                                    minWidth: '554px !important'
                                                                 }}>
                                                                     {actions.map((action: Action, index: number) => (
                                                                         action.button ? (

@@ -43,16 +43,8 @@ const ProjectService = () => {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
 
             const updatedResults = await Promise.all(results.map(async (item: any) => {
-                const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
-                    const clientInformation = {
-                        Id: staff.Id,
-                        Name: staff.Title,
-                        Email: staff.EMail && await getPersonByEmail(staff.EMail)
-                    };
-                    return clientInformation;
-                }));
+                console.log(item, "updatedResultsupdatedResults");
 
-                console.log(item, "resultresult");
 
                 return {
                     // name: item.Title,
@@ -63,18 +55,19 @@ const ProjectService = () => {
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Author.Title,
                     Staff: item.AssignedStaff,
-                    assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
                     contact: item.ClientContact,
                     GUID: item.ClientLibraryGUID,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
                     },
-                    assignedStaff: assignedStaffDetails,
                     Id: item.Id,
+                    assignClient: item?.AssignClient ? item.AssignClient.Title : "-",
+                    ClientGUID: item?.AssignClient ? item.AssignClient.ClientLibraryGUID : null
 
                 };
             }));
+
 
             const TableData: any = results.map((tableItem: any) => ({
                 Id: tableItem.Id,
@@ -84,8 +77,10 @@ const ProjectService = () => {
                 developer: tableItem.Developer,
                 modifiedDate: formatDate(tableItem.Modified),
                 modifiedBy: tableItem.Author.Title,
-                assignStaff: (tableItem.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
+                assignClient: tableItem?.AssignClient ? tableItem.AssignClient.Title : "-",
+                ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
             }));
+            console.log(updatedResults, TableData, "updatedResults");
 
             return { updatedResults, TableData };
         }
@@ -209,7 +204,24 @@ const ProjectService = () => {
     //             }
     //         };
 
-
+    const createFolderInLibrary = async (libraryName: string, folderName: string): Promise<any> => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.createFolderInLibrary(libraryName, folderName);
+            return results;
+        }
+    };
+    const getFolderInLibrary = async (libraryName: string, folderName: string): Promise<any> => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getFolderInLibrary(libraryName, folderName);
+            return results;
+        }
+    };
+    const getAllFoldersInLibrary = async (libraryName: string): Promise<any> => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getAllFoldersInLibrary(libraryName);
+            return results;
+        }
+    };
 
     return {
         getProject,
@@ -222,6 +234,9 @@ const ProjectService = () => {
         getPersonById,
         copyDocuments,
         createFolder,
+        createFolderInLibrary,
+        getFolderInLibrary,
+        getAllFoldersInLibrary,
         // uploadDocument,
         deleteLibrary,
         deleteClient,
