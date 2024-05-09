@@ -306,10 +306,10 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                     defaultValue=""
                     rules={{
                       required: 'Client Contact is required',
-                      // pattern: {
-                      //   value: /^[0-9]{10}$/,
-                      //   message: 'Invalid contact number'
-                      // }
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: 'Invalid contact number'
+                      }
                     }}
                     render={({ field }) => (
                       <TextField
@@ -319,8 +319,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                         size="small"
                         fullWidth
                         onChange={async (e: any) => {
-                          // const value = e.target.value.replace(/\D/g, '');
-                          field.onChange(e.target.value);
+                          const value = e.target.value.replace(/\D/g, '');
+                          field.onChange(value);
                           await trigger("contact");
                         }}
                         error={!!errors.contact}
