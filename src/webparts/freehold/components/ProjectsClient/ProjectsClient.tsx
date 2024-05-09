@@ -2,9 +2,25 @@ import * as React from 'react';
 import styles from './ProjectsClients.module.scss';
 import { Box, Stack } from '@mui/material';
 import { Link } from "react-router-dom";
+// import ClientService from '../../Services/Business/ClientService';
 
 
 const ProjectsClient = ({ props }: any) => {
+  // const [clientData, setClientData] = React.useState<any[]>([]);
+  // const [projectData, setProjectData] = React.useState<any[]>([]);
+
+  // const fetchData = async () => {
+  //   try {
+  //     const clientService = ClientService();
+  //     const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
+  //     const expand = 'AssignedStaff,Author,ProjectId';
+  //     const filter = "";
+  //     const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+  //     setClientData(results.length)
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
   return (
     <Box >
       <Stack>

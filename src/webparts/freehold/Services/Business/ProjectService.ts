@@ -38,14 +38,25 @@ const ProjectService = () => {
     };
 
 
-    const getProjectExpand = async (ListName: string, select: string, expand: string) => {
+    const getProjectExpand = async (ListName: string, select: string, expand: string,order: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "",order);
 
             const updatedResults = await Promise.all(results.map(async (item: any) => {
-                console.log(item, "updatedResultsupdatedResults");
-
-
+                const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
+                    // const clientData = {
+                    //     Id: client?.Id,
+                    //     Name: client?.Title
+                    // }
+                    console.log(client, "clientDetails")
+                    return (
+                        {
+                            Id: client?.Id,
+                            Name: client?.Title
+                        }
+                    )
+                })
+                console.log(item, "UpdatedResult")
                 return {
                     // name: item.Title,
                     projectName: item.Title,
@@ -56,14 +67,16 @@ const ProjectService = () => {
                     modifiedBy: item.Author.Title,
                     Staff: item.AssignedStaff,
                     contact: item.ClientContact,
-                    GUID: item.ClientLibraryGUID,
+                    GUID: item.ProjectLibraryGUID,
+                    webURL: item.ProjectLibraryPath,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
                     },
                     Id: item.Id,
-                    assignClient: item?.AssignClient ? item.AssignClient.Title : "-",
-                    assignClientId: item?.AssignClient ? item.AssignClient.Id : "-",
+                    assignClient: (item?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
+                    assignClientId: (item?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
+                    clientDetails,
                     ClientGUID: item?.AssignClient ? item.AssignClient.ClientLibraryGUID : null
 
                 };
@@ -78,8 +91,11 @@ const ProjectService = () => {
                 developer: tableItem.Developer,
                 modifiedDate: formatDate(tableItem.Modified),
                 modifiedBy: tableItem.Author.Title,
-                assignClient: tableItem?.AssignClient ? tableItem.AssignClient.Title : "-",
-                assignClientId: tableItem?.AssignClient ? tableItem.AssignClient.Id : "-",
+                GUID: tableItem.ProjectLibraryGUID,
+                webURL: tableItem.ProjectLibraryPath,
+                assignClient: (tableItem?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
+                assignClientId: (tableItem?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
+                clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,
                 ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
             }));
             console.log(updatedResults, TableData, "updatedResults");
@@ -167,6 +183,7 @@ const ProjectService = () => {
     const createLibrary = async (LibraryName: string, libraryDescription?: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.createLibrary(LibraryName, libraryDescription);
+            console.log(results, "libraryResponselibraryResponse")
             return results;
         }
     };
@@ -188,10 +205,10 @@ const ProjectService = () => {
         }
     };
 
-    const copyDocuments = async (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => {
+    const copyDocuments = async (destinationLibraryUrl: string, files: any[]) => {
 
         if (spServiceInstance) {
-            const results = await spServiceInstance.copyDocuments(sourceLibraryUrl, destinationLibraryUrl, files);
+            const results = await spServiceInstance.copyDocuments(destinationLibraryUrl, files);
             console.log(results, "results");
             return results;
         }

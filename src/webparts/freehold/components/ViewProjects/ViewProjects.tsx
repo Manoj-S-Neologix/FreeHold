@@ -307,7 +307,8 @@ const ViewProject = (props: any) => {
       const projectService = ProjectService();
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
       const expand = 'Author,AssignClient';
-      const results = await projectService.getProjectExpand('Project_Informations', select, expand);
+      const orderBy = 'Modified';
+      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
@@ -591,7 +592,7 @@ const ViewProject = (props: any) => {
           particularClientAllData={particularClientAllData} selected={selected}
           fetchData={fetchData}
         />}
-        {/* {isViewDialogOpen && <ViewParticularClient projectDetails={projectDetails}/>} */}
+      {/* {isViewDialogOpen && <ViewParticularClient projectDetails={projectDetails}/>} */}
     </Box>
   );
 };

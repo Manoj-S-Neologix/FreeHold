@@ -197,7 +197,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
 
-    const getProjectName = particularClientAllData[0]?.projectName;
+    // const getProjectName = particularClientAllData[0]?.projectName;
     const getProjectId = particularClientAllData[0]?.Id;
 
     //console.log(props, "propsprops");
@@ -219,24 +219,28 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         'Kelly Snyder',
     ];
 
+    console.log(particularClientAllData, particularClientAllData[0].assignClientId, "particularClientAllData.assignClientId")
 
 
-    const apiCall = (async () => {
-        await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
-            .then((data) => {
-                if (data) {
-                    const mappedData = data.map((item: any) => ({
-                        id: item.Id,
-                        name: item.Title,
-                        libraryGUID: item.ClientLibraryGUID
-                    }));
-                    setGetClientDetails(mappedData);
-                }
+    const apiCall = async () => {
+        try {
+            const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+            if (data) {
+                const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
+                const filteredData = data.filter(item => !assignClientIds.includes(item.Id));
+                console.log(filteredData, assignClientIds, "filteredData");
+                const mappedData = filteredData.map(item => ({
+                    id: item.Id,
+                    name: item.Title,
+                    libraryGUID: item.ClientLibraryGUID
+                }));
+                setGetClientDetails(mappedData);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
 
-            }).catch((error: any) => {
-                toast.error(error.message);
-            });
-    });
 
 
     const handleChange = (event: SelectChangeEvent<typeof personName>) => {
@@ -329,43 +333,45 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             collectionOfDocuments: collectionOfDocuments,
             clientName: particularClientAllData[0]?.projectName
         };
+        const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
+
 
         const updatedDataObj = {
             ProjectIdId: {
-                results : [getProjectId]
+                results: [getProjectId]
             }
         }
 
-        console.log(updatedDataObj, 'updatedDataObj..')
+        //console.log(updatedDataObj, 'updatedDataObj..')
 
         // Obtain the ID and ListID for updating project information
         const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].id;
         const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
 
         // Log information for debugging
-        console.log(Id, ListID, "AssignID");
-        console.log(updatedData, getProjectName, "updatedData");
+        // console.log(Id, ListID, "AssignID");
+        // console.log(updatedData, getProjectName, "updatedData");
 
         // Create a library for the project and update project information
         Promise.all([
-            ProjectService().createLibrary(getProjectName, "Project Document Library"),
-            ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: Id }),
+            //ProjectService().createLibrary(getProjectName, "Project Document Library"),
+            ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: { results: [...assignClientIds, Id] } }),
             ClientService().updateClient('Client_Informations', Id, updatedDataObj)
         ])
             .then(([libraryResponse, updateResponse]) => {
                 // Create a folder in the library
-                const rootUrl = libraryResponse[0].ParentWebUrl + "/" + updatedData.clientName;
+                const rootUrl = particularClientAllData[0].webURL;
                 return ProjectService().createFolder(rootUrl, updatedData.AssignClient);
             })
             .then((createFolder) => {
                 console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
 
                 // Upload documents to the created folder
-                return ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
+                return ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
             })
             .then((uploadDocument) => {
-                console.log(uploadDocument, "uploadDocumentuploadDocument");
-
+                //console.log(uploadDocument, "uploadDocumentuploadDocument");
+                toast.success('Client Added Successfully!');
                 // Fetch updated data and reset loading state
                 fetchData();
                 setLoading(false);
