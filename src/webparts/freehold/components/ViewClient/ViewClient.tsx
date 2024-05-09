@@ -225,7 +225,7 @@ const ViewClient = (props: any) => {
     return (
       data !== '-' && <Box
         onClick={() => {
-          navigate('/ViewClient/' + id);
+          navigate('/ViewProjects/' + id);
           // setIsViewDialogOpen(true);
         }}
         style={{
@@ -394,7 +394,7 @@ const ViewClient = (props: any) => {
       const expand = 'AssignedStaff,Author,ProjectId';
       const filter = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
-      console.log(results, 'client')
+      console.log(results, 'client//')
       setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -440,6 +440,16 @@ const ViewClient = (props: any) => {
   //   );
   // };
 
+  const projectDetails = clientData?.ProjectId && clientData?.ProjectId.length > 0 && clientData?.ProjectId.map((project: any) => {
+    return (
+        {
+            Id: project?.Id,
+            Name: project?.Title
+        }
+    )
+})
+  console.log(projectDetails, "projectinclient.")
+
   const tableData = clientData.map((item: any) => {
     return {
       Id: item.Id,
@@ -450,7 +460,7 @@ const ViewClient = (props: any) => {
       modifiedBy: item.modifiedBy,
       assignStaff: item?.assignStaff,
       assignedStaff: item?.assignedStaff,
-      ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
+      assignProject: hyperLink(projectDetails?.Name, projectDetails?.Id)
     };
   });
 
