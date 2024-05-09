@@ -57,7 +57,12 @@ const ViewClient = (props: any) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchQueryCall, setSearchQueryCall] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
+
+  // const [searchQueryCall, setSearchQueryCall] = useState('');
+
+  const [filterQueryCall, setFilterQueryCall] = useState('');
+
   const [handleStaffDialog, setHandleStaffDialog] = useState(false);
   const [addClientDialog, setAddClientDialog] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -143,6 +148,10 @@ const ViewClient = (props: any) => {
     setSearchQuery(event.target.value);
   };
 
+  const handleFilterChange = (event: any) => {
+    setFilterQuery(event.target.value);
+  };
+
   const navigateToHome = () => {
     navigate('/');
   };
@@ -183,16 +192,24 @@ const ViewClient = (props: any) => {
   const theme = useTheme();
 
   const handleClear = () => {
-    setSearchQueryCall('');
+    // setSearchQueryCall('');
+    setFilterQueryCall('');
     setSelectedPersons([]);
     setOpen(false);
   };
 
+  // const handleApply = () => {
+  //   setSearchQuery(searchQueryCall);
+  //   setOpen(false);
+  //   setFilterPersonShown(true);
+  // };
+
   const handleApply = () => {
-    setSearchQuery(searchQueryCall);
+    setFilterQuery(filterQueryCall);
     setOpen(false);
     setFilterPersonShown(true);
   };
+
 
 
   const IconStyles = (icon: any) => {
@@ -333,15 +350,24 @@ const ViewClient = (props: any) => {
 
 
 
+  // const searchPeopleInTable = async (items: any[]) => {
+  //   console.log(items[0].text, "itemsitemsitemsitems");
+  //   setSearchQueryCall(items[0].text);
+  //   setSelectedPersons(items);
+  // };
+
   const searchPeopleInTable = async (items: any[]) => {
     console.log(items[0].text, "itemsitemsitemsitems");
-    setSearchQueryCall(items[0].text);
+    setFilterQueryCall(items[0].text);
     setSelectedPersons(items);
   };
 
 
 
-  console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
+  // console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
+
+  console.log(selectedPersons, filterQueryCall, "DataparticularClientAllData");
+
 
   const fetchData = async () => {
     try {
@@ -489,23 +515,41 @@ const ViewClient = (props: any) => {
           <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <CustomSearch handleSearchChange={handleSearchChange} />
             {!filterPersonShown ? <IconButton
-              onClick={handleFilterClick}
+              onClick={() => {
+                handleFilterClick()
+              }}
             >
               <FilterAltIcon />
             </IconButton> :
+              // <Chip
+              //   sx={{ marginLeft: 2, }}
+              //   avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
+              //   label={searchQueryCall}
+              //   onDelete={() => {
+              //     setSearchQuery('');
+              //     setSearchQueryCall('');
+              //     setSelectedPersons([]);
+              //     setOpen(false);
+              //     setFilterPersonShown(false);
+              //   }}
+              //   variant="outlined"
+              // />
+
               <Chip
-                sx={{ marginLeft: 2, }}
-                avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
-                label={searchQueryCall}
-                onDelete={() => {
-                  setSearchQuery('');
-                  setSearchQueryCall('');
-                  setSelectedPersons([]);
-                  setOpen(false);
-                  setFilterPersonShown(false);
-                }}
-                variant="outlined"
-              />
+              sx={{ marginLeft: 2, }}
+              avatar={<Avatar alt={filterQueryCall} src={selectedPersons[0]?.imageUrl} />}
+              label={filterQueryCall}
+              onDelete={() => {
+                // setSearchQuery('');
+                setFilterQuery('');
+                setFilterQueryCall('');
+                setSelectedPersons([]);
+                setOpen(false);
+                setFilterPersonShown(false);
+                // fetchData()
+              }}
+              variant="outlined"
+            />
             }
           </Box>
 
@@ -528,6 +572,7 @@ const ViewClient = (props: any) => {
                 }} />
               </div>
             </DialogTitle>
+            
 
             <IconButton
               aria-label="close"
@@ -602,7 +647,7 @@ const ViewClient = (props: any) => {
                         Clear
                       </MuiButton>
                       <MuiButton
-                        onClick={() => { handleApply(); }}
+                        onClick={() => { handleApply();  handleFilterChange(new MouseEvent('click')); }}
                         variant="contained"
                         color="primary"
                         sx={{
@@ -627,6 +672,7 @@ const ViewClient = (props: any) => {
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
+            filterQuery={filterQuery}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}
