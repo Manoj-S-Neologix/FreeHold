@@ -142,6 +142,7 @@ const ViewClient = (props: any) => {
 
   console.log(particularClientAllData, "getUniquegetUnique");
 
+  console.log(clientData, 'clientData..')
 
 
   const handleSearchChange = (event: any) => {
@@ -217,6 +218,22 @@ const ViewClient = (props: any) => {
       <div>
         {icon}
       </div >
+    );
+  };
+
+  const hyperLink = (data: any, id: any) => {
+    return (
+      data !== '-' && <Box
+        onClick={() => {
+          navigate('/ViewClient/' + id);
+          // setIsViewDialogOpen(true);
+        }}
+        style={{
+          textDecoration: "underline", color: "blue", cursor: "pointer",
+          listStyleType: "none", padding: 0
+        }}>
+        {data}
+      </Box>
     );
   };
 
@@ -373,10 +390,11 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
-      const expand = 'AssignedStaff,Author';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
+      const expand = 'AssignedStaff,Author,ProjectId';
       const filter = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+      console.log(results, 'client')
       setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
@@ -391,8 +409,8 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail';
-      const expand = 'AssignedStaff,Author';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
+      const expand = 'AssignedStaff,Author,ProjectId';
       const filter = `Id eq '${id}'`;
       const filtered = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
@@ -432,6 +450,7 @@ const ViewClient = (props: any) => {
       modifiedBy: item.modifiedBy,
       assignStaff: item?.assignStaff,
       assignedStaff: item?.assignedStaff,
+      ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
     };
   });
 

@@ -112,7 +112,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
     }, [projectDetails]);
 
 
-    // console.log(projectDetails, "projectDetails");
+    console.log(projectDetails, "projectDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -446,15 +446,21 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assign Client</TableCell>
-                                        <TableCell
+                                        {isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            onClick={() => { setHandleClientDialog(true); }}
+                                            onClick={(id:any) => {
+                                                // setHandleClientDialog(true);
+                                                // setIsViewDialogOpen(true)
+                                                navigate("/viewClient/" + id)
+                                            }}
                                         >
-                                            {projectDetails.assignedClients ?
-                                                projectDetails.assignedClients :
+                                            {projectDetails.assignClient ?
+                                                projectDetails.assignClient :
                                                 "Assign Client"
                                             }
                                         </TableCell>
+                                        )}
+                                        
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified Date</TableCell>
