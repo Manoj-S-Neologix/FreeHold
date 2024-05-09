@@ -1090,30 +1090,32 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         </ul> */}
 
                                         {!isEdit ? (
-                                            (<TableCell style={{
-                                                textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                listStyleType: "none"
-                                            }}>
+                                            (<TableCell>
                                                 
-                                                    {clientDetails?.projectDetails?.map((data: any) => {
-                                                        return (
-                                                            <span key={data.Id} style={{ margin:'auto' }}>{data.Name}</span>
-                                                        )
-                                                    })}
-                                                
-                                            </TableCell>)
-                                        ) : (
-                                            <TableCell>
-
-                                            {clientDetails?.projectDetails?.length > 0 && (
-                                            <TableCell style={{
+                                                {clientDetails?.projectDetails?.length > 0 && (
+                                            <div style={{
                                                     textDecoration: "underline", color: "blue", cursor: "pointer",
                                                     listStyleType: "none"
                                                 }}>
                                                     {clientDetails.projectDetails.map((data:any) => (
                                             <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
                                                     ))}
-                                            </TableCell>
+                                            </div>
+                                            )}
+                                                
+                                            </TableCell>)
+                                        ) : (
+                                            <TableCell>
+
+                                            {clientDetails?.projectDetails?.length > 0 && (
+                                            <div style={{
+                                                    textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                    listStyleType: "none"
+                                                }}>
+                                                    {clientDetails.projectDetails.map((data:any) => (
+                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                    ))}
+                                            </div>
                                             )}
                                             </TableCell>
 
