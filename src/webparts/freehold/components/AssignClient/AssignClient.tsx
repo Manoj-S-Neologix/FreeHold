@@ -198,6 +198,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
 
     const getProjectName = particularClientAllData[0]?.projectName;
+    const getProjectId = particularClientAllData[0]?.Id;
 
     //console.log(props, "propsprops");
 
@@ -329,6 +330,14 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             clientName: particularClientAllData[0]?.projectName
         };
 
+        const updatedDataObj = {
+            ProjectIdId: {
+                results : [getProjectId]
+            }
+        }
+
+        console.log(updatedDataObj, 'updatedDataObj..')
+
         // Obtain the ID and ListID for updating project information
         const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].id;
         const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
@@ -340,7 +349,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         // Create a library for the project and update project information
         Promise.all([
             ProjectService().createLibrary(getProjectName, "Project Document Library"),
-            ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: Id })
+            ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: Id }),
+            ClientService().updateClient('Client_Informations', Id, updatedDataObj)
         ])
             .then(([libraryResponse, updateResponse]) => {
                 // Create a folder in the library

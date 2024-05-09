@@ -337,14 +337,16 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                   lg={textFieldWidth.sm}
                   xl={textFieldWidth.sm}
                 >
-                  <label htmlFor="AssignedStaffId">Assigned Staff<span style={{ color: 'red' }}>*</span></label>
+                  <label htmlFor="AssignedStaffId">Assigned Staff
+                  {/* <span style={{ color: 'red' }}>*</span> */}
+                  </label>
                   <Controller
                     name="contact"
                     control={control}
                     defaultValue=""
-                    rules={{
-                      required: 'Assigned Staff is required',
-                    }}
+                    // rules={{
+                    //   required: 'Assigned Staff is required',
+                    // }}
                     render={({ field }) => (
                       <PeoplePicker
                         styles={{
@@ -377,7 +379,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                         {...field}
                         context={props.props.props.context as any}
                         personSelectionLimit={4}
-                        required={true}
+                        // required={true}
                         showHiddenInUI={false}
                         principalTypes={[PrincipalType.User]}
                         resolveDelay={1000}
@@ -386,7 +388,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                       />
                     )}
                   />
-                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+                  {/* {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>} */}
                 </Grid>
                 <Grid
                   item

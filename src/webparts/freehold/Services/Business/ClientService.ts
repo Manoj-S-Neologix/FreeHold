@@ -42,7 +42,7 @@ const ClientService = () => {
 
     //UpdateLibraryName
 
-    const updateLibraryName = async (GUIDID:any, updatedlibraryName: string) => {
+    const updateLibraryName = async (GUIDID: any, updatedlibraryName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.updateLibraryName(GUIDID, updatedlibraryName);
             return response;
@@ -116,6 +116,7 @@ const ClientService = () => {
     const getClientExpand = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            console.log(results, 'client result,,,')
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
                     const staffDetails = {
@@ -126,7 +127,22 @@ const ClientService = () => {
                     return staffDetails;
                 }));
 
+                const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
+                    // const projectData = {
+                    //     Id: project?.Id,
+                    //     Name: project?.Title
+                    // }
+                    console.log(project, "projectDetails")
+                    return (
+                        {
+                            Id: project?.Id,
+                            Name: project?.Title
+                        }
+                    )
+                })
+
                 const assignedStaff = assignedStaffDetails;
+                console.log(item, projectDetails, 'itemresult')
 
                 return {
                     name: item.Title,
@@ -144,6 +160,9 @@ const ClientService = () => {
                     },
                     assignedStaff,
                     Id: item.Id,
+                    projectDetails
+                    // ProjectName: item.Title
+
                 };
             }));
 
@@ -156,14 +175,18 @@ const ClientService = () => {
                     modifiedDate: item.modifiedDate,
                     modifiedBy: item.modifiedBy,
                     assignStaff: item.assignStaff,
-                    assignedStaff: item.assignedStaff
+                    assignedStaff: item.assignedStaff,
+                    ProjectId: item.ProjectId,
+                    projectDetails: item.projectDetails, 
+                    
+
                 };
             });
-            //console.log(updatedResults, tableData, "updatedResults");
+            console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
         }
     };
-    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any ) => {
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
             //console.log(results, "results");
@@ -251,7 +274,7 @@ const ClientService = () => {
         }
     };
 
-    
+
 
 
 

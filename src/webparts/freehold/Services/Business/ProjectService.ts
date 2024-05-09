@@ -63,6 +63,7 @@ const ProjectService = () => {
                     },
                     Id: item.Id,
                     assignClient: item?.AssignClient ? item.AssignClient.Title : "-",
+                    assignClientId: item?.AssignClient ? item.AssignClient.Id : "-",
                     ClientGUID: item?.AssignClient ? item.AssignClient.ClientLibraryGUID : null
 
                 };
@@ -78,6 +79,7 @@ const ProjectService = () => {
                 modifiedDate: formatDate(tableItem.Modified),
                 modifiedBy: tableItem.Author.Title,
                 assignClient: tableItem?.AssignClient ? tableItem.AssignClient.Title : "-",
+                assignClientId: tableItem?.AssignClient ? tableItem.AssignClient.Id : "-",
                 ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
             }));
             console.log(updatedResults, TableData, "updatedResults");

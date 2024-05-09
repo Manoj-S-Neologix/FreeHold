@@ -26,6 +26,7 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
+// import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
 
 
@@ -304,7 +305,7 @@ const ViewProject = (props: any) => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
       const expand = 'Author,AssignClient';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand);
       console.log(results, "result");
@@ -329,6 +330,7 @@ const ViewProject = (props: any) => {
       data !== '-' && <Box
         onClick={() => {
           navigate('/ViewClient/' + id);
+          // setIsViewDialogOpen(true);
         }}
         style={{
           textDecoration: "underline", color: "blue", cursor: "pointer",
@@ -339,6 +341,7 @@ const ViewProject = (props: any) => {
     );
   };
 
+  console.log(projectData, 'projectdata..')
   const tableData = projectData.map((item: any) => {
     return {
       Id: item.Id,
@@ -346,13 +349,13 @@ const ViewProject = (props: any) => {
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
-      assignClient: hyperLink(item.assignClient, item.Id),
+      assignClient: hyperLink(item?.assignClient, item?.assignClientId),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
   });
 
-  console.log(tableData, "data");
+  console.log(tableData, "table..data");
 
   const tableDataWidth = projectData.map((item: any) => {
     return {
@@ -588,6 +591,7 @@ const ViewProject = (props: any) => {
           particularClientAllData={particularClientAllData} selected={selected}
           fetchData={fetchData}
         />}
+        {/* {isViewDialogOpen && <ViewParticularClient projectDetails={projectDetails}/>} */}
     </Box>
   );
 };
