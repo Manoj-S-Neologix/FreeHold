@@ -177,7 +177,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AssignClient.module.scss';
-import { Autocomplete, Box, CircularProgress, Grid, MenuItem, Stack, TextField } from '@mui/material';
+import { Autocomplete, Box, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -251,18 +251,18 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
     console.log(getClientDetails, particularClientAllData, "getClientDetails");
 
-    setValue("AssignClient", particularClientAllData[0]?.ClientGUID || '');
+    // setValue("AssignClient", particularClientAllData[0]?.ClientGUID || '');
 
 
 
     useEffect(() => {
         apiCall();
-        if (particularClientAllData[0]?.ClientGUID) {
-            setGetClient(particularClientAllData[0]?.ClientGUID);
-            getDocumentsFromFolder(particularClientAllData[0]?.ClientGUID);
-        } else {
-            setGetClient([]);
-        }
+        // if (particularClientAllData[0]?.ClientGUID) {
+        //     setGetClient(particularClientAllData[0]?.ClientGUID);
+        //     getDocumentsFromFolder(particularClientAllData[0]?.ClientGUID);
+        // } else {
+        //     setGetClient([]);
+        // }
     }, [particularClientAllData]);
     const handleCancel = () => {
         onClose();
@@ -493,84 +493,91 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                     ))}
                                 </Select>}
 
-                                {getClientDocumentsData.length > 0 && (
-                                    <Grid item xs={12}>
-                                        <Controller
-                                            name="AssignClientDocuments"
-                                            control={control}
-                                            defaultValue={[]}
-                                            rules={{
-                                                required: 'Assign Client Documents is required',
-                                            }}
-                                            render={({ field }) => (
+                                {getClient.length > 0 && (
+                                    getClientDocumentsData.length > 0 ? (
+                                        <Grid item xs={12}>
+                                            <Controller
+                                                name="AssignClientDocuments"
+                                                control={control}
+                                                defaultValue={[]}
+                                                rules={{
+                                                    required: 'Assign Client Documents is required',
+                                                }}
+                                                render={({ field }) => (
 
-                                                <Autocomplete
-                                                    multiple
-                                                    options={getClientDocumentsData}
-                                                    getOptionLabel={(option) => option}
-                                                    disableCloseOnSelect
-                                                    {...field}
-                                                    onChange={(e, value) => {
-                                                        field.onChange(value);
-                                                        setValue('AssignClientDocuments', value);
-                                                        const collectionOfDocuments: any = [];
-                                                        getClientDocumentsAllData?.map((item: any) => {
-                                                            console.log(item, value, value.includes(item.FileLeafRef));
-                                                            if (value.includes(item.FileLeafRef)) {
-                                                                collectionOfDocuments.push({
-                                                                    Id: item.Id,
-                                                                    GUID: item.GUID,
-                                                                    FileLeafRef: item.FileLeafRef,
-                                                                    FileRef: item.FileRef
-                                                                });
-                                                            }
-                                                        });
-                                                        setCollectionOfDocuments(collectionOfDocuments);
-                                                    }}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            variant="outlined"
-                                                            label="Select Document"
-                                                            placeholder="Select Document"
-                                                            error={!!errors?.AssignClientDocuments}
-                                                            helperText={errors?.AssignClientDocuments?.message}
-                                                        />
-                                                    )}
-                                                    renderOption={(props, option, { selected }) => (
-                                                        <MenuItem
-                                                            {...props}
-                                                            value={option}
-                                                            sx={{ justifyContent: "space-between" }}
-                                                        >
-                                                            {option}
-                                                            {selected ? <CheckIcon color="info" /> : null}
-                                                        </MenuItem>
-                                                    )}
-                                                />
+                                                    <Autocomplete
+                                                        multiple
+                                                        options={getClientDocumentsData}
+                                                        getOptionLabel={(option) => option}
+                                                        disableCloseOnSelect
+                                                        {...field}
+                                                        onChange={(e, value) => {
+                                                            field.onChange(value);
+                                                            setValue('AssignClientDocuments', value);
+                                                            const collectionOfDocuments: any = [];
+                                                            getClientDocumentsAllData?.map((item: any) => {
+                                                                console.log(item, value, value.includes(item.FileLeafRef));
+                                                                if (value.includes(item.FileLeafRef)) {
+                                                                    collectionOfDocuments.push({
+                                                                        Id: item.Id,
+                                                                        GUID: item.GUID,
+                                                                        FileLeafRef: item.FileLeafRef,
+                                                                        FileRef: item.FileRef
+                                                                    });
+                                                                }
+                                                            });
+                                                            setCollectionOfDocuments(collectionOfDocuments);
+                                                        }}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                variant="outlined"
+                                                                label="Select Document"
+                                                                placeholder="Select Document"
+                                                                error={!!errors?.AssignClientDocuments}
+                                                                helperText={errors?.AssignClientDocuments?.message}
+                                                            />
+                                                        )}
+                                                        renderOption={(props, option, { selected }) => (
+                                                            <MenuItem
+                                                                {...props}
+                                                                value={option}
+                                                                sx={{ justifyContent: "space-between" }}
+                                                            >
+                                                                {option}
+                                                                {selected ? <CheckIcon color="info" /> : null}
+                                                            </MenuItem>
+                                                        )}
+                                                    />
 
-                                            )}
-                                        />
-                                    </Grid>
-                                )}
+                                                )}
+                                            />
+                                        </Grid>
+                                    )
+                                        : <Grid item xs={12} >
+                                            <Typography sx={{ textAlign: 'center' }}>No Documents Found</Typography>
+                                        </Grid>
+                                )
+                                }
 
                             </Grid>
                         </Box>
                     </DialogContent>
-                    <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-                        <Button variant="contained"
-                            sx={{ width: loading ? '150px' : 'auto' }}
-                            onClick={handleSave} disabled={loading}>
-                            {loading ? (
-                                <CircularProgress size={20} color="inherit" />
-                            ) : (
-                                "Save"
-                            )}
-                        </Button>
-                        <Button variant="outlined" onClick={handleCancel}>
-                            Cancel
-                        </Button>
-                    </DialogActions>
+                    {getClient.length > 0 &&
+                        getClientDocumentsData.length > 0 && <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                            <Button variant="contained"
+                                sx={{ width: loading ? '150px' : 'auto' }}
+                                onClick={handleSave} disabled={loading || getClientDocumentsAllData?.length === 0}>
+                                {loading ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                ) : (
+                                    "Save"
+                                )}
+                            </Button>
+                            <Button variant="outlined" onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        </DialogActions>}
                 </Dialog>
             </Stack>
         </Box >

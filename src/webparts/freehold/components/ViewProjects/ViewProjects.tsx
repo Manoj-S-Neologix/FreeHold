@@ -427,9 +427,9 @@ const ViewProject = (props: any) => {
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <CustomSearch handleSearchChange={handleSearchChange} />
-              <IconButton onClick={handleFilterClick}>
+              {false && <IconButton onClick={handleFilterClick}>
                 <FilterAltIcon />
-              </IconButton>
+              </IconButton>}
             </Box>
           </Box>
           <Dialog
