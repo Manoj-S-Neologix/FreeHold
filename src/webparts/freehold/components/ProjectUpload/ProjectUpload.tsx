@@ -87,22 +87,41 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const selectQuery = "Id,Title,ClientLibraryGUID";
 
 
-  const apiCall = (async () => {
-    await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
-      .then((data: any) => {
-        if (data) {
-          const mappedData = data.map((item: any) => ({
-            id: item.Id,
-            name: item.Title,
-            libraryGUID: item.ClientLibraryGUID
-          }));
-          setGetClientDetails(mappedData);
-        }
+  // const apiCall = (async () => {
+  //   await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
+  //     .then((data: any) => {
+  //       if (data) {
+  //         const mappedData = data.map((item: any) => ({
+  //           id: item.Id,
+  //           name: item.Title,
+  //           libraryGUID: item.ClientLibraryGUID
+  //         }));
+  //         setGetClientDetails(mappedData);
+  //       }
 
-      }).catch((error: any) => {
-        toast.error(error.message);
-      });
-  });
+  //     }).catch((error: any) => {
+  //       toast.error(error.message);
+  //     });
+  // });
+  const apiCall = async () => {
+    try {
+      const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+      if (data) {
+        const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
+        const filteredData = data.filter(item => assignClientIds.includes(item.Id));
+        console.log(filteredData, "filteredData");
+        const mappedData = filteredData.map(item => ({
+          id: item.Id,
+          name: item.Title,
+          libraryGUID: item.ClientLibraryGUID
+        }));
+        setGetClientDetails(mappedData);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
 
 
 
@@ -222,7 +241,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     // once folder is created, upload files
     // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
 
-    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.UniqueId, createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
+    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
     console.log(uploadDocument, "uploadDocumentuploadDocument");
     // console.log(updatedData, "handleSave");
 
@@ -516,7 +535,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       "Save"
                     )}
                   </Button>
-                  {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                  {!loading && <Button variant="outlined" onClick={() => { setUploadFiles([]) }}  >Cancel</Button>}
                 </Stack>
 
               </DialogActions>}

@@ -15,7 +15,7 @@ export type SPServiceType = {
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
     updateLibraryName: (GUIDID: any, updatedlibraryName: string) => Promise<any>;
-    copyDocuments: (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => Promise<any>;
+    copyDocuments: (destinationLibraryUrl: string, files: any[]) => Promise<any>;
     createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
@@ -26,7 +26,9 @@ export type SPServiceType = {
         listTitle: string,
         select: string,
         expand: string,
-        filter: any) => Promise<any[]>;
+        filter?: any,
+        orderBy?: any
+    ) => Promise<any[]>;
 };
 
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
@@ -145,9 +147,16 @@ const SPService: SPServiceType = {
     },
 
     // Get filtered list items
-    getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string): Promise<any[]> => {
-        const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter)();
-        return response;
+    getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
+        if(orderBy){
+            const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter).orderBy(orderBy, false)();
+            return response;
+        }
+        else{
+            const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter)();
+            return response;
+            
+        }
     },
 
     getDocumentsFromFolder: async (libraryGuid: string): Promise<any> => {
@@ -183,26 +192,26 @@ const SPService: SPServiceType = {
         return results;
     },
 
-    copyDocuments: async (sourceLibraryUrl: string, destinationLibraryUrl: string, files: any[]) => {
+    copyDocuments(destinationLibraryUrl: string, files: any[]) {
+        return new Promise((resolve, reject) => {
+            const results: any[] = [];
+            const promises = files.map(async file => {
+                return web.getFileByServerRelativePath(file.FileRef)
+                    .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, false)
+                    .then(document => {
+                        console.log(`Document ${file.FileLeafRef} copied successfully.`);
+                        results.push({ file: file.FileLeafRef, success: true });
+                    })
+                    .catch(error => {
+                        console.error(`Error copying document ${file.FileLeafRef}:`, error);
+                        results.push({ file: file.FileLeafRef, success: false, error: error.message });
+                    });
+            });
 
-        try {
-            for (const file of files) {
-                // const document = await web.lists.getById(file.FileRef)
-                //     .items.getById(file.Id)
-                //     .file
-                //     .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, true);
-                const document = await web.
-                    getFileByServerRelativePath(file.FileRef).copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, false);
-                // Log or handle success
-                console.log(`Document ${file.FileLeafRef} copied successfully.`);
-                // Provide success feedback to the user
-                return document;
-            }
-        } catch (error) {
-            // Handle error
-            console.error('Error copying documents:', error);
-            // Provide error feedback to the user
-        }
+            Promise.all(promises)
+                .then(() => resolve({ success: true, results }))
+                .catch(error => reject({ success: false, error: error.message }));
+        });
     },
 
     createFolderInLibrary: async (libraryName: string, folderName: string): Promise<any> => {

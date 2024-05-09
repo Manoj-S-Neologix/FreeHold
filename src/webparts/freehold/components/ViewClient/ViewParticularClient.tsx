@@ -737,7 +737,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         }
     }, [clientDetails]);
 
-    const projectnames = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5'];
+    // const projectnames = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5'];
 
 
     //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
@@ -1079,43 +1079,46 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>
 
 
+                                <TableRow>
                                     <TableCell component="th" scope="row">Assigned Project</TableCell>
-                                    <TableCell>
+                                   
 
-                                        <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
+                                        {/* <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
                                             {projectnames.map((projectName, index) => (
                                                 <li key={index}>{projectName}</li>
                                             ))}
-                                        </ul>
+                                        </ul> */}
 
-                                        {/* {!isEdit ? (
-                                                clientDetails.name
-                                            ) : (
-                                                <Controller
-                                                    name="title"
-                                                    control={control}
-                                                    defaultValue=""
-                                                    rules={{ required: 'Name is required' }}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            // fullWidth
-                                                            size="small"
-                                                            value={editData.title}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
-                                                                field.onChange(value);
-                                                                await trigger('title');
-                                                                setEditData({ ...editData, title: value });
+                                        {!isEdit ? (
+                                            (<TableCell>
+                                                
+                                                    {clientDetails.projectDetails.map((data: any) => {
+                                                        return (
+                                                            <span key={data.Id} style={{ margin:'auto' }}>{data.Name}</span>
+                                                        )
+                                                    })}
+                                                
+                                            </TableCell>)
+                                        ) : (
+                                            (<TableCell>
+                                                 {/* {clientDetails.projectDetails.Name ?
+                                                    clientDetails.projectDetails.Name : "Assign Project"
+                                                } */}
+                                                {clientDetails.projectDetails.map((data: any) => {
+                                                    return (
+                                                        <span key={data.Id}
+                                                            onClick={(id:any) => {
+                                                                navigate("/viewClient/" + id)
                                                             }}
-                                                            error={!!errors.title}
-                                                            helperText={errors.title && errors.title.message}
-                                                        />
-                                                    )}
-                                                />
-                                            )} */}
-                                    </TableCell>
+                                                            style={{ margin:'auto' }}
+                                                        >{data.Name}</span>
+                                                    )
+                                                })}
+                                            </TableCell>)
 
+                                        )}
+                                    
+                                    </TableRow>
                                     {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell

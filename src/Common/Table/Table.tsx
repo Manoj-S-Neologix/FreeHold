@@ -596,7 +596,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                         return '-';
                     }
 
-                    const lowerCaseCellContent = cellContent.toLowerCase();
+                    // const lowerCaseCellContent = cellContent?.toLowerCase();
                     const lowerCaseSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
                     const lowerCaseFilterQuery = filterQuery ? filterQuery.toLowerCase() : '';
 
@@ -615,8 +615,8 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                     };
 
                     // Render content with highlights based on searchQuery and filterQuery
-                    if ((searchQuery && lowerCaseCellContent.includes(lowerCaseSearchQuery)) ||
-                        (filterQuery && lowerCaseCellContent.includes(lowerCaseFilterQuery))) {
+                    if ((searchQuery ) ||
+                        (filterQuery )) {
                         let contentToRender = cellContent;
 
                         if (searchQuery) {

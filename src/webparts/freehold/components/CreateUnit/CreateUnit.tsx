@@ -423,36 +423,38 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const selectQuery = "Id,Title,ClientLibraryGUID";
 
 
-    const apiCall = (async () => {
-        await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
-            .then((data) => {
-                if (data) {
-                    const mappedData = data.map((item: any) => ({
-                        id: item.Id,
-                        name: item.Title,
-                        libraryGUID: item.ClientLibraryGUID
-                    }));
-                    setGetClientDetails(mappedData);
-                }
-
-            }).catch((error: any) => {
-                toast.error(error.message);
-            });
-    });
+    const apiCall = async () => {
+        try {
+            const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+            if (data) {
+                const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
+                const filteredData = data.filter(item => assignClientIds.includes(item.Id));
+                console.log(filteredData, "filteredData");
+                const mappedData = filteredData.map(item => ({
+                    id: item.Id,
+                    name: item.Title,
+                    libraryGUID: item.ClientLibraryGUID
+                }));
+                setGetClientDetails(mappedData);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
 
 
     console.log(getClientDetails, particularClientAllData, "getClientDetails");
 
     useEffect(() => {
         apiCall();
-        if (particularClientAllData[0]?.ClientGUID) {
-            setShowCount(true);
-            setGetClient(particularClientAllData[0]?.ClientGUID);
-        } else {
-            setShowCount(false);
-            setGetClient([]);
-        }
-    }, [particularClientAllData]);
+        // if (particularClientAllData[0]?.ClientGUID) {
+        //     setShowCount(true);
+        //     setGetClient(particularClientAllData[0]?.ClientGUID);
+        // } else {
+        //     setShowCount(false);
+        //     setGetClient([]);
+        // }
+    }, []);
 
 
     const handleCancel = () => {
@@ -526,7 +528,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     //         }
     //     }
     // };
-    setValue("AssignClient", particularClientAllData[0]?.ClientGUID || '');
+
     const handleSave = handleSubmit(async (data) => {
         setLoading(true);
         const collectionOfUnits: any[] = [];
@@ -574,6 +576,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             if (Array.isArray(results)) {
                 setClientDocumentsData(results.map(item => item.FileLeafRef));
                 setClientDocumentsAllData(results);
+                setShowCount(true);
             } else {
                 console.error('Error: Retrieved data is not an array');
             }
@@ -640,7 +643,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 select
                                                 {...field}
                                                 required
-                                                disabled={particularClientAllData[0]?.ClientGUID ? true : false}
+                                                // disabled={particularClientAllData[0]?.ClientGUID ? true : false}
                                                 onChange={(e: any) => {
                                                     console.log(e.target.value);
                                                     setGetClient(e.target.value);
@@ -655,10 +658,11 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                         {item.name}
                                                     </MenuItem>
                                                 ))}
-                                            </TextField>)}
+                                            </TextField>
+                                        )}
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                {false && <Grid item xs={6}>
                                     <FormControlLabel
                                         sx={{ mb: 1 }}
                                         control={<Switch
@@ -667,50 +671,8 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             onChange={handleSwitchChange} />}
                                         label="Is Unit Documents"
                                     />
-                                </Grid>
-                                {showCount && (
-                                    <Grid item xs={6}>
-                                        <Box sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'end'
-                                        }}>
-                                            <Button
-                                                variant="contained"
-                                                onClick={() => setCount((prev) => Math.max(prev - 1, 1))}
-                                                disabled={count === 1}
-                                            >
-                                                <RemoveIcon fontSize="small" />
-                                            </Button>
-                                            <Controller
-                                                name={`unitCount${count}`}
-                                                control={control}
-                                                defaultValue={count}
-                                                render={({ field }) => (
-                                                    <InputBase
-                                                        sx={{
-                                                            width: "40px", textAlign: "center",
-                                                            '& input': { textAlign: 'center', p: 0, }
-                                                        }}
-                                                        size="small"
-                                                        value={field.value}
-                                                        inputProps={{ 'aria-label': 'count' }}
-                                                        onChange={(e) => {
-                                                            handleCountChange(e.target.value);
-                                                            field.onChange(e);
-                                                        }}
-                                                    />
-                                                )}
-                                            />
-                                            <Button
-                                                variant="contained"
-                                                onClick={() => setCount((prev) => prev + 1)}
-                                            >
-                                                <AddIcon fontSize="small" />
-                                            </Button>
-                                        </Box>
-                                    </Grid>
-                                )}
+                                </Grid>}
+
 
                                 {getClient !== '' && showCount &&
                                     <Box sx={{
@@ -780,7 +742,50 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                         }
                                     </Box>}
 
+                                {showCount && (
+                                    <Grid item xs={6}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'flex-start',
+                                        }}>
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => setCount((prev) => Math.max(prev - 1, 1))}
+                                                disabled={count === 1}
+                                            >
+                                                <RemoveIcon fontSize="small" />
+                                            </Button>
+                                            <Controller
+                                                name={`unitCount${count}`}
+                                                control={control}
+                                                defaultValue={count}
+                                                render={({ field }) => (
+                                                    <InputBase
+                                                        sx={{
+                                                            width: "40px", textAlign: "center",
+                                                            '& input': { textAlign: 'center', p: 0, }
+                                                        }}
+                                                        size="small"
+                                                        value={count}
 
+                                                        inputProps={{ 'aria-label': 'count' }}
+                                                        onChange={(e) => {
+                                                            handleCountChange(e.target.value);
+                                                            field.onChange(e);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => setCount((prev) => prev + 1)}
+                                            >
+                                                <AddIcon fontSize="small" />
+                                            </Button>
+                                        </Box>
+                                    </Grid>
+                                )}
                             </Grid>
                         </Box>
                     </DialogContent>
