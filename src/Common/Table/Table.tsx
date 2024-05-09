@@ -371,7 +371,7 @@ function EnhancedTableHead(props: any) {
     );
 }
 
-const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth }: any) => {
+const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
@@ -452,13 +452,45 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    const filteredRows = searchQuery
-        ? rows.filter((row: any) =>
-            Object.values(row).some(
-                (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        )
-        : sortedRows;
+    // const filteredRows = searchQuery
+    //     ? rows.filter((row: any) =>
+    //         Object.values(row).some(
+    //             (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+    //         )
+    //     )
+    //     : sortedRows;
+
+    const filteredRows = filterQuery
+    ? rows.filter((row:any) => {
+        if (row.assignedStaff) {
+            return row.assignedStaff.some((staff:any) =>
+                Object.values(staff).some(
+                    (value) =>
+                        typeof value === 'string' &&
+                        value.toLowerCase().includes(filterQuery.toLowerCase())
+                )
+            );
+        }
+        return false;
+    })
+    : sortedRows;
+
+    // const filteredRows = searchQuery
+    // ? rows.filter((row:any) => {
+    //     const searchMatches = Object.values(row).some((value) =>
+    //         typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+    //     );
+    //     return searchMatches || (row.assignedStaff && filterQuery && row.assignedStaff.some((staff:any) =>
+    //         Object.values(staff).some(
+    //             (value) =>
+    //                 typeof value === 'string' &&
+    //                 value.toLowerCase().includes(filterQuery.toLowerCase())
+    //         )
+    //     ));
+    // })
+    // : sortedRows;
+
+
 
     const getWidth = (id: any) => {
         return (
@@ -511,7 +543,7 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                                                                 }}
                                                             />
                                                         </TableCell>
-                                                        {
+                                                        {/* {
                                                             headCells.map((headCell: any) => (
                                                                 row.hasOwnProperty(headCell.id) &&
                                                                 <TableCell
@@ -542,7 +574,70 @@ const GridTable = ({ props, searchQuery, setSelected, setSelectedDetails, select
                                                                     )}
                                                                 </TableCell>
                                                             ))
-                                                        }
+                                                        } */}
+
+
+{
+    headCells.map((headCell: any) => (
+        row.hasOwnProperty(headCell.id) && (
+            <TableCell
+                key={headCell.id}
+                component="td"
+                scope="row"
+                padding="none"
+                sx={{
+                    minWidth: getWidth(headCell.id),
+                }}
+            >
+                {(() => {
+                    const cellContent = row[headCell.id];
+                    
+                    if (!cellContent) {
+                        return '-';
+                    }
+
+                    const lowerCaseCellContent = cellContent.toLowerCase();
+                    const lowerCaseSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
+                    const lowerCaseFilterQuery = filterQuery ? filterQuery.toLowerCase() : '';
+
+                    // Function to render highlighted parts
+                    const renderHighlightedContent = (content: string, query: string) => {
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        const parts = content.split(regex);
+
+                        return parts.map((part: string, index: number) => (
+                            regex.test(part) ? (
+                                <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+                            ) : (
+                                <React.Fragment key={index}>{part}</React.Fragment>
+                            )
+                        ));
+                    };
+
+                    // Render content with highlights based on searchQuery and filterQuery
+                    if ((searchQuery && lowerCaseCellContent.includes(lowerCaseSearchQuery)) ||
+                        (filterQuery && lowerCaseCellContent.includes(lowerCaseFilterQuery))) {
+                        let contentToRender = cellContent;
+
+                        if (searchQuery) {
+                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseSearchQuery);
+                        }
+
+                        if (filterQuery) {
+                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseFilterQuery);
+                        }
+
+                        return contentToRender;
+                    }
+
+                    // Default rendering without highlighting
+                    return cellContent;
+                })()}
+            </TableCell>
+        )
+    ))
+}
+
 
 
 
