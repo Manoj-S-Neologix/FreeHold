@@ -646,6 +646,8 @@ import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
 import UploadDocument from '../UploadDocuments/UploadDocuments';
+// import AddIcon from '@mui/icons-material/Add';
+// import { Button as MuiButton } from "@mui/material";
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -925,7 +927,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 }}
 
                                             />
-                                            
+
                                             {!isEdit && (
                                                 <Button
                                                     handleClick={() => {
@@ -1079,9 +1081,9 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>
 
 
-                                <TableRow>
-                                    <TableCell component="th" scope="row">Assigned Project</TableCell>
-                                   
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Assigned Project</TableCell>
+
 
                                         {/* <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
                                             {projectnames.map((projectName, index) => (
@@ -1091,33 +1093,33 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
                                         {!isEdit ? (
                                             (<TableCell>
-                                                
-                                                    {clientDetails.projectDetails.map((data: any) => {
-                                                        return (
-                                                            <span key={data.Id} style={{ margin:'auto' }}>{data.Name}</span>
-                                                        )
-                                                    })}
-                                                
+
+                                                {clientDetails.projectDetails.map((data: any) => {
+                                                    return (
+                                                        <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                    )
+                                                })}
+
                                             </TableCell>)
                                         ) : (
                                             (<TableCell>
-                                                 {/* {clientDetails.projectDetails.Name ?
+                                                {/* {clientDetails.projectDetails.Name ?
                                                     clientDetails.projectDetails.Name : "Assign Project"
                                                 } */}
                                                 {clientDetails.projectDetails.map((data: any) => {
                                                     return (
                                                         <span key={data.Id}
-                                                            onClick={(id:any) => {
+                                                            onClick={(id: any) => {
                                                                 navigate("/viewClient/" + id)
                                                             }}
-                                                            style={{ margin:'auto' }}
+                                                            style={{ margin: 'auto' }}
                                                         >{data.Name}</span>
                                                     )
                                                 })}
                                             </TableCell>)
 
                                         )}
-                                    
+
                                     </TableRow>
                                     {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
@@ -1176,6 +1178,49 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 ))}
                                             </ul>
                                         </TableCell>}
+                                        {/* <TableCell component="th" scope="row">
+                                            Assigned Staff
+                                        </TableCell>
+                                        {isEdit && (
+                                            <TableCell className="default-cursor">
+                                                <ul
+                                                    onClick={() => { setHandleStaffDialog(true); }}
+                                                    className="default-cursor"
+                                                    style={{
+                                                        textDecoration: "underline",
+                                                        color: "blue",
+                                                        cursor: "pointer",
+                                                        listStyleType: "none",
+                                                        padding: 0
+                                                    }}
+                                                >
+                                                    {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
+                                                        <li
+                                                            className="default-cursor"
+                                                            style={{ textDecoration: "none" }}
+                                                            key={index}
+                                                        >
+                                                            <span>{staff.Name}</span>
+                                                        </li>
+                                                    ))}
+
+                                                    <li
+                                                        className="default-cursor"
+                                                        style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+                                                        key="add-icon"
+                                                    >
+                                                        <MuiButton
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={() => { setHandleStaffDialog(true); }} // Open staff dialog
+                                                            endIcon={<AddIcon style={{ marginLeft: 5, color: "green" }} />}
+                                                        >
+                                                            Add Staff
+                                                        </MuiButton>
+                                                    </li>
+                                                </ul>
+                                            </TableCell>
+                                        )} */}
                                         {!isEdit &&
                                             <TableCell className="default-cursor">
                                                 <ul className="default-cursor" style={{
