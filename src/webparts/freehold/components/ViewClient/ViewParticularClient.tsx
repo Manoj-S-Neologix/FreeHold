@@ -1100,10 +1100,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                 
                                             </TableCell>)
                                         ) : (
-                                            (<TableCell sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}>
-                                                 {clientDetails.projectDetails.Name ?
+                                            (<TableCell>
+                                                 {/* {clientDetails.projectDetails.Name ?
                                                     clientDetails.projectDetails.Name : "Assign Project"
-                                                }
+                                                } */}
                                                 {clientDetails.projectDetails.map((data: any) => {
                                                     return (
                                                         <span key={data.Id}
