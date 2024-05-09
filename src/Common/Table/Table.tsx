@@ -543,7 +543,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                                 }}
                                                             />
                                                         </TableCell>
-                                                        {
+                                                        {/* {
                                                             headCells.map((headCell: any) => (
                                                                 row.hasOwnProperty(headCell.id) &&
                                                                 <TableCell
@@ -574,7 +574,70 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                                     )}
                                                                 </TableCell>
                                                             ))
-                                                        }
+                                                        } */}
+
+
+{
+    headCells.map((headCell: any) => (
+        row.hasOwnProperty(headCell.id) && (
+            <TableCell
+                key={headCell.id}
+                component="td"
+                scope="row"
+                padding="none"
+                sx={{
+                    minWidth: getWidth(headCell.id),
+                }}
+            >
+                {(() => {
+                    const cellContent = row[headCell.id];
+                    
+                    if (!cellContent) {
+                        return '-';
+                    }
+
+                    const lowerCaseCellContent = cellContent.toLowerCase();
+                    const lowerCaseSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
+                    const lowerCaseFilterQuery = filterQuery ? filterQuery.toLowerCase() : '';
+
+                    // Function to render highlighted parts
+                    const renderHighlightedContent = (content: string, query: string) => {
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        const parts = content.split(regex);
+
+                        return parts.map((part: string, index: number) => (
+                            regex.test(part) ? (
+                                <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+                            ) : (
+                                <React.Fragment key={index}>{part}</React.Fragment>
+                            )
+                        ));
+                    };
+
+                    // Render content with highlights based on searchQuery and filterQuery
+                    if ((searchQuery && lowerCaseCellContent.includes(lowerCaseSearchQuery)) ||
+                        (filterQuery && lowerCaseCellContent.includes(lowerCaseFilterQuery))) {
+                        let contentToRender = cellContent;
+
+                        if (searchQuery) {
+                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseSearchQuery);
+                        }
+
+                        if (filterQuery) {
+                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseFilterQuery);
+                        }
+
+                        return contentToRender;
+                    }
+
+                    // Default rendering without highlighting
+                    return cellContent;
+                })()}
+            </TableCell>
+        )
+    ))
+}
+
 
 
 

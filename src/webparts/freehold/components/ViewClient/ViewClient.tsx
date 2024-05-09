@@ -240,7 +240,7 @@ const ViewClient = (props: any) => {
   const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
     { id: 'email', numeric: false, disablePadding: true, label: 'Client Email' },
-    { id: 'contact', numeric: false, disablePadding: true, label: 'Contact Number' },
+    // { id: 'contact', numeric: false, disablePadding: true, label: 'Contact Number' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
     { id: 'assignStaff', numeric: false, disablePadding: true, label: 'Assigned Staff' },
