@@ -453,8 +453,9 @@ const ViewParticularClient = ({ props, projectDetails, clientDetails, setClientD
                                     </TableRow>
 
 
+<TableRow>
                                     <TableCell component="th" scope="row">Assigned Project</TableCell>
-                                    <TableCell>
+                                   
 
                                         {/* <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
                                             {projectnames.map((projectName, index) => (
@@ -464,37 +465,34 @@ const ViewParticularClient = ({ props, projectDetails, clientDetails, setClientD
 
                                         {!isEdit ? (
                                             (<TableCell>
-                                                <div>
+                                                
                                                     {clientDetails.projectDetails.map((data: any) => {
                                                         return (
-                                                            <span key={data.Id}>{data.Name}</span>
+                                                            <span key={data.Id} style={{ margin:'auto' }}>{data.Name}</span>
                                                         )
                                                     })}
-                                                </div>
+                                                
                                             </TableCell>)
                                         ) : (
-                                            (<TableCell sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                                onClick={() => {
-                                                    // setHandleClientDialog(true);
-                                                    setIsViewDialogOpen(true);
-                                                }}>
+                                            (<TableCell sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}>
                                                 {/* {clientDetails.projectDetails.Name ?
                                                     clientDetails.projectDetails.Name : "Assign Project"
                                                 } */}
                                                 {clientDetails.projectDetails.map((data: any) => {
                                                     return (
                                                         <span key={data.Id}
-                                                            onClick={() => {
-                                                                navigate("")
+                                                            onClick={(id:any) => {
+                                                                navigate("/viewClient/" + id)
                                                             }}
+                                                            style={{ margin:'auto' }}
                                                         >{data.Name}</span>
                                                     )
                                                 })}
                                             </TableCell>)
 
                                         )}
-                                    </TableCell>
-
+                                    
+                                    </TableRow>
                                     {/* <TableRow>
                                         <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell
