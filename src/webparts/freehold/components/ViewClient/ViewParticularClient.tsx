@@ -1002,10 +1002,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     defaultValue=""
                                                     rules={{
                                                         required: 'Client Contact is required',
-                                                        pattern: {
-                                                            value: /^[0-9]{10}$/,
-                                                            message: 'Invalid contact number'
-                                                        }
+                                                        // pattern: {
+                                                        //     value: /^[0-9]{10}$/,
+                                                        //     message: 'Invalid contact number'
+                                                        // }
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
@@ -1016,7 +1016,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                             // fullWidth
                                                             value={editData.contact}
                                                             onChange={async (e: any) => {
-                                                                const value = e.target.value.replace(/\D/g, '');
+                                                                const value = e.target.value
                                                                 field.onChange(value);
                                                                 await trigger("contact");
                                                                 setEditData({ ...editData, contact: value });
