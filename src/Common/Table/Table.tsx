@@ -601,15 +601,29 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                     const lowerCaseFilterQuery = filterQuery ? filterQuery.toLowerCase() : '';
 
                     // Function to render highlighted parts
-                    const renderHighlightedContent = (content: string, query: string) => {
-                        const regex = new RegExp(`(${query})`, 'gi');
-                        const parts = content.split(regex);
+                    // const renderHighlightedContent = (content: string, query: string) => {
+                    //     const regex = new RegExp(`(${query})`, 'gi');
+                    //     const parts = content.split(regex);
 
+                    //     return parts.map((part: string, index: number) => (
+                    //         regex.test(part) ? (
+                    //             <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+                    //         ) : (
+                    //             <React.Fragment key={index}>{part}</React.Fragment>
+                    //         )
+                    //     ));
+                    // };
+
+                    const renderHighlightedContent = (content: string, query: string) => {
+                        const regexString = `(${query})`;
+                        const regex = new RegExp(regexString, 'gi');
+                        const parts = content.split(regex);
+                     
                         return parts.map((part: string, index: number) => (
                             regex.test(part) ? (
-                                <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+                    <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
                             ) : (
-                                <React.Fragment key={index}>{part}</React.Fragment>
+                    <React.Fragment key={index}>{part}</React.Fragment>
                             )
                         ));
                     };

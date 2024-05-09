@@ -4,11 +4,19 @@
     --secondarycolor: #dba236;
 }
 
+
+
 :global {
     // * {
     // font-family: var(--primaryFontFamily) !important;
     // //  font-family: "Arial", sans-serif !important;
     // }
+
+    .ms-CommandBar,
+  #spCommandBar,
+  footer {
+    display: none !important;
+  }
   
     #workbenchPageContent,
     .CanvasComponent.LCS .CanvasZone,
