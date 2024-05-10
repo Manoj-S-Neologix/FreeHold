@@ -296,7 +296,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     rules={{
                                                         required: 'Project Number is required',
                                                         pattern: {
-                                                            value: /^[0-9]+$/,
+                                                            value: /^[a-zA-Z0-9+-.]+$/,
                                                             message: 'Invalid project number'
                                                         }
                                                     }}
@@ -309,7 +309,8 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             // fullWidth
                                                             value={editData.projectNumber}
                                                             onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                                // const value = e.target.value;
+                                                                const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
                                                                 field.onChange(value);
                                                                 await trigger("projectNumber");
                                                                 setEditData({ ...editData, projectNumber: value });

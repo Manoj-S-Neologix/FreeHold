@@ -87,20 +87,58 @@ const SPService: SPServiceType = {
 
 
     // Upload Document to a library
-    uploadDocument: async (libraryName: string, files: any): Promise<any> => {
-        try {
-            const library = web.getFolderByServerRelativeUrl(libraryName);
-            //console.log(files, "filesfilesfiles");
-            for (const file of files) {
-                console.log(files, "filesfilesfilesInside");
-                const document = await library.files.add(file.name, file, true);
-                return document;
-            }
-        } catch (error) {
-            console.error("Error uploading document:", error);
-            throw error;
-        }
+    // uploadDocument: async (libraryName: string, files: any): Promise<any> => {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             const library = web.getFolderByServerRelativeUrl(libraryName);
+    //             const promises = files.map((file: any) => {
+    //                 return library.files.add(file.name, file, true).then((document): any => {
+    //                     return document
+    //                 }).catch((err) => {
+    //                     throw err
+    //                 })
+    //             });
+    //             promises.all(Promise).then((documents: any) => resolve(documents)).catch((err: any) => reject(err))
+    //             //console.log(files, "filesfilesfiles");
+    //             // for (const file of files) {
+    //             //     console.log(files, "filesfilesfilesInside");
+    //             //     const document = await library.files.add(file.name, file, true);
+    //             //     return document;
+    //             // }
+    //         } catch (error) {
+    //             console.error("Error uploading document:", error);
+    //             throw error;
+    //         }
+    //     })
+    // },
+
+
+    
+   // Upload Document to a library
+    uploadDocument: async (libraryName: string, files: any[]): Promise<any[]> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+    
+        const promises = files.map((file: any) => {
+            return library.files.add(file.name, file, true)
+                .then((document: any) => {
+                    return document;
+                })
+                .catch((err: any) => {
+                    throw err; 
+                });
+        });
+    
+        return Promise.all(promises)
+            .then((documents: any[]) => {
+                return documents; 
+            })
+            .catch((error: any) => {
+                console.error("Error uploading documents:", error);
+                throw error; 
+            
+            });
     },
+    
 
 
     // Update library name
@@ -148,14 +186,14 @@ const SPService: SPServiceType = {
 
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
-        if(orderBy){
+        if (orderBy) {
             const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter).orderBy(orderBy, false)();
             return response;
         }
-        else{
+        else {
             const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter)();
             return response;
-            
+
         }
     },
 

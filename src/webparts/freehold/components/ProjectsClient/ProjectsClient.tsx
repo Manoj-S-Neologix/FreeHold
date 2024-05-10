@@ -21,6 +21,8 @@ const ProjectsClient = ({ props }: any) => {
   //     console.error('Error fetching data:', error);
   //   }
   // };
+
+  
   return (
     <Box >
       <Stack>
@@ -85,6 +87,3 @@ const ProjectsClient = ({ props }: any) => {
 };
 
 export default ProjectsClient;
-
-
-

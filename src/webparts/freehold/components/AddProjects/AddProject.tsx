@@ -394,17 +394,24 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                       name="projectNumber"
                       control={control}
                       defaultValue=""
+                      // rules={{
+                      //   required: 'Project Number is required',
+                      //   minLength: {
+                      //     value: 3,
+                      //     message: "Project Number must be at least 3 characters.",
+                      //   },
+                      //   maxLength: {
+                      //     value: 100,
+                      //     message: "Project Number must be at most 100 characters.",
+                      //   }
+                      // }}
                       rules={{
                         required: 'Project Number is required',
-                        minLength: {
-                          value: 3,
-                          message: "Project Number must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Project Number must be at most 100 characters.",
+                        pattern: {
+                            value: /^[a-zA-Z0-9+-.]+$/,
+                            message: 'Invalid project number'
                         }
-                      }}
+                    }}
                       render={({ field }) => (
                         <TextField
                           {...field}
@@ -413,7 +420,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                           size="small"
                           fullWidth
                           onChange={async (e) => {
-                            const value = e.target.value;
+                            // const value = e.target.value;
+                            const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
                             field.onChange(value);
                             await trigger('projectNumber');
                           }}

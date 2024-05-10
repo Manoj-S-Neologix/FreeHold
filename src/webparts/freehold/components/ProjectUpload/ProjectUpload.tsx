@@ -209,6 +209,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   console.log(uploadFiles, getGuid, getClientDetails, "uploadFilesgetGuid");
 
   console.log(particularClientAllData, 'getProjectName..');
+  
   const handleSave = handleSubmit(async (data: any) => {
     setLoading(true);
     const apiResponse = ProjectService();
