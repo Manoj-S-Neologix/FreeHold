@@ -375,7 +375,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
     //console.log(rows, tableData, "rowsrows");
 
@@ -787,7 +787,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                             </Table>
                         </TableContainer>
                         <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPageOptions={[25, 50, 75]}
                             component="div"
                             count={filteredRows.length}
                             rowsPerPage={rowsPerPage}

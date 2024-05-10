@@ -170,7 +170,7 @@ const ViewProject = (props: any) => {
     { id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
     { id: 'assignClient', numeric: false, disablePadding: true, label: 'Assigned Client' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
-    { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
+    // { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
     { id: 'action', numeric: false, disablePadding: true, label: 'Action' },
   ];
 

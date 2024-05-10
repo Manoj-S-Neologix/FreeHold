@@ -646,8 +646,7 @@ import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
 import UploadDocument from '../UploadDocuments/UploadDocuments';
-// import AddIcon from '@mui/icons-material/Add';
-// import { Button as MuiButton } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -1004,28 +1003,28 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     defaultValue=""
                                                     rules={{
                                                         required: 'Client Contact is required',
-                                                        // pattern: {
-                                                        //     value: /^[0-9]{10}$/,
-                                                        //     message: 'Invalid contact number'
-                                                        // }
+                                                        pattern: {
+                                                            value: /^[0-9+-.]{0,15}$/,
+                                                            message: 'Invalid contact number'
+                                                        }
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
-                                                            {...field}
-                                                            id="clientContact"
-                                                            margin="dense"
-                                                            size="small"
-                                                            // fullWidth
-                                                            value={editData.contact}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value
-                                                                field.onChange(value);
-                                                                await trigger("contact");
-                                                                setEditData({ ...editData, contact: value });
-                                                            }}
-                                                            error={!!errors.contact}
-                                                            helperText={errors.contact && errors.contact.message}
-                                                        />
+                                                        {...field}
+                                                        id="clientContact"
+                                                        margin="dense"
+                                                        size="small"
+                                                        // fullWidth
+                                                        value={editData.contact}
+                                                        onChange={async (e: any) => {
+                                                            const value = e.target.value.replace(/[^\d+-.]/g, '');
+                                                            field.onChange(value);
+                                                            await trigger("contact");
+                                                            setEditData({ ...editData, contact: value });
+                                                        }}
+                                                        error={!!errors.contact}
+                                                        helperText={errors.contact && errors.contact.message}
+                                                    />
                                                     )}
                                                 />
 
@@ -1095,10 +1094,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                             (<TableCell>
                                                 
                                                 {clientDetails?.projectDetails?.length > 0 && (
-                                            <div style={{
+                                            <div 
+                                            style={{
                                                     textDecoration: "underline", color: "blue", cursor: "pointer",
                                                     listStyleType: "none"
-                                                }}>
+                                                }}
+                                                >
                                                     {clientDetails.projectDetails.map((data:any) => (
                                             <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
                                                     ))}
@@ -1165,7 +1166,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>}
 
                                     <TableRow>
-                                        <TableCell component="th" scope="row">Assigned Staff</TableCell>
+                                        {/* <TableCell component="th" scope="row">Assigned Staff</TableCell>
                                         {isEdit && <TableCell className="default-cursor">
                                             <ul
                                                 onClick={() => { setHandleStaffDialog(true); }}
@@ -1180,8 +1181,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     </li>
                                                 ))}
                                             </ul>
-                                        </TableCell>}
-                                        {/* <TableCell component="th" scope="row">
+                                        </TableCell>} */}
+                                        <TableCell component="th" scope="row">
                                             Assigned Staff
                                         </TableCell>
                                         {isEdit && (
@@ -1190,10 +1191,10 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     onClick={() => { setHandleStaffDialog(true); }}
                                                     className="default-cursor"
                                                     style={{
-                                                        textDecoration: "underline",
-                                                        color: "blue",
-                                                        cursor: "pointer",
-                                                        listStyleType: "none",
+                                                        // textDecoration: "underline",
+                                                        // color: "blue",
+                                                        // cursor: "pointer",
+                                                        // listStyleType: "none",
                                                         padding: 0
                                                     }}
                                                 >
@@ -1215,15 +1216,16 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                         <MuiButton
                                                             variant="contained"
                                                             color="primary"
-                                                            onClick={() => { setHandleStaffDialog(true); }} // Open staff dialog
-                                                            endIcon={<AddIcon style={{ marginLeft: 5, color: "green" }} />}
+                                                            style={{ textDecoration: 'none', color: 'white' }}
+                                                            onClick={() => { setHandleStaffDialog(true); }} 
+                                                            endIcon={<AddIcon style={{ marginLeft: 5, color: "white" }} />}
                                                         >
                                                             Add Staff
                                                         </MuiButton>
                                                     </li>
                                                 </ul>
                                             </TableCell>
-                                        )} */}
+                                        )}
                                         {!isEdit &&
                                             <TableCell className="default-cursor">
                                                 <ul className="default-cursor" style={{

@@ -307,7 +307,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                     rules={{
                       required: 'Client Contact is required',
                       pattern: {
-                        value: /^[0-9]{10}$/,
+                        value: /^[0-9+-.]{0,15}$/,
                         message: 'Invalid contact number'
                       }
                     }}
@@ -319,7 +319,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                         size="small"
                         fullWidth
                         onChange={async (e: any) => {
-                          const value = e.target.value.replace(/\D/g, '');
+                          const value = e.target.value.replace(/[^\d+-.]/g, '');
                           field.onChange(value);
                           await trigger("contact");
                         }}
