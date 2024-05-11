@@ -19,6 +19,7 @@ export type SPServiceType = {
     createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
+    // getListCounts: (listName: string) => Promise<number>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -164,12 +165,23 @@ const SPService: SPServiceType = {
         return updateItem;
     },
 
+    //     // get the count of items in the list
+    //     getListCounts: async (listName: string): Promise<number> => {
+    //     const count = await web.lists.getByTitle(listName).items.count();
+    //     return count
+    //     // console.log(count);
+    // },
+
     // Delete list items
     deleteListItem: async (listName: string, itemId: number): Promise<any> => {
         const deleteItem = await web.lists
             .getByTitle(listName).items.getById(itemId).recycle();
         return deleteItem;
     },
+
+
+
+
 
     // Delete list items
     deleteLibrary: async (libraryName: string): Promise<any> => {
@@ -178,11 +190,16 @@ const SPService: SPServiceType = {
         return deleteItem;
     },
 
+
+
     // Get current logged in user groups
     getLoggedInUserGroups: async (): Promise<any> => {
         const response = await web.currentUser.groups();
         return response;
     },
+
+
+ 
 
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
