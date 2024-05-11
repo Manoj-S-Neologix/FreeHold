@@ -130,12 +130,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
   const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
-  const getProjectName = particularClientAllData[0]?.projectName;
+  // const getProjectName = particularClientAllData[0]?.projectName;
   const getProjectCode = particularClientAllData[0]?.projectNumber;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
+      console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
       console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
@@ -206,67 +207,121 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   console.log(fileInfoArray, 'fileInfoArray');
 
-  console.log(uploadFiles, getGuid, getClientDetails, "uploadFilesgetGuid");
+  console.log(getClientDetails, "uploadFilesgetGuid");
 
   console.log(particularClientAllData, 'getProjectName..');
-  
-  const handleSave = handleSubmit(async (data: any) => {
+
+  // const handleSave = handleSubmit(async (data: any) => {
+  //   setLoading(true);
+  //   const apiResponse = ProjectService();
+  //   const collectionOfDocuments: any = [];
+  //   getClientDocumentsData.map((data: any) => {
+  //     collectionOfDocuments.push({
+  //       Id: data.Id,
+  //       GUID: data.GUID,
+  //       FileLeafRef: data.FileLeafRef,
+  //       FileRef: data.FileRef
+  //     });
+  //   });
+  //   console.log(collectionOfDocuments, 'collection..');
+  //   const updatedData = {
+  //     clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
+  //     libraryGUID: data.clientName,
+  //     collectionOfDocuments: collectionOfDocuments,
+  //     // projectName: particularClientAllData[0]?.projectName,
+  //     projectNumber: particularClientAllData[0]?.projectNumber
+  //   };
+
+  //   console.log(updatedData, getProjectName, "updatedData");
+  //   const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
+  //   console.log(response, "responseresponse");
+  //   //create a folder in a library
+  //   const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectNumber;
+  //   const createFolder = await ProjectService().createFolder(rootUrl, updatedData.clientName);
+
+  //   console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
+  //   // once folder is created, upload files
+  //   // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
+
+  //   const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
+  //   console.log(uploadDocument, "uploadDocumentuploadDocument");
+  //   // console.log(updatedData, "handleSave");
+
+  //   console.log(particularClientAllData[0].name, "name");
+  //   console.log(fileInfoArray, 'fileinfo');
+
+  //   apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray[0].name)
+  //     .then(() => {
+  //       setLoading(false);
+  //       // handleCancel();
+  //       setFiles([]);
+  //       setUploadFiles([]);
+  //       false && toast.success('Documents Added Successfully!');
+  //       false && fetchData("test");
+
+
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       console.error("Failed to add client and document:", error);
+  //       toast.error(`Failed to add client and document: ${error}`);
+  //     });
+
+  // });
+
+  // const handleSave = handleSubmit(async (data: any) => {
+  //   setLoading(true);
+  //   const apiResponse = ProjectService();
+  //   apiResponse.addDocumentsToFolder(getClientDetails[0].name, fileInfoArray[0]?.name)
+  //     .then(() => {
+  //       setLoading(false);
+  //       // handleCancel();
+  //       setFiles([]);
+  //       setUploadFiles([]);
+  //       false && toast.success('Documents Added Successfully!');
+
+  //       false && fetchData("test");
+
+
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       console.error("Failed to add client and document:", error);
+  //       toast.error(`Failed to add client and document: ${error}`);
+  //     });
+
+  // });
+
+  const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
-    const apiResponse = ProjectService();
-    const collectionOfDocuments: any = [];
-    getClientDocumentsData.map((data: any) => {
-      collectionOfDocuments.push({
-        Id: data.Id,
-        GUID: data.GUID,
-        FileLeafRef: data.FileLeafRef,
-        FileRef: data.FileRef
-      });
-    });
-    console.log(collectionOfDocuments, 'collection..');
-    const updatedData = {
-      clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
-      libraryGUID: data.clientName,
-      collectionOfDocuments: collectionOfDocuments,
-      // projectName: particularClientAllData[0]?.projectName,
-      projectNumber: particularClientAllData[0]?.projectNumber
-    };
 
-    console.log(updatedData, getProjectName, "updatedData");
-    const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
-    console.log(response, "responseresponse");
-    //create a folder in a library
-    const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectNumber;
-    const createFolder = await ProjectService().createFolder(rootUrl, updatedData.clientName);
+    try {
+        const apiResponse = ProjectService();
+        console.log(data, 'projectdata..')
+        // Determine the selected client based on the submitted form data
+        // const selectedClientName = client.name;
+        // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
+        // const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
+        // console.log(getLibraryName, 'getLibraryName.')
+        // Construct the folder URL for the selected client
+        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
 
-    console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-    // once folder is created, upload files
-    // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
+        // Upload documents to the specified client's folder
+        await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
 
-    const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
-    console.log(uploadDocument, "uploadDocumentuploadDocument");
-    // console.log(updatedData, "handleSave");
-
-    console.log(particularClientAllData[0].name, "name");
-    console.log(fileInfoArray, 'fileinfo');
-
-    apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray[0].name)
-      .then(() => {
         setLoading(false);
-        // handleCancel();
         setFiles([]);
         setUploadFiles([]);
-        false && toast.success('Documents Added Successfully!');
-        false && fetchData("test");
+        toast.success('Documents Added Successfully!');
+        // fetchData("test");
+        handleCancel(); // Close the dialog if needed
 
-
-      })
-      .catch((error) => {
+    } catch (error) {
         setLoading(false);
         console.error("Failed to add client and document:", error);
         toast.error(`Failed to add client and document: ${error}`);
-      });
-
-  });
+    }
+});
 
   const handleDelete = (getGuid: any) => {
     const apiResponse = ClientService();
@@ -367,7 +422,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             }}
                           >
                             {getClientDetails?.map((item: any) => (
-                              <MenuItem key={item.id} value={item.libraryGUID}>
+                              <MenuItem key={item.id} value={item.name}>
                                 {item.name}
                               </MenuItem>
                             ))}
