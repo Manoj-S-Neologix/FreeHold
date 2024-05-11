@@ -58,6 +58,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
   const { control, handleSubmit, formState: { errors }, setValue } = useForm();
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
+  // const watchClientName = watch('clientName')
+  // const watchUnitDocument = watch('unitDocument')
 
   const handleFileInput = (selectedFiles: File[]) => {
     console.log(selectedFiles, "selectedFiles");
@@ -296,32 +298,38 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     setLoading(true);
 
     try {
-        const apiResponse = ProjectService();
-        console.log(data, 'projectdata..')
-        // Determine the selected client based on the submitted form data
-        // const selectedClientName = client.name;
-        // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
-        // const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-        // console.log(getLibraryName, 'getLibraryName.')
-        // Construct the folder URL for the selected client
-        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+      const apiResponse = ProjectService();
+      console.log(data, 'projectdata..')
+      // Determine the selected client based on the submitted form data
+      // const selectedClientName = client.name;
+      // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
+      // console.log(getLibraryName, 'getLibraryName.')
+      // Construct the folder URL for the selected client
+      const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+      if (data.unitDocument !== '') {
 
+        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+        await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+      }
+      else {
         // Upload documents to the specified client's folder
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+      }
+      // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
 
-        setLoading(false);
-        setFiles([]);
-        setUploadFiles([]);
-        toast.success('Documents Added Successfully!');
-        // fetchData("test");
-        handleCancel(); // Close the dialog if needed
+      setLoading(false);
+      setFiles([]);
+      setUploadFiles([]);
+      toast.success('Documents Added Successfully!');
+      // fetchData("test");
+      handleCancel(); // Close the dialog if needed
 
     } catch (error) {
-        setLoading(false);
-        console.error("Failed to add client and document:", error);
-        toast.error(`Failed to add client and document: ${error}`);
+      setLoading(false);
+      console.error("Failed to add client and document:", error);
+      toast.error(`Failed to add client and document: ${error}`);
     }
-});
+  });
 
   const handleDelete = (getGuid: any) => {
     const apiResponse = ClientService();
@@ -415,10 +423,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             onChange={(e: any) => {
                               console.log(e.target.value);
                               setGetClient(e.target.value);
-                              getDocumentsFromFolder(e.target.value);
+                              const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
+
+                              console.log(getLibraryName, "getLibraryName");
+                              getDocumentsFromFolder(getLibraryName);
                               setValue('clientName', e.target.value);
                               setGetGuid(e.target.value);
-                              fetchData(e.target.value);
+                              fetchData(getLibraryName);
                             }}
                           >
                             {getClientDetails?.map((item: any) => (
@@ -457,6 +468,16 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           variant="outlined"
                           placeholder="Select Unit..."
                           size="small"
+                          // onChange={(e: any) => {
+                          //   console.log(e.target.value);
+                          //   const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
+
+                          //   const libraryPath = `${getLibraryName}/${e.target.value}`;
+                          //   setValue('unitDocument', e.target.value);
+
+                            
+                          //   fetchData(libraryPath)
+                          // }}
                           required
                         >
                           {/* <MenuItem value="">None</MenuItem>
@@ -472,7 +493,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       )}
                     />
                   </Grid>
-                  {console.log(getClientDocumentsData, getClientDocumentsAllData, 'getClientDocuments..')}
+                  {console.log(getClientDocumentsData, getClientDocumentsAllData, getFoldersResponse, 'getClientDocuments..')}
                   {false && getClientDocumentsData.length > 0 && (
                     <Grid item xs={12}>
                       <Controller

@@ -67,6 +67,15 @@ const ClientService = () => {
             return results;
         }
     };
+
+
+    const getListCounts = async (listName: string) =>{
+        if (spServiceInstance) {
+            const response = await spServiceInstance.getListCounts(listName);
+            return response;
+
+        }
+    }
     // const getClientExpand = async (ListName: string, select: string, expand: string) => {
     //     if (spServiceInstance) {
     //         const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
@@ -278,6 +287,8 @@ const ClientService = () => {
 
 
 
+
+
     return {
         getClient,
         updateClient,
@@ -293,7 +304,8 @@ const ClientService = () => {
         addDocumentsToFolder,
         getPersonById,
         getClientExpandApi,
-        updateLibraryName
+        updateLibraryName,
+        getListCounts
 
     };
 };

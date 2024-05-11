@@ -316,6 +316,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
       // false && await addListItem('Clients', dataObj);
 
       const library = await apiResponse.createLibrary(dataObj.ProjectNumber, "Project Library");
+      console.log(library, "addlibrary")
       const updatedDataObj = {
         ...dataObj,
         ProjectLibraryGUID: library.data.Id,

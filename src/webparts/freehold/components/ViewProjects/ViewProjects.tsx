@@ -326,21 +326,59 @@ const ViewProject = (props: any) => {
   };
 
   // console.log(, "data")
+  // const hyperLink = (data: any, id: any) => {
+  //   return (
+  //     data !== '-' && <Box
+  //       onClick={() => {
+  //         navigate('/ViewClient/' + id);
+  //         // setIsViewDialogOpen(true);
+  //       }}
+  //       style={{
+  //         textDecoration: "underline", color: "blue", cursor: "pointer",
+  //         listStyleType: "none", padding: 0
+  //       }}>
+  //       {data}
+  //     </Box>
+  //   );
+  // };
+
   const hyperLink = (data: any, id: any) => {
+  // Check if data is an array and has items
+  if (Array.isArray(data) && data.length > 0) {
     return (
-      data !== '-' && <Box
+      <Box
         onClick={() => {
           navigate('/ViewClient/' + id);
-          // setIsViewDialogOpen(true);
         }}
         style={{
           textDecoration: "underline", color: "blue", cursor: "pointer",
           listStyleType: "none", padding: 0
-        }}>
+        }}
+      >
+        {data.length}
+      </Box>
+    );
+  } else if (data !== '-') {
+    // Display a single client name if not an array and not '-'
+    return (
+      <Box
+        onClick={() => {
+          navigate('/ViewClient/' + id);
+        }}
+        style={{
+          textDecoration: "underline", color: "blue", cursor: "pointer",
+          listStyleType: "none", padding: 0
+        }}
+      >
         {data}
       </Box>
     );
-  };
+  } else {
+    // Display nothing if data is '-'
+    return null;
+  }
+};
+
 
   console.log(projectData, 'projectdata..')
   const tableData = projectData.map((item: any) => {
@@ -361,12 +399,12 @@ const ViewProject = (props: any) => {
   const tableDataWidth = projectData.map((item: any) => {
     return {
       Id: { value: item.Id, width: "50px" },
-      projectNumber: { value: item.projectNumber, width: "180px" },
+      projectNumber: { value: item.projectNumber, width: "140px" },
       projectName: { value: item.projectName, width: "150px" },
-      location: { value: item.location, width: "150px" },
-      developer: { value: item.developer, width: "150px" },
+      location: { value: item.location, width: "140px" },
+      developer: { value: item.developer, width: "140px" },
       assignClient: { value: item?.assignClient, width: "150px" },
-      modifiedDate: { value: item.modifiedDate, width: "150px" },
+      modifiedDate: { value: item.modifiedDate, width: "140px" },
       modifiedBy: { value: item.modifiedBy, width: "150px" },
       // assignedStaff: { value: item?.assignedStaff, width: "80%" },
     };

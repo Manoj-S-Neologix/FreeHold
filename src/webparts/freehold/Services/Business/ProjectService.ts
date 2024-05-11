@@ -214,6 +214,14 @@ const ProjectService = () => {
         }
     };
 
+    const getListCounts = async (listName: string) =>{
+        if (spServiceInstance) {
+            const response = await spServiceInstance.getListCounts(listName);
+            return response;
+
+        }
+    }
+
 
     //         const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
 
@@ -261,7 +269,8 @@ const ProjectService = () => {
         deleteClient,
         addClient,
         addDocumentsToFolder,
-        createLibrary
+        createLibrary,
+        getListCounts
 
         // addDocumentsToFolder
     };

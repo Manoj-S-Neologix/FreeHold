@@ -19,7 +19,7 @@ export type SPServiceType = {
     createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
-    // getListCounts: (listName: string) => Promise<number>;
+    getListCounts: (listName: string) => Promise<number>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -114,32 +114,32 @@ const SPService: SPServiceType = {
     // },
 
 
-    
-   // Upload Document to a library
+
+    // Upload Document to a library
     uploadDocument: async (libraryName: string, files: any[]): Promise<any[]> => {
         const library = web.getFolderByServerRelativeUrl(libraryName);
-    
+
         const promises = files.map((file: any) => {
             return library.files.add(file.name, file, true)
                 .then((document: any) => {
                     return document;
                 })
                 .catch((err: any) => {
-                    throw err; 
+                    throw err;
                 });
         });
-    
+
         return Promise.all(promises)
             .then((documents: any[]) => {
-                return documents; 
+                return documents;
             })
             .catch((error: any) => {
                 console.error("Error uploading documents:", error);
-                throw error; 
-            
+                throw error;
+
             });
     },
-    
+
 
 
     // Update library name
@@ -165,12 +165,13 @@ const SPService: SPServiceType = {
         return updateItem;
     },
 
-    //     // get the count of items in the list
-    //     getListCounts: async (listName: string): Promise<number> => {
-    //     const count = await web.lists.getByTitle(listName).items.count();
-    //     return count
-    //     // console.log(count);
-    // },
+    // get the count of items in the list
+    getListCounts: async (listName: string): Promise<number> => {
+        const count = await web.lists.getByTitle(listName).items();
+        return count.length
+        // console.log(count);
+    },
+
 
     // Delete list items
     deleteListItem: async (listName: string, itemId: number): Promise<any> => {
@@ -199,7 +200,7 @@ const SPService: SPServiceType = {
     },
 
 
- 
+
 
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {

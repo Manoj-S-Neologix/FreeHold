@@ -59,6 +59,7 @@ const ViewClient = (props: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
 
+  console.log(filterQuery, "filterQuery");
   // const [searchQueryCall, setSearchQueryCall] = useState('');
 
   const [filterQueryCall, setFilterQueryCall] = useState('');
@@ -222,6 +223,7 @@ const ViewClient = (props: any) => {
   };
 
   const hyperLink = (data: any, id: any) => {
+
     return (
       data !== '-' && <Box
         onClick={() => {
@@ -233,6 +235,7 @@ const ViewClient = (props: any) => {
           listStyleType: "none", padding: 0
         }}>
         {data}
+
       </Box>
     );
   };
@@ -373,11 +376,33 @@ const ViewClient = (props: any) => {
   //   setSelectedPersons(items);
   // };
 
+  // const searchPeopleInTable = async (items: any[]) => {
+  //   console.log(items[0].text, "itemsitemsitemsitems");
+  //   setFilterQueryCall(items[0].text);
+  //   const testing = clientData.filter((data: any) => data.includes(items[0].text));
+  //   console.log(testing, "testing")
+  //   setSelectedPersons(items);
+  // };
+
   const searchPeopleInTable = async (items: any[]) => {
-    console.log(items[0].text, "itemsitemsitemsitems");
-    setFilterQueryCall(items[0].text);
-    setSelectedPersons(items);
+    if (items.length > 0 && items[0]?.text) {
+      const searchText = items[0].text.toLowerCase(); // Convert search text to lowercase for case-insensitive matching
+      const filteredData = clientData.filter((data:any) => {
+        if (data.assignStaff && typeof data.assignStaff === 'string') {
+          return data.assignStaff.toLowerCase().includes(searchText);
+        }
+        return false; // If assignStaff is not a string or is undefined/null, exclude this data
+      });
+      console.log(filteredData, "filteredData");
+      setClientData(filteredData);
+      console.log(items[0].text, "itemsitemsitemsitems");
+      // setSearchQueryCall(items[0].text);
+      setFilterQueryCall(items[0].text);
+      setSelectedPersons(items);
+
+    }
   };
+  
 
 
 
@@ -399,6 +424,7 @@ const ViewClient = (props: any) => {
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
+      
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
@@ -555,20 +581,20 @@ const ViewClient = (props: any) => {
               // />
 
               <Chip
-              sx={{ marginLeft: 2, }}
-              avatar={<Avatar alt={filterQueryCall} src={selectedPersons[0]?.imageUrl} />}
-              label={filterQueryCall}
-              onDelete={() => {
-                // setSearchQuery('');
-                setFilterQuery('');
-                setFilterQueryCall('');
-                setSelectedPersons([]);
-                setOpen(false);
-                setFilterPersonShown(false);
-                // fetchData()
-              }}
-              variant="outlined"
-            />
+                sx={{ marginLeft: 2, }}
+                avatar={<Avatar alt={filterQueryCall} src={selectedPersons[0]?.imageUrl} />}
+                label={filterQueryCall}
+                onDelete={() => {
+                  // setSearchQuery('');
+                  setFilterQuery('');
+                  setFilterQueryCall('');
+                  setSelectedPersons([]);
+                  setOpen(false);
+                  setFilterPersonShown(false);
+                  fetchData()
+                }}
+                variant="outlined"
+              />
             }
           </Box>
 
@@ -591,7 +617,7 @@ const ViewClient = (props: any) => {
                 }} />
               </div>
             </DialogTitle>
-            
+
 
             <IconButton
               aria-label="close"
@@ -666,7 +692,7 @@ const ViewClient = (props: any) => {
                         Clear
                       </MuiButton>
                       <MuiButton
-                        onClick={() => { handleApply();  handleFilterChange(new MouseEvent('click')); }}
+                        onClick={() => { handleApply(); handleFilterChange(new MouseEvent('click')); }}
                         variant="contained"
                         color="primary"
                         sx={{
@@ -691,7 +717,7 @@ const ViewClient = (props: any) => {
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
-            filterQuery={filterQuery}
+            filterQuery={""}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}

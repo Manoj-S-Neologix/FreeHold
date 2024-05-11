@@ -2,27 +2,43 @@ import * as React from 'react';
 import styles from './ProjectsClients.module.scss';
 import { Box, Stack } from '@mui/material';
 import { Link } from "react-router-dom";
-// import ClientService from '../../Services/Business/ClientService';
+import ClientService from '../../Services/Business/ClientService';
+import ProjectService from '../../Services/Business/ProjectService';
 
 
 const ProjectsClient = ({ props }: any) => {
-  // const [clientData, setClientData] = React.useState<any[]>([]);
-  // const [projectData, setProjectData] = React.useState<any[]>([]);
+  const [clientData, setClientData] = React.useState<number>(0);
+  const [projectData, setProjectData] = React.useState<number>(0);
 
-  // const fetchData = async () => {
-  //   try {
-  //     const clientService = ClientService();
-  //     const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
-  //     const expand = 'AssignedStaff,Author,ProjectId';
-  //     const filter = "";
-  //     const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
-  //     setClientData(results.length)
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
-
+  React.useEffect (()=>{
+    fetchData();
+  },[]
+)
+   
   
+
+  console.log(clientData, "countclient")
+  console.log(projectData, "countproject")
+
+  const fetchData = async () => {
+    try {
+      const clientService = ClientService();
+      const projectService = ProjectService();
+
+
+      const results = await clientService.getListCounts('Client_Informations');
+      const projectResults = await projectService.getListCounts('Project_Informations');
+      if(results)
+      setClientData(results)
+    if(projectResults)
+      setProjectData(projectResults)
+    } catch (error) {
+
+      console.error('Error fetching data:', error);
+    }
+  };
+
+
   return (
     <Box >
       <Stack>
@@ -46,7 +62,7 @@ const ProjectsClient = ({ props }: any) => {
                         className={styles.projectImage}
                       />
                       <div className={styles.projectContent}>
-                        <div className={styles.projectNumber}>351</div>
+                        <div className={styles.projectNumber}>{projectData}</div>
                         <div className={styles.projectHeading}>PROJECTS</div>
                       </div>
                     </div>
@@ -61,7 +77,7 @@ const ProjectsClient = ({ props }: any) => {
                         className={styles.projectImage}
                       />
                       <div className={styles.clientContent}>
-                        <div className={styles.clientNumber}>52</div>
+                        <div className={styles.clientNumber}>{clientData}</div>
                         <div className={styles.clientText}>CLIENTS</div>
                       </div>
                     </div>
