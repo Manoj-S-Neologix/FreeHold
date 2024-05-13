@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, Dialog, DialogContent, DialogTitle, Grid, IconButton, Chip, Avatar } from '@mui/material';
+import { Breadcrumbs, Box, Stack, Dialog, DialogContent, DialogTitle, Grid, IconButton, Chip, Avatar, Typography } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -80,6 +80,8 @@ const ViewClient = (props: any) => {
   const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
+  const [selectedName, setSelectedName] = useState('');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
 
@@ -222,23 +224,23 @@ const ViewClient = (props: any) => {
     );
   };
 
-  const hyperLink = (data: any, id: any) => {
+  // const hyperLink = (data: any, id: any) => {
 
-    return (
-      data !== '-' && <Box
-        onClick={() => {
-          navigate('/ViewClient/' + id);
-          // setIsViewDialogOpen(true);
-        }}
-        style={{
-          textDecoration: "underline", color: "blue", cursor: "pointer",
-          listStyleType: "none", padding: 0
-        }}>
-        {data}
+  //   return (
+  //     data !== '-' && <Box
+  //       onClick={() => {
+  //         navigate('/ViewClient/' + id);
+  //         // setIsViewDialogOpen(true);
+  //       }}
+  //       style={{
+  //         textDecoration: "underline", color: "blue", cursor: "pointer",
+  //         listStyleType: "none", padding: 0
+  //       }}>
+  //       {data}
 
-      </Box>
-    );
-  };
+  //     </Box>
+  //   );
+  // };
 
   const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
@@ -466,6 +468,29 @@ const ViewClient = (props: any) => {
   //   );
   // };
 
+  const handleClickOpen = (name: any, id:any) => {
+    setSelectedName(name);
+    setDialogOpen(true);
+  }
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+
+  const hyperLink = (data: any, name: any, id:any) => {
+    return (
+      <Box>
+        <Chip
+          label={data}
+          onClick={() => {
+            handleClickOpen(name, id);
+          }}
+        >
+          {data}
+        </Chip>
+      </Box>
+    );
+  };
+
   const tableData = clientData.map((item: any) => {
     return {
       Id: item.Id,
@@ -474,9 +499,9 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff: item?.assignStaff,
+      assignStaff:  hyperLink(item?.assignedStaff.length, item.assignStaff, item.assignedStaffId),
       assignedStaff: item?.assignedStaff,
-      ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
+      ProjectId: hyperLink(item.projectName, item?.ProjectIdId, item.Id)
     };
   });
 
@@ -706,6 +731,62 @@ const ViewClient = (props: any) => {
                   </Grid>
                 </Grid>
               </Stack>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={dialogOpen}
+            fullWidth={true}
+            maxWidth={"sm"}
+          >
+            <DialogTitle>
+              <div className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-center relative">
+                  <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
+                    Assigned Staff
+                  </h4>
+                </div>
+                <div style={{
+                  height: '4px', width: '100%',
+                  backgroundColor: theme.palette.primary.main
+                }} />
+              </div>
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: "14px",
+                top: "8px",
+                color: (theme: any) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <Typography style={{
+                textDecoration: "underline", color: "blue", cursor: "pointer",
+                listStyleType: "none", padding: 0
+              }}>
+                {/* {projectData?.map((data: any) => (
+                  <Box key={data.Id}> 
+                  {console.log(data?.clientDetails.length, 'length')}   
+                  {data?.clientDetails?.length > 0 ? (data?.clientDetails?.map((client: any) => (
+                  <Typography key={client.Id}>
+                    {client.Title}
+                    {console.log(client.Title, 'clientproject')}
+                  </Typography>
+                  ))) : (null)} 
+                  
+                  </Box>
+                ))} */}
+                {/* {projectData?.map((data: any) => (
+                  <Box key={data.assignClientId}>    
+                 {data.assignClient} 
+                  </Box>
+                ))} */}
+                {selectedName}
+              </Typography>
             </DialogContent>
           </Dialog>
         </Box>

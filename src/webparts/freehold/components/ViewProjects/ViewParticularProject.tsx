@@ -447,12 +447,12 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assign Client</TableCell>
-                                        {isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
+                                        {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
                                             onClick={(id:any) => {
                                                 // setHandleClientDialog(true);
                                                 // setIsViewDialogOpen(true)
-                                                navigate("/viewClient/" + id)
+                                                navigate("/ViewClient/" + id)
                                             }}
                                         >
                                             {projectDetails.assignClient ?

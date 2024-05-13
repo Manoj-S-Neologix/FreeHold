@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
+import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -79,10 +79,12 @@ const ViewProject = (props: any) => {
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const { control, formState: { errors } } = useForm();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedName, setSelectedName] = useState('');
 
 
 
@@ -325,59 +327,110 @@ const ViewProject = (props: any) => {
     }
   };
 
-  // console.log(, "data")
-  // const hyperLink = (data: any, id: any) => {
-  //   return (
-  //     data !== '-' && <Box
-  //       onClick={() => {
-  //         navigate('/ViewClient/' + id);
-  //         // setIsViewDialogOpen(true);
-  //       }}
-  //       style={{
-  //         textDecoration: "underline", color: "blue", cursor: "pointer",
-  //         listStyleType: "none", padding: 0
-  //       }}>
-  //       {data}
-  //     </Box>
-  //   );
-  // };
-
-  const hyperLink = (data: any, id: any) => {
-  // Check if data is an array and has items
-  if (Array.isArray(data) && data.length > 0) {
-    return (
-      <Box
-        onClick={() => {
-          navigate('/ViewClient/' + id);
-        }}
-        style={{
-          textDecoration: "underline", color: "blue", cursor: "pointer",
-          listStyleType: "none", padding: 0
-        }}
-      >
-        {data.length}
-      </Box>
-    );
-  } else if (data !== '-') {
-    // Display a single client name if not an array and not '-'
-    return (
-      <Box
-        onClick={() => {
-          navigate('/ViewClient/' + id);
-        }}
-        style={{
-          textDecoration: "underline", color: "blue", cursor: "pointer",
-          listStyleType: "none", padding: 0
-        }}
-      >
-        {data}
-      </Box>
-    );
-  } else {
-    // Display nothing if data is '-'
-    return null;
+  const handleClickOpen = (name: any, id:any) => {
+    setSelectedName(name);
+    setDialogOpen(true);
   }
-};
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+
+  // const handleDialog = () => {
+  //   return(
+  //     <>
+  //     <Dialog
+  //       open={open}
+  //       onClose={handleClose}
+  //       aria-labelledby="alert-dialog-title"
+  //       aria-describedby="alert-dialog-description"
+  //     >
+  //       <DialogTitle>
+  //       <div className="d-flex flex-column">
+  //         <div className="d-flex justify-content-between align-items-center relative">
+  //           <h4 style={{ margin: '0', color: '#125895' }}>
+  //             Assigned Client</h4>
+  //           </div>
+  //         <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
+  //       </div>
+  //       </DialogTitle>
+  //       <IconButton
+  //           aria-label="close"
+  //           onClick={handleClose}
+  //           sx={{
+  //             position: "absolute",
+  //             right: "14px",
+  //             top: "8px",
+  //             color: (theme: any) => theme.palette.grey[500],
+  //           }}
+  //         >
+  //           <CloseIcon />
+  //         </IconButton>
+  //       <DialogContent>
+  //         {projectData?.clientDetails?.map((data:any)=>{
+  //           return(
+  //             <Box>
+  //               <Typography>{data.Title}</Typography>
+  //             </Box>
+  //           )
+  //         })}
+  //       </DialogContent>
+  //     </Dialog>
+  //   </>
+  //   )
+  // }
+
+  // console.log(, "data")
+  const hyperLink = (data: any, name: any, id:any) => {
+    return (
+      <Box>
+        <Chip
+          label={data}
+          onClick={() => {
+            handleClickOpen(name, id);
+          }}
+        >
+          {data}
+        </Chip>
+      </Box>
+    );
+  };
+
+  //   const hyperLink = (data: any, id: any) => {
+  //   // Check if data is an array and has items
+  //   if (Array.isArray(data) && data.length > 0) {
+  //     return (
+  //       <Box
+  //         onClick={() => {
+  //           navigate('/ViewClient/' + id);
+  //         }}
+  //         style={{
+  //           textDecoration: "underline", color: "blue", cursor: "pointer",
+  //           listStyleType: "none", padding: 0
+  //         }}
+  //       >
+  //         {data.length}
+  //       </Box>
+  //     );
+  //   } else if (data !== '-') {
+  //     // Display a single client name if not an array and not '-'
+  //     return (
+  //       <Box
+  //         onClick={() => {
+  //           navigate('/ViewClient/' + id);
+  //         }}
+  //         style={{
+  //           textDecoration: "underline", color: "blue", cursor: "pointer",
+  //           listStyleType: "none", padding: 0
+  //         }}
+  //       >
+  //         {data}
+  //       </Box>
+  //     );
+  //   } else {
+  //     // Display nothing if data is '-'
+  //     return null;
+  //   }
+  // };
 
 
   console.log(projectData, 'projectdata..')
@@ -388,11 +441,12 @@ const ViewProject = (props: any) => {
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
-      assignClient: hyperLink(item?.assignClient, item?.assignClientId),
+      assignClient: hyperLink(item?.clientDetails.length, item.assignClient, item.assignClientId),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
-  });
+  }
+  );
 
   console.log(tableData, "table..data");
 
@@ -575,6 +629,62 @@ const ViewProject = (props: any) => {
               </DialogActions>
             </DialogContent>
           </Dialog>
+          <Dialog
+            open={dialogOpen}
+            fullWidth={true}
+            maxWidth={"sm"}
+          >
+            <DialogTitle>
+              <div className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-center relative">
+                  <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
+                    Assigned Client
+                  </h4>
+                </div>
+                <div style={{
+                  height: '4px', width: '100%',
+                  backgroundColor: theme.palette.primary.main
+                }} />
+              </div>
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: "14px",
+                top: "8px",
+                color: (theme: any) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <Typography style={{
+                textDecoration: "underline", color: "blue", cursor: "pointer",
+                listStyleType: "none", padding: 0
+              }}>
+                {/* {projectData?.map((data: any) => (
+                  <Box key={data.Id}> 
+                  {console.log(data?.clientDetails.length, 'length')}   
+                  {data?.clientDetails?.length > 0 ? (data?.clientDetails?.map((client: any) => (
+                  <Typography key={client.Id}>
+                    {client.Title}
+                    {console.log(client.Title, 'clientproject')}
+                  </Typography>
+                  ))) : (null)} 
+                  
+                  </Box>
+                ))} */}
+                {/* {projectData?.map((data: any) => (
+                  <Box key={data.assignClientId}>    
+                 {data.assignClient} 
+                  </Box>
+                ))} */}
+                {selectedName}
+              </Typography>
+            </DialogContent>
+          </Dialog>
           <Box >
             <GridTable
               // rows={rows}
@@ -627,6 +737,8 @@ const ViewProject = (props: any) => {
           setIsEdit={setIsEdit}
           setProjectDetails={setProjectDetails}
           isEdit={isEdit}
+          selectedName={selectedName}
+          setSelectedName={setSelectedName}
           particularClientAllData={particularClientAllData} selected={selected}
           fetchData={fetchData}
         />}
