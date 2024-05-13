@@ -115,29 +115,29 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props}) => {
       };
 
       // const getClientFromFolder = async (libraryGuid: string) => {
-      //   try {
-      //     const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      //     console.log(results, 'guidresult')
-      //     const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-      //     console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      //     const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+      // //   try {
+      // //     const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
+      // //     console.log(results, 'guidresult')
+      // //     const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
+      // //     console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      // //     const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
           
-      //     console.log('Retrieved files:', results,);
-      //     console.log('getFolders', getFolders);
-      //     setGetFoldersResponse(getFolders);
+      // //     console.log('Retrieved files:', results,);
+      // //     console.log('getFolders', getFolders);
+      // //     setGetFoldersResponse(getFolders);
     
-      //     // Ensure results is an array before setting state
-      //     if (Array.isArray(results)) {
-      //       setClientDocumentsData(results.map(item => item.FileLeafRef));
-      //       setClientDocumentsAllData(results);
-      //       console.log(getClientDocumentsAllData, 'BBB');
-      //     } else {
-      //       console.error('Error: Retrieved data is not an array');
-      //     }
-      //   } catch (error) {
-      //     console.error('Error fetching documents:', error);
-      //   }
-      // };
+      // //     // Ensure results is an array before setting state
+      // //     if (Array.isArray(results)) {
+      // //       setClientDocumentsData(results.map(item => item.FileLeafRef));
+      // //       setClientDocumentsAllData(results);
+      // //       console.log(getClientDocumentsAllData, 'BBB');
+      // //     } else {
+      // //       console.error('Error: Retrieved data is not an array');
+      // //     }
+      // //   } catch (error) {
+      // //     console.error('Error fetching documents:', error);
+      // //   }
+      // // };
     
 
 

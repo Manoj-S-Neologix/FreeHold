@@ -496,6 +496,7 @@ const ViewClient = (props: any) => {
       Id: item.Id,
       name: item.name,
       email: item.email,
+      
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
@@ -509,7 +510,7 @@ const ViewClient = (props: any) => {
     return {
       Id: { value: item.Id, width: "50px" },
       name: { value: item.name, width: "130px" },
-      email: { value: item.email, width: "230px" },
+      email: { value: item.email, width: "180px" },
       contact: { value: item.contact, width: "150px" },
       modifiedDate: { value: item.modifiedDate, width: "150px" },
       modifiedBy: { value: item.modifiedBy, width: "150px" },
