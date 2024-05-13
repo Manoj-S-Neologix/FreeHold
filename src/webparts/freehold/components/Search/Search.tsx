@@ -11,7 +11,9 @@ import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import DragAndDropUpload from "../../../../Common/DragAndDrop/DragAndDrop";
 import styles from "./Search.module.scss";
-// import ClientProjectUpload from "../ClientProjectUpload/ClientProjectUpload";
+// import ClientProjectUpload from "../ClientUploadDocument/ClientProjectUpload";
+import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
+import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
 
 const clientOptions = ['Client1', 'Client2', 'Client3'];
 const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -260,6 +262,7 @@ const Search = (props: any) => {
                     {documentType === 'Project' && (
                         <>
                             {/* <ClientProjectUpload /> */}
+                            <ClientUploadDocument/>
                             {false && <form onSubmit={handleSubmit(handleSave)}>
                                 <Stack direction={"column"} gap={3}>
                                     <Grid container spacing={2}>
@@ -388,64 +391,67 @@ const Search = (props: any) => {
 
                     )}
                     {documentType === 'Client' && (
-                        <form onSubmit={handleSubmit(handleSave)}>
-                            <Stack direction={"column"} gap={3}>
-                                <Grid container spacing={2}>
-                                    <Grid item sm={12}>
-                                        <Controller
-                                            name="clientName"
-                                            control={control}
-                                            defaultValue=""
-                                            rules={{ required: 'Client Name is required' }}
-                                            render={({ field }) => (
-                                                <>
-                                                    <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                                                    <TextField
-                                                        {...field}
-                                                        id="client-name"
-                                                        fullWidth
-                                                        variant="outlined"
-                                                        select
-                                                        size="small"
-                                                        required
-                                                        label=""
-                                                        error={!!errors.clientName}
-                                                    >
-                                                        <MenuItem value="">None</MenuItem>
-                                                        <MenuItem value="Client A">Client A</MenuItem>
-                                                        <MenuItem value="Client B">Client B</MenuItem>
-                                                    </TextField>
-                                                    <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
-                                                </>
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item sm={12}>
-                                        <InputLabel htmlFor="client-document">Upload Document</InputLabel>
-                                        <DragAndDropUpload
-                                            onFilesAdded={(files: File[]) => {
-                                                //console.log(files);
-                                            }}
-                                        />
-                                    </Grid>
-                                </Grid>
-                                <DialogActions sx={{ px: 0, mr: 0 }}>
-                                    <MuiButton
-                                        type="submit"
-                                        variant="contained"
-                                    >
-                                        Save
-                                    </MuiButton>
-                                    <MuiButton
-                                        variant="outlined"
-                                        onClick={() => setOpenDocuments(false)}
-                                    >
-                                        Cancel
-                                    </MuiButton>
+                        <>
+                        <ProjectUploadDocument/>
+                        </>
+                //   <form onSubmit={handleSubmit(handleSave)}>
+                //           {false&& <Stack direction={"column"} gap={3}>
+                //                 <Grid container spacing={2}>
+                //                     <Grid item sm={12}>
+                //                         <Controller
+                //                             name="clientName"
+                //                             control={control}
+                //                             defaultValue=""
+                //                             rules={{ required: 'Client Name is required' }}
+                //                             render={({ field }) => (
+                //                                 <>
+                //                                     <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                //                                     <TextField
+                //                                         {...field}
+                //                                         id="client-name"
+                //                                         fullWidth
+                //                                         variant="outlined"
+                //                                         select
+                //                                         size="small"
+                //                                         required
+                //                                         label=""
+                //                                         error={!!errors.clientName}
+                //                                     >
+                //                                         <MenuItem value="">None</MenuItem>
+                //                                         <MenuItem value="Client A">Client A</MenuItem>
+                //                                         <MenuItem value="Client B">Client B</MenuItem>
+                //                                     </TextField>
+                //                                     <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
+                //                                 </>
+                //                             )}
+                //                         />
+                //                     </Grid>
+                //                     <Grid item sm={12}>
+                //                         <InputLabel htmlFor="client-document">Upload Document</InputLabel>
+                //                         <DragAndDropUpload
+                //                             onFilesAdded={(files: File[]) => {
+                //                                 //console.log(files);
+                //                             }}
+                //                         />
+                //                     </Grid>
+                //                 </Grid>
+                //                 <DialogActions sx={{ px: 0, mr: 0 }}>
+                //                     <MuiButton
+                //                         type="submit"
+                //                         variant="contained"
+                //                     >
+                //                         Save
+                //                     </MuiButton>
+                //                     <MuiButton
+                //                         variant="outlined"
+                //                         onClick={() => setOpenDocuments(false)}
+                //                     >
+                //                         Cancel
+                //                     </MuiButton>
 
-                                </DialogActions>
-                            </Stack>
-                        </form>
+                //                 </DialogActions>
+                //             </Stack>}
+                //         </form>
                     )}
 
                 </DialogContent>

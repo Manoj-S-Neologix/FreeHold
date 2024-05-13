@@ -26,6 +26,7 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
+// import ClientProjectUpload from '../ClientProjectUpload/ClientProjectUpload';
 // import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
 
@@ -724,6 +725,7 @@ const ViewProject = (props: any) => {
       {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+      {/* {uploadDialogOpen && <ClientProjectUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />} */}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
         <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}
