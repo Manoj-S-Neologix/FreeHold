@@ -11,6 +11,7 @@ import { Button as MuiButton } from "@mui/material";
 // import { Radio, RadioGroup,  FormHelperText } from '@mui/material';
 import toast from 'react-hot-toast';
 import { CircularProgress } from "@mui/material";
+import ClientService from '../../Services/Business/ClientService';
 // import ClientService from '../../Services/Business/ClientService';
 
 
@@ -40,7 +41,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
 
 
-  console.log(projectData, setGetClientDetails, isLoading, setGetFoldersResponse, 'projectdata..')
+  console.log(projectData, isLoading, setGetFoldersResponse, 'projectdata..')
 
   console.log(getClientDetails, "uploadgetClientDetails....")
 
@@ -64,58 +65,61 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
   console.log(mappedFiles);
 
-  // const clientService = ClientService();
-  // const clientListName = "Client_Informations";
-  // const selectQuery = "Id,Title,ClientLibraryGUID";
+  const clientService = ClientService();
+  const clientListName = "Client_Informations";
+  const selectQuery = "Id,Title,ClientLibraryGUID";
 
-  // const apiCall = async () => {
-  //   try {
-  //     const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
-  //     console.log("API Call Data:", data);
-  //     if (data) {
-  //       const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
-  //       const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
-  //       console.log(filteredData, "filteredData");
-  //       const mappedData = filteredData.map((item: any) => ({
-  //         id: item.Id,
-  //         name: item.Title,
-  //         libraryGUID: item.ClientLibraryGUID
-  //       }));
-  //       setGetClientDetails(mappedData);
-  //       // console.log(getClientDetails, "")
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
-
-  // const getDocumentsFromFolder = async (libraryGuid: string) => {
-  //   try {
-  //     const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-  //     console.log(results, 'guidresult')
-  //     const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-  //     console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-  //     const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
-
-  //     console.log('Retrieved files:', results,);
-  //     console.log('getFolders', getFolders);
-  //     setGetFoldersResponse(getFolders);
-
-  //     // Ensure results is an array before setting state
-  //     if (Array.isArray(results)) {
-  //       setClientDocumentsData(results.map(item => item.FileLeafRef));
-  //       setClientDocumentsAllData(results);
-  //       console.log(getClientDocumentsAllData, 'BBB');
-  //     } else {
-  //       console.error('Error: Retrieved data is not an array');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching documents:', error);
-  //   }
-  // };
-
-  const getClientFromFolder = async (libraryGuid: string) => {
+  const apiCall = async (particularClientAllData: any) => {
     try {
+      console.log(particularClientAllData,"particularClientAllDataparticularClientAllData")
+      const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+      console.log("API Call Data:", data);
+     
+      if (data) {
+        const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
+        const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
+        console.log(filteredData, "filteredData");
+        const mappedData = filteredData.map((item: any) => ({
+          id: item.Id,
+          name: item.Title,
+          libraryGUID: item.ClientLibraryGUID
+        }));
+        setGetClientDetails(mappedData);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const getDocumentsFromFolder = async (libraryGuid: string) => {
+    try {
+      const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
+      console.log(results, 'guidresult')
+      const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
+      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+
+      console.log('Retrieved files:', results,);
+      console.log('getFolders', getFolders);
+      setGetFoldersResponse(getFolders);
+
+      // Ensure results is an array before setting state
+      if (Array.isArray(results)) {
+        setClientDocumentsData(results.map(item => item.FileLeafRef));
+        setClientDocumentsAllData(results);
+        console.log(getClientDocumentsAllData, 'BBB');
+      } else {
+        console.error('Error: Retrieved data is not an array');
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
+
+  const getClientFromFolder = async (libraryGuid: string,getUnique:string) => {
+    try {
+      console.log(getUnique,"getUnique")
+      await apiCall(getUnique)
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
       console.log(results, 'guidresult')
       const getLibraryName = AllClientData.filter((item: any) => item.GUID === libraryGuid)[0].projectNumber;
@@ -141,7 +145,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
 
 
-  const fetchData = async (getGuid: any) => {
+  const fetchData = async () => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
@@ -175,7 +179,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
 
   React.useEffect(() => {
-    fetchData(getGuid);
+    fetchData();
     // apiCall();
   }, []);
 
@@ -196,10 +200,13 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
     try {
       const apiResponse = ProjectService();
       console.log(data, 'projectdata..')
-      const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+      const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name
+
+      const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}`;
+      console.log(folderUrl, "folderUrlfolderUrl")
       if (data.unitDocument !== '') {
 
-        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+        const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
       }
       else {
@@ -251,7 +258,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
                     setValue('projectName', e.target.value)
                     console.log(getUnique, "getUnique")
                     // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
-                    getClientFromFolder(getUnique[0].GUID);
+                    getClientFromFolder(getUnique[0].GUID,getUnique);
 
                   }}
                 >
@@ -291,21 +298,21 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
                     console.log(e.target.value);
                     console.log(getClientDetails, "getClientDetails....")
                     setGetClient(e.target.value);
-                    const getLibraryName = AllClientData.filter((item: any) => item.assignClient === e.target.value)
+                    const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === e.target.value)[0].libraryGUID
 
                     console.log(getLibraryName, "getLibraryName");
-                    getClientFromFolder(getLibraryName);
+                    getDocumentsFromFolder(getLibraryName);
                     setValue('clientName', e.target.value);
                     setGetGuid(e.target.value);
-                    fetchData(getLibraryName);
+                    fetchData();
 
                   }}
                 >
-                  {AllClientData?.map((item: any) => (
-                        <MenuItem key={item.Id} value={item.assignClient}>
-                          {item.assignClient}
-                        </MenuItem>
-                      ))}
+                  {getClientDetails?.map((item: any) => (
+                    <MenuItem key={item.Id} value={item.libraryGUID}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </>
             )}
