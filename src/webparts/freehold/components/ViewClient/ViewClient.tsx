@@ -80,7 +80,7 @@ const ViewClient = (props: any) => {
   const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
-  const [selectedName, setSelectedName] = useState('');
+  const [selectedName, setSelectedName] = useState([]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
@@ -145,7 +145,9 @@ const ViewClient = (props: any) => {
 
   console.log(particularClientAllData, "getUniquegetUnique");
 
-  console.log(clientData, 'clientData..')
+  console.log(clientData, '.clientData.')
+
+  console.log(selectedName, 'selectedname')
 
 
   const handleSearchChange = (event: any) => {
@@ -468,15 +470,16 @@ const ViewClient = (props: any) => {
   //   );
   // };
 
-  const handleClickOpen = (name: any, id:any) => {
+  const handleClickOpen = (name: any, id?:number) => {
     setSelectedName(name);
     setDialogOpen(true);
+    console.log(name, 'selected')
   }
   const handleClose = () => {
     setDialogOpen(false);
   };
 
-  const hyperLink = (data: any, name: any, id:any) => {
+  const hyperLink = (data: any, name: any[], id?:any) => {
     return (
       <Box>
         <Chip
@@ -499,9 +502,9 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff:  hyperLink(item?.assignedStaff.length, item.assignStaff, item.assignedStaffId),
+      assignStaff:  hyperLink(item?.assignedStaff.length, item?.assignedStaff, item.Id),
       assignedStaff: item?.assignedStaff,
-      ProjectId: hyperLink(item.projectName, item?.ProjectIdId, item.Id)
+      ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
     };
   });
 
@@ -785,7 +788,15 @@ const ViewClient = (props: any) => {
                  {data.assignClient} 
                   </Box>
                 ))} */}
-                {selectedName}
+                {selectedName.map((data:any)=>(
+                  <Box 
+                    key={data.Id} 
+                    onClick={()=>{
+                    navigate("/ViewProjects/" + data.Id)
+                  }}>
+                    {data.Name}
+                  </Box>
+                ))}
               </Typography>
             </DialogContent>
           </Dialog>
