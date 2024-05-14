@@ -84,7 +84,7 @@ const ViewProject = (props: any) => {
   const { control, formState: { errors } } = useForm();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedName, setSelectedName] = useState('');
+  const [selectedName, setSelectedName] = useState([]);
 
 
 
@@ -327,12 +327,13 @@ const ViewProject = (props: any) => {
     }
   };
 
-  const handleClickOpen = (name: any, id:any) => {
+  const handleClickOpen = (name: any) => {
     setSelectedName(()=>{
-      // navigate("/ViewClient/" + id);
+      // navigate("/ViewClient/" + id)
       return name;
     });
     setDialogOpen(true);
+    console.log(selectedName,'selected')
   }
   const handleClose = () => {
     setDialogOpen(false);
@@ -383,19 +384,36 @@ const ViewProject = (props: any) => {
   // }
 
   // console.log(, "data")
-  const hyperLink = (data: any, name: any, id:any) => {
+  // const hyperLink = (data: any, name: any, id:any) => {
+  //   return (
+  //     <Box>
+  //       <Chip
+  //         label={data}
+  //         onClick={() => {
+  //           handleClickOpen(id, name);
+  //           console.log(name, 'e.target')
+  //         }}
+  //       >
+  //         {data}
+  //       </Chip>
+  //     </Box>
+  //   );
+  // };
+
+  const hyperLink = (data: any, names: any[]) => {
     return (
       <Box>
         <Chip
           label={data}
           onClick={() => {
-            handleClickOpen(name, id);
+            handleClickOpen(names);
+            console.log(names, 'e.target');
           }}
         >
           {data}
         </Chip>
       </Box>
-    );
+    )
   };
 
   //   const hyperLink = (data: any, id: any) => {
@@ -444,7 +462,7 @@ const ViewProject = (props: any) => {
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
-      assignClient: hyperLink(item?.clientDetails.length, item.clientDetails.map((client:any)=>client.Title),item.clientDetails.map((client:any)=>client.Id)),
+      assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
@@ -665,9 +683,17 @@ const ViewProject = (props: any) => {
             <DialogContent>
               <Typography style={{
                 textDecoration: "underline", color: "blue", cursor: "pointer",
-                listStyleType: "none", padding: 0, display:'flex', flexDirection:'column'
+                listStyleType: "none", padding: 0
               }}>
-                {selectedName}
+                {selectedName.map((data:any)=>(
+                  <Box 
+                    key={data.Id} 
+                    onClick={()=>{
+                    navigate("/ViewClient/" + data.Id)
+                  }}>
+                    {data.Title}
+                  </Box>
+                ))}
               </Typography>
             </DialogContent>
           </Dialog>
