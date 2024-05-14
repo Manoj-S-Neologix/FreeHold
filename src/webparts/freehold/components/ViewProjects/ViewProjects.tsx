@@ -26,7 +26,6 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
-// import ClientProjectUpload from '../ClientProjectUpload/ClientProjectUpload';
 // import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
 
@@ -329,7 +328,10 @@ const ViewProject = (props: any) => {
   };
 
   const handleClickOpen = (name: any, id:any) => {
-    setSelectedName(name);
+    setSelectedName(()=>{
+      // navigate("/ViewClient/" + id);
+      return name;
+    });
     setDialogOpen(true);
   }
   const handleClose = () => {
@@ -442,7 +444,7 @@ const ViewProject = (props: any) => {
       projectName: item.projectName,
       location: item.location,
       developer: item.developer,
-      assignClient: hyperLink(item?.clientDetails.length, item.assignClient, item.assignClientId),
+      assignClient: hyperLink(item?.clientDetails.length, item.clientDetails.map((client:any)=>client.Title),item.clientDetails.map((client:any)=>client.Id)),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
@@ -663,25 +665,8 @@ const ViewProject = (props: any) => {
             <DialogContent>
               <Typography style={{
                 textDecoration: "underline", color: "blue", cursor: "pointer",
-                listStyleType: "none", padding: 0
+                listStyleType: "none", padding: 0, display:'flex', flexDirection:'column'
               }}>
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.Id}> 
-                  {console.log(data?.clientDetails.length, 'length')}   
-                  {data?.clientDetails?.length > 0 ? (data?.clientDetails?.map((client: any) => (
-                  <Typography key={client.Id}>
-                    {client.Title}
-                    {console.log(client.Title, 'clientproject')}
-                  </Typography>
-                  ))) : (null)} 
-                  
-                  </Box>
-                ))} */}
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.assignClientId}>    
-                 {data.assignClient} 
-                  </Box>
-                ))} */}
                 {selectedName}
               </Typography>
             </DialogContent>
@@ -725,7 +710,6 @@ const ViewProject = (props: any) => {
       {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
-      {/* {uploadDialogOpen && <ClientProjectUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />} */}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
         <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}

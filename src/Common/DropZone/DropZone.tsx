@@ -135,17 +135,18 @@ const dropzoneStyle: React.CSSProperties = {
 
 //     const fetchClientData = () => {
 //         const clientService = ClientService(); 
-//         const select = '*,Title'; 
-//         const filter = ""; 
+//         // const select = '*,Title'; 
+//         // const filter = ""; 
     
-//         clientService.getClientExpand('Client%20Checklist', select, '', filter)
+//         clientService.getClient('Client Checklist')
 //             .then((results) => {
 //                 console.log(results, 'client');
+//                 setDropdownOptions(results);
                 
-//                 if (results) {
-//                     const titles = results.map((item:any) => item.Title);
-//                     setDropdownOptions(titles); 
-//                 }
+//                 // if (results) {
+//                 //     const titles = results.map((item:any) => item.Title);
+//                 //     setDropdownOptions(titles); 
+//                 // }
 //             })
 //             .catch((error) => {
 //                 console.error('Error fetching SharePoint data:', error);
@@ -165,6 +166,8 @@ const dropzoneStyle: React.CSSProperties = {
 //             fetchClientData();
 //         }
 //     }, [files]);
+
+//     console.log(dropdownOptions,"dropdownOptionsdropdownOptions");
 
 //     return (
 //         <div>
@@ -214,9 +217,10 @@ const dropzoneStyle: React.CSSProperties = {
 //                                         onChange={(e) => console.log('Selected:', e.target.value)}
 //                                         variant="outlined"
 //                                     >
+                                       
 //                                         {dropdownOptions.map((option:any, index:any) => (
-//                                             <MenuItem key={index} value={option}>
-//                                                 {option}
+//                                             <MenuItem key={index} value={option.Id}>
+//                                                 {option.Title}
 //                                             </MenuItem>
 //                                         ))}
 //                                     </Select>
