@@ -59,8 +59,8 @@ const ViewClient = (props: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
 
-  console.log(filterQuery, "filterQuery");
-  // const [searchQueryCall, setSearchQueryCall] = useState('');
+  // console.log(filterQuery, "filterQuery");
+  const [searchQueryCall, setSearchQueryCall] = useState('');
 
   const [filterQueryCall, setFilterQueryCall] = useState('');
 
@@ -198,7 +198,7 @@ const ViewClient = (props: any) => {
   const theme = useTheme();
 
   const handleClear = () => {
-    // setSearchQueryCall('');
+    setSearchQueryCall('');
     setFilterQueryCall('');
     setSelectedPersons([]);
     setOpen(false);
@@ -212,6 +212,7 @@ const ViewClient = (props: any) => {
 
   const handleApply = () => {
     setFilterQuery(filterQueryCall);
+    setSearchQuery(searchQueryCall);
     setOpen(false);
     setFilterPersonShown(true);
   };
@@ -400,7 +401,7 @@ const ViewClient = (props: any) => {
       console.log(filteredData, "filteredData");
       setClientData(filteredData);
       console.log(items[0].text, "itemsitemsitemsitems");
-      // setSearchQueryCall(items[0].text);
+      setSearchQueryCall(items[0].text);
       setFilterQueryCall(items[0].text);
       setSelectedPersons(items);
 
@@ -412,7 +413,7 @@ const ViewClient = (props: any) => {
 
   // console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
 
-  console.log(selectedPersons, filterQueryCall, "DataparticularClientAllData");
+  // console.log(selectedPersons, filterQueryCall, "DataparticularClientAllData");
 
 
   const fetchData = async () => {
@@ -611,10 +612,11 @@ const ViewClient = (props: any) => {
 
               <Chip
                 sx={{ marginLeft: 2, }}
-                avatar={<Avatar alt={filterQueryCall} src={selectedPersons[0]?.imageUrl} />}
-                label={filterQueryCall}
+                avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
+                label={searchQueryCall}
                 onDelete={() => {
-                  // setSearchQuery('');
+                  setSearchQuery('');
+                  setSearchQueryCall('');
                   setFilterQuery('');
                   setFilterQueryCall('');
                   setSelectedPersons([]);
@@ -809,7 +811,7 @@ const ViewClient = (props: any) => {
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
-            filterQuery={""}
+            filterQuery={filterQuery}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}

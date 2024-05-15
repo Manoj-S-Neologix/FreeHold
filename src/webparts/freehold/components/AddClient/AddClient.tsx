@@ -437,60 +437,46 @@ import InputLabel from '@mui/material/InputLabel';
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                   {files.length > 0 && dropdownOptions.length > 0 && (
-                  <div >
-                    {/* <label htmlFor="clientChecklist" >Client Checklist</label>
-                    <Select style={{ width:'100px' }}
-                      value={''} // Set the selected value state here if needed
-                      onChange={(e:any) => {
-                      console.log('Selected:', e.target.value)
-                      setValue('clientChecklist', e.target.value);
-
-                      }}
-                      variant="outlined"
-                    >
-                      {dropdownOptions.map((option:any, index:any) => (
-                        <MenuItem key={index} value={option.Title}>
-                          {option.Title}
-                        </MenuItem>
+                    <>
+                      {files.map((file, index) => (
+                        <div key={index}>
+                          <Controller
+                            name="clientChecklist"
+                            control={control}
+                            defaultValue=""
+                            rules={{ required: 'Client Name is required' }}
+                            render={({ field }) => (
+                              <>
+                                <InputLabel htmlFor="client-name">Client Checklist</InputLabel>
+                                <TextField
+                                  {...field}
+                                  id="client-name"
+                                  fullWidth
+                                  variant="outlined"
+                                  select
+                                  size="small"
+                                  required
+                                  label=""
+                                  error={!!errors.clientChecklist}
+                                  helperText={errors?.clientChecklist?.message}
+                                  onChange={(e) => {
+                                    console.log('Selected:', e.target.value);
+                                    setValue('clientChecklist', e.target.value);
+                                  }}
+                                >
+                                  {dropdownOptions.map((option, index) => (
+                                    <MenuItem key={index} value={option.Title}>
+                                      {option.Title}
+                                    </MenuItem>
+                                  ))}
+                                </TextField>
+                              </>
+                            )}
+                          />
+                        </div>
                       ))}
-                    </Select> */}
-                    
-                     <Controller
-                      name="clientChecklist"
-                      control={control}
-                      defaultValue=""
-                      rules={{ required: 'Client Name is required' }}
-                      render={({ field }) => (
-                        <>
-                          <InputLabel htmlFor="client-name">client Checklist</InputLabel>
-                          <TextField
-                            {...field}
-                            id="client-name"
-                            fullWidth
-                            variant="outlined"
-                            select
-                            size="small"
-                            required
-                            label=""
-                            error={!!errors.clientChecklist}
-                            helperText={errors?.clientChecklist?.message}
-                            // value={''} // Set the selected value state here if needed
-                            onChange={(e:any) => {
-                            console.log('Selected:', e.target.value)
-                            setValue('clientChecklist', e.target.value);
-                            }}
-                          >
-                            {dropdownOptions.map((option:any, index:any) => (
-                            <MenuItem key={index} value={option.Title}>
-                              {option.Title}
-                            </MenuItem>
-                          ))}
-                          </TextField>
-                        </>
-                      )}
-                    />
-                  </div>
-                )}
+                    </>
+                  )}
                 
                 </Grid>
               </Grid>
