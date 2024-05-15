@@ -80,7 +80,7 @@ const ViewClient = (props: any) => {
   const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
-  const [selectedName, setSelectedName] = useState([]);
+  const [selectedName, setSelectedName] = useState<any[]>([]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
@@ -391,7 +391,7 @@ const ViewClient = (props: any) => {
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
       const searchText = items[0].text.toLowerCase(); // Convert search text to lowercase for case-insensitive matching
-      const filteredData = clientData.filter((data:any) => {
+      const filteredData = clientData.filter((data: any) => {
         if (data.assignStaff && typeof data.assignStaff === 'string') {
           return data.assignStaff.toLowerCase().includes(searchText);
         }
@@ -406,7 +406,7 @@ const ViewClient = (props: any) => {
 
     }
   };
-  
+
 
 
 
@@ -428,7 +428,7 @@ const ViewClient = (props: any) => {
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
-      
+
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
@@ -470,16 +470,17 @@ const ViewClient = (props: any) => {
   //   );
   // };
 
-  const handleClickOpen = (name: any, id?:number) => {
-    setSelectedName(name);
+  const handleClickOpen = (name: any, id?: number) => {
+    const newItem = { name, id };
+    setSelectedName([...selected, newItem]);
     setDialogOpen(true);
-    console.log(name, 'selected')
-  }
+    console.log(name, id, 'selected');
+  };
   const handleClose = () => {
     setDialogOpen(false);
   };
 
-  const hyperLink = (data: any, name: any[], id?:any) => {
+  const hyperLink = (data: any, name: any[], id?: any) => {
     return (
       <Box>
         <Chip
@@ -499,11 +500,10 @@ const ViewClient = (props: any) => {
       Id: item.Id,
       name: item.name,
       email: item.email,
-      
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff:  hyperLink(item?.assignedStaff.length, item?.assignedStaff, item.Id),
+      assignStaff: hyperLink(item?.assignedStaff.length, item?.assignedStaff, item.Id),
       assignedStaff: item?.assignedStaff,
       ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
     };
@@ -768,10 +768,7 @@ const ViewClient = (props: any) => {
               <CloseIcon />
             </IconButton>
             <DialogContent>
-              <Typography style={{
-                textDecoration: "underline", color: "blue", cursor: "pointer",
-                listStyleType: "none", padding: 0
-              }}>
+              <Typography>
                 {/* {projectData?.map((data: any) => (
                   <Box key={data.Id}> 
                   {console.log(data?.clientDetails.length, 'length')}   
@@ -789,14 +786,16 @@ const ViewClient = (props: any) => {
                  {data.assignClient} 
                   </Box>
                 ))} */}
-                {selectedName.map((data:any)=>(
-                  <Box 
-                    key={data.Id} 
-                    onClick={()=>{
-                    navigate("/ViewProjects/" + data.Id)
-                  }}>
-                    {data.Name}
-                  </Box>
+                {selectedName.map((data: any) => (
+                  <div key={data.id}>
+                    <Box>
+                      {data?.name?.map((item: any) => (
+                        <Typography key={item.Id}>
+                          {item.Name}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </div>
                 ))}
               </Typography>
             </DialogContent>

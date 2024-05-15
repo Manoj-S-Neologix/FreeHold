@@ -8,10 +8,39 @@ import { useNavigate } from 'react-router-dom';
 // import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Accordion from '@mui/material/Accordion';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AccordionSummary from '@mui/material/AccordionSummary';
+// import Accordion from '@mui/material/Accordion';
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import AccordionSummary from '@mui/material/AccordionSummary';
 import Stack from '@mui/material/Stack';
+import MaterialTable, { Icons } from 'material-table'
+// import GridTable from '../../../../Common/Table/Table';
+// import Table from '@mui/material/Table';
+// import TableBody from '@mui/material/TableBody';
+// import TableCell from '@mui/material/TableCell';
+// import TableContainer from '@mui/material/TableContainer';
+// import TableHead from '@mui/material/TableHead';
+// import TableRow from '@mui/material/TableRow';
+// import Paper from '@mui/material/Paper';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { forwardRef } from 'react';
+import {
+  AddBox,
+  ArrowDownward,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  DeleteOutline,
+  Edit,
+  FilterList,
+  FirstPage,
+  LastPage,
+  Remove,
+  SaveAlt,
+  Search,
+  ViewColumn
+} from "@material-ui/icons";
 // import AccordionDetails from '@mui/material/AccordionDetails';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -110,11 +139,57 @@ const commonStyles = {
 //   );
 // };
 
+const empList = [
+  { project: "Local Link", client: 'Austin Tammy', unit: "Unit1", checklistname: "Checklist1", progress: <CheckCircleOutlineIcon style={{color:'green'}}/> },
+  { project: "Social Circle", client: 'Cames Scott', unit: "Unit2", checklistname: "Checklist2", progress: <HighlightOffIcon style={{color:'red'}}/> },
+  { project: "Commerce Companion", client: 'Davis Jan', unit: "Unit3", checklistname: "Checklist3", progress: <CheckCircleOutlineIcon style={{color:'green'}}/> },
+  { project: "Visionary Ventures", client: 'Edwards Jonh', unit: "Unit4", checklistname: "Checklist4", progress: <HighlightOffIcon style={{color:'red'}}/> },
+  { project: "Breakthrough Solutions", client: 'Steph Fedro', unit: "Unit5", checklistname: "Checklist5", progress: <CheckCircleOutlineIcon style={{color:'green'}}/> },
+  { project: "Growth Guide", client: 'John Smith', unit: "Unit6", checklistname: "Checklist6", progress: <HighlightOffIcon style={{color:'red'}}/> },
+  { project: "Progress Planner", client: 'Brian Smith', unit: "Unit7", checklistname: "Checklist7", progress: <CheckCircleOutlineIcon style={{color:'green'}}/> },
+  { project: "Collaborative Conversations", client: 'Catherine Young', unit: "Unit8", checklistname: "Checklist8", progress:<HighlightOffIcon style={{color:'red'}}/> },
+  { project: "Community Guard", client: 'Dana Trist', unit: "Unit9", checklistname: "Checklist9", progress: <CheckCircleOutlineIcon style={{color:'green'}}/> },
+  { project: "Picture Perfect", client: 'Melanie Jones', unit: "Unit10", checklistname: "Checklist10", progress: <HighlightOffIcon style={{color:'red'}}/> },
+]
+
+const tableIcons: Icons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
 const ChecklistValidation = (props: any) => {
   const ProjectRef = useRef<HTMLInputElement>(null);
   const ClientRef = useRef<HTMLInputElement>(null);
   const UnitRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [tableData, setTableData] = useState<any[]>([]);
+  // const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState(empList)
+  const columns = [
+    { title: "Project", field: "project",defaultGroupOrder: 0 },
+    { title: "Client", field: "client",defaultGroupOrder: 0 },
+    { title: "Unit", field: 'unit' },
+    { title: "Checklist Name", field: "checklistname" },
+    { title: "Progress", field: 'progress' }
+  ]
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate('/');
@@ -126,10 +201,20 @@ const ChecklistValidation = (props: any) => {
     setProjectValue(ProjectRef.current?.value || '');
     setClientValue(ClientRef.current?.value || '');
     setUnitValue(UnitRef.current?.value || '')
-
+    setTableData(prevData => [
+      ...prevData,
+      { project: projectValue, client: clientValue, unit: unitValue }
+    ]);
+    setData(data);
   }
 
-
+  const groupedData: { [key: string]: any[] } = {};
+  tableData.forEach(row => {
+    if (!groupedData[row.project]) {
+      groupedData[row.project] = [];
+    }
+    groupedData[row.project].push(row);
+  });
 
   return (
     <div>
@@ -225,14 +310,54 @@ const ChecklistValidation = (props: any) => {
                     </FormControl>
                   </Box>
                 </Typography>
-                <FormControl sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop:'2rem' }}>
+                <FormControl sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button variant='contained' style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }} onClick={() => {
                     handleSearch();
-                    setIsOpen(!isOpen);
+                    // setIsOpen(!isOpen);
                   }}>Search</Button>
                 </FormControl>
               </div>
-              {isOpen && <div style={{ display: 'flex', position: 'relative', flexDirection: 'column', justifyContent: 'flex-start', marginTop: '2rem' }}>
+              <Box style={{ position: 'relative', top: '5rem' }}>
+                  {/* <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell component="th" scope="row">Project</TableCell>
+                          <TableCell component="th" scope="row">Client</TableCell>
+                          <TableCell component="th" scope="row">Unit</TableCell>
+                          <TableCell component="th" scope="row">CheckList Name</TableCell>
+                          <TableCell component="th" scope="row">Progress</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {Object.entries(groupedData).map(([project, rows]) => (
+                          rows.map((row, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{row.project}</TableCell>
+                              <TableCell>{row.client}</TableCell>
+                              <TableCell>{row.unit}</TableCell>
+                              <TableCell component="td" scope="row">CheckList Name</TableCell>
+                              <TableCell component="td" scope="row"><CheckCircleOutlineIcon style={{ color: 'green' }} /></TableCell>
+                            </TableRow>
+                          ))
+                        ))}
+                      </TableBody>
+
+
+                    </Table>
+                  </TableContainer> */}
+                  <MaterialTable
+                    title="CheckList Validation"
+                    icons={tableIcons}
+                    data={data}
+                    columns={columns}
+                    options={{
+                      grouping: true
+                    }}
+                  />
+              </Box>
+              {/* {isOpen && <div style={{ display: 'flex', position: 'relative', flexDirection: 'column', justifyContent: 'flex-start', marginTop: '2rem' }}>
                 <Stack spacing={1}>
                   <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
@@ -250,8 +375,7 @@ const ChecklistValidation = (props: any) => {
                     </AccordionSummary>
                   </Accordion>
                 </Stack>
-              </div>}
-
+              </div>} */}
             </Box>
           </Box>
         </Stack>
