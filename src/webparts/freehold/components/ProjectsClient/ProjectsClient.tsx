@@ -38,6 +38,9 @@ const ProjectsClient = ({ props }: any) => {
     }
   };
 
+  const getProjectText = (count: number) => count === 1 ? 'PROJECT' : 'PROJECTS';
+  const getClientText = (count: number) => count === 1 ? 'CLIENT' : 'CLIENTS';
+
 
   return (
     <Box >
@@ -63,7 +66,7 @@ const ProjectsClient = ({ props }: any) => {
                       />
                       <div className={styles.projectContent}>
                         <div className={styles.projectNumber}>{projectData}</div>
-                        <div className={styles.projectHeading}>PROJECTS</div>
+                        <div className={styles.projectHeading}>{getProjectText(projectData)}</div>
                       </div>
                     </div>
                   </Link>
@@ -78,7 +81,7 @@ const ProjectsClient = ({ props }: any) => {
                       />
                       <div className={styles.clientContent}>
                         <div className={styles.clientNumber}>{clientData}</div>
-                        <div className={styles.clientText}>CLIENTS</div>
+                        <div className={styles.clientText}>{getClientText(clientData)}</div>
                       </div>
                     </div>
                   </Link>

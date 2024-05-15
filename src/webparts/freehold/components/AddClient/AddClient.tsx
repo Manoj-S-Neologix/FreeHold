@@ -9,7 +9,9 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-import { Box, Stack, Grid, CircularProgress } from '@mui/material';
+// import { Box, Stack, Grid, CircularProgress} from '@mui/material';
+import { Box, Stack, Grid, CircularProgress, Select, MenuItem } from '@mui/material';
+
 // import { addListItem } from '../../Services/Core/ClientService';
 // import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
@@ -22,12 +24,15 @@ import DropZone from "../../../../Common/DropZone/DropZone";
 
 
 
+
+
 const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
 
   const textFieldWidth = {
@@ -53,6 +58,13 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     onClose();
   };
 
+  React.useEffect(() => {
+    if (files && files.length > 0) {
+        fetchClientData();
+    }
+});
+
+
 
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
@@ -75,6 +87,21 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     }
     setSelectedPersons(selectedPersonsIds);
   };
+
+  const fetchClientData = () => {
+    const clientService = ClientService(); 
+    clientService.getClient('Client Checklist')
+        .then((results) => {
+            console.log(results, 'client');
+            if(results){
+            setDropdownOptions(results);
+            }
+        })
+        .catch((error) => {
+            console.error('Error fetching SharePoint data:', error);
+        });
+};
+
 
 
   // const handleSave = handleSubmit(async (data) => {
@@ -404,6 +431,22 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                     {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} setFiles={setFiles} files={files} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
+                  {files.length > 0 && dropdownOptions.length > 0 && (
+                  <div>
+                    <label htmlFor="clientChecklist">Client Checklist</label>
+                    <Select
+                      value={''} // Set the selected value state here if needed
+                      onChange={(e:any) => console.log('Selected:', e.target.value)}
+                      variant="outlined"
+                    >
+                      {dropdownOptions.map((option:any, index:any) => (
+                        <MenuItem key={index} value={option.Id}>
+                          {option.Title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                )}
                 </Grid>
               </Grid>
             </Box>

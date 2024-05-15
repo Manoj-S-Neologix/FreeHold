@@ -588,6 +588,13 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                 sx={{
                     minWidth: getWidth(headCell.id),
                 }}
+                
+                // //Assignclient navigate table 
+                // onClick={()=>{
+                //     if(row["assignClient"]){
+                //         console.log("assignclientISTrue")
+                //     }
+                // }}
             >
                 {(() => {
                     const cellContent = row[headCell.id];
