@@ -55,11 +55,26 @@ const ClientService = () => {
     const uploadDocumentInLibrary = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocument(libraryName, file);
+            
             //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
             return response;
 
         }
     };
+
+    // //Meta Data
+
+
+    // const updateDocumentMetadata = async (libraryName: string, file: any, metadata: any) => {
+    //     if (spServiceInstance) {
+    //         const response = await spServiceInstance.updateDocumentMetadata(libraryName, file, metadata);
+    //         console.log(response,"response-metaData")
+    //         return response;
+    //     }
+        
+    // };
+
+
 
     const getClient = async (ListName: string) => {
         if (spServiceInstance) {
@@ -305,7 +320,7 @@ const ClientService = () => {
         getPersonById,
         getClientExpandApi,
         updateLibraryName,
-        getListCounts
+        getListCounts,
 
     };
 };

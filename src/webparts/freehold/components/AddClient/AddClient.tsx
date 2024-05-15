@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
 // import { Box, Stack, Grid, CircularProgress} from '@mui/material';
-import { Box, Stack, Grid, CircularProgress, Select, MenuItem } from '@mui/material';
+import { Box, Stack, Grid, CircularProgress, MenuItem } from '@mui/material';
 
 // import { addListItem } from '../../Services/Core/ClientService';
 // import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
@@ -19,6 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import toast from 'react-hot-toast';
 import DropZone from "../../../../Common/DropZone/DropZone";
+import InputLabel from '@mui/material/InputLabel';
 
 
 
@@ -26,10 +27,10 @@ import DropZone from "../../../../Common/DropZone/DropZone";
 
 
 
-const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
+  const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
-  const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+  const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm();
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
@@ -61,8 +62,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
   React.useEffect(() => {
     if (files && files.length > 0) {
         fetchClientData();
-    }
-});
+      }
+  },[files]);
 
 
 
@@ -153,7 +154,9 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       ClientContact: data.contact,
       AssignedStaffId: {
         results: selectedPersons
-      }
+      },
+
+      // DMSTags: data.clientChecklist 
     };
 
     // false && addListItem('Clients', dataObj);
@@ -165,7 +168,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         name: file.name,
         size: file.size,
         type: file.type,
-        webkitRelativePath: file.webkitRelativePath
+        webkitRelativePath: file.webkitRelativePath,
+        // DMSTags: data.clientChecklist 
       }));
 
       apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
@@ -425,28 +429,69 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                   lg={textFieldWidth.xs}
                   xl={textFieldWidth.xs}
                 >
+              {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
+
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
-                    {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
                     {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} setFiles={setFiles} files={files} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
                   {files.length > 0 && dropdownOptions.length > 0 && (
-                  <div>
-                    <label htmlFor="clientChecklist">Client Checklist</label>
-                    <Select
+                  <div >
+                    {/* <label htmlFor="clientChecklist" >Client Checklist</label>
+                    <Select style={{ width:'100px' }}
                       value={''} // Set the selected value state here if needed
-                      onChange={(e:any) => console.log('Selected:', e.target.value)}
+                      onChange={(e:any) => {
+                      console.log('Selected:', e.target.value)
+                      setValue('clientChecklist', e.target.value);
+
+                      }}
                       variant="outlined"
                     >
                       {dropdownOptions.map((option:any, index:any) => (
-                        <MenuItem key={index} value={option.Id}>
+                        <MenuItem key={index} value={option.Title}>
                           {option.Title}
                         </MenuItem>
                       ))}
-                    </Select>
+                    </Select> */}
+                    
+                     <Controller
+                      name="clientChecklist"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Client Name is required' }}
+                      render={({ field }) => (
+                        <>
+                          <InputLabel htmlFor="client-name">client Checklist</InputLabel>
+                          <TextField
+                            {...field}
+                            id="client-name"
+                            fullWidth
+                            variant="outlined"
+                            select
+                            size="small"
+                            required
+                            label=""
+                            error={!!errors.clientChecklist}
+                            helperText={errors?.clientChecklist?.message}
+                            // value={''} // Set the selected value state here if needed
+                            onChange={(e:any) => {
+                            console.log('Selected:', e.target.value)
+                            setValue('clientChecklist', e.target.value);
+                            }}
+                          >
+                            {dropdownOptions.map((option:any, index:any) => (
+                            <MenuItem key={index} value={option.Title}>
+                              {option.Title}
+                            </MenuItem>
+                          ))}
+                          </TextField>
+                        </>
+                      )}
+                    />
                   </div>
                 )}
+                
                 </Grid>
               </Grid>
             </Box>

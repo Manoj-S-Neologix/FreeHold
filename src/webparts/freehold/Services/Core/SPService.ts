@@ -20,6 +20,7 @@ export type SPServiceType = {
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
+    // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -179,6 +180,24 @@ const SPService: SPServiceType = {
             .getByTitle(listName).items.getById(itemId).recycle();
         return deleteItem;
     },
+
+
+ 
+    // updateDocumentMetadata: async (libraryName, fileUrl, metadata) => {
+    //     // console.log("Entering updateDocumentMetadata function");
+    //     try {
+    //         // console.log("Retrieving file item for URL:", fileUrl);
+    //         const fileItem = await web.getFileByServerRelativeUrl(fileUrl).getItem();
+    //         // console.log("File item retrieved:", fileItem);
+    //         const response = await fileItem.update(metadata);
+    //         // console.log("Metadata update response:", response);
+    //         return response;
+    //     } catch (error) {
+    //         console.error("Error updating document metadata:", error);
+    //         throw error;
+    //     }
+    // },
+    
 
 
 
