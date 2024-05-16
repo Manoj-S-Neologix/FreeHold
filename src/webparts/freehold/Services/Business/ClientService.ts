@@ -65,14 +65,14 @@ const ClientService = () => {
     // //Meta Data
 
 
-    // const updateDocumentMetadata = async (libraryName: string, file: any, metadata: any) => {
-    //     if (spServiceInstance) {
-    //         const response = await spServiceInstance.updateDocumentMetadata(libraryName, file, metadata);
-    //         console.log(response,"response-metaData")
-    //         return response;
-    //     }
+    const updateClientDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
+            console.log(response,"response-metaData")
+            return response;
+        }
         
-    // };
+    };
 
 
 
@@ -321,6 +321,7 @@ const ClientService = () => {
         getClientExpandApi,
         updateLibraryName,
         getListCounts,
+        updateClientDocumentMetadata
 
     };
 };

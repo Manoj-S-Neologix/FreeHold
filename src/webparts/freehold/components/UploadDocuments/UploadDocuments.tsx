@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, MenuItem} from "@mui/material";
+import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, MenuItem } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
@@ -29,14 +29,14 @@ interface UploadDocumentProps {
     fetchDatas: () => any;
 }
 
-const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData, fetchDatas,  }) => {
+const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particularClientAllData, fetchDatas, }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [deleteId, setDeleteId] = useState<number>(0);
     const [files, setFiles] = useState<File[]>([]);
     const [fileData, setFileData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const { control, handleSubmit,  formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue } = useForm();
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
@@ -53,8 +53,8 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     React.useEffect(() => {
         if (uploadFiles && uploadFiles.length > 0) {
             fetchClientData();
-          }
-      },[uploadFiles]);
+        }
+    }, [uploadFiles]);
 
     console.log(files, "files");
 
@@ -92,12 +92,12 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
 
     const fetchClientData = () => {
-        const clientService = ClientService(); 
+        const clientService = ClientService();
         clientService.getClient('Client Checklist')
             .then((results) => {
                 console.log(results, 'client');
-                if(results){
-                setDropdownOptions(results);
+                if (results) {
+                    setDropdownOptions(results);
                 }
             })
             .catch((error) => {
@@ -114,10 +114,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         fileType: file.File_x0020_Type,
         created: file.Created,
         editorName: file.Editor.Title,
-        editorId: file.Editor.Id
+        editorId: file.Editor.Id,
+        dmstags: file.DMS_x0020_Tags
     }));
 
-    console.log(mappedFiles);
+    console.log(mappedFiles, 'mappedfiles');
 
 
 
@@ -148,14 +149,45 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     //working code
 
+    // const handleSave = handleSubmit(async (data: any) => {
+    //     setLoading(true);
+    //     const apiResponse = ClientService();
+
+    //     console.log(particularClientAllData[0].webURL, "name");
+    //     console.log(fileInfoArray);
+
+    //     apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles)
+    //         .then(() => {
+    //             setLoading(false);
+    //             // handleCancel();
+    //             setFiles([]);
+    //             setUploadFiles([]);
+    //             toast.success('Documents Added Successfully!');
+    //             fetchData();
+    //         })
+    //         .catch((error) => {
+    //             setLoading(false);
+    //             console.error("Failed to add client and document:", error);
+    //             toast.error(`Failed to add client and document: ${error}`);
+    //         });
+
+    // });
+
+    //......Upload documents with meta data......
     const handleSave = handleSubmit(async (data: any) => {
         setLoading(true);
         const apiResponse = ClientService();
 
+        const updatedData = {
+            DMS_x0020_Tags: data.clientChecklist
+        }
+
+        console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
+
         console.log(particularClientAllData[0].webURL, "name");
         console.log(fileInfoArray);
 
-        apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles)
+        apiResponse.updateClientDocumentMetadata(particularClientAllData[0].webURL, uploadFiles, updatedData.DMS_x0020_Tags)
             .then(() => {
                 setLoading(false);
                 // handleCancel();
@@ -172,27 +204,28 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     });
 
+
     // const handleSave = handleSubmit(async (data: any) => {
     //     setLoading(true);
     //     const apiResponse = ClientService();
-    
+
     //     console.log(particularClientAllData[0].webURL, "name");
     //     console.log(fileInfoArray);
-    
+
     //     try {
-       
+
     //         const uploadedFile = await apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles);
     //         const item = await uploadedFile.file.getItem();
     //         await item.update({
     //             DMSTags: data.clientChecklist
     //         });
-    
+
     //         setLoading(false);
     //         setFiles([]);
     //         setUploadFiles([]);
     //         toast.success('Documents Added Successfully!');
     //         fetchData();
-    
+
     //         alert("Document and its metadata updated successfully");
     //         // window.location.href = `${this.props.spContext.pageContext.web.absoluteUrl}/SitePages/Document-Listing.aspx?PropTitle=${encodeURIComponent(that._formatPathTitle())}&FolderPath=${encodeURIComponent(that.state.selectedFolderPath)}`;
     //     } catch (error) {
@@ -202,14 +235,14 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     //         toast.error(`Failed to add client and document: ${error}`);
     //     }
     // });
-    
 
 
 
-  
-    
 
-    console.log(dropdownOptions,"dropdownOptions...")
+
+
+
+    console.log(dropdownOptions, "dropdownOptions...")
 
 
     const handleDelete = () => {
@@ -263,15 +296,16 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
                     <DialogContent>
                         <Stack direction={"column"} spacing={2}>
-                            <Box>
-                            
+                            <Box >
+
                                 <DropZone
                                     onFilesAdded={handleFileInput}
                                     files={uploadFiles}
                                     setFiles={setUploadFiles}
-                                />
 
+                                />
                             </Box>
+
                             {/* {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
                                 <Stack
                                     direction="row"
@@ -293,7 +327,8 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
                                 </Stack>
                             </DialogActions>} */}
-                              {uploadFiles.length > 0 && dropdownOptions.length > 0 &&   (
+                            {/*single checklist dropdown */}
+                            {/* {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
                                 <>
                                     <div>
                                         <Controller
@@ -328,8 +363,88 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                                 </>
                                             )}
                                         />
-                
+
                                     </div>
+                                    <DialogActions sx={{ px: 0, mr: 0 }}>
+                                        <Stack
+                                            direction="row"
+                                            justifyContent="end"
+                                            alignItems="center"
+                                            spacing={3}
+                                        >
+                                            <Button
+                                                variant="contained"
+                                                sx={{ width: loading ? '150px' : 'auto' }}
+                                                onClick={handleSave}
+                                                disabled={loading}
+                                                type="submit"
+                                            >
+                                                {loading ? (
+                                                    <CircularProgress size={20} color="inherit" />
+                                                ) : (
+                                                    "Save"
+                                                )}
+                                            </Button>
+                                            {!loading && <Button variant="outlined" onClick={handleCancel}>Cancel</Button>}
+                                        </Stack>
+                                    </DialogActions>
+                                </>
+                            )} */}
+
+                            {/*multiple checklist dropdown */}
+                            {uploadFiles.length > 0 && dropdownOptions.length > 0 &&   (
+                                <>
+                                    {uploadFiles.map((uploadedFile, index) => (
+                                        <div key={index } style={{position:'relative',bottom:'6.2rem', marginLeft:'16rem' }}
+                                        >
+                                            <Controller
+                                                name={`clientChecklist-${index}`}
+                                                control={control}
+                                                defaultValue=""
+                                                rules={{ required: 'Client Checklist is required' }}
+                                                render={({ field }) => (
+                                                    <>
+                                                    <div >
+
+                                                        <InputLabel htmlFor={`client-checklist-${index}`}>Client Checklist</InputLabel>
+                                                        </div>
+                                                        <TextField
+                                                            {...field}
+                                                            id={`client-checklist-${index}`}
+                                                            fullWidth
+                                                            style={{ maxWidth: '200px' }}
+                                                            variant="outlined"
+                                                            select
+                                                            size="small"
+                                                            required
+                                                            error={!!errors[`clientChecklist-${index}`]}
+                                                            helperText={errors[`clientChecklist-${index}`]?.message}
+                                                            onChange={(e: any) => {
+                                                                field.onChange(e);
+                                                                const newValue = e.target.value;
+                                                                setValue('clientChecklist', e.target.value);
+                                                                console.log(newValue, 'e.target')
+                                                                setUploadFiles(prevFiles => {
+                                                                    const updatedFiles = [...prevFiles];
+                                                                    updatedFiles[index].checklist = newValue;
+                                                                    return updatedFiles;
+                                                                });
+                                                            }}
+                                                        >
+                                                            {dropdownOptions?.map((option: any, index:any) => (
+                                                                <MenuItem key={index} value={option.Title}>
+                                                                    {option.Title}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </>
+                                                )}
+                                            />
+                                        </div>
+                                    ))}
+                            
+                            
+  
                                     <DialogActions sx={{ px: 0, mr: 0 }}>
                                         <Stack
                                             direction="row"
@@ -360,6 +475,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Document Name</TableCell>
+                                            <TableCell>DMS Tags</TableCell>
                                             <TableCell>Uploaded Date</TableCell>
                                             <TableCell>Uploaded By</TableCell>
                                             <TableCell>Action</TableCell>
@@ -381,6 +497,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
                                                     </Box>
                                                 </TableCell>
+                                                <TableCell>{file.dmstags}</TableCell>
                                                 <TableCell>{formatDate(file.created)}</TableCell>
                                                 <TableCell>{file.editorName}</TableCell>
                                                 <TableCell>

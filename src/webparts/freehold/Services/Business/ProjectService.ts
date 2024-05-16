@@ -23,6 +23,16 @@ const ProjectService = () => {
     //     }
     // };
 
+    //project upload with meta data
+    const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
+            console.log(response,"response-metaData")
+            return response;
+        }
+        
+    };
+
     const getProject = async (ListName: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
@@ -270,7 +280,8 @@ const ProjectService = () => {
         addClient,
         addDocumentsToFolder,
         createLibrary,
-        getListCounts
+        getListCounts,
+        updateProjectDocumentMetadata
 
         // addDocumentsToFolder
     };

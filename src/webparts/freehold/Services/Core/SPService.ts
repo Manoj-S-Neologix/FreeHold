@@ -5,6 +5,7 @@ export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
+    uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
@@ -142,6 +143,44 @@ const SPService: SPServiceType = {
     },
 
 
+    //upload document with metadata
+    uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: string): Promise<any[]> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+    
+        const promises = files.map(async (file: any) => {
+            try {
+                const uploadedFile = await library.files.add(file.name, file, true);
+                if (uploadedFile) {
+                    const item = await uploadedFile.file.getItem();
+                    console.log(item, 'serviceitem..')
+                    if (item) {
+                        await item.update({
+                            DMS_x0020_Tags:file.checklist
+                        });
+                        return item;
+                    } else {
+                        throw new Error("Failed to get item after upload");
+                    }
+                } else {
+                    throw new Error("Failed to upload file");
+                }
+            } catch (error) {
+                console.error("Error uploading document:", error);
+                throw error;
+            }
+        });
+        return Promise.all(promises)
+            .then((documents: any[]) => {
+                console.log("Documents with metadata updated successfully")
+                return documents;
+            })
+            .catch((error: any) => {
+                console.error("Error uploading documents:", error);
+                throw error;
+
+            });
+    },
+    
 
     // Update library name
     updateLibraryName: async (GUIDID: any, updatedlibraryName: string): Promise<any> => {
