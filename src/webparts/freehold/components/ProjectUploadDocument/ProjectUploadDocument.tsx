@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Stack } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,6 +13,9 @@ import ClientService from '../../Services/Business/ClientService';
 // import toast from 'react-hot-toast';
 import { CircularProgress } from "@mui/material";
 import toast from 'react-hot-toast';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+
 
 
 
@@ -132,6 +135,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
   const handleFileInput = (selectedFiles: File[]) => {
     console.log(selectedFiles, "selectedFiles");
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
+
+  const onDelete = (index: number) => {
+    setUploadFiles((prevFiles: any[]) =>
+      prevFiles.filter((_, i: number) => i !== index)
+    );
   };
 
   console.log(files, setValue, particularClientAllData, getClient, setGetClient, clientData, "files");
@@ -302,7 +311,8 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
       {/*multiple checklist dropdown */}
       {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
         <>
-          {uploadFiles.map((uploadedFile:any, index:any) => (
+        
+          {/* {uploadFiles.map((uploadedFile:any, index:any) => (
             <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
             >
               <Controller
@@ -349,7 +359,70 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
                 )}
               />
             </div>
-          ))}
+          ))} */}
+
+                              <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Document</TableCell>
+                                                <TableCell>Document Type</TableCell>
+                                                <TableCell>Delete</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                           {uploadFiles.map((uploadedFile:any, index:any) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{uploadedFile.name}</TableCell>
+                                                    <TableCell>
+                                                        <Controller
+                                                            name={`clientChecklist-${index}`}
+                                                            control={control}
+                                                            defaultValue=""
+                                                            rules={{ required: 'Client Checklist is required' }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                {...field}
+                                                                id={`client-checklist-${index}`}
+                                                                fullWidth
+                                                                variant="outlined"
+                                                                select
+                                                                size="small"
+                                                                required
+                                                                error={!!errors[`clientChecklist-${index}`]}
+                                                                helperText={errors[`clientChecklist-${index}`]?.message}
+                                                                style={{ width: 200 }} // Fixed width
+                                                                onChange={(e: any) => {
+                                                                  field.onChange(e);
+                                                                  const newValue = e.target.value;
+                                                                  setValue('clientChecklist', e.target.value);
+                                                                  console.log(newValue, 'e.target')
+                                                                  setUploadFiles((prevFiles:any) => {
+                                                                    const updatedFiles = [...prevFiles];
+                                                                    updatedFiles[index].checklist = newValue;
+                                                                    return updatedFiles;
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    {dropdownOptions?.map((option: any) => (
+                                                                        <MenuItem key={option.Title} value={option.Title}>
+                                                                            {option.Title}
+                                                                        </MenuItem>
+                                                                    ))}
+                                                                </TextField>
+                                                            )}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                    <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                                        <DeleteIcon />
+                                                      </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
 
 
 

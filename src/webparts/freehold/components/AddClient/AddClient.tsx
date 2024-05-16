@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-expressions */
-
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -9,26 +8,19 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-// import { Box, Stack, Grid, CircularProgress} from '@mui/material';
-import { Box, Stack, Grid, CircularProgress, MenuItem } from '@mui/material';
-
-// import { addListItem } from '../../Services/Core/ClientService';
-// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+import { Box, Stack, Grid, CircularProgress, MenuItem, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, } from '@mui/material';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import toast from 'react-hot-toast';
 import DropZone from "../../../../Common/DropZone/DropZone";
-import InputLabel from '@mui/material/InputLabel';
+// import InputLabel from '@mui/material/InputLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
-
-
-
-
-  const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
-  const [files, setFiles] = useState<File[]>([]);
+const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
+  const [files, setFiles] = useState<any[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm();
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
@@ -61,9 +53,9 @@ import InputLabel from '@mui/material/InputLabel';
 
   React.useEffect(() => {
     if (files && files.length > 0) {
-        fetchClientData();
-      }
-  },[files]);
+      fetchClientData();
+    }
+  }, [files]);
 
 
 
@@ -90,20 +82,22 @@ import InputLabel from '@mui/material/InputLabel';
   };
 
   const fetchClientData = () => {
-    const clientService = ClientService(); 
+    const clientService = ClientService();
     clientService.getClient('Client Checklist')
-        .then((results) => {
-            console.log(results, 'client');
-            if(results){
-            setDropdownOptions(results);
-            }
-        })
-        .catch((error) => {
-            console.error('Error fetching SharePoint data:', error);
-        });
-};
+      .then((results) => {
+        console.log(results, 'client');
+        if (results) {
+          setDropdownOptions(results);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching SharePoint data:', error);
+      });
+  };
 
-
+  const onDelete = (index: number) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+  };
 
   // const handleSave = handleSubmit(async (data) => {
   //   try {
@@ -369,7 +363,7 @@ import InputLabel from '@mui/material/InputLabel';
                   xl={textFieldWidth.sm}
                 >
                   <label htmlFor="AssignedStaffId">Assigned Staff
-                  {/* <span style={{ color: 'red' }}>*</span> */}
+                    {/* <span style={{ color: 'red' }}>*</span> */}
                   </label>
                   <Controller
                     name="contact"
@@ -429,7 +423,7 @@ import InputLabel from '@mui/material/InputLabel';
                   lg={textFieldWidth.xs}
                   xl={textFieldWidth.xs}
                 >
-              {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
+                  {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
 
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
@@ -438,46 +432,109 @@ import InputLabel from '@mui/material/InputLabel';
                   </div>
                   {files.length > 0 && dropdownOptions.length > 0 && (
                     <>
-                      {files.map((file, index) => (
-                        <div key={index}>
-                          <Controller
-                            name="clientChecklist"
-                            control={control}
-                            defaultValue=""
-                            rules={{ required: 'Client Name is required' }}
-                            render={({ field }) => (
-                              <>
-                                <InputLabel htmlFor="client-name">Client Checklist</InputLabel>
-                                <TextField
-                                  {...field}
-                                  id="client-name"
-                                  fullWidth
-                                  variant="outlined"
-                                  select
-                                  size="small"
-                                  required
-                                  label=""
-                                  error={!!errors.clientChecklist}
-                                  helperText={errors?.clientChecklist?.message}
-                                  onChange={(e) => {
-                                    console.log('Selected:', e.target.value);
-                                    setValue('clientChecklist', e.target.value);
-                                  }}
-                                >
-                                  {dropdownOptions.map((option, index) => (
-                                    <MenuItem key={index} value={option.Title}>
-                                      {option.Title}
-                                    </MenuItem>
-                                  ))}
-                                </TextField>
-                              </>
-                            )}
-                          />
-                        </div>
-                      ))}
+                      <TableContainer>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Document</TableCell>
+                              <TableCell>Document Type</TableCell>
+                              <TableCell>Delete</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {files.map((file:any, index:any) => (
+                              <TableRow key={index}>
+                                <TableCell>{file.name}</TableCell>
+
+                                {/* <div key={index}> */}
+                                <TableCell>
+                                  {/* <Controller
+                                    name="clientChecklist"
+                                    control={control}
+                                    defaultValue=""
+                                    // rules={{ required: 'Client Name is required' }}
+                                    render={({ field }) => (
+                                      <>
+                                        <TextField
+                                          {...field}
+                                          id="client-name"
+                                          fullWidth
+                                          variant="outlined"
+                                          select
+                                          size="small"
+                                          // required
+                                          label=""
+                                          error={!!errors.clientChecklist}
+                                          helperText={errors?.clientChecklist?.message}
+                                          style={{ width: 200 }} // Fixed width
+                                          onChange={(e: any) => {
+                                              console.log('Selected:', e.target.value);
+                                              setValue('clientChecklist', e.target.value);
+                                              field.onChange(e);
+                                              const newValue = e.target.value;
+                                              // setValue(`clientChecklist-${index}`, e.target.value);
+                                              setFiles(prevFiles => {
+                                                  const updatedFiles = [...prevFiles];
+                                                  updatedFiles[index].checklist = newValue;
+                                                  return updatedFiles;
+                                              });
+                                          }}
+                                        > */}
+                                         <Controller
+                                                            name={`clientChecklist-${index}`}
+                                                            control={control}
+                                                            defaultValue={file.checklist || ""}
+                                                            rules={{ required: 'Client Checklist is required' }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    select
+                                                                    size="small"
+                                                                    required
+                                                                    error={!!errors[`clientChecklist-${index}`]}
+                                                                    helperText={errors[`clientChecklist-${index}`]?.message}
+                                                                    style={{ width: 200 }} // Fixed width
+                                                                    onChange={(e: any) => {
+                                                                        field.onChange(e);
+                                                                        const newValue = e.target.value;
+                                                                        setValue(`clientChecklist-${index}`, e.target.value);
+                                                                        setFiles(prevFiles => {
+                                                                            const updatedFiles = [...prevFiles];
+                                                                            updatedFiles[index].checklist = newValue;
+                                                                            return updatedFiles;
+                                                                        });
+                                                                    }}
+                                                                >
+                                          {dropdownOptions.map((option, index) => (
+                                            <MenuItem key={index} value={option.Title}>
+                                              {option.Title}
+                                            </MenuItem>
+                                          ))}
+                                        </TextField>
+                                      // </>
+                                    )}
+                                  />
+                                </TableCell>
+                                {/* </div> */}
+                                <TableCell>
+                                  <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+
+
+
                     </>
                   )}
-                
+
+
                 </Grid>
               </Grid>
             </Box>

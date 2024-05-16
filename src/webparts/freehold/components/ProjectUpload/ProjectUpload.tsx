@@ -315,6 +315,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     }
   }, [uploadFiles]);
 
+  
+  const onDelete = (index: number) => {
+    setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+};
+
   // const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
   //   setLoading(true);
 
@@ -737,7 +742,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
               {/*multiple checklist dropdown */}
               {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
                 <>
-                  {uploadFiles.map((uploadedFile, index) => (
+                  {/* {uploadFiles.map((uploadedFile, index) => (
                     <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
                     >
                       <Controller
@@ -784,7 +789,68 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                         )}
                       />
                     </div>
-                  ))}
+                  ))} */}
+                    <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Document</TableCell>
+                                                <TableCell>Document Type</TableCell>
+                                                <TableCell>Delete</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {uploadFiles.map((uploadedFile, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{uploadedFile.name}</TableCell>
+                                                    <TableCell>
+                                                        <Controller
+                                                            name={`projectChecklist-${index}`}
+                                                            control={control}
+                                                            defaultValue={uploadedFile.checklist || ""}
+                                                            rules={{ required: 'Project Checklist is required' }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    select
+                                                                    size="small"
+                                                                    required
+                                                                    error={!!errors[`projectChecklist-${index}`]}
+                                                                    helperText={errors[`projectChecklist-${index}`]?.message}
+                                                                    style={{ width: 200 }} // Fixed width
+                                                                    onChange={(e: any) => {
+                                                                        field.onChange(e);
+                                                                        const newValue = e.target.value;
+                                                                        setValue('projectChecklist', e.target.value);
+                                                                        console.log(newValue, 'e.target')
+                                                                        setUploadFiles(prevFiles => {
+                                                                            const updatedFiles = [...prevFiles];
+                                                                            updatedFiles[index].checklist = newValue;
+                                                                            return updatedFiles;
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    {dropdownOptions?.map((option: any) => (
+                                                                        <MenuItem key={option.Title} value={option.Title}>
+                                                                            {option.Title}
+                                                                        </MenuItem>
+                                                                    ))}
+                                                                </TextField>
+                                                            )}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
 
 
 

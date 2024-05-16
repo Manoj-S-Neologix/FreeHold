@@ -14,7 +14,7 @@ import formatDate from "../../hooks/dateFormat";
 import toast from 'react-hot-toast';
 import DropZone from '../../../../Common/DropZone/DropZone';
 import { Controller } from "react-hook-form";
-import InputLabel from '@mui/material/InputLabel';
+// import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 
 
@@ -146,6 +146,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     console.log(fileInfoArray, 'fileInfoArray');
 
     console.log(uploadFiles, "uploadFiles");
+
+    const onDelete = (index: number) => {
+        setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+    };
 
     //working code
 
@@ -305,146 +309,68 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
                                 />
                             </Box>
-
-                            {/* {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
-                                <Stack
-                                    direction="row"
-                                    justifyContent="end"
-                                    alignItems="center"
-                                    spacing={3}
-                                >
-                                    <Button variant="contained"
-                                        sx={{ width: loading ? '150px' : 'auto' }}
-                                        onClick={handleSave} disabled={loading
-                                        }
-                                        type="submit">
-                                        {loading ? (
-                                            <CircularProgress size={20} color="inherit" />
-                                        ) : (
-                                            "Save"
-                                        )}
-                                    </Button>
-                                    {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
-                                </Stack>
-                            </DialogActions>} */}
-                            {/*single checklist dropdown */}
-                            {/* {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
+                                {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
                                 <>
-                                    <div>
-                                        <Controller
-                                            name="clientChecklist"
-                                            control={control}
-                                            defaultValue=""
-                                            rules={{ required: 'Client Checklist is required' }}
-                                            render={({ field }) => (
-                                                <>
-                                                    <InputLabel htmlFor="client-checklist">Client Checklist</InputLabel>
-                                                    <TextField
-                                                        {...field}
-                                                        id="client-checklist"
-                                                        fullWidth
-                                                        variant="outlined"
-                                                        select
-                                                        size="small"
-                                                        required
-                                                        error={!!errors.clientChecklist}
-                                                        helperText={errors?.clientChecklist?.message}
-                                                        onChange={(e: any) => {
-                                                            console.log('Selected:', e.target.value);
-                                                            setValue('clientChecklist', e.target.value);
-                                                        }}
-                                                    >
-                                                        {dropdownOptions?.map((option: any, index: any) => (
-                                                            <MenuItem key={index} value={option.Title}>
-                                                                {option.Title}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </>
-                                            )}
-                                        />
-
-                                    </div>
-                                    <DialogActions sx={{ px: 0, mr: 0 }}>
-                                        <Stack
-                                            direction="row"
-                                            justifyContent="end"
-                                            alignItems="center"
-                                            spacing={3}
-                                        >
-                                            <Button
-                                                variant="contained"
-                                                sx={{ width: loading ? '150px' : 'auto' }}
-                                                onClick={handleSave}
-                                                disabled={loading}
-                                                type="submit"
-                                            >
-                                                {loading ? (
-                                                    <CircularProgress size={20} color="inherit" />
-                                                ) : (
-                                                    "Save"
-                                                )}
-                                            </Button>
-                                            {!loading && <Button variant="outlined" onClick={handleCancel}>Cancel</Button>}
-                                        </Stack>
-                                    </DialogActions>
-                                </>
-                            )} */}
-
-                            {/*multiple checklist dropdown */}
-                            {uploadFiles.length > 0 && dropdownOptions.length > 0 &&   (
-                                <>
-                                    {uploadFiles.map((uploadedFile, index) => (
-                                        <div key={index } style={{position:'relative',bottom:'6.2rem', marginLeft:'16rem' }}
-                                        >
-                                            <Controller
-                                                name={`clientChecklist-${index}`}
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Client Checklist is required' }}
-                                                render={({ field }) => (
-                                                    <>
-                                                    <div >
-
-                                                        <InputLabel htmlFor={`client-checklist-${index}`}>Client Checklist</InputLabel>
-                                                        </div>
-                                                        <TextField
-                                                            {...field}
-                                                            id={`client-checklist-${index}`}
-                                                            fullWidth
-                                                            style={{ maxWidth: '200px' }}
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            error={!!errors[`clientChecklist-${index}`]}
-                                                            helperText={errors[`clientChecklist-${index}`]?.message}
-                                                            onChange={(e: any) => {
-                                                                field.onChange(e);
-                                                                const newValue = e.target.value;
-                                                                setValue('clientChecklist', e.target.value);
-                                                                console.log(newValue, 'e.target')
-                                                                setUploadFiles(prevFiles => {
-                                                                    const updatedFiles = [...prevFiles];
-                                                                    updatedFiles[index].checklist = newValue;
-                                                                    return updatedFiles;
-                                                                });
-                                                            }}
-                                                        >
-                                                            {dropdownOptions?.map((option: any, index:any) => (
-                                                                <MenuItem key={index} value={option.Title}>
-                                                                    {option.Title}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    </>
-                                                )}
-                                            />
-                                        </div>
-                                    ))}
-                            
-                            
-  
+                                    <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Document</TableCell>
+                                                <TableCell>Document Type</TableCell>
+                                                <TableCell>Delete</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {uploadFiles.map((uploadedFile, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{uploadedFile.name}</TableCell>
+                                                    <TableCell>
+                                                        <Controller
+                                                            name={`clientChecklist-${index}`}
+                                                            control={control}
+                                                            defaultValue={uploadedFile.checklist || ""}
+                                                            rules={{ required: 'Client Checklist is required' }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    select
+                                                                    size="small"
+                                                                    required
+                                                                    error={!!errors[`clientChecklist-${index}`]}
+                                                                    helperText={errors[`clientChecklist-${index}`]?.message}
+                                                                    style={{ width: 200 }} // Fixed width
+                                                                    onChange={(e: any) => {
+                                                                        field.onChange(e);
+                                                                        const newValue = e.target.value;
+                                                                        setValue(`clientChecklist-${index}`, e.target.value);
+                                                                        setUploadFiles(prevFiles => {
+                                                                            const updatedFiles = [...prevFiles];
+                                                                            updatedFiles[index].checklist = newValue;
+                                                                            return updatedFiles;
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    {dropdownOptions?.map((option: any) => (
+                                                                        <MenuItem key={option.Title} value={option.Title}>
+                                                                            {option.Title}
+                                                                        </MenuItem>
+                                                                    ))}
+                                                                </TextField>
+                                                            )}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                                     <DialogActions sx={{ px: 0, mr: 0 }}>
                                         <Stack
                                             direction="row"
@@ -475,7 +401,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Document Name</TableCell>
-                                            <TableCell>DMS Tags</TableCell>
+                                            <TableCell>Document Type</TableCell>
                                             <TableCell>Uploaded Date</TableCell>
                                             <TableCell>Uploaded By</TableCell>
                                             <TableCell>Action</TableCell>
