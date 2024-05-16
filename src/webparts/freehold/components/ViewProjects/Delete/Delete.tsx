@@ -257,22 +257,35 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, projectDetai
   const handleDeleteProject = async () => {
     try {
       setLoading(true);
-
-      // Assuming projectDetails contain necessary fields like Id and Title
       await ProjectService().deleteProject("Project_Informations", projectDetails.Id);
-
-      // console.log('Project deleted successfully');
       toast.success('Project deleted Successfully !');
       fetchData();
 
       onClose();
     } catch (error) {
-      // console.error('Error deleting Project:', error);
       toast.error('Error deleting Project:', error);
-
-      setLoading(false); // Reset loading state on error
+      setLoading(false); 
     }
   };
+
+  // const handleDeleteProject = async () => {
+  //   setLoading(true);
+  //   ProjectService().deleteClient("Project_Informations", projectDetails.Id)
+  //     .then(() => {
+  //       return ProjectService().deleteLibrary("Project_Informations", projectDetails.Id);
+  //     })
+  //     .then(() => {
+  //       toast.success('Project deleted Successfully !');
+  //       console.log('Project deleted Successfully !');
+  //       // setFiles([]);
+  //       fetchData();
+  //     })
+  //     .catch((error) => {
+  //       const errorMessage = error || 'An error occurred while deleting client and associated document.';
+  //       toast.error(`Failed to delete client and associated document. ${errorMessage}`);
+  //       console.error('Error deleting client:', error);
+  //     });
+  // };
 
   return (
     <Box sx={{ width: '100', padding: '20px' }}>

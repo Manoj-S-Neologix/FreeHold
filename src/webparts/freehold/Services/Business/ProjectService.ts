@@ -152,6 +152,14 @@ const ProjectService = () => {
 
     };
 
+    const deleteFile = async (libraryGuid: any, fileId: any) => {
+        if (spServiceInstance) {
+            const files = await spServiceInstance.deleteFile(libraryGuid, fileId);
+            //console.log('Retrieved files:', files);
+            return files;
+        }
+    };
+
     const deleteLibrary = async (LibraryName: string) => {
 
         if (spServiceInstance) {
@@ -268,6 +276,7 @@ const ProjectService = () => {
         getPersonByEmail,
         getDocumentsFromFolder,
         deleteProject,
+        deleteFile,
         getPersonById,
         copyDocuments,
         createFolder,

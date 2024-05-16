@@ -69,6 +69,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const handleCloseDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
+    // fetchData();
   };
 
   // const handleSave = () => {
@@ -402,8 +403,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   });
 
   const handleDelete = (getGuid: any) => {
-    const apiResponse = ClientService();
-
+    const apiResponse = ProjectService();
     apiResponse.deleteFile(getGuid, deleteId)
       .then(() => {
         setIsDeleteDialogOpen(false);
@@ -886,7 +886,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     <TableHead>
                       <TableRow>
                         <TableCell>Document Name</TableCell>
-                        <TableCell>DMS Tags</TableCell>
+                        <TableCell>Document Type</TableCell>
                         <TableCell>Uploaded Date</TableCell>
                         <TableCell>Uploaded By</TableCell>
                         <TableCell>Action</TableCell>
