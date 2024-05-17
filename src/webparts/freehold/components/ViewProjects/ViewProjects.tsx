@@ -26,6 +26,8 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
+import toast from "react-hot-toast";
+
 // import toast from 'react-hot-toast';
 // import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
@@ -490,11 +492,60 @@ const ViewProject = (props: any) => {
     fetchData();
   }, []);
 
-  const handleClearClient = () => {
-    console.log("client deleted successfully");
-    // toast.success("client deleted successfully");
-    setDialogOpen(false)
-  }
+
+  // const handleClearClient = async (ServerRelativeUrl: any) => {
+  //   const apiResponse = ProjectService();
+  //   apiResponse.deleteAssignedStaff(ServerRelativeUrl)
+  //   .then(() => {
+  //       // setIsDeleteDialogOpen(false);
+  //       console.log("File deleted successfully!");
+  //       toast.success('File deleted successfully!');
+  //       // fetchData(folderServerRelativeUrl);
+  //   })
+  //   .catch(error => {
+  //       console.error("Failed to delete document:", error);
+  //       toast.error(`Failed to delete document: ${error}`);
+  //   });
+  //   // setDialogOpen(false)
+  // }
+
+  const handleClearClient = (ServerRelativeUrl: any) => {
+   ProjectService().deleteAssignedStaff(ServerRelativeUrl)
+        .then(() => {
+            console.log("File deleted successfully!");
+            toast.success('File deleted successfully!');
+
+            // const assignClientIds = particularClientAllData[0].assignClientId
+            //     .split(',')
+            //     .map((id: any) => Number(id.trim()))
+            //     .filter((id: any) => id !== AssignClientId); // Exclude deleted AssignClientId
+
+            // const updatedDataObj = {
+            //     AssignClientId: { results: assignClientIds }
+            // };
+
+            //   const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
+
+            // apiResponse.updateProject("Project_Informations", ListID, updatedDataObj)
+            //     .then(() => {
+            //         console.log("Project updated successfully!");
+            //         toast.success('Project updated successfully!');
+            //         fetchData();
+            //     })
+            //     .catch((error) => {
+            //         console.error("Failed to update project:", error);
+            //         toast.error(`Failed to update project: ${error}`);
+            //     });
+        })
+        .catch((error) => {
+            console.error("Failed to delete document:", error);
+            toast.error(`Failed to delete document: ${error}`);
+        });
+};
+
+
+
+
 
   // React.useEffect(() => {
   //   fetchData();
@@ -701,7 +752,7 @@ const ViewProject = (props: any) => {
                   }}>
                     {data.Title}
                   </Box>
-                  <Box style={{display: "flex"}} onClick={handleClearClient}><DeleteIcon fontSize='small' style={{color:'#bbb'}}/></Box>
+                  <Box style={{display: "flex"}}  onClick={() => handleClearClient(data.ServerRelativeUrl)}><DeleteIcon fontSize='small' style={{color:'#bbb'}}/></Box>
                   </div>
                 ))}
               </Typography>

@@ -180,6 +180,14 @@ const ProjectService = () => {
 
     };
 
+    const deleteAssignedStaff = async (ServerRelativeUrl:any) => {
+        if (spServiceInstance) {
+            const deleteAssignedStaff = await spServiceInstance.deleteAssignedStaff(ServerRelativeUrl);
+            console.log(deleteAssignedStaff, "results");
+            return deleteAssignedStaff;
+        }
+    }
+
 
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
@@ -302,7 +310,8 @@ const ProjectService = () => {
         createLibrary,
         getListCounts,
         updateProjectDocumentMetadata,
-        deleteFolder
+        deleteFolder,
+        deleteAssignedStaff
 
         // addDocumentsToFolder
     };

@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from '../AssignClient/AssignClient.module.scss';
-import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -239,6 +239,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const handleDeleteUnit = (folderServerRelativeUrl: any) => {
         const apiResponse = ProjectService();
         apiResponse.deleteFolder(folderServerRelativeUrl)
+        
             .then(() => {
                 setIsDeleteDialogOpen(false);
                 console.log("File deleted successfully!");
@@ -334,36 +335,8 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                         )}
                                     />
                                 </Grid>
-
-                                {/* <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Unit Folder</TableCell>
-                                    <TableCell>Delete</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                    {getFoldersResponse.length > 0 &&
-                                        getFoldersResponse.map((item: any, idx: any) => (
-                                            <MenuItem key={idx} value={item?.Name}>
-                                                <TableCell>
-                                                {item?.Name}
-                                                </TableCell>
-                                            </MenuItem>
-                                        ))}
-                                <TableCell>
-                                    <IconButton aria-label="delete" 
-                                    // onClick={() => onDelete(index)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableBody>
-                        </Table>
-                    </TableContainer> */}
                                 <Grid item xs={12}>
-                                    <TableContainer>
+                                    {/* <TableContainer>
                                         <Table>
                                             <TableHead>
                                                 <TableRow>
@@ -390,7 +363,41 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                     ))}
                                             </TableBody>
                                         </Table>
-                                    </TableContainer>
+                                    </TableContainer> */}
+                                      {[...Array(getFoldersResponse.length)].map((_, index) => (
+                                    <Grid item xs={12} key={index} container spacing={1} alignItems="center">
+                                        <Grid item xs={11}>
+                                            <Controller
+                                                name={`unitName${index}`}
+                                                control={control}
+                                                defaultValue={getFoldersResponse[index]?.Name || ""}
+                                            
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        label={`Unit ${index + 1}`}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        {...field}
+                                                        required
+                                                        error={!!errors?.[`unitName${index}`]}
+                                                        helperText={errors?.[`unitName${index}`]?.message}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={1}>
+                                            <Tooltip title="Remove Unit">
+                                                <IconButton
+                                                    disabled={getFoldersResponse.length === 1}
+                                                    aria-label={`Remove Unit ${index + 1}`}
+                                                    onClick={() => deleteUnit(index)}
+                                                >
+                                                    <DeleteIcon fontSize='medium' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                ))}
                                 </Grid>
                                 {isDeleteDialogOpen && (
                                     <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >

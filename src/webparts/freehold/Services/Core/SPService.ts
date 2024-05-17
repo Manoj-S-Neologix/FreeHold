@@ -22,6 +22,7 @@ export type SPServiceType = {
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
+    deleteAssignedStaff:(ServerRelativeUrl:string) => Promise<any>;
     // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
@@ -93,10 +94,17 @@ const SPService: SPServiceType = {
         return deletefolder;
 },
 
-  
+//   deleteAssignedStaff :async (ServerRelativeUrl:string): Promise<any> => {
+//     const deleteAssignedStaff = await web
 
 
-
+deleteAssignedStaff: async (ServerRelativeUrl:any): Promise<any> => {
+    // const deletefolder = await web.lists 
+    // .getByTitle(folderServerRelativeUrl).recycle();
+    const deletefolder = await web.getFolderByServerRelativeUrl(ServerRelativeUrl).recycle();
+        // .getById(itemId).recycle();
+    return deletefolder;
+},
 
 
 
