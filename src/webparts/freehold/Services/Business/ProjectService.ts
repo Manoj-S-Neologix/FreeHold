@@ -170,19 +170,19 @@ const ProjectService = () => {
 
     };
 
-    const deleteFolder = async (fileId:any) => {
+    const deleteFolder = async (libraryName:string) => {
 
         if (spServiceInstance) {
-            const results = await spServiceInstance.deleteFolder(fileId);
+            const results = await spServiceInstance.deleteFolder(libraryName);
             console.log(results, "results");
             return results;
         }
 
     };
 
-    const deleteAssignedStaff = async (ServerRelativeUrl:any) => {
+    const deleteAssignedClient = async (listName:string, itemId: number) => {
         if (spServiceInstance) {
-            const deleteAssignedStaff = await spServiceInstance.deleteAssignedStaff(ServerRelativeUrl);
+            const deleteAssignedStaff = await spServiceInstance.deleteAssignedClient(listName, itemId);
             console.log(deleteAssignedStaff, "results");
             return deleteAssignedStaff;
         }
@@ -311,7 +311,7 @@ const ProjectService = () => {
         getListCounts,
         updateProjectDocumentMetadata,
         deleteFolder,
-        deleteAssignedStaff
+        deleteAssignedClient
 
         // addDocumentsToFolder
     };

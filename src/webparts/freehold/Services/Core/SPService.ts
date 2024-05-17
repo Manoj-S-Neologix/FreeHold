@@ -4,7 +4,7 @@ import { Web } from "@pnp/sp/presets/all";
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
-    deleteFolder: (folderServerRelativeUrl: string) => Promise<any>;
+    deleteFolder: (libraryName:string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
     uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
@@ -22,7 +22,7 @@ export type SPServiceType = {
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
-    deleteAssignedStaff:(ServerRelativeUrl:string) => Promise<any>;
+    deleteAssignedClient:(listName:string, itemId: number) => Promise<any>;
     // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
@@ -86,11 +86,10 @@ const SPService: SPServiceType = {
         }
     },
 
-    deleteFolder: async (itemId:any): Promise<any> => {
+    deleteFolder: async (libraryName:string): Promise<any> => {
         // const deletefolder = await web.lists 
         // .getByTitle(folderServerRelativeUrl).recycle();
-        const deletefolder = await web.lists
-            .getById(itemId).recycle();
+        const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
         return deletefolder;
 },
 
@@ -98,12 +97,14 @@ const SPService: SPServiceType = {
 //     const deleteAssignedStaff = await web
 
 
-deleteAssignedStaff: async (ServerRelativeUrl:any): Promise<any> => {
+deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
     // const deletefolder = await web.lists 
     // .getByTitle(folderServerRelativeUrl).recycle();
-    const deletefolder = await web.getFolderByServerRelativeUrl(ServerRelativeUrl).recycle();
+    // const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
         // .getById(itemId).recycle();
-    return deletefolder;
+        const deleteAssignedClient = await web.lists
+            .getByTitle(listName).items.getById(itemId).recycle();
+    return deleteAssignedClient;
 },
 
 

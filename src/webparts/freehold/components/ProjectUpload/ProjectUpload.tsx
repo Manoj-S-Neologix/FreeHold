@@ -375,6 +375,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       if (data.unitDocument !== '') {
 
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+        console.log(folderUrl, 'projectfolderurl..')
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
       }

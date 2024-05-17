@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from '../AssignClient/AssignClient.module.scss';
-import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip, Table, TableBody, TableContainer, TableRow, } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -236,21 +236,53 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     //       });
     //   };
 
-    const handleDeleteUnit = (folderServerRelativeUrl: any) => {
-        const apiResponse = ProjectService();
-        apiResponse.deleteFolder(folderServerRelativeUrl)
-        
-            .then(() => {
-                setIsDeleteDialogOpen(false);
-                console.log("File deleted successfully!");
-                toast.success('File deleted successfully!');
-                // fetchData(folderServerRelativeUrl);
-            })
-            .catch(error => {
-                console.error("Failed to delete document:", error);
-                toast.error(`Failed to delete document: ${error}`);
-            });
+    const handleDeleteUnit = async() => {
+        try {
+            const apiResponse = ProjectService();
+            const folderUrl = getFoldersResponse[0].ServerRelativeUrl
+            await apiResponse.deleteFolder(folderUrl)
+            console.log(folderUrl, 'folderurl..')
+            toast.success('Unit Deleted Successfully!');
+      
+          } catch (error) {
+            setLoading(false);
+            console.error("Failed to delete unit:", error);
+            toast.error(`Failed to delete unit: ${error}`);
+          }
     }
+
+    // const handleDeleteUnit = async (data:any) => {
+    //     try {
+    //         // Assuming ProjectService() returns an object with the deleteFolder method
+    //         const apiResponse = ProjectService();
+    
+    //         // Get the name of the library
+    //         const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
+    
+    //         if (data.getUnitDocument !== '') {
+    //             const folderUrlToDelete = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.getUnitDocument}`;
+    //             console.log(data.getUnitDocument, 'deleteunitfolder..');
+    
+    //             // Call the API to delete the folder
+    //             await apiResponse.deleteFolder(folderUrlToDelete);
+    
+    //             // Remove the folder from the getFoldersResponse array
+    //             if (Array.isArray(getFoldersResponse)) {
+    //                 const getFoldersResponse = getFoldersResponse.filter((folder:any) => folder.ServerRelativeUrl !== folderUrlToDelete);
+    //                 console.log(getFoldersResponse, 'Updated folders after deletion');
+    //             } else {
+    //                 console.error('getFoldersResponse is not an array');
+    //             }
+    //         }
+    
+    //         toast.success('Unit Deleted Successfully!');
+    //     } catch (error) {
+    //         setLoading(false);
+    //         console.error("Failed to delete unit:", error);
+    //         toast.error(`Failed to delete unit: ${error}`);
+    //     }
+    // };
+    
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
@@ -336,47 +368,45 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TableContainer>
+                                    <TableContainer>
                                         <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Unit Name</TableCell>
-                                                    <TableCell>Delete</TableCell>
-                                                </TableRow>
-                                            </TableHead>
                                             <TableBody>
                                                 {getFoldersResponse.length > 0 &&
                                                     getFoldersResponse.map((item: any, idx: any) => (
                                                         <TableRow key={idx}>
-                                                            <TableCell>
-                                                                <Box>
-                                                                    {item?.Name}
-                                                                </Box>
-                                                            </TableCell>
-                                                            <TableCell>
+                                                            {/* <TableCell> */}
+                                                                <Grid item xs={12} style={{display:'flex', paddingBottom:'0.5rem'}}>
+                                                                    <TextField label={item?.Name} fullWidth disabled name='getUnitDocument'>
+                                                                        {item?.Name}
+                                                                    </TextField>
+                                                                
+                                                            {/* </TableCell> */}
+                                                            {/* <TableCell> */}
                                                                 <IconButton aria-label="delete" 
                                                                 onClick={() => {setIsDeleteDialogOpen(true)}}>
                                                                     <DeleteIcon />
                                                                 </IconButton>
-                                                            </TableCell>
+                                                                </Grid>
+                                                            {/* </TableCell> */}
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
                                         </Table>
-                                    </TableContainer> */}
-                                      {[...Array(getFoldersResponse.length)].map((_, index) => (
+                                    </TableContainer>
+                                      {/* {[...Array(getFoldersResponse.length)].map((_, index) => (
                                     <Grid item xs={12} key={index} container spacing={1} alignItems="center">
                                         <Grid item xs={11}>
                                             <Controller
                                                 name={`unitName${index}`}
                                                 control={control}
-                                                defaultValue={getFoldersResponse[index]?.Name || ""}
+                                                // defaultValue=""
                                             
                                                 render={({ field }) => (
                                                     <TextField
-                                                        label={`Unit ${index + 1}`}
+                                                        defaultValue={`Unit ${index + 1}`}
                                                         variant="outlined"
                                                         fullWidth
+                                                        disabled
                                                         {...field}
                                                         required
                                                         error={!!errors?.[`unitName${index}`]}
@@ -397,7 +427,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             </Tooltip>
                                         </Grid>
                                     </Grid>
-                                ))}
+                                ))} */}
                                 </Grid>
                                 {isDeleteDialogOpen && (
                                     <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
