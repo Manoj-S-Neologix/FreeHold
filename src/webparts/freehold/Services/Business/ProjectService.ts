@@ -170,6 +170,17 @@ const ProjectService = () => {
 
     };
 
+    const deleteFolder = async (fileId:any) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.deleteFolder(fileId);
+            console.log(results, "results");
+            return results;
+        }
+
+    };
+
+
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
             const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
@@ -290,7 +301,8 @@ const ProjectService = () => {
         addDocumentsToFolder,
         createLibrary,
         getListCounts,
-        updateProjectDocumentMetadata
+        updateProjectDocumentMetadata,
+        deleteFolder
 
         // addDocumentsToFolder
     };

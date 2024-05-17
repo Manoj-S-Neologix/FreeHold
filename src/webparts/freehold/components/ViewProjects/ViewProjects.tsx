@@ -26,6 +26,7 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
+// import toast from 'react-hot-toast';
 // import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
 
@@ -489,6 +490,12 @@ const ViewProject = (props: any) => {
     fetchData();
   }, []);
 
+  const handleClearClient = () => {
+    console.log("client deleted successfully");
+    // toast.success("client deleted successfully");
+    setDialogOpen(false)
+  }
+
   // React.useEffect(() => {
   //   fetchData();
   // }, [isViewDialogOpen]);
@@ -686,6 +693,7 @@ const ViewProject = (props: any) => {
                 listStyleType: "none", padding: 0
               }}>
                 {selectedName.map((data:any)=>(
+                  <div style={{display: "flex", flexDirection: "row",gap: "0.5rem", alignItems: "center",justifyContent: "flex-start"}}>
                   <Box 
                     key={data.Id} 
                     onClick={()=>{
@@ -693,6 +701,8 @@ const ViewProject = (props: any) => {
                   }}>
                     {data.Title}
                   </Box>
+                  <Box style={{display: "flex"}} onClick={handleClearClient}><DeleteIcon fontSize='small' style={{color:'#bbb'}}/></Box>
+                  </div>
                 ))}
               </Typography>
             </DialogContent>
@@ -716,7 +726,6 @@ const ViewProject = (props: any) => {
               isLoading={isLoading}
               AllClientData={AllClientData}
               tableDataWidth={tableDataWidth}
-
             />
           </Box>
         </Stack>}

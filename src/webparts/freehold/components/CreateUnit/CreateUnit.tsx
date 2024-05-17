@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from '../AssignClient/AssignClient.module.scss';
-import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip, TableContainer, TableHead, TableRow, TableCell, Table, TableBody } from '@mui/material';
+import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -28,13 +28,17 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const [getClient, setGetClient] = useState<any>('');
     const [loading, setLoading] = useState(false);
     const [count, setCount] = useState(1);
+    // const [fileData, setFileData] = useState<any[]>([]);
+    // const [isLoading, setIsLoading] = useState(true);
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
     const [showCount, setShowCount] = useState(false);
     // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
+    const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 
     const getProjectCode = particularClientAllData[0]?.projectNumber;
-    console.log(getProjectCode, "getProjectCode");
+    console.log(getProjectCode, getFoldersResponse, "getProjectCode");
 
     const clientService = ClientService();
     const clientListName = "Client_Informations";
@@ -197,8 +201,8 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
             const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
 
-            // setGetFoldersResponse(getFolders);
-            console.log(getFolders,"getFolders....")
+            setGetFoldersResponse(getFolders);
+            console.log(getFolders, "getFolders....")
 
             // Ensure results is an array before setting state
             if (Array.isArray(results)) {
@@ -217,6 +221,44 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     console.log(getClientDocumentsData, "document");
 
 
+    // const handleDelete = (folderServerRelativeUrl: any) => {
+    //     const apiResponse = ProjectService();
+    //     apiResponse.deleteFolder(folderServerRelativeUrl)
+    //       .then(() => {
+    //         setIsDeleteDialogOpen(false);
+    //         console.log("File deleted successfully!");
+    //         toast.success('File deleted successfully!');
+    //         fetchData(folderServerRelativeUrl);
+    //       })
+    //       .catch(error => {
+    //         console.error("Failed to delete document:", error);
+    //         toast.error(`Failed to delete document: ${error}`);
+    //       });
+    //   };
+
+    const handleDeleteUnit = (folderServerRelativeUrl: any) => {
+        const apiResponse = ProjectService();
+        apiResponse.deleteFolder(folderServerRelativeUrl)
+            .then(() => {
+                setIsDeleteDialogOpen(false);
+                console.log("File deleted successfully!");
+                toast.success('File deleted successfully!');
+                // fetchData(folderServerRelativeUrl);
+            })
+            .catch(error => {
+                console.error("Failed to delete document:", error);
+                toast.error(`Failed to delete document: ${error}`);
+            });
+    }
+
+    const handleCloseDeleteDialog = () => {
+        setIsDeleteDialogOpen(false);
+        // fetchData();
+    };
+
+
+
+
     return (
         <Box sx={{ width: '100', padding: '20px' }}>
             <Stack direction="column" spacing={2}>
@@ -228,7 +270,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                         }}>
                         <div className="d-flex flex-column">
                             <div className="d-flex justify-content-between 
-                            align-items-center relative">
+                align-items-center relative">
                                 <h4
                                     style={{ margin: '0', color: '#125895' }}>
                                     Create Unit
@@ -275,8 +317,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 onChange={(e: any) => {
                                                     console.log(e.target.value);
                                                     setGetClient(e.target.value);
+                                                    // const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
                                                     getDocumentsFromFolder(e.target.value);
                                                     setValue('AssignClient', e.target.value);
+                                                    // fetchData(getLibraryName);
                                                 }}
                                                 error={!!errors?.AssignClient}
                                                 helperText={errors?.AssignClient?.message}
@@ -290,35 +334,136 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                         )}
                                     />
                                 </Grid>
-                              
-                                <TableContainer>
-                                    <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                                <TableCell>Unit Folder</TableCell>
-                                                  <TableCell>Delete</TableCell> 
-                                                {/* <TableCell>Delete</TableCell>  */}
-                                          
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableCell>
-                                    {/* {getFoldersResponse.length > 0 &&
+
+                                {/* <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Unit Folder</TableCell>
+                                    <TableCell>Delete</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                    {getFoldersResponse.length > 0 &&
                                         getFoldersResponse.map((item: any, idx: any) => (
                                             <MenuItem key={idx} value={item?.Name}>
-                                            {item?.Name}
+                                                <TableCell>
+                                                {item?.Name}
+                                                </TableCell>
                                             </MenuItem>
-                                        ))} */}
-                                        </TableCell>
-                                        <TableCell>
-                                          <IconButton aria-label="delete" >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                        </TableCell>
-                                    </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            
+                                        ))}
+                                <TableCell>
+                                    <IconButton aria-label="delete" 
+                                    // onClick={() => onDelete(index)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableBody>
+                        </Table>
+                    </TableContainer> */}
+                                <Grid item xs={12}>
+                                    <TableContainer>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Unit Name</TableCell>
+                                                    <TableCell>Delete</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {getFoldersResponse.length > 0 &&
+                                                    getFoldersResponse.map((item: any, idx: any) => (
+                                                        <TableRow key={idx}>
+                                                            <TableCell>
+                                                                <Box>
+                                                                    {item?.Name}
+                                                                </Box>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <IconButton aria-label="delete" 
+                                                                onClick={() => {setIsDeleteDialogOpen(true)}}>
+                                                                    <DeleteIcon />
+                                                                </IconButton>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                                {isDeleteDialogOpen && (
+                                    <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
+                                        <DialogTitle className={styles.addTitle}
+                                            style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                                            <div className="d-flex flex-column">
+                                                <div className="d-flex justify-content-between
+                               align-items-center relative">
+                                                    <h4 style={{ margin: '0', color: '#125895' }}>
+                                                        Delete Unit</h4>
+                                                </div>
+                                                <div style={{
+                                                    height: '4px', width: '100%',
+                                                    backgroundColor: '#125895'
+                                                }} />
+                                            </div>
+                                        </DialogTitle>
+                                        {!loading && <IconButton
+                                            aria-label="close"
+                                            onClick={handleCloseDeleteDialog}
+                                            sx={{
+                                                position: "absolute",
+                                                right: "14px",
+                                                top: "8px",
+                                                color: (theme: any) => theme.palette.grey[500],
+                                            }}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>}
+                                        <DialogContent >
+
+                                            <div style={{ marginLeft: '7px' }}>
+                                                Are you sure you want to delete unit
+                                                <strong style={{ marginLeft: '2px' }}>
+                                                </strong>
+                                                ?
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                                            {/* <Button
+                                onClick={handleDelete}
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    maxWidth: '150px',
+                                    float: 'right',
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button variant="outlined" onClick={handleCancel}>
+                                Cancel
+                            </Button> */}
+                                            <Stack
+                                                direction="row"
+                                                justifyContent="end"
+                                                alignItems="center"
+                                                spacing={3}
+                                            >
+                                                <Button variant="contained" color="primary"
+                                                    sx={{ width: loading ? '150px' : 'auto' }}
+                                                    onClick={handleDeleteUnit} disabled={loading}>
+                                                    {loading ? (
+                                                        <CircularProgress size={20} color="inherit" />
+                                                    ) : (
+                                                        "Delete"
+                                                    )}
+                                                </Button>
+                                                {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                                            </Stack>
+                                        </DialogActions>
+                                    </Dialog>
+                                )}
                                 {false && <Grid item xs={6}>
                                     <FormControlLabel
                                         sx={{ mb: 1 }}
@@ -361,12 +506,12 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                     maxLength: {
                                                                         value: 50,
                                                                         message: `Unit ${index + 1} 
-                                                                    cannot be longer than 50 characters`,
+                                                        cannot be longer than 50 characters`,
                                                                     },
                                                                     minLength: {
                                                                         value: 3,
                                                                         message: `Unit ${index + 1}
-                                                                     must be at least 3 characters`,
+                                                            must be at least 3 characters`,
                                                                     }
                                                                 }}
                                                                 render={({ field }) => (
@@ -388,10 +533,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                     disabled={count === 1}
                                                                     aria-label={`Remove Unit ${index + 1}`}
                                                                     onClick={() => deleteUnit(index)}
-                                                                    
+
                                                                 >
-                                                                    <RemoveCircleOutlineIcon 
-                                                                    fontSize='medium'
+                                                                    <RemoveCircleOutlineIcon
+                                                                        fontSize='medium'
                                                                     />
                                                                 </IconButton>
                                                             </Tooltip>

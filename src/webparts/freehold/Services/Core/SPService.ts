@@ -4,13 +4,14 @@ import { Web } from "@pnp/sp/presets/all";
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
+    deleteFolder: (folderServerRelativeUrl: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
     uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
-    deleteLibrary: (libraryName: string) => Promise<any>;
+    deleteLibrary: (librayName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
@@ -83,6 +84,16 @@ const SPService: SPServiceType = {
             throw error;
         }
     },
+
+    deleteFolder: async (itemId:any): Promise<any> => {
+        // const deletefolder = await web.lists 
+        // .getByTitle(folderServerRelativeUrl).recycle();
+        const deletefolder = await web.lists
+            .getById(itemId).recycle();
+        return deletefolder;
+},
+
+  
 
 
 
@@ -248,6 +259,8 @@ const SPService: SPServiceType = {
             .getByTitle(libraryName).recycle();
         return deleteItem;
     },
+
+   
 
 
 
