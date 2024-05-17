@@ -23,6 +23,16 @@ const ProjectService = () => {
     //     }
     // };
 
+    //project upload with meta data
+    const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
+            console.log(response,"response-metaData")
+            return response;
+        }
+        
+    };
+
     const getProject = async (ListName: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
@@ -142,6 +152,14 @@ const ProjectService = () => {
 
     };
 
+    const deleteFile = async (libraryGuid: any, fileId: any) => {
+        if (spServiceInstance) {
+            const files = await spServiceInstance.deleteFile(libraryGuid, fileId);
+            //console.log('Retrieved files:', files);
+            return files;
+        }
+    };
+
     const deleteLibrary = async (LibraryName: string) => {
 
         if (spServiceInstance) {
@@ -151,6 +169,25 @@ const ProjectService = () => {
         }
 
     };
+
+    const deleteFolder = async (libraryName:string) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.deleteFolder(libraryName);
+            console.log(results, "results");
+            return results;
+        }
+
+    };
+
+    const deleteAssignedClient = async (listName:string, itemId: number) => {
+        if (spServiceInstance) {
+            const deleteAssignedStaff = await spServiceInstance.deleteAssignedClient(listName, itemId);
+            console.log(deleteAssignedStaff, "results");
+            return deleteAssignedStaff;
+        }
+    }
+
 
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
@@ -258,6 +295,7 @@ const ProjectService = () => {
         getPersonByEmail,
         getDocumentsFromFolder,
         deleteProject,
+        deleteFile,
         getPersonById,
         copyDocuments,
         createFolder,
@@ -270,7 +308,10 @@ const ProjectService = () => {
         addClient,
         addDocumentsToFolder,
         createLibrary,
-        getListCounts
+        getListCounts,
+        updateProjectDocumentMetadata,
+        deleteFolder,
+        deleteAssignedClient
 
         // addDocumentsToFolder
     };

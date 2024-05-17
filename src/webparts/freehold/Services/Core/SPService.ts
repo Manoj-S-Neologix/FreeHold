@@ -4,12 +4,14 @@ import { Web } from "@pnp/sp/presets/all";
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
+    deleteFolder: (libraryName:string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
+    uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
-    deleteLibrary: (libraryName: string) => Promise<any>;
+    deleteLibrary: (librayName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
@@ -20,6 +22,8 @@ export type SPServiceType = {
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
+    deleteAssignedClient:(listName:string, itemId: number) => Promise<any>;
+    // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
@@ -82,8 +86,26 @@ const SPService: SPServiceType = {
         }
     },
 
+    deleteFolder: async (libraryName:string): Promise<any> => {
+        // const deletefolder = await web.lists 
+        // .getByTitle(folderServerRelativeUrl).recycle();
+        const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
+        return deletefolder;
+},
+
+//   deleteAssignedStaff :async (ServerRelativeUrl:string): Promise<any> => {
+//     const deleteAssignedStaff = await web
 
 
+deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
+    // const deletefolder = await web.lists 
+    // .getByTitle(folderServerRelativeUrl).recycle();
+    // const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
+        // .getById(itemId).recycle();
+        const deleteAssignedClient = await web.lists
+            .getByTitle(listName).items.getById(itemId).recycle();
+    return deleteAssignedClient;
+},
 
 
 
@@ -141,6 +163,44 @@ const SPService: SPServiceType = {
     },
 
 
+    //upload document with metadata
+    uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: string): Promise<any[]> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
+    
+        const promises = files.map(async (file: any) => {
+            try {
+                const uploadedFile = await library.files.add(file.name, file, true);
+                if (uploadedFile) {
+                    const item = await uploadedFile.file.getItem();
+                    console.log(item, 'serviceitem..')
+                    if (item) {
+                        await item.update({
+                            DMS_x0020_Tags:file.checklist
+                        });
+                        return item;
+                    } else {
+                        throw new Error("Failed to get item after upload");
+                    }
+                } else {
+                    throw new Error("Failed to upload file");
+                }
+            } catch (error) {
+                console.error("Error uploading document:", error);
+                throw error;
+            }
+        });
+        return Promise.all(promises)
+            .then((documents: any[]) => {
+                console.log("Documents with metadata updated successfully")
+                return documents;
+            })
+            .catch((error: any) => {
+                console.error("Error uploading documents:", error);
+                throw error;
+
+            });
+    },
+    
 
     // Update library name
     updateLibraryName: async (GUIDID: any, updatedlibraryName: string): Promise<any> => {
@@ -181,6 +241,24 @@ const SPService: SPServiceType = {
     },
 
 
+ 
+    // updateDocumentMetadata: async (libraryName, fileUrl, metadata) => {
+    //     // console.log("Entering updateDocumentMetadata function");
+    //     try {
+    //         // console.log("Retrieving file item for URL:", fileUrl);
+    //         const fileItem = await web.getFileByServerRelativeUrl(fileUrl).getItem();
+    //         // console.log("File item retrieved:", fileItem);
+    //         const response = await fileItem.update(metadata);
+    //         // console.log("Metadata update response:", response);
+    //         return response;
+    //     } catch (error) {
+    //         console.error("Error updating document metadata:", error);
+    //         throw error;
+    //     }
+    // },
+    
+
+
 
 
 
@@ -190,6 +268,8 @@ const SPService: SPServiceType = {
             .getByTitle(libraryName).recycle();
         return deleteItem;
     },
+
+   
 
 
 

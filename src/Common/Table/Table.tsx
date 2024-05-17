@@ -452,28 +452,42 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    // const filteredRows = searchQuery
-    //     ? rows.filter((row: any) =>
-    //         Object.values(row).some(
-    //             (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
-    //         )
-    //     )
-    //     : sortedRows;
-
-    const filteredRows = filterQuery
-    ? rows.filter((row:any) => {
-        if (row.assignedStaff) {
-            return row.assignedStaff.some((staff:any) =>
-                Object.values(staff).some(
-                    (value) =>
-                        typeof value === 'string' &&
-                        value.toLowerCase().includes(filterQuery.toLowerCase())
-                )
-            );
-        }
-        return false;
-    })
+    const filteredRows = searchQuery
+    ? rows.filter((row: any) =>
+        Object.values(row).some(
+            (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+    )
     : sortedRows;
+
+const getWidth = (id: any) => {
+    return (
+        tableDataWidth.map(
+            (item: any) => (item.hasOwnProperty(id)
+                ? item[id].width
+                : "auto"))
+    );
+};
+
+
+    // // 15/5/ code hidden
+
+    // const filteredRows = filterQuery
+    // ? rows.filter((row:any) => {
+    //     if (row.assignedStaff) {
+    //         return row.assignedStaff.some((staff:any) =>
+    //             Object.values(staff).some(
+    //                 (value) =>
+    //                     typeof value === 'string' &&
+    //                     value.toLowerCase().includes(filterQuery.toLowerCase())
+    //             )
+    //         );
+    //     }
+    //     return false;
+    // })
+    // : sortedRows;
+
+    // // 15/5/ code hidden end
 
     // const filteredRows = searchQuery
     // ? rows.filter((row:any) => {
@@ -492,14 +506,14 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
 
 
 
-    const getWidth = (id: any) => {
-        return (
-            tableDataWidth.map(
-                (item: any) => (item.hasOwnProperty(id)
-                    ? item[id].width
-                    : "auto"))
-        );
-    };
+    // const getWidth = (id: any) => {
+    //     return (
+    //         tableDataWidth.map(
+    //             (item: any) => (item.hasOwnProperty(id)
+    //                 ? item[id].width
+    //                 : "auto"))
+    //     );
+    // };
     return (
         <Box>
             <Grid container>
@@ -543,7 +557,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                                 }}
                                                             />
                                                         </TableCell>
-                                                        {/* {
+                                                        {
                                                             headCells.map((headCell: any) => (
                                                                 row.hasOwnProperty(headCell.id) &&
                                                                 <TableCell
@@ -574,165 +588,11 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                                     )}
                                                                 </TableCell>
                                                             ))
-                                                        } */}
+                                                        }
 
-
-{
-    headCells.map((headCell: any) => (
-        row.hasOwnProperty(headCell.id) && (
-            <TableCell
-                key={headCell.id}
-                component="td"
-                scope="row"
-                padding="none"
-                sx={{
-                    minWidth: getWidth(headCell.id),
-                }}
-                
-                // //Assignclient navigate table 
-                // onClick={()=>{
-                //     if(row["assignClient"]){
-                //         console.log("assignclientISTrue")
-                //     }
-                // }}
-            >
-                {(() => {
-                    const cellContent = row[headCell.id];
-                    
-                    if (!cellContent) {
-                        return '-';
-                    }
-
-                    // const lowerCaseCellContent = cellContent?.toLowerCase();
-                    const lowerCaseSearchQuery = searchQuery ? searchQuery.toLowerCase() : '';
-                    const lowerCaseFilterQuery = filterQuery ? filterQuery.toLowerCase() : '';
-
-                    // Function to render highlighted parts
-                    // const renderHighlightedContent = (content: string, query: string) => {
-                    //     const regex = new RegExp(`(${query})`, 'gi');
-                    //     const parts = content.split(regex);
-
-                    //     return parts.map((part: string, index: number) => (
-                    //         regex.test(part) ? (
-                    //             <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
-                    //         ) : (
-                    //             <React.Fragment key={index}>{part}</React.Fragment>
-                    //         )
-                    //     ));
-                    // };
-
-                    const renderHighlightedContent = (content: string, query: string) => {
-                        const regexString = `(${query})`;
-                        const regex = new RegExp(regexString, 'gi');
-                        const parts = content.split(regex);
-                     
-                        return parts.map((part: string, index: number) => (
-                            regex.test(part) ? (
-                    <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
-                            ) : (
-                    <React.Fragment key={index}>{part}</React.Fragment>
-                            )
-                        ));
-                    };
-
-                    // Render content with highlights based on searchQuery and filterQuery
-                    if ((searchQuery ) ||
-                        (filterQuery )) {
-                        let contentToRender = cellContent;
-
-                        if (searchQuery) {
-                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseSearchQuery);
-                        }
-
-                        if (filterQuery) {
-                            contentToRender = renderHighlightedContent(contentToRender, lowerCaseFilterQuery);
-                        }
-
-                        return contentToRender;
-                    }
-
-                    // Default rendering without highlighting
-                    return cellContent;
-                })()}
-            </TableCell>
-        )
-    ))
-}
-
-
-
-
-                                                        {/* Table width adjustng */}
-
-                                                        {/* {headCells.map((headCell: any) => (
-                                                            row.hasOwnProperty(headCell.id) &&
-                                                            <TableCell
-                                                                key={headCell.id}
-                                                                component="th"
-                                                                scope="row"
-                                                                padding="none"
-                                                            >
-                                                                {searchQuery && row[headCell.id] &&
-                                                                    typeof row[headCell.id].name === 'string' && // Accessing 'name' property from 'row[headCell.id]'
-                                                                    row[headCell.id].name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                                                                    <>
-                                                                        {row[headCell.id].name.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
-                                                                            <React.Fragment key={index}>
-                                                                                {index > 0 && (
-                                                                                    <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                                                                                )}
-                                                                                {part}
-                                                                            </React.Fragment>
-                                                                        ))}
-                                                                    </>
-                                                                ) : (
-                                                                    row[headCell.id] && row[headCell.id].name ? row[headCell.id].name : '-' // Accessing 'name' property from 'row[headCell.id]'
-                                                                )}
-                                                            </TableCell>
-                                                        ))} */}
-
-
-
+                                                        
                                                         {/* 
-{headCells.map((headCell: any) => (
-    row.hasOwnProperty(headCell.id) &&
-    <TableCell
-        key={headCell.id}
-        component="th"
-        scope="row"
-        padding="none"
-    >
-        {headCell.id === 'name' && row[headCell.id] && typeof row[headCell.id].name === 'string' && (
-            searchQuery && row[headCell.id].name.toLowerCase().includes(searchQuery.toLowerCase()) ? (
-                <>
-                    {row[headCell.id].name.toLowerCase().split(searchQuery.toLowerCase()).map((part: any, index: any) => (
-                        <React.Fragment key={index}>
-                            {index > 0 && (
-                                <span style={{ backgroundColor: 'yellow' }}>{searchQuery}</span>
-                            )}
-                            {part}
-                        </React.Fragment>
-                    ))}
-                </>
-            ) : (
-                row[headCell.id].name // Display name if it's a string and doesn't match search
-            )
-        )}
-
-        {['email', 'contact', 'modifiedDate', 'modifiedBy', 'assignStaff'].includes(headCell.id) && (
-            row[headCell.id] && row[headCell.id][headCell.id]
-        )}
-    </TableCell>
-))} */}
-
-
-
-
-
-
-
-
-
+                                                        //working code end */}
 
 
                                                         <TableCell width={"40%"} align="left" padding="none">

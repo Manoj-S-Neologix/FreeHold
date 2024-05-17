@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Stack, Checkbox } from '@mui/material';
+import { Grid, Stack, Checkbox } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,7 +24,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
-  const [uploadFiles, setUploadFiles] = useState([]);
+  const [uploadFiles, setUploadFiles] = useState<any>([]);
   const [getClient, setGetClient] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -37,6 +37,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
   const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
   const [getGuid, setGetGuid] = React.useState('');
   const [fileData, setFileData] = useState<any[]>([]);
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
   // const [getClientFromFolder, setGetClientFromFolder] = useState<any[]>([]);
 
 
@@ -60,7 +61,8 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
     fileType: file.File_x0020_Type,
     created: file.Created,
     editorName: file.Editor.Title,
-    editorId: file.Editor.Id
+    editorId: file.Editor.Id,
+    dmstags: file.DMS_x0020_Tags
   }));
 
   console.log(mappedFiles);
@@ -71,10 +73,10 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
   const apiCall = async (particularClientAllData: any) => {
     try {
-      console.log(particularClientAllData,"particularClientAllDataparticularClientAllData")
+      console.log(particularClientAllData, "particularClientAllDataparticularClientAllData")
       const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
       console.log("API Call Data:", data);
-     
+
       if (data) {
         const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
         const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
@@ -116,9 +118,9 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
     }
   };
 
-  const getClientFromFolder = async (libraryGuid: string,getUnique:string) => {
+  const getClientFromFolder = async (libraryGuid: string, getUnique: string) => {
     try {
-      console.log(getUnique,"getUnique")
+      console.log(getUnique, "getUnique")
       await apiCall(getUnique)
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
       console.log(results, 'guidresult')
@@ -177,13 +179,31 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
     }
   };
 
+  const fetchProjectData = () => {
+    const projectService = ProjectService();
+    projectService.getProject('project Checklist')
+      .then((results) => {
+        console.log(results, 'client');
+        if (results) {
+          setDropdownOptions(results);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching SharePoint data:', error);
+      });
+  };
+
 
   React.useEffect(() => {
     fetchData();
     // apiCall();
   }, []);
 
-
+  React.useEffect(() => {
+    if (uploadFiles && uploadFiles.length > 0) {
+      fetchProjectData();
+    }
+  }, [uploadFiles]);
 
 
 
@@ -196,6 +216,11 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
+    const updatedData = {
+      DMS_x0020_Tags: data.projectChecklist
+    }
+
+    console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
 
     try {
       const apiResponse = ProjectService();
@@ -208,9 +233,11 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
         const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
       }
       else {
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
       }
 
       setLoading(false);
@@ -230,8 +257,8 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
   return (
     // <div>ClientProjectUpload</div>
-    <Box  >
-      <Grid>
+    <Stack direction={"column"} gap={3}>
+      <Grid container spacing={2}>
         <Grid item sm={12}>
           <Controller
             name="projectName"
@@ -258,7 +285,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
                     setValue('projectName', e.target.value)
                     console.log(getUnique, "getUnique")
                     // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
-                    getClientFromFolder(getUnique[0].GUID,getUnique);
+                    getClientFromFolder(getUnique[0].GUID, getUnique);
 
                   }}
                 >
@@ -358,14 +385,153 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
             )}
           />
         </Grid>
-
-        <DropZone
-          onFilesAdded={handleFileInput}
-          files={uploadFiles}
-          setFiles={setUploadFiles}
-        />
+        <Grid item sm={12}>
+          <InputLabel htmlFor="project-document">Upload Document</InputLabel>
+          <DropZone
+            onFilesAdded={handleFileInput}
+            files={uploadFiles}
+            setFiles={setUploadFiles}
+          />
+        </Grid>
       </Grid>
-      <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+      {/*single checklist dropdown for project */}
+      {/* {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
+        <>
+          <div>
+            <Controller
+              name="projectChecklist"
+              control={control}
+              defaultValue=""
+              rules={{ required: 'Project Checklist is required' }}
+              render={({ field }) => (
+                <>
+                  <InputLabel htmlFor="project-checklist">Project Checklist</InputLabel>
+                  <TextField
+                    {...field}
+                    id="project-checklist"
+                    fullWidth
+                    variant="outlined"
+                    select
+                    size="small"
+                    required
+                    error={!!errors.projectChecklist}
+                    helperText={errors?.projectChecklist?.message}
+                    onChange={(e: any) => {
+                      console.log('Selected:', e.target.value);
+                      setValue('projectChecklist', e.target.value);
+                    }}
+                  >
+                    {dropdownOptions?.map((option: any, index: any) => (
+                      <MenuItem key={index} value={option.Title}>
+                        {option.Title}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </>
+              )}
+            />
+
+          </div>
+          <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+
+            <MuiButton
+              sx={{ width: loading ? '150px' : 'auto' }}
+              onClick={handleSave} disabled={loading} type="submit">
+              {loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Save"
+              )}
+            </MuiButton>
+            {!loading && <MuiButton variant="outlined"
+              onClick={handleCancel}
+            >
+              Cancel</MuiButton>}
+          </DialogActions>
+        </>
+      )} */}
+
+      {/*multiple checklist dropdown */}
+      {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
+        <>
+          {uploadFiles.map((uploadedFile : any, index : any) => (
+            <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
+            >
+              <Controller
+                name={`projectChecklist-${index}`}
+                control={control}
+                defaultValue=""
+                rules={{ required: 'Project Checklist is required' }}
+                render={({ field }) => (
+                  <>
+                    <div >
+
+                      <InputLabel htmlFor={`project-checklist-${index}`}>Project Checklist</InputLabel>
+                    </div>
+                    <TextField
+                      {...field}
+                      id={`project-checklist-${index}`}
+                      fullWidth
+                      style={{ maxWidth: '200px' }}
+                      variant="outlined"
+                      select
+                      size="small"
+                      required
+                      error={!!errors[`projectChecklist-${index}`]}
+                      helperText={errors[`projectChecklist-${index}`]?.message}
+                      onChange={(e: any) => {
+                        field.onChange(e);
+                        const newValue = e.target.value;
+                        setValue('projectChecklist', e.target.value);
+                        console.log(newValue, 'e.target')
+                        setUploadFiles((prevFiles:any) => {
+                          const updatedFiles = [...prevFiles];
+                          updatedFiles[index].checklist = newValue;
+                          return updatedFiles;
+                        });
+                      }}
+                    >
+                      {dropdownOptions?.map((option: any, index: any) => (
+                        <MenuItem key={index} value={option.Title}>
+                          {option.Title}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </>
+                )}
+              />
+            </div>
+          ))}
+
+
+
+          <DialogActions sx={{ px: 0, mr: 0 }}>
+            <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              spacing={3}
+            >
+              <MuiButton
+                variant="contained"
+                sx={{ width: loading ? '150px' : 'auto' }}
+                onClick={handleSave}
+                disabled={loading}
+                type="submit"
+              >
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Save"
+                )}
+              </MuiButton>
+              {!loading && <MuiButton variant="outlined" onClick={handleCancel}>Cancel</MuiButton>}
+            </Stack>
+          </DialogActions>
+        </>
+      )}
+
+      {/* <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
 
         <MuiButton
           sx={{ width: loading ? '150px' : 'auto' }}
@@ -380,8 +546,8 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
           onClick={handleCancel}
         >
           Cancel</MuiButton>}
-      </DialogActions>
-    </Box>
+      </DialogActions> */}
+    </Stack>
 
   )
 }

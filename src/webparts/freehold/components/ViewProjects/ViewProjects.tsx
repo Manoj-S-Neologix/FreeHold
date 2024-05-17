@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip } from '@mui/material';
+import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -26,6 +26,11 @@ import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
+import toast from "react-hot-toast";
+// import styles from '../AssignClient/AssignClient.module.scss';
+
+
+// import toast from 'react-hot-toast';
 // import ViewParticularClient from '../ViewClient/ViewParticularClient';
 
 
@@ -59,7 +64,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewProject = (props: any) => {
+const ViewProject = ({ onClose, props }: any) => {
   //console.log(props, "propspropsprops");
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,20 +79,21 @@ const ViewProject = (props: any) => {
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-
+  // const [loading, setLoading] = useState(false);
 
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const { control, formState: { errors } } = useForm();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedName, setSelectedName] = useState([]);
+  const [selectedName, setSelectedName] = useState<any[]>([]);
 
 
-
+  console.log(selectedName, 'selected..')
 
   const navigate = useNavigate();
 
@@ -328,15 +334,20 @@ const ViewProject = (props: any) => {
   };
 
   const handleClickOpen = (name: any) => {
-    setSelectedName(()=>{
+    setSelectedName(() => {
       // navigate("/ViewClient/" + id)
       return name;
     });
     setDialogOpen(true);
-    console.log(selectedName,'selected')
+    console.log(selectedName, 'selected')
   }
   const handleClose = () => {
     setDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    console.log("Cancel button clicked");
+    onClose();
   };
 
   // const handleDialog = () => {
@@ -488,6 +499,43 @@ const ViewProject = (props: any) => {
   React.useEffect(() => {
     fetchData();
   }, []);
+
+
+  // const handleClearClient = (ServerRelativeUrl: any) => {
+  //   ProjectService().deleteAssignedClient(ServerRelativeUrl)
+  //     .then(() => {
+  //       console.log("File deleted successfully!");
+  //       toast.success('File deleted successfully!');
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to delete document:", error);
+  //       toast.error(`Failed to delete document: ${error}`);
+  //     });
+  // };
+
+  const handleClearClient = async() => {
+    try {
+        // const apiResponse = ProjectService();
+        const getClientName = selectedName?.map((item:any)=>item.Title)
+        const folderUrl = `${projectData[0].webURL}/${getClientName}`
+        // await apiResponse.deleteFolder(folderUrl)
+        console.log(folderUrl, 'folderurl..')
+        toast.success('Assigned Client Deleted Successfully!');
+  
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Failed to delete assigned client:", error);
+        toast.error(`Failed to delete assigned client: ${error}`);
+      }
+}
+
+
+  const handleCloseDeleteDialog = () => {
+    setIsDelete(false);
+    // fetchData();
+  };
+
+
 
   // React.useEffect(() => {
   //   fetchData();
@@ -685,15 +733,95 @@ const ViewProject = (props: any) => {
                 textDecoration: "underline", color: "blue", cursor: "pointer",
                 listStyleType: "none", padding: 0
               }}>
-                {selectedName.map((data:any)=>(
-                  <Box 
-                    key={data.Id} 
-                    onClick={()=>{
-                    navigate("/ViewClient/" + data.Id)
-                  }}>
-                    {data.Title}
-                  </Box>
+                {selectedName.map((data: any) => (
+                  <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center", justifyContent: "flex-start" }}>
+                    <Box
+                      key={data.Id}
+                      onClick={() => {
+                        navigate("/ViewClient/" + data.Id)
+                      }}>
+                      {data.Title}
+                    </Box>
+                    <IconButton aria-label="delete" 
+                      onClick={() => {setIsDelete(true)}}
+                      style={{color:'#bbb'}}
+                      >
+                        <DeleteIcon />
+                    </IconButton>
+                  </div>
                 ))}
+                {isDelete && (
+                      <Dialog open={isDelete} maxWidth='sm' fullWidth  >
+                        <DialogTitle className={styles.addTitle}
+                          style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                          <div className="d-flex flex-column">
+                            <div className="d-flex justify-content-between
+                               align-items-center relative">
+                              <h4 style={{ margin: '0', color: '#125895' }}>
+                                Delete Assigned Client</h4>
+                            </div>
+                            <div style={{
+                              height: '4px', width: '100%',
+                              backgroundColor: '#125895'
+                            }} />
+                          </div>
+                        </DialogTitle>
+                        {!isLoading && <IconButton
+                          aria-label="close"
+                          onClick={handleCloseDeleteDialog}
+                          sx={{
+                            position: "absolute",
+                            right: "14px",
+                            top: "8px",
+                            color: (theme: any) => theme.palette.grey[500],
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>}
+                        <DialogContent >
+
+                          <div style={{ marginLeft: '7px' }}>
+                            Are you sure you want to delete assigned client
+                            <strong style={{ marginLeft: '2px' }}>
+                            </strong>
+                            ?
+                          </div>
+                        </DialogContent>
+                        <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                          {/* <Button
+                                onClick={handleDelete}
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    maxWidth: '150px',
+                                    float: 'right',
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button variant="outlined" onClick={handleCancel}>
+                                Cancel
+                            </Button> */}
+                          <Stack
+                            direction="row"
+                            justifyContent="end"
+                            alignItems="center"
+                            spacing={3}
+                          >
+                            <MuiButton variant="contained" color="primary"
+                              sx={{ width: isLoading ? '150px' : 'auto' }}
+                              onClick={handleClearClient} disabled={isLoading}>
+                              {isLoading ? (
+                                <CircularProgress size={20} color="inherit" />
+                              ) : (
+                                "Delete"
+                              )}
+                            </MuiButton>
+                            {!isLoading && <MuiButton variant="outlined" onClick={handleCancel}  >Cancel</MuiButton>}
+                          </Stack>
+                        </DialogActions>
+                      </Dialog>
+                    )}
               </Typography>
             </DialogContent>
           </Dialog>
@@ -716,7 +844,6 @@ const ViewProject = (props: any) => {
               isLoading={isLoading}
               AllClientData={AllClientData}
               tableDataWidth={tableDataWidth}
-
             />
           </Box>
         </Stack>}

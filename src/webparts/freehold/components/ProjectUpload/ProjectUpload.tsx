@@ -47,6 +47,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [loading, setLoading] = useState(false);
   // const { handleSubmit } = useForm();
   const [uploadFiles, setUploadFiles] = useState<any[]>([]);
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
   ////
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
@@ -68,6 +69,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const handleCloseDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
+    // fetchData();
   };
 
   // const handleSave = () => {
@@ -182,6 +184,19 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     }
   };
 
+  const fetchProjectData = () => {
+    const projectService = ProjectService();
+    projectService.getProject('project Checklist')
+      .then((results) => {
+        console.log(results, 'client');
+        if (results) {
+          setDropdownOptions(results);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching SharePoint data:', error);
+      });
+  };
 
 
   const mappedFiles = fileData.map((file: any) => ({
@@ -191,7 +206,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     fileType: file.File_x0020_Type,
     created: file.Created,
     editorName: file.Editor.Title,
-    editorId: file.Editor.Id
+    editorId: file.Editor.Id,
+    dmstags: file.DMS_x0020_Tags
   }));
 
   console.log(mappedFiles);
@@ -294,27 +310,83 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   // });
 
+  React.useEffect(() => {
+    if (uploadFiles && uploadFiles.length > 0) {
+      fetchProjectData();
+    }
+  }, [uploadFiles]);
+
+  
+  const onDelete = (index: number) => {
+    setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+};
+
+  // const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
+  //   setLoading(true);
+
+  //   try {
+  //     const apiResponse = ProjectService();
+  //     console.log(data, 'projectdata..')
+  //     // Determine the selected client based on the submitted form data
+  //     // const selectedClientName = client.name;
+  //     // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
+  //     // console.log(getLibraryName, 'getLibraryName.')
+  //     // Construct the folder URL for the selected client
+  //     const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+  //     if (data.unitDocument !== '') {
+
+  //       const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+  //       await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+  //     }
+  //     else {
+  //       // Upload documents to the specified client's folder
+  //       await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+  //     }
+  //     // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+
+  //     setLoading(false);
+  //     setFiles([]);
+  //     setUploadFiles([]);
+  //     toast.success('Documents Added Successfully!');
+  //     // fetchData("test");
+  //     handleCancel(); // Close the dialog if needed
+
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error("Failed to add client and document:", error);
+  //     toast.error(`Failed to add client and document: ${error}`);
+  //   }
+  // });
+
+  //project upload with meta data
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
+
+    const updatedData = {
+      DMS_x0020_Tags: data.projectChecklist
+    }
+
+    console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
 
     try {
       const apiResponse = ProjectService();
       console.log(data, 'projectdata..')
-      // Determine the selected client based on the submitted form data
-      // const selectedClientName = client.name;
-      // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
-      // console.log(getLibraryName, 'getLibraryName.')
-      // Construct the folder URL for the selected client
       const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
       if (data.unitDocument !== '') {
 
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+        console.log(folderUrl, 'projectfolderurl..')
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
       }
       else {
         // Upload documents to the specified client's folder
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+
       }
+
+
       // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
 
       setLoading(false);
@@ -332,8 +404,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   });
 
   const handleDelete = (getGuid: any) => {
-    const apiResponse = ClientService();
-
+    const apiResponse = ProjectService();
     apiResponse.deleteFile(getGuid, deleteId)
       .then(() => {
         setIsDeleteDialogOpen(false);
@@ -475,7 +546,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           //   const libraryPath = `${getLibraryName}/${e.target.value}`;
                           //   setValue('unitDocument', e.target.value);
 
-                            
+
                           //   fetchData(libraryPath)
                           // }}
                           required
@@ -583,20 +654,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   setFiles={setUploadFiles}
                 />
               </Box>
-              {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
-                {/* <MuiButton
-                                    onClick={handleSave}
-                                    type="submit"
-                                    variant="contained"
-                                >
-                                    Save
-                                </MuiButton>
-                                <MuiButton style={{marginRight:'30px' }}
-                                    onClick={handleCancel}
-                                    variant="outlined"                                  
-                                >
-                                    Cancel
-                                </MuiButton> */}
+              {/*old code for project upload */}
+              {/* {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
                 <Stack
                   direction="row"
                   justifyContent="end"
@@ -615,13 +674,220 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   {!loading && <Button variant="outlined" onClick={() => { setUploadFiles([]) }}  >Cancel</Button>}
                 </Stack>
 
-              </DialogActions>}
+              </DialogActions>} */}
+
+              {/*single checklist dropdown for project */}
+              {/* {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
+                <>
+                  <div>
+                    <Controller
+                      name="projectChecklist"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Project Checklist is required' }}
+                      render={({ field }) => (
+                        <>
+                          <InputLabel htmlFor="project-checklist">Project Checklist</InputLabel>
+                          <TextField
+                            {...field}
+                            id="project-checklist"
+                            fullWidth
+                            variant="outlined"
+                            select
+                            size="small"
+                            required
+                            error={!!errors.projectChecklist}
+                            helperText={errors?.projectChecklist?.message}
+                            onChange={(e: any) => {
+                              console.log('Selected:', e.target.value);
+                              setValue('projectChecklist', e.target.value);
+                            }}
+                          >
+                            {dropdownOptions?.map((option: any, index: any) => (
+                              <MenuItem key={index} value={option.Title}>
+                                {option.Title}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </>
+                      )}
+                    />
+
+                  </div>
+                  <DialogActions sx={{ px: 0, mr: 0 }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="end"
+                      alignItems="center"
+                      spacing={3}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{ width: loading ? '150px' : 'auto' }}
+                        onClick={handleSave}
+                        disabled={loading}
+                        type="submit"
+                      >
+                        {loading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Save"
+                        )}
+                      </Button>
+                      {!loading && <Button variant="outlined" onClick={handleCancel}>Cancel</Button>}
+                    </Stack>
+                  </DialogActions>
+                </>
+              )} */}
+
+              {/*multiple checklist dropdown */}
+              {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
+                <>
+                  {/* {uploadFiles.map((uploadedFile, index) => (
+                    <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
+                    >
+                      <Controller
+                        name={`projectChecklist-${index}`}
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: 'Project Checklist is required' }}
+                        render={({ field }) => (
+                          <>
+                            <div >
+
+                              <InputLabel htmlFor={`project-checklist-${index}`}>Project Checklist</InputLabel>
+                            </div>
+                            <TextField
+                              {...field}
+                              id={`project-checklist-${index}`}
+                              fullWidth
+                              style={{ maxWidth: '200px' }}
+                              variant="outlined"
+                              select
+                              size="small"
+                              required
+                              error={!!errors[`projectChecklist-${index}`]}
+                              helperText={errors[`projectChecklist-${index}`]?.message}
+                              onChange={(e: any) => {
+                                field.onChange(e);
+                                const newValue = e.target.value;
+                                setValue('projectChecklist', e.target.value);
+                                console.log(newValue, 'e.target')
+                                setUploadFiles(prevFiles => {
+                                  const updatedFiles = [...prevFiles];
+                                  updatedFiles[index].checklist = newValue;
+                                  return updatedFiles;
+                                });
+                              }}
+                            >
+                              {dropdownOptions?.map((option: any, index: any) => (
+                                <MenuItem key={index} value={option.Title}>
+                                  {option.Title}
+                                </MenuItem>
+                              ))}
+                            </TextField>
+                          </>
+                        )}
+                      />
+                    </div>
+                  ))} */}
+                    <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Document</TableCell>
+                                                <TableCell>Document Type</TableCell>
+                                                <TableCell>Delete</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {uploadFiles.map((uploadedFile, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{uploadedFile.name}</TableCell>
+                                                    <TableCell>
+                                                        <Controller
+                                                            name={`projectChecklist-${index}`}
+                                                            control={control}
+                                                            defaultValue={uploadedFile.checklist || ""}
+                                                            rules={{ required: 'Project Checklist is required' }}
+                                                            render={({ field }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    select
+                                                                    size="small"
+                                                                    required
+                                                                    error={!!errors[`projectChecklist-${index}`]}
+                                                                    helperText={errors[`projectChecklist-${index}`]?.message}
+                                                                    style={{ width: 200 }} // Fixed width
+                                                                    onChange={(e: any) => {
+                                                                        field.onChange(e);
+                                                                        const newValue = e.target.value;
+                                                                        setValue('projectChecklist', e.target.value);
+                                                                        console.log(newValue, 'e.target')
+                                                                        setUploadFiles(prevFiles => {
+                                                                            const updatedFiles = [...prevFiles];
+                                                                            updatedFiles[index].checklist = newValue;
+                                                                            return updatedFiles;
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    {dropdownOptions?.map((option: any) => (
+                                                                        <MenuItem key={option.Title} value={option.Title}>
+                                                                            {option.Title}
+                                                                        </MenuItem>
+                                                                    ))}
+                                                                </TextField>
+                                                            )}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+
+
+
+                  <DialogActions sx={{ px: 0, mr: 0 }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="end"
+                      alignItems="center"
+                      spacing={3}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{ width: loading ? '150px' : 'auto' }}
+                        onClick={handleSave}
+                        disabled={loading}
+                        type="submit"
+                      >
+                        {loading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Save"
+                        )}
+                      </Button>
+                      {!loading && <Button variant="outlined" onClick={handleCancel}>Cancel</Button>}
+                    </Stack>
+                  </DialogActions>
+                </>
+              )}
+
               {
                 < TableContainer >
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell>Document Name</TableCell>
+                        <TableCell>Document Type</TableCell>
                         <TableCell>Uploaded Date</TableCell>
                         <TableCell>Uploaded By</TableCell>
                         <TableCell>Action</TableCell>
@@ -644,6 +910,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
                               </Box>
                             </TableCell>
+                            <TableCell>{file.dmstags}</TableCell>
                             <TableCell>{formatDate(file.created)}</TableCell>
                             <TableCell>{file.editorName}</TableCell>
                             <TableCell>
