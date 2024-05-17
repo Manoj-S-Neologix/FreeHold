@@ -240,28 +240,6 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
         return deleteItem;
     },
 
-
- 
-    // updateDocumentMetadata: async (libraryName, fileUrl, metadata) => {
-    //     // console.log("Entering updateDocumentMetadata function");
-    //     try {
-    //         // console.log("Retrieving file item for URL:", fileUrl);
-    //         const fileItem = await web.getFileByServerRelativeUrl(fileUrl).getItem();
-    //         // console.log("File item retrieved:", fileItem);
-    //         const response = await fileItem.update(metadata);
-    //         // console.log("Metadata update response:", response);
-    //         return response;
-    //     } catch (error) {
-    //         console.error("Error updating document metadata:", error);
-    //         throw error;
-    //     }
-    // },
-    
-
-
-
-
-
     // Delete list items
     deleteLibrary: async (libraryName: string): Promise<any> => {
         const deleteItem = await web.lists
@@ -269,18 +247,11 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
         return deleteItem;
     },
 
-   
-
-
-
     // Get current logged in user groups
     getLoggedInUserGroups: async (): Promise<any> => {
         const response = await web.currentUser.groups();
         return response;
     },
-
-
-
 
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
@@ -366,9 +337,6 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
         const folders = await library.folders();
         return folders;
     }
-
-
-
 
 };
 

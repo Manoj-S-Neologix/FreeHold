@@ -27,15 +27,7 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
 import toast from "react-hot-toast";
-// import styles from '../AssignClient/AssignClient.module.scss';
-
-
-// import toast from 'react-hot-toast';
-// import ViewParticularClient from '../ViewClient/ViewParticularClient';
-
-
-
-
+//import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -84,6 +76,7 @@ const ViewProject = ({ onClose, props }: any) => {
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const [clientTobeDel, setclientTobeDel] = useState("");
   const [open, setOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -172,10 +165,10 @@ const ViewProject = ({ onClose, props }: any) => {
 
   const headCells = [
     // { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Number' },
+    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Id' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
-    { id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
+    //{ id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
     { id: 'assignClient', numeric: false, disablePadding: true, label: 'Assigned Client' },
     { id: 'modifiedDate', numeric: false, disablePadding: true, label: 'Modified Date' },
     // { id: 'modifiedBy', numeric: false, disablePadding: true, label: 'Modified By' },
@@ -183,10 +176,6 @@ const ViewProject = ({ onClose, props }: any) => {
   ];
 
   console.log(AllClientData, "AllClientData");
-
-
-
-
 
   const actions = [
     {
@@ -340,7 +329,8 @@ const ViewProject = ({ onClose, props }: any) => {
     });
     setDialogOpen(true);
     console.log(selectedName, 'selected')
-  }
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
   };
@@ -349,67 +339,6 @@ const ViewProject = ({ onClose, props }: any) => {
     console.log("Cancel button clicked");
     onClose();
   };
-
-  // const handleDialog = () => {
-  //   return(
-  //     <>
-  //     <Dialog
-  //       open={open}
-  //       onClose={handleClose}
-  //       aria-labelledby="alert-dialog-title"
-  //       aria-describedby="alert-dialog-description"
-  //     >
-  //       <DialogTitle>
-  //       <div className="d-flex flex-column">
-  //         <div className="d-flex justify-content-between align-items-center relative">
-  //           <h4 style={{ margin: '0', color: '#125895' }}>
-  //             Assigned Client</h4>
-  //           </div>
-  //         <div style={{ height: '4px', width: '100%', backgroundColor: '#125895' }} />
-  //       </div>
-  //       </DialogTitle>
-  //       <IconButton
-  //           aria-label="close"
-  //           onClick={handleClose}
-  //           sx={{
-  //             position: "absolute",
-  //             right: "14px",
-  //             top: "8px",
-  //             color: (theme: any) => theme.palette.grey[500],
-  //           }}
-  //         >
-  //           <CloseIcon />
-  //         </IconButton>
-  //       <DialogContent>
-  //         {projectData?.clientDetails?.map((data:any)=>{
-  //           return(
-  //             <Box>
-  //               <Typography>{data.Title}</Typography>
-  //             </Box>
-  //           )
-  //         })}
-  //       </DialogContent>
-  //     </Dialog>
-  //   </>
-  //   )
-  // }
-
-  // console.log(, "data")
-  // const hyperLink = (data: any, name: any, id:any) => {
-  //   return (
-  //     <Box>
-  //       <Chip
-  //         label={data}
-  //         onClick={() => {
-  //           handleClickOpen(id, name);
-  //           console.log(name, 'e.target')
-  //         }}
-  //       >
-  //         {data}
-  //       </Chip>
-  //     </Box>
-  //   );
-  // };
 
   const hyperLink = (data: any, names: any[]) => {
     return (
@@ -427,44 +356,6 @@ const ViewProject = ({ onClose, props }: any) => {
     )
   };
 
-  //   const hyperLink = (data: any, id: any) => {
-  //   // Check if data is an array and has items
-  //   if (Array.isArray(data) && data.length > 0) {
-  //     return (
-  //       <Box
-  //         onClick={() => {
-  //           navigate('/ViewClient/' + id);
-  //         }}
-  //         style={{
-  //           textDecoration: "underline", color: "blue", cursor: "pointer",
-  //           listStyleType: "none", padding: 0
-  //         }}
-  //       >
-  //         {data.length}
-  //       </Box>
-  //     );
-  //   } else if (data !== '-') {
-  //     // Display a single client name if not an array and not '-'
-  //     return (
-  //       <Box
-  //         onClick={() => {
-  //           navigate('/ViewClient/' + id);
-  //         }}
-  //         style={{
-  //           textDecoration: "underline", color: "blue", cursor: "pointer",
-  //           listStyleType: "none", padding: 0
-  //         }}
-  //       >
-  //         {data}
-  //       </Box>
-  //     );
-  //   } else {
-  //     // Display nothing if data is '-'
-  //     return null;
-  //   }
-  // };
-
-
   console.log(projectData, 'projectdata..')
   const tableData = projectData.map((item: any) => {
     return {
@@ -472,7 +363,7 @@ const ViewProject = ({ onClose, props }: any) => {
       projectNumber: item.projectNumber,
       projectName: item.projectName,
       location: item.location,
-      developer: item.developer,
+      //developer: item.developer,
       assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
@@ -485,11 +376,11 @@ const ViewProject = ({ onClose, props }: any) => {
   const tableDataWidth = projectData.map((item: any) => {
     return {
       Id: { value: item.Id, width: "50px" },
-      projectNumber: { value: item.projectNumber, width: "140px" },
-      projectName: { value: item.projectName, width: "150px" },
-      location: { value: item.location, width: "140px" },
-      developer: { value: item.developer, width: "140px" },
-      assignClient: { value: item?.assignClient, width: "150px" },
+      projectNumber: { value: item.projectNumber, width: "100px" },
+      projectName: { value: item.projectName, width: "120px" },
+      location: { value: item.location, width: "120px" },
+      //developer: { value: item.developer, width: "140px" },
+      assignClient: { value: item?.assignClient, width: "120px" },
       modifiedDate: { value: item.modifiedDate, width: "140px" },
       modifiedBy: { value: item.modifiedBy, width: "150px" },
       // assignedStaff: { value: item?.assignedStaff, width: "80%" },
@@ -500,46 +391,28 @@ const ViewProject = ({ onClose, props }: any) => {
     fetchData();
   }, []);
 
+  const handleClearClient = async () => {
 
-  // const handleClearClient = (ServerRelativeUrl: any) => {
-  //   ProjectService().deleteAssignedClient(ServerRelativeUrl)
-  //     .then(() => {
-  //       console.log("File deleted successfully!");
-  //       toast.success('File deleted successfully!');
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to delete document:", error);
-  //       toast.error(`Failed to delete document: ${error}`);
-  //     });
-  // };
-
-  const handleClearClient = async() => {
     try {
-        // const apiResponse = ProjectService();
-        const getClientName = selectedName?.map((item:any)=>item.Title)
-        const folderUrl = `${projectData[0].webURL}/${getClientName}`
-        // await apiResponse.deleteFolder(folderUrl)
-        console.log(folderUrl, 'folderurl..')
-        toast.success('Assigned Client Deleted Successfully!');
-  
-      } catch (error) {
-        setIsLoading(false);
-        console.error("Failed to delete assigned client:", error);
-        toast.error(`Failed to delete assigned client: ${error}`);
-      }
-}
+      console.log('clientTobeDel : ', clientTobeDel);
+      const apiResponse = ProjectService();
+      //const getClientName = selectedName?.map((item: any) => item.Title)
+      const folderUrl = `${projectData[0].webURL}/${clientTobeDel}`;
+      await apiResponse.deleteFolder(folderUrl)
+      console.log(folderUrl, 'folderurl..')
+      toast.success('Assigned Client Deleted Successfully!');
 
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Failed to delete assigned client:", error);
+      toast.error(`Failed to delete assigned client: ${error}`);
+    }
+  }
 
   const handleCloseDeleteDialog = () => {
     setIsDelete(false);
     // fetchData();
   };
-
-
-
-  // React.useEffect(() => {
-  //   fetchData();
-  // }, [isViewDialogOpen]);
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -597,6 +470,8 @@ const ViewProject = ({ onClose, props }: any) => {
               </IconButton>}
             </Box>
           </Box>
+
+          {/* Filter dialog */}
           <Dialog
             open={open}
             fullWidth={true}
@@ -698,6 +573,8 @@ const ViewProject = ({ onClose, props }: any) => {
               </DialogActions>
             </DialogContent>
           </Dialog>
+
+          {/* Assigned client dialog*/}
           <Dialog
             open={dialogOpen}
             fullWidth={true}
@@ -742,89 +619,80 @@ const ViewProject = ({ onClose, props }: any) => {
                       }}>
                       {data.Title}
                     </Box>
-                    <IconButton aria-label="delete" 
-                      onClick={() => {setIsDelete(true)}}
-                      style={{color:'#bbb'}}
-                      >
-                        <DeleteIcon />
+                    <IconButton aria-label="delete"
+                      onClick={() => { setIsDelete(true); setclientTobeDel(data.Title) }}
+                      style={{ color: '#bbb' }}
+                    >
+                      <DeleteIcon />
                     </IconButton>
                   </div>
                 ))}
-                {isDelete && (
-                      <Dialog open={isDelete} maxWidth='sm' fullWidth  >
-                        <DialogTitle className={styles.addTitle}
-                          style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
-                          <div className="d-flex flex-column">
-                            <div className="d-flex justify-content-between
-                               align-items-center relative">
-                              <h4 style={{ margin: '0', color: '#125895' }}>
-                                Delete Assigned Client</h4>
-                            </div>
-                            <div style={{
-                              height: '4px', width: '100%',
-                              backgroundColor: '#125895'
-                            }} />
-                          </div>
-                        </DialogTitle>
-                        {!isLoading && <IconButton
-                          aria-label="close"
-                          onClick={handleCloseDeleteDialog}
-                          sx={{
-                            position: "absolute",
-                            right: "14px",
-                            top: "8px",
-                            color: (theme: any) => theme.palette.grey[500],
-                          }}
-                        >
-                          <CloseIcon />
-                        </IconButton>}
-                        <DialogContent >
 
-                          <div style={{ marginLeft: '7px' }}>
-                            Are you sure you want to delete assigned client
-                            <strong style={{ marginLeft: '2px' }}>
-                            </strong>
-                            ?
-                          </div>
-                        </DialogContent>
-                        <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-                          {/* <Button
-                                onClick={handleDelete}
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    maxWidth: '150px',
-                                    float: 'right',
-                                }}
-                            >
-                                Delete
-                            </Button>
-                            <Button variant="outlined" onClick={handleCancel}>
-                                Cancel
-                            </Button> */}
-                          <Stack
-                            direction="row"
-                            justifyContent="end"
-                            alignItems="center"
-                            spacing={3}
-                          >
-                            <MuiButton variant="contained" color="primary"
-                              sx={{ width: isLoading ? '150px' : 'auto' }}
-                              onClick={handleClearClient} disabled={isLoading}>
-                              {isLoading ? (
-                                <CircularProgress size={20} color="inherit" />
-                              ) : (
-                                "Delete"
-                              )}
-                            </MuiButton>
-                            {!isLoading && <MuiButton variant="outlined" onClick={handleCancel}  >Cancel</MuiButton>}
-                          </Stack>
-                        </DialogActions>
-                      </Dialog>
-                    )}
+                {/* Child delete confirmation */}
+                {isDelete && (
+                  <Dialog open={isDelete} maxWidth='sm' fullWidth  >
+                    <DialogTitle className={styles.addTitle}
+                      style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+                      <div className="d-flex flex-column">
+                        <div className="d-flex justify-content-between
+                               align-items-center relative">
+                          <h4 style={{ margin: '0', color: '#125895' }}>
+                            Delete Assigned Client</h4>
+                        </div>
+                        <div style={{
+                          height: '4px', width: '100%',
+                          backgroundColor: '#125895'
+                        }} />
+                      </div>
+                    </DialogTitle>
+                    {!isLoading && <IconButton
+                      aria-label="close"
+                      onClick={handleCloseDeleteDialog}
+                      sx={{
+                        position: "absolute",
+                        right: "14px",
+                        top: "8px",
+                        color: (theme: any) => theme.palette.grey[500],
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>}
+                    <DialogContent >
+
+                      <div style={{ marginLeft: '7px' }}>
+                        Are you sure you want to delete assigned client
+                        <strong style={{ marginLeft: '2px' }}>
+                        </strong>
+                        ?
+                      </div>
+                    </DialogContent>
+                    <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+
+                      <Stack
+                        direction="row"
+                        justifyContent="end"
+                        alignItems="center"
+                        spacing={3}
+                      >
+                        <MuiButton variant="contained" color="primary"
+                          sx={{ width: isLoading ? '150px' : 'auto' }}
+                          onClick={handleClearClient} disabled={isLoading}>
+                          {isLoading ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Delete"
+                          )}
+                        </MuiButton>
+                        {!isLoading && <MuiButton variant="outlined" onClick={handleCancel}  >Cancel</MuiButton>}
+                      </Stack>
+                    </DialogActions>
+                  </Dialog>
+                )}
+
               </Typography>
             </DialogContent>
           </Dialog>
+
           <Box >
             <GridTable
               // rows={rows}

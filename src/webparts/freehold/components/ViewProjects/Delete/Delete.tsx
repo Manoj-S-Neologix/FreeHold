@@ -258,6 +258,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, projectDetai
     try {
       setLoading(true);
       await ProjectService().deleteProject("Project_Informations", projectDetails.Id);
+      await ProjectService().deleteLibrary(projectDetails.projectNumber);
       toast.success('Project deleted Successfully !');
       fetchData();
 

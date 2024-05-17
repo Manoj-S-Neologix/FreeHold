@@ -301,7 +301,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
 
   console.log(fileInfoArray, 'fileInfoArray');
 
-
   const handleSave = handleSubmit(async (data) => {
     try {
       setLoading(true);
@@ -350,7 +349,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
 
     }
   });
-
 
   return (
     // <Box sx={{ width: '100', padding: '20px' }} >
