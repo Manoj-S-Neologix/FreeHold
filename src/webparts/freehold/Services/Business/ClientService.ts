@@ -172,7 +172,7 @@ const ClientService = () => {
                     name: item.Title,
                     email: item.ClientEmail,
                     modifiedDate: formatDate(item.Modified),
-                    modifiedBy: item.Author.Title,
+                    modifiedBy: item.Editor.Title,
                     Staff: item.AssignedStaff,
                     assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
                     contact: item.ClientContact,
@@ -184,7 +184,8 @@ const ClientService = () => {
                     },
                     assignedStaff,
                     Id: item.Id,
-                    projectDetails
+                    projectDetails,
+                    Editor:item?.Editor
                     // ProjectName: item.Title
 
                 };
@@ -202,6 +203,7 @@ const ClientService = () => {
                     assignedStaff: item.assignedStaff,
                     ProjectId: item.ProjectId,
                     projectDetails: item.projectDetails, 
+                    Editor:item?.Editor
                     
 
                 };

@@ -58,6 +58,8 @@ const ViewClient = (props: any) => {
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
+  const [searchText, setSearchText]= useState('');
+  const [isPersona, setISPersona]= useState(false);
 
   // console.log(filterQuery, "filterQuery");
   const [searchQueryCall, setSearchQueryCall] = useState('');
@@ -88,6 +90,7 @@ const ViewClient = (props: any) => {
   let { editClientId, viewClientId } = useParams();
   const navigate = useNavigate();
 
+  console.log(editClientId, viewClientId ,"editviewid")
 
   const fetchDataByuserId = async () => {
     if (viewClientId) {
@@ -210,12 +213,25 @@ const ViewClient = (props: any) => {
   //   setFilterPersonShown(true);
   // };
 
+
   const handleApply = () => {
+
+    setFilterPersonShown(true);
+    const filteredData = clientData.filter((data: any) => {
+      if (data.assignStaff && typeof data.assignStaff === 'string') {
+        return data.assignStaff.toLowerCase().includes(searchText);
+      }
+      return false;
+    });
+    console.log(filteredData, clientData, "filteredData....")
+    setClientData(filteredData);
     setFilterQuery(filterQueryCall);
     setSearchQuery(searchQueryCall);
+    setISPersona(true);
     setOpen(false);
-    setFilterPersonShown(true);
   };
+
+  console.log(clientData, "clientDataclientData")
 
 
 
@@ -389,24 +405,39 @@ const ViewClient = (props: any) => {
   //   setSelectedPersons(items);
   // };
 
+  // const searchPeopleInTable = async (items: any[]) => {
+  //   if (items.length > 0 && items[0]?.text) {
+  //     const searchText = items[0].text.toLowerCase(); 
+  //     const filteredData = clientData.filter((data: any) => {
+  //       if (data.assignStaff && typeof data.assignStaff === 'string') {
+  //         return data.assignStaff.toLowerCase().includes(searchText);
+  //       }
+  //       return false; 
+  //     });
+  //     console.log(filteredData, "filteredData");
+  //     setClientData(filteredData);
+  //     console.log(items[0].text, "itemsitemsitemsitems");
+  //     setSearchQueryCall(items[0].text);
+  //     setFilterQueryCall(items[0].text);
+  //     setSelectedPersons(items);
+
+  //   }
+  // };
+
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
-      const searchText = items[0].text.toLowerCase(); // Convert search text to lowercase for case-insensitive matching
-      const filteredData = clientData.filter((data: any) => {
-        if (data.assignStaff && typeof data.assignStaff === 'string') {
-          return data.assignStaff.toLowerCase().includes(searchText);
-        }
-        return false; // If assignStaff is not a string or is undefined/null, exclude this data
-      });
-      console.log(filteredData, "filteredData");
-      setClientData(filteredData);
-      console.log(items[0].text, "itemsitemsitemsitems");
+      const searchText = items[0].text.toLowerCase();
+      setSearchText(searchText) 
       setSearchQueryCall(items[0].text);
-      setFilterQueryCall(items[0].text);
+      // setFilterQueryCall(items[0].text);
       setSelectedPersons(items);
-
     }
   };
+  
+  
+
+  
+  
 
 
 
@@ -420,8 +451,8 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
-      const expand = 'AssignedStaff,Author,ProjectId';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
       console.log(results, 'client')
@@ -440,8 +471,8 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
-      const expand = 'AssignedStaff,Author,ProjectId';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = `Id eq '${id}'`;
       const filtered = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
@@ -509,6 +540,8 @@ const ViewClient = (props: any) => {
       ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
     };
   });
+
+  console.log(tableData,"tableDatatableDatatableData")
 
   const tableDataWidth = clientData.map((item: any) => {
     return {
@@ -579,7 +612,7 @@ const ViewClient = (props: any) => {
             />
             <Button
               handleClick={openAddStaffDialog}
-              disabled={selected.length <= 1}
+              disabled={selected.length <= 0}
               style={{
                 maxWidth: "200px", whiteSpace: "pre",
                 background: "#dba236", color: "#000"
@@ -596,19 +629,6 @@ const ViewClient = (props: any) => {
             >
               <FilterAltIcon />
             </IconButton> :
-              // <Chip
-              //   sx={{ marginLeft: 2, }}
-              //   avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
-              //   label={searchQueryCall}
-              //   onDelete={() => {
-              //     setSearchQuery('');
-              //     setSearchQueryCall('');
-              //     setSelectedPersons([]);
-              //     setOpen(false);
-              //     setFilterPersonShown(false);
-              //   }}
-              //   variant="outlined"
-              // />
 
               <Chip
                 sx={{ marginLeft: 2, }}
@@ -622,6 +642,7 @@ const ViewClient = (props: any) => {
                   setSelectedPersons([]);
                   setOpen(false);
                   setFilterPersonShown(false);
+                  setISPersona(false);
                   fetchData()
                 }}
                 variant="outlined"
@@ -723,7 +744,9 @@ const ViewClient = (props: any) => {
                         Clear
                       </MuiButton>
                       <MuiButton
-                        onClick={() => { handleApply(); handleFilterChange(new MouseEvent('click')); }}
+                        onClick={() => { handleApply(
+
+                        ); handleFilterChange(new MouseEvent('click')); }}
                         variant="contained"
                         color="primary"
                         sx={{
@@ -812,6 +835,7 @@ const ViewClient = (props: any) => {
             props={props}
             searchQuery={searchQuery}
             filterQuery={filterQuery}
+            isPersona = {isPersona}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}

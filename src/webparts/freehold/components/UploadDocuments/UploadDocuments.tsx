@@ -36,7 +36,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [files, setFiles] = useState<File[]>([]);
     const [fileData, setFileData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const { control, handleSubmit, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm();
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
@@ -199,6 +199,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 setUploadFiles([]);
                 toast.success('Documents Added Successfully!');
                 fetchData();
+                reset();
             })
             .catch((error) => {
                 setLoading(false);
@@ -520,7 +521,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                         "Delete"
                                     )}
                                 </Button>
-                                {!loading && <Button variant="outlined" onClick={handleCancel}  >Cancel</Button>}
+                                {!loading && <Button variant="outlined" onClick={handleCloseDeleteDialog}  >Cancel</Button>}
                             </Stack>
                         </DialogActions>
                     </Dialog>
