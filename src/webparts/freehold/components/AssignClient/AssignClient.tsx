@@ -241,8 +241,6 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         }
     };
 
-
-
     const handleChange = (event: SelectChangeEvent<typeof personName>) => {
         const {
             target: { value },

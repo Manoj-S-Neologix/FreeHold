@@ -27,6 +27,7 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
 import toast from "react-hot-toast";
+import _ from 'lodash';
 //import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -76,7 +77,6 @@ const ViewProject = ({ onClose, props }: any) => {
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  const [clientTobeDel, setclientTobeDel] = useState("");
   const [open, setOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -84,6 +84,9 @@ const ViewProject = ({ onClose, props }: any) => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedName, setSelectedName] = useState<any[]>([]);
+
+  const [clientDelDetails, setclientDelDetails] = useState<any>([]);
+  const [projectDelDetails, setprojectDelDetails] = useState<any>([]);
 
 
   console.log(selectedName, 'selected..')
@@ -323,10 +326,14 @@ const ViewProject = ({ onClose, props }: any) => {
   };
 
   const handleClickOpen = (name: any) => {
+
     setSelectedName(() => {
       // navigate("/ViewClient/" + id)
       return name;
     });
+
+    //Set selected row client details
+
     setDialogOpen(true);
     console.log(selectedName, 'selected')
   };
@@ -340,13 +347,14 @@ const ViewProject = ({ onClose, props }: any) => {
     onClose();
   };
 
-  const hyperLink = (data: any, names: any[]) => {
+  const hyperLink = (data: any, names: any[], item: any) => {
     return (
       <Box>
         <Chip
           label={data}
           onClick={() => {
             handleClickOpen(names);
+            setprojectDelDetails(item);
             console.log(names, 'e.target');
           }}
         >
@@ -364,7 +372,7 @@ const ViewProject = ({ onClose, props }: any) => {
       projectName: item.projectName,
       location: item.location,
       //developer: item.developer,
-      assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails),
+      assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails, item),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
     };
@@ -394,13 +402,32 @@ const ViewProject = ({ onClose, props }: any) => {
   const handleClearClient = async () => {
 
     try {
-      console.log('clientTobeDel : ', clientTobeDel);
-      const apiResponse = ProjectService();
-      //const getClientName = selectedName?.map((item: any) => item.Title)
-      const folderUrl = `${projectData[0].webURL}/${clientTobeDel}`;
-      await apiResponse.deleteFolder(folderUrl)
-      console.log(folderUrl, 'folderurl..')
+      //console.log('projectData : ', projectData);
+      //console.log('clientDelDetails : ', clientDelDetails);
+      //console.log('projectDelDetails : ', projectDelDetails);
+
+      let assignClientIds: any[] = [];
+
+      _.forEach(projectDelDetails.clientDetails, function (client) {
+        if (client.Id != clientDelDetails.Id) {
+          assignClientIds.push(client.Id);
+        }
+      });
+
+      //Delete client folder
+      const folderUrl = `${projectDelDetails.webURL}/${clientDelDetails.Title}`;
+      await ProjectService().deleteFolder(folderUrl);
+
+      //De-associate client
+      await ProjectService().updateProject(
+        "Project_Informations",
+        projectDelDetails.Id,
+        { AssignClientId: { results: [...assignClientIds] } }
+      );
+
+      //console.log(folderUrl, 'folderurl..') 
       toast.success('Assigned Client Deleted Successfully!');
+      setIsDelete(false);
 
     } catch (error) {
       setIsLoading(false);
@@ -620,7 +647,7 @@ const ViewProject = ({ onClose, props }: any) => {
                       {data.Title}
                     </Box>
                     <IconButton aria-label="delete"
-                      onClick={() => { setIsDelete(true); setclientTobeDel(data.Title) }}
+                      onClick={() => { setIsDelete(true); setclientDelDetails(data); }}
                       style={{ color: '#bbb' }}
                     >
                       <DeleteIcon />
