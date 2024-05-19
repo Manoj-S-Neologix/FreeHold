@@ -48,7 +48,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit,particularClientAllData  }: any) => {
+const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit, particularClientAllData }: any) => {
     // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -189,16 +189,16 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
-    
+
         const updatedData = {
             Title: editData.title,
             ProjectNumber: editData.projectNumber,
             Location: editData.location,
             Developer: editData.developer
         };
-    
+
         const apiResponse = ProjectService();
-        
+
         apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
             .then(() => {
                 reset();
@@ -214,7 +214,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 // toast.error('Failed to update project details. Please try again.');
             });
     });
-    
+
 
 
 
@@ -403,7 +403,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                                 const end = input.selectionEnd;
                                                                 field.onChange(value);
                                                                 await trigger("location");
-                                                                setEditData({ ...editData, Location: value });
+                                                                setEditData({ ...editData, location: value });
                                                                 input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.location}
@@ -464,11 +464,11 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         <TableCell component="th" scope="row">Assign Client</TableCell>
                                         {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            // onClick={(id:any) => {
-                                            //     // setHandleClientDialog(true);
-                                            //     // setIsViewDialogOpen(true)
-                                            //     navigate("/ViewClient/" + id)
-                                            // }}
+                                        // onClick={(id:any) => {
+                                        //     // setHandleClientDialog(true);
+                                        //     // setIsViewDialogOpen(true)
+                                        //     navigate("/ViewClient/" + id)
+                                        // }}
                                         >
                                             {projectDetails.assignClient ?
                                                 projectDetails.assignClient :
@@ -476,7 +476,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                             }
                                         </TableCell>
                                         )}
-                                        
+
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified Date</TableCell>

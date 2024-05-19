@@ -72,6 +72,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
   const [clientData, setClientData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [particularClientProjects, setparticularClientProjects] = useState<any>([]);
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
 
   const [filterPersonShown, setFilterPersonShown] = useState(false);
@@ -94,7 +95,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   const fetchDataByuserId = async () => {
     if (viewClientId) {
-
+      setIsEdit(false);
       const data = await fetchDataById(viewClientId);
       console.log(data, "datadatadata");
 
@@ -105,18 +106,28 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails); // Assuming data is an object
         console.log("datadatadata", AllClientData, ID);
-        const getValue = AllClientData.map((data: any) => {
+        /* const getValue = AllClientData.map((data: any) => {
           if (data.Id === ID) {
             return data;
           }
           return;
-        });
+        }); */
+
+        const select = '*,AssignClient/Title,AssignClient/Id';
+        const expand = 'AssignClient';
+        const orderBy = 'Modified';
+        const filter = `AssignClient/Id eq '${ID}'`;
+
+        // const filtered = "";
+        const results = await ClientService().getProjects('Project_Informations', select, expand, filter, orderBy);
+        //console.log("Project details : ", results);
 
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
         setParticularClientAllData(getUnique);
-        console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
+        setparticularClientProjects(results);
+        //console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
         setIsViewDialogOpen(true);
-        navigate('/ViewClient/' + String(data[0]?.Id));
+        navigate('/ViewClient/' + String(clientDetails?.Id));
       }
     }
     if (editClientId) {
@@ -139,19 +150,22 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
         setParticularClientAllData([clientDetails]);
         console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
-        navigate('/EditClient/' + String(data[0]?.Id));
+
+        const select = '*,AssignClient/Title,AssignClient/Id';
+        const expand = 'AssignClient';
+        const orderBy = 'Modified';
+        const filter = `AssignClient/Id eq '${ID}'`;
+
+        const results = await ClientService().getProjects('Project_Informations', select, expand, filter, orderBy);
+        setparticularClientProjects(results);
+        navigate('/EditClient/' + String(clientDetails?.Id));
       }
     }
   };
 
-
-
   console.log(particularClientAllData, "getUniquegetUnique");
-
   console.log(clientData, '.clientData.')
-
   console.log(selectedName, 'selectedname')
-
 
   const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);
@@ -186,16 +200,12 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     setOpen(true);
   };
 
-
-
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
-
   };
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
-
   };
 
   const theme = useTheme();
@@ -206,13 +216,6 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     setSelectedPersons([]);
     setOpen(false);
   };
-
-  // const handleApply = () => {
-  //   setSearchQuery(searchQueryCall);
-  //   setOpen(false);
-  //   setFilterPersonShown(true);
-  // };
-
 
   const handleApply = () => {
 
@@ -233,8 +236,6 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   console.log(clientData, "clientDataclientData")
 
-
-
   const IconStyles = (icon: any) => {
     return (
       <div>
@@ -242,24 +243,6 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       </div >
     );
   };
-
-  // const hyperLink = (data: any, id: any) => {
-
-  //   return (
-  //     data !== '-' && <Box
-  //       onClick={() => {
-  //         navigate('/ViewClient/' + id);
-  //         // setIsViewDialogOpen(true);
-  //       }}
-  //       style={{
-  //         textDecoration: "underline", color: "blue", cursor: "pointer",
-  //         listStyleType: "none", padding: 0
-  //       }}>
-  //       {data}
-
-  //     </Box>
-  //   );
-  // };
 
   const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
@@ -279,42 +262,20 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       label: 'View',
       icon: <VisibilityIcon />,
       handler: async (data: any) => {
-        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        // setParticularClientAllData(uniqueClientData);
-        // setIsViewDialogOpen(true);
-        // setClientDetails(data);
+
         viewClientId = String(data.Id);
         if (data.Id) {
           console.log(data, "AllClientDataAllClientData");
           await fetchDataByuserId();
         }
-        // navigate('/ViewClient/' + viewClientId);
 
-
-        // // Filter out unique client data
-        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        // setParticularClientAllData(uniqueClientData);
-        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        // setParticularClientAllData(getUnique);
       },
     },
-
-
-
-
     {
       label: 'Edit',
       icon: <EditIcon />,
       handler: async (data: any) => {
-        // //console.log(`Edit clicked for row ${data}`);
-        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        // setParticularClientAllData(getUnique);
-        // setIsViewDialogOpen(true);
-        // setClientDetails(data);
-        // setIsEdit(true);
-        // editClientId = String(data.Id);
-        // navigate('/EditClient/' + editClientId);
-        // console.log(data, "AllClientDataAllClientData");
+
         editClientId = String(data.Id);
         if (data.Id) {
           console.log(data, "AllClientDataAllClientData");
@@ -353,22 +314,6 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
       },
 
-      // handler: async (data: any) => {
-      //   const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-      //   setParticularClientAllData(getUnique);
-      //   if (getUnique.length > 0) {
-      //     const folderGUID = getUnique[0].GUID;
-      //     try {
-      //       const results = await ClientService().getDocumentsFromFolder(folderGUID);
-      //       console.log('Documents fetched successfully:', results);
-      //     } catch (error) {
-      //       console.error('Error fetching documents:', error);
-      //     }
-      //   } else {
-      //     console.warn('No client data found for the provided ID');
-      //   }
-      // },
-
     },
     {
       label: 'Assign Staff',
@@ -388,42 +333,6 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     },
   ];
 
-
-
-
-  // const searchPeopleInTable = async (items: any[]) => {
-  //   console.log(items[0].text, "itemsitemsitemsitems");
-  //   setSearchQueryCall(items[0].text);
-  //   setSelectedPersons(items);
-  // };
-
-  // const searchPeopleInTable = async (items: any[]) => {
-  //   console.log(items[0].text, "itemsitemsitemsitems");
-  //   setFilterQueryCall(items[0].text);
-  //   const testing = clientData.filter((data: any) => data.includes(items[0].text));
-  //   console.log(testing, "testing")
-  //   setSelectedPersons(items);
-  // };
-
-  // const searchPeopleInTable = async (items: any[]) => {
-  //   if (items.length > 0 && items[0]?.text) {
-  //     const searchText = items[0].text.toLowerCase(); 
-  //     const filteredData = clientData.filter((data: any) => {
-  //       if (data.assignStaff && typeof data.assignStaff === 'string') {
-  //         return data.assignStaff.toLowerCase().includes(searchText);
-  //       }
-  //       return false; 
-  //     });
-  //     console.log(filteredData, "filteredData");
-  //     setClientData(filteredData);
-  //     console.log(items[0].text, "itemsitemsitemsitems");
-  //     setSearchQueryCall(items[0].text);
-  //     setFilterQueryCall(items[0].text);
-  //     setSelectedPersons(items);
-
-  //   }
-  // };
-
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
       const searchText = items[0].text.toLowerCase();
@@ -434,29 +343,16 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     }
   };
 
-
-
-
-
-
-
-
-
-  // console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
-
-  // console.log(selectedPersons, filterQueryCall, "DataparticularClientAllData");
-
-
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = "";
       const orderBy = 'Modified';
       console.log(orderBy, "orderByorderByorderBy....")
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
+      const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
       console.log(results, 'client')
       setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
@@ -479,9 +375,9 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       const filter = `Id eq '${id}'`;
       const orderBy = "Modified";
       // const filtered = "";
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
-      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, "", orderBy);
-      setAllClientData(filteredResults?.tableData);
+      const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
+      //const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, "", orderBy);
+      //setAllClientData(filteredResults?.tableData);
 
       // setClientData(results?.updatedResults[0].TableData);
       //setAllClientData(results?.updatedResults);
@@ -494,24 +390,13 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     }
   };
 
-  // const modifiedAssignedStaff = (data: any) => {
-  //   if (!data) return null;
-  //   const words = data?.split(',');
-  //   return (
-  //     <Box>
-  //       {words.map((word: string, index: number) => (
-  //         <p key={index}>{word}</p>
-  //       ))}
-  //     </Box>
-  //   );
-  // };
-
   const handleClickOpen = (name: any, id?: number) => {
     const newItem = { name, id };
     setSelectedName([...selected, newItem]);
     setDialogOpen(true);
     console.log(name, id, 'selected');
   };
+
   const handleClose = () => {
     setDialogOpen(false);
   };
@@ -560,24 +445,16 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     };
   });
 
-
   React.useEffect(() => {
     fetchData();
   }, []);
+
   React.useEffect(() => {
     if (editClientId || viewClientId)
       fetchDataByuserId();
     // console.log(editClientId, viewClientId, "editClientId, viewClientId");
     // setIsViewDialogOpen(false);
   }, [editClientId, viewClientId]);
-
-
-  // React.useEffect(() => {
-  // 
-  // }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
-
-
-
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -800,23 +677,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
             </IconButton>
             <DialogContent>
               <Typography>
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.Id}> 
-                  {console.log(data?.clientDetails.length, 'length')}   
-                  {data?.clientDetails?.length > 0 ? (data?.clientDetails?.map((client: any) => (
-                  <Typography key={client.Id}>
-                    {client.Title}
-                    {console.log(client.Title, 'clientproject')}
-                  </Typography>
-                  ))) : (null)} 
-                  
-                  </Box>
-                ))} */}
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.assignClientId}>    
-                 {data.assignClient} 
-                  </Box>
-                ))} */}
+
                 {selectedName.map((data: any) => (
                   <div key={data.id}>
                     <Box>
@@ -879,7 +740,9 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
           isOpen={isOpen}
           fetchData={fetchDataByuserId}
           initialFetchData={fetchData}
-          particularClientAllData={particularClientAllData} selected={selected}
+          particularClientAllData={particularClientAllData}
+          selected={selected}
+          particularClientProjects={particularClientProjects}
         />}
     </Box>
 

@@ -20,10 +20,6 @@ import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-// const [dialogOpen, setDialogOpen] = React.useState(false);
-
-
-
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -52,17 +48,13 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isOpen, setIsOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData }: any) => {
-    // const [selected] = React.useState<any>([]);
-    //console.log(particularClientAllData, clientDetails, "particularClientAllData");
-    // const [searchQuery, setSearchQuery] = useState('');
+const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isOpen, setIsOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData, particularClientProjects }: any) => {
+
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-
-    // const [loading, setLoading] = useState(false);
     console.log(selectedPersons, particularClientAllData, "ViewParticularClient");
 
     useEffect(() => {
@@ -71,12 +63,8 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         );
         setSelectedPersons(assignedStaffEmails);
 
-        //console.log('Assigned Staff Emails:', assignedStaffEmails);
-
     }, []);
 
-    // const [addClientDialog, setAddClientDialog] = useState(false);
-    // // const { handleSubmit, control } = useForm();
     const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm(
         {
             defaultValues: {
@@ -114,20 +102,12 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         }
     }, [clientDetails]);
 
-    // const projectnames = ['project 1', 'project 2', 'project 3', 'project 4', 'project 5'];
-
-
-    //console.log(editData, clientDetails, "clientDetailsIdclientDetailsId");
-
-    // const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
-
 
     const closeUploadDialog = () => {
         setUploadDialogOpen(false);
 
     };
-
 
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
@@ -166,11 +146,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
             });
     });
 
-    // console.log('Update Client Response:', response);
-
-
     // update code end
-
     const navigateToHome = () => {
         navigate('/');
     };
@@ -179,7 +155,6 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
         setHandleStaffDialog(false);
         setSelectedPersons([]);
     };
-
 
     const navigateToClient = () => {
         setIsViewDialogOpen(false);
@@ -409,42 +384,37 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Project</TableCell>
 
-
-                                        {/* <ul style={{ textAlign: 'left', paddingLeft: "20px" }}>
-                                            {projectnames.map((projectName, index) => (
-                                                <li key={index}>{projectName}</li>
-                                            ))}
-                                        </ul> */}
-
                                         {!isEdit ? (
                                             (<TableCell>
 
-                                                {clientDetails?.projectDetails?.length > 0 && (
-                                                    <div
-                                                        style={{
-                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                            listStyleType: "none"
-                                                        }}
-                                                    >
-                                                        {clientDetails.projectDetails.map((data: any) => (
-                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
-                                                        ))}
-                                                    </div>
+                                                {particularClientProjects?.length > 0 && (
+                                                    particularClientProjects.map((data: any) => (
+                                                        <div
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}
+                                                        >
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
+                                                        </div>
+                                                    ))
                                                 )}
 
                                             </TableCell>)
                                         ) : (
                                             <TableCell>
 
-                                                {clientDetails?.projectDetails?.length > 0 && (
-                                                    <div style={{
-                                                        textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                        listStyleType: "none"
-                                                    }}>
-                                                        {clientDetails.projectDetails.map((data: any) => (
-                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
-                                                        ))}
-                                                    </div>
+                                                {particularClientProjects?.length > 0 && (
+
+                                                    particularClientProjects.map((data: any) => (
+                                                        <div style={{
+                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                            listStyleType: "none"
+                                                        }}>
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
+                                                        </div>
+                                                    ))
+
                                                 )}
                                             </TableCell>
 

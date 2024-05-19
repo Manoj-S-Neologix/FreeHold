@@ -111,9 +111,9 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
     // fetchData();
   };
 
-  const openAssignClientDialog = () => {
+  /* const openAssignClientDialog = () => {
     setHandleClientDialog(true);
-  };
+  }; */
 
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
@@ -484,12 +484,12 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
                     }} />)
                 }
               />
-              <Button
+              {/* <Button
                 handleClick={openAssignClientDialog}
                 disabled={selected.length === 0}
                 style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
                 message="Assign Client"
-              />
+              /> */}
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <CustomSearch handleSearchChange={handleSearchChange} />
@@ -747,7 +747,8 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
           selected={selected}
           props={props}
           fetchData={fetchData}
-        />}
+        />
+      }
 
       {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
