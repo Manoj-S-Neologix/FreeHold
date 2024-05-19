@@ -409,7 +409,7 @@ const ViewProject = ({ onClose, props }: any) => {
       let assignClientIds: any[] = [];
 
       _.forEach(projectDelDetails.clientDetails, function (client) {
-        if (client.Id != clientDelDetails.Id) {
+        if (client.Id !== clientDelDetails.Id) {
           assignClientIds.push(client.Id);
         }
       });

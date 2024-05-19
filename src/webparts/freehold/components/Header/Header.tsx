@@ -5,7 +5,7 @@ import { Box, Grid, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 const Header = ({ props }: any) => {
-    const [userName] = React.useState(props.props.userDisplayName);
+    const [userName] = React.useState(props);
     const theme = useTheme();
 
     return (

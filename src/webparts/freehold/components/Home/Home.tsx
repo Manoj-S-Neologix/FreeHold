@@ -11,6 +11,7 @@ import {
 } from '../Route/index';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
+import { IFreeholdProps } from '../IFreeholdProps';
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -19,14 +20,14 @@ const colorCodes = {
     secondary: "#dba236"
 };
 
-const Home = (props: any) => {
+const Home = (props: IFreeholdProps) => {
     return (
         <React.Fragment>
             {/* <ToastContainer /> */}
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
 
                 <HashRouter basename='/'>
-                    <Header props={props} />
+                    <Header props={props.userDisplayName} />
                     <Search props={props} />
                     <Routes>
                         <Route path='/'
@@ -54,7 +55,7 @@ const Home = (props: any) => {
                         />
                         <Route
                             path='/ChecklistValidation'
-                            element={<ChecklistValidation />}
+                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl}  />}
                         />
                         <Route
                             path='/ChecklistConfiguration'

@@ -1,10 +1,16 @@
+import {
+    SPHttpClient,
+    SPHttpClientResponse,
+    ISPHttpClientOptions
+} from '@microsoft/sp-http';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { Web } from "@pnp/sp/presets/all";
 // import toast from 'react-hot-toast';
 
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
-    deleteFolder: (libraryName:string) => Promise<any>;
+    deleteFolder: (libraryName: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
     uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
@@ -22,7 +28,8 @@ export type SPServiceType = {
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
-    deleteAssignedClient:(listName:string, itemId: number) => Promise<any>;
+    deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
+    getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
     // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
     // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
@@ -86,56 +93,26 @@ const SPService: SPServiceType = {
         }
     },
 
-    deleteFolder: async (libraryName:string): Promise<any> => {
+    deleteFolder: async (libraryName: string): Promise<any> => {
         // const deletefolder = await web.lists 
         // .getByTitle(folderServerRelativeUrl).recycle();
         const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
         return deletefolder;
-},
+    },
 
-//   deleteAssignedStaff :async (ServerRelativeUrl:string): Promise<any> => {
-//     const deleteAssignedStaff = await web
+    //   deleteAssignedStaff :async (ServerRelativeUrl:string): Promise<any> => {
+    //     const deleteAssignedStaff = await web
 
 
-deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
-    // const deletefolder = await web.lists 
-    // .getByTitle(folderServerRelativeUrl).recycle();
-    // const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
+    deleteAssignedClient: async (listName: string, itemId: number): Promise<any> => {
+        // const deletefolder = await web.lists 
+        // .getByTitle(folderServerRelativeUrl).recycle();
+        // const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
         // .getById(itemId).recycle();
         const deleteAssignedClient = await web.lists
             .getByTitle(listName).items.getById(itemId).recycle();
-    return deleteAssignedClient;
-},
-
-
-
-    // Upload Document to a library
-    // uploadDocument: async (libraryName: string, files: any): Promise<any> => {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             const library = web.getFolderByServerRelativeUrl(libraryName);
-    //             const promises = files.map((file: any) => {
-    //                 return library.files.add(file.name, file, true).then((document): any => {
-    //                     return document
-    //                 }).catch((err) => {
-    //                     throw err
-    //                 })
-    //             });
-    //             promises.all(Promise).then((documents: any) => resolve(documents)).catch((err: any) => reject(err))
-    //             //console.log(files, "filesfilesfiles");
-    //             // for (const file of files) {
-    //             //     console.log(files, "filesfilesfilesInside");
-    //             //     const document = await library.files.add(file.name, file, true);
-    //             //     return document;
-    //             // }
-    //         } catch (error) {
-    //             console.error("Error uploading document:", error);
-    //             throw error;
-    //         }
-    //     })
-    // },
-
-
+        return deleteAssignedClient;
+    },
 
     // Upload Document to a library
     uploadDocument: async (libraryName: string, files: any[]): Promise<any[]> => {
@@ -162,11 +139,10 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
             });
     },
 
-
     //upload document with metadata
     uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: string): Promise<any[]> => {
         const library = web.getFolderByServerRelativeUrl(libraryName);
-    
+
         const promises = files.map(async (file: any) => {
             try {
                 const uploadedFile = await library.files.add(file.name, file, true);
@@ -175,7 +151,7 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
                     console.log(item, 'serviceitem..')
                     if (item) {
                         await item.update({
-                            DMS_x0020_Tags:file.checklist
+                            DMS_x0020_Tags: file.checklist
                         });
                         return item;
                     } else {
@@ -200,7 +176,6 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
 
             });
     },
-    
 
     // Update library name
     updateLibraryName: async (GUIDID: any, updatedlibraryName: string): Promise<any> => {
@@ -231,7 +206,6 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
         return count.length
         // console.log(count);
     },
-
 
     // Delete list items
     deleteListItem: async (listName: string, itemId: number): Promise<any> => {
@@ -332,10 +306,30 @@ deleteAssignedClient: async (listName:string, itemId: number): Promise<any> => {
         const folder = await library.folders.getByName(folderName);
         return folder;
     },
+
     getAllFoldersInLibrary: async (libraryName: string): Promise<any> => {
         const library = web.getFolderByServerRelativeUrl(libraryName);
         const folders = await library.folders();
         return folders;
+    },
+
+    getFoldernFilesRecurs(spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string): Promise<any> {
+
+        const options: ISPHttpClientOptions = {
+            body: JSON.stringify({
+                "query": {
+                    "ViewXml": camlQry,
+                    "FolderServerRelativeUrl": `${baseURL}${serverRelativeUrl}`
+                }
+            })
+        };
+
+        return spContext.spHttpClient.post(baseURL + "/_api/Web/Lists/GetByTitle('" + libname + "')/GetItems?$select=*,FileSystemObjectType,FileDirRef,FieldValuesAsText/Author,FieldValuesAsText/FileLeafRef,DMS_x0020_Tags&$expand=FieldValuesAsText", SPHttpClient.configurations.v1, options)
+            .then((response: SPHttpClientResponse) => {
+                return response.json();
+            }).catch((err: any) => {
+                console.log(err);
+            });
     }
 
 };

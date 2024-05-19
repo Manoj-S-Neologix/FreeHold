@@ -3,7 +3,7 @@
   "solution": {
     "name": "freehold-client-side-solution",
     "id": "7c02a787-5c78-4dcf-b331-8bebb20afa5e",
-    "version": "1.0.0.0",
+    "version": "1.1.2.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,

@@ -1,27 +1,16 @@
-import { Box, Breadcrumbs, Button, Checkbox, TextField, Typography  } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { emphasize, styled } from '@mui/material/styles';
 import { Button as MuiButton } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
-// import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { Controller, useForm } from 'react-hook-form';
-// import Accordion from '@mui/material/Accordion';
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import AccordionSummary from '@mui/material/AccordionSummary';
 import Stack from '@mui/material/Stack';
-import MaterialTable, { Icons } from 'material-table'
-// import GridTable from '../../../../Common/Table/Table';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Paper from '@mui/material/Paper';
+import MaterialTable, { Icons } from 'material-table';
+
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { forwardRef } from 'react';
@@ -44,9 +33,8 @@ import {
   ViewColumn
 } from "@material-ui/icons";
 import ProjectService from '../../Services/Business/ProjectService';
-import ClientService from '../../Services/Business/ClientService';
-
-// import AccordionDetails from '@mui/material/AccordionDetails';
+import _ from 'lodash';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -81,7 +69,7 @@ const commonStyles = {
   height: '8rem',
 }
 
-const empList = [
+/* const empList = [
   { project: "Local Link", client: 'Austin Tammy', unit: "Unit1", checklistname: "Checklist1", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
   { project: "Social Circle", client: 'Cames Scott', unit: "Unit2", checklistname: "Checklist2", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
   { project: "Commerce Companion", client: 'Davis Jan', unit: "Unit3", checklistname: "Checklist3", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
@@ -92,7 +80,7 @@ const empList = [
   { project: "Collaborative Conversations", client: 'Catherine Young', unit: "Unit8", checklistname: "Checklist8", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
   { project: "Community Guard", client: 'Dana Trist', unit: "Unit9", checklistname: "Checklist9", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
   { project: "Picture Perfect", client: 'Melanie Jones', unit: "Unit10", checklistname: "Checklist10", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-]
+] */
 
 const tableIcons: Icons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -118,31 +106,20 @@ const tableIcons: Icons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const ChecklistValidation = (props: any) => {
-  const ProjectRef = useRef<HTMLInputElement>(null);
-  const ClientRef = useRef<HTMLInputElement>(null);
-  const UnitRef = useRef<HTMLInputElement>(null);
-  const [tableData, setTableData] = useState<any[]>([]);
-  const [AllClientData, setAllClientData] = useState<any>([]);
+const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string }) => {
+
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
-  const [fileData, setFileData] = useState<any[]>([]);
-  const { control, formState: { errors }, setValue } = useForm();
+  const [unitData, setunitData] = useState<any>([]);
+  const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
-  const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
-  const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
-  const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
-  const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
-  const getProjectCode = particularClientAllData[0]?.projectNumber;
-  const [getClient, setGetClient] = useState<any[]>([]);
-  const [getGuid, setGetGuid] = React.useState('');
-  const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
-  // const [isOpen, setIsOpen] = useState(false);
-  const [data, setData] = useState(empList)
+  const projectService = ProjectService();
+
+  const [data, setData] = useState<any>([]);
   const columns = [
     { title: "Project", field: "project", defaultGroupOrder: 0 },
     { title: "Client", field: "client", defaultGroupOrder: 0 },
-    { title: "Unit", field: 'unit' },
+    { title: "Unit", field: 'unit', defaultGroupOrder: 0 },
     { title: "Checklist Name", field: "checklistname" },
     { title: "Progress", field: 'progress' }
   ]
@@ -150,58 +127,145 @@ const ChecklistValidation = (props: any) => {
   const navigateToHome = () => {
     navigate('/');
   };
-  const [projectValue, setProjectValue] = useState<string>('');
-  const [clientValue, setClientValue] = useState<string>('');
-  const [unitValue, setUnitValue] = useState<string>('');
-  const handleSearch = () => {
-    setProjectValue(ProjectRef.current?.value || '');
-    setClientValue(ClientRef.current?.value || '');
-    setUnitValue(UnitRef.current?.value || '')
-    setTableData(prevData => [
-      ...prevData,
-      { project: projectValue, client: clientValue, unit: unitValue }
-    ]);
-    setData(data);
-  }
+
+  //Get search results
+  const handleSearch = async () => {
+
+    projectService.getProject('project Checklist')
+      .then(async (results: any) => {
+        console.log(results);
+
+        let clientName: string = "";
+        let unitFolder: string = "";
+
+        if (results.length > 0) {
+          //Get project number
+          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+
+          let projectRelativePath = projectInfo;
+
+          if (getValues("clientName") !== "" && getValues("clientName") !== undefined && getValues("clientName") !== null) {
+            clientName = getValues("clientName");
+            projectRelativePath += "/" + getValues("clientName");
+          }
+
+
+          if (getValues("unitDocument") !== "" && getValues("unitDocument") !== undefined && getValues("unitDocument") !== null) {
+            unitFolder = getValues("unitDocument");
+            projectRelativePath += "/" + getValues("unitDocument");
+          }
+
+          //Get all recursive documents
+          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `/${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+
+          const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
+          console.log("docDetails :", docDetails_Grpd);
+
+          //Create document list
+          const docList: any[] = [];
+
+          _.forEach(results, function (value) {
+
+            if (clientName === "" && unitFolder === "") {
+
+              const projectFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}`;
+              const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+
+              _.forEach(clientDetails, function (client) {
+
+                const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${client.Title}`;
+                const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+
+                _.forEach(unitDetails, function (unit) {
+                  docList.push({
+                    project: getValues("projectName"),
+                    client: client.Title,
+                    unit: unit.Title,
+                    checklistname: value.Title,
+                    progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
+                  });
+                });
+              });
+
+            }
+            else if (clientName !== "" && unitFolder === "") {
+              const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
+              const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+
+              _.forEach(unitDetails, function (unit) {
+                docList.push({
+                  project: getValues("projectName"),
+                  client: getValues("clientName"),
+                  unit: unit.Title,
+                  checklistname: value.Title,
+                  progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
+                });
+              });
+            } else if (clientName !== "" && unitFolder !== "") {
+              const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
+
+              docList.push({
+                project: getValues("projectName"),
+                client: getValues("clientName"),
+                unit: unitFolder,
+                checklistname: value.Title,
+                progress: (docDetails_Grpd[`${clientFolderPath}/${unitFolder}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unitFolder}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
+              });
+
+            }
+
+          });
+
+          console.log('docList', docList);
+
+          //Set table
+          setData(docList);
+
+        } else {
+          toast("No checklist configured for the selected project");
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching checklist data:', error);
+      });
+
+    //Set table
+    //setData(empList);
+
+  };
+
+  const checkProgress = (docDetails: any, checkListName: string) => {
+
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag == checkListName; });
+
+    return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
+  };
 
   const groupedData: { [key: string]: any[] } = {};
-  tableData.forEach(row => {
+  data.forEach((row: { project: string | number; }) => {
     if (!groupedData[row.project]) {
       groupedData[row.project] = [];
     }
     groupedData[row.project].push(row);
   });
 
-  console.log(projectData, isLoading, getClient, setGetFoldersResponse, 'projectdata..')
-
-  console.log(getClientDetails, "uploadgetClientDetails....")
-
-  console.log(getClientDocumentsData, getClientDocumentsAllData, getFoldersResponse, 'getClientDocuments..')
+  console.log(isLoading);
 
   const fetchData = async () => {
+
     try {
       setIsLoading(true);
-      const projectService = ProjectService();
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
       const expand = 'Author,AssignClient';
       const orderBy = 'Modified';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.TableData);
-        setAllClientData(results.updatedResults);
+        setProjectData(results.updatedResults);
 
-        // Retrieve documents from a folder (assuming getGuid is defined)
-        const projectService = ProjectService();
-        const folderGUID = getGuid; // Assuming getGuid is defined elsewhere
-        const folderResults = await projectService.getDocumentsFromFolder(folderGUID);
-        console.log(folderResults, "File Datas");
-
-        setFileData(folderResults);
       } else {
         // Handle case where no data is returned
         setProjectData([]);
-        setAllClientData([]);
       }
       setIsLoading(false);
     } catch (error) {
@@ -209,97 +273,21 @@ const ChecklistValidation = (props: any) => {
       console.error('Error fetching data:', error);
     }
   };
-  const clientService = ClientService();
-  const clientListName = "Client_Informations";
-  const selectQuery = "Id,Title,ClientLibraryGUID";
 
-  const apiCall = async (particularClientAllData: any) => {
+  const getDocumentsFromFolder = async (libraryName: string, clientName: string) => {
     try {
-      console.log(particularClientAllData, "particularClientAllDataparticularClientAllData")
-      const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
-      console.log("API Call Data:", data);
 
-      if (data) {
-        const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
-        const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
-        console.log(filteredData, "filteredData");
-        const mappedData = filteredData.map((item: any) => ({
-          id: item.Id,
-          name: item.Title,
-          libraryGUID: item.ClientLibraryGUID
-        }));
-        setGetClientDetails(mappedData);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const getDocumentsFromFolder = async (libraryGuid: string) => {
-    try {
-      const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log(results, 'guidresult')
-      const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
-
-      console.log('Retrieved files:', results,);
-      console.log('getFolders', getFolders);
-      setGetFoldersResponse(getFolders);
-
-      // Ensure results is an array before setting state
-      if (Array.isArray(results)) {
-        setClientDocumentsData(results.map(item => item.FileLeafRef));
-        setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB');
+      const unitFolders: any = await ProjectService().getAllFoldersInLibrary(`${libraryName}/${clientName}`);
+      if (unitFolders.length > 0) {
+        setunitData(unitFolders);
       } else {
-        console.error('Error: Retrieved data is not an array');
+        toast("No unit folders found.")
       }
+
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
   };
-
-
-  const getClientFromFolder = async (libraryGuid: string, getUnique: string) => {
-    try {
-      console.log(getUnique, "getUnique")
-      await apiCall(getUnique)
-      const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log(results, 'guidresult')
-      const getLibraryName = AllClientData.filter((item: any) => item.GUID === libraryGuid)[0].projectNumber;
-      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getLibraryName}`);
-
-      console.log('Retrieved files:', results,);
-      console.log('getFolders', getFolders);
-      setGetFoldersResponse(getFolders);
-
-      // Ensure results is an array before setting state
-      if (Array.isArray(results)) {
-        setClientDocumentsData(results.map(item => item.FileLeafRef));
-        setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB');
-      } else {
-        console.error('Error: Retrieved data is not an array');
-      }
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  };
-
-  const mappedFiles = fileData.map((file: any) => ({
-    id: file.Id,
-    fileName: file.FileLeafRef,
-    url: file.FileRef,
-    fileType: file.File_x0020_Type,
-    created: file.Created,
-    editorName: file.Editor.Title,
-    editorId: file.Editor.Id,
-    dmstags: file.DMS_x0020_Tags
-  }));
-
-  console.log(mappedFiles);
 
   React.useEffect(() => {
     fetchData();
@@ -323,6 +311,8 @@ const ChecklistValidation = (props: any) => {
           </Breadcrumbs>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Box sx={{ ...commonStyles, border: 1, borderRadius: 2, borderColor: 'primary.main', mt: 1 }}>
+
+              {/* Filter section */}
               <div style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
                 justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
@@ -353,18 +343,18 @@ const ChecklistValidation = (props: any) => {
                               error={!!errors.projectName}
                               onChange={async (e: any) => {
                                 console.log(e.target.value);
-                                const getUnique = AllClientData.filter((datas: any) => datas.projectName === e.target.value);
-                                setParticularClientAllData(getUnique);
-                                setValue('projectName', e.target.value)
-                                console.log(getUnique, "getUnique")
-                                // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
-                                getClientFromFolder(getUnique[0].GUID, getUnique);
+                                const getUnique = projectData.filter((datas: any) => datas.projectName === e.target.value);
+                                if (getUnique[0].clientDetails.length > 0) {
+                                  setParticularClientAllData(getUnique[0].clientDetails);
+                                } else {
+                                  toast("No client found, Please select any other project");
+                                }
+                                setValue('projectName', e.target.value);
 
                               }}
                             >
-                              {AllClientData?.map((item: any) => (
-                                <MenuItem key={item.id} value={item.projectName
-                                }>
+                              {projectData?.map((item: any) => (
+                                <MenuItem key={item.id} value={item.projectName}>
                                   {item.projectName}
                                 </MenuItem>
                               ))}
@@ -375,6 +365,7 @@ const ChecklistValidation = (props: any) => {
                     </FormControl>
                   </Box>
                 </Typography>
+
                 <Typography>Client Name
                   <Box>
                     <FormControl>
@@ -401,22 +392,17 @@ const ChecklistValidation = (props: any) => {
                               error={!!errors.clientName}
                               helperText={errors?.clientName?.message}
                               onChange={(e: any) => {
-                                console.log(e.target.value);
-                                console.log(getClientDetails, "getClientDetails....")
-                                setGetClient(e.target.value);
-                                const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === e.target.value)[0].libraryGUID
 
-                                console.log(getLibraryName, "getLibraryName");
-                                getDocumentsFromFolder(getLibraryName);
                                 setValue('clientName', e.target.value);
-                                setGetGuid(e.target.value);
-                                fetchData();
+                                const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+
+                                getDocumentsFromFolder(projectInfo, e.target.value);
 
                               }}
                             >
-                              {getClientDetails?.map((item: any) => (
-                                <MenuItem key={item.Id} value={item.libraryGUID}>
-                                  {item.name}
+                              {particularClientAllData?.map((item: any) => (
+                                <MenuItem key={item.Id} value={item.Name}>
+                                  {item.Name}
                                 </MenuItem>
                               ))}
                             </TextField>
@@ -426,14 +412,9 @@ const ChecklistValidation = (props: any) => {
                     </FormControl>
                   </Box>
                 </Typography>
+
                 <Typography>
                   <Stack direction="row" alignItems="center">
-                    <Checkbox
-                      checked={isUnitDocumentChecked}
-                      onChange={(e: any) => setIsUnitDocumentChecked(e.target.checked)}
-                      size="small"
-                      sx={{ p: 0, mr: 2 }}
-                    />
                     Unit
                   </Stack>
                   <Box >
@@ -448,7 +429,7 @@ const ChecklistValidation = (props: any) => {
                             id="is-unit-document"
                             fullWidth
                             select
-                            disabled={!isUnitDocumentChecked}
+                            //disabled={!isUnitDocumentChecked}
                             variant="outlined"
                             placeholder="Select Unit..."
                             size="small"
@@ -456,10 +437,13 @@ const ChecklistValidation = (props: any) => {
                               width: '15rem',
                               height: '2rem'
                             }}
+                            onChange={(e: any) => {
+                              setValue('unitDocument', e.target.value);
+                            }}
                             required
                           >
-                            {getFoldersResponse.length > 0 &&
-                              getFoldersResponse.map((item: any, idx: any) => (
+                            {unitData.length > 0 &&
+                              unitData.map((item: any, idx: any) => (
                                 <MenuItem key={idx} value={item?.Name}>
                                   {item?.Name}
                                 </MenuItem>
@@ -470,43 +454,29 @@ const ChecklistValidation = (props: any) => {
                     </FormControl>
                   </Box>
                 </Typography>
-                <FormControl sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
-                  <Button variant='contained' style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }} onClick={() => {
-                    handleSearch();
-                    // setIsOpen(!isOpen);
-                  }}>Search</Button>
+
+                <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
+                  <Button
+                    disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
+                    variant='contained'
+                    style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
+                    onClick={() => {
+                      handleSearch();
+                    }}>Search</Button>
+                  <Button
+                    variant='contained'
+                    style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
+                    onClick={() => {
+                      reset();
+                      setunitData([]);
+                      setParticularClientAllData([]);
+                    }}>Clear</Button>
                 </FormControl>
               </div>
+
+              {/* Filter results */}
               <Box style={{ position: 'relative', top: '5rem' }}>
-                {/* <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component="th" scope="row">Project</TableCell>
-                          <TableCell component="th" scope="row">Client</TableCell>
-                          <TableCell component="th" scope="row">Unit</TableCell>
-                          <TableCell component="th" scope="row">CheckList Name</TableCell>
-                          <TableCell component="th" scope="row">Progress</TableCell>
-                        </TableRow>
-                      </TableHead>
 
-                      <TableBody>
-                        {Object.entries(groupedData).map(([project, rows]) => (
-                          rows.map((row, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{row.project}</TableCell>
-                              <TableCell>{row.client}</TableCell>
-                              <TableCell>{row.unit}</TableCell>
-                              <TableCell component="td" scope="row">CheckList Name</TableCell>
-                              <TableCell component="td" scope="row"><CheckCircleOutlineIcon style={{ color: 'green' }} /></TableCell>
-                            </TableRow>
-                          ))
-                        ))}
-                      </TableBody>
-
-
-                    </Table>
-                  </TableContainer> */}
                 <MaterialTable
                   title="CheckList Validation"
                   icons={tableIcons}
@@ -517,31 +487,13 @@ const ChecklistValidation = (props: any) => {
                   }}
                 />
               </Box>
-              {/* {isOpen && <div style={{ display: 'flex', position: 'relative', flexDirection: 'column', justifyContent: 'flex-start', marginTop: '2rem' }}>
-                <Stack spacing={1}>
-                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                      <Typography>{projectValue}</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                      <Typography>{clientValue}</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-                  <Accordion sx={{ backgroundColor: 'primary.main', color: '#fff' }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ '& .MuiAccordionSummary-expandIconWrapper .MuiSvgIcon-root': { color: '#fff' } }}>
-                      <Typography>{unitValue}</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-                </Stack>
-              </div>} */}
+
             </Box>
           </Box>
         </Stack>
-      </Box>
-    </div>
+      </Box >
+    </div >
   );
 };
-export default ChecklistValidation
 
+export default ChecklistValidation;

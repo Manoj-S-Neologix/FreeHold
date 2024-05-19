@@ -1,36 +1,39 @@
+import { WebPartContext } from "@microsoft/sp-webpart-base";
 import formatDate from "../../hooks/dateFormat";
 import SPService, { SPServiceType } from "../Core/SPService";
-
-
+import _ from 'lodash';
 
 const ProjectService = () => {
     const spServiceInstance: SPServiceType = SPService;
-
-
-    // const uploadDocument = async (libraryName: string, file: any, listName: any, Id: any) => {
-    //     if (spServiceInstance) {
-    //         const response = await spServiceInstance.createLibrary(libraryName);
-    //         await spServiceInstance.uploadDocument(libraryName, file);
-    //         console.log(response, "ClientLibraryGUIDClientLibraryGUID");
-    //         const results = await spServiceInstance.updateListItem(listName, Id,
-    //             {
-    //                 ClientLibraryGUID: response.data.Id,
-    //                 ClientLibraryPath: response.data.ParentWebUrl+"/"+libraryName
-    //             }
-    //         );
-    //         return results;
-
-    //     }
-    // };
 
     //project upload with meta data
     const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
-            console.log(response,"response-metaData")
+            console.log(response, "response-metaData")
             return response;
         }
-        
+
+    };
+
+    const getFolderItemsRecursive = async (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => {
+        if (spServiceInstance) {
+            const results: any = await spServiceInstance.getFoldernFilesRecurs(
+                spContext, baseURL, serverRelativeUrl, camlQry, libname);
+            console.log(results, "results");
+
+            let docList: any[] = [];
+
+            _.forEach(results.value, function (value) {
+                docList.push({
+                    Title: value.FieldValuesAsText["FileLeafRef"],
+                    FileDirRef: value.FileDirRef,
+                    FileSystemObjectType: value.FileSystemObjectType,
+                    DMSTag: value.DMS_x0020_Tags
+                });
+            });
+            return docList;
+        }
     };
 
     const getProject = async (ListName: string) => {
@@ -48,9 +51,9 @@ const ProjectService = () => {
     };
 
 
-    const getProjectExpand = async (ListName: string, select: string, expand: string,order: any) => {
+    const getProjectExpand = async (ListName: string, select: string, expand: string, order: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "",order);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "", order);
 
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
@@ -170,7 +173,7 @@ const ProjectService = () => {
 
     };
 
-    const deleteFolder = async (libraryName:string) => {
+    const deleteFolder = async (libraryName: string) => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteFolder(libraryName);
@@ -180,7 +183,7 @@ const ProjectService = () => {
 
     };
 
-    const deleteAssignedClient = async (listName:string, itemId: number) => {
+    const deleteAssignedClient = async (listName: string, itemId: number) => {
         if (spServiceInstance) {
             const deleteAssignedStaff = await spServiceInstance.deleteAssignedClient(listName, itemId);
             console.log(deleteAssignedStaff, "results");
@@ -251,7 +254,7 @@ const ProjectService = () => {
         }
     };
 
-    const getListCounts = async (listName: string) =>{
+    const getListCounts = async (listName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getListCounts(listName);
             return response;
@@ -311,8 +314,8 @@ const ProjectService = () => {
         getListCounts,
         updateProjectDocumentMetadata,
         deleteFolder,
-        deleteAssignedClient
-
+        deleteAssignedClient,
+        getFolderItemsRecursive
         // addDocumentsToFolder
     };
 };
