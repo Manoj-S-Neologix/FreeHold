@@ -325,28 +325,28 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
-                                                        {...field}
-                                                        id="clientContact"
-                                                        margin="dense"
-                                                        size="small"
-                                                        // fullWidth
-                                                        value={editData.contact}
-                                                        onChange={async (e: any) => {
-                                                            // const value = e.target.value.replace(/[^\d+-.]/g, '');
-                                                            // field.onChange(value);
-                                                            // await trigger("contact");
-                                                            // setEditData({ ...editData, contact: value });
-                                                            const input = e.target;
-                                                            const value = input.value.replace(/[^\d+-.]/g, '');
-                                                            const start = input.selectionStart;
-                                                            const end = input.selectionEnd;
-                                                            await field.onChange(value);
-                                                            setEditData({ ...editData, contact: value });
-                                                            input.setSelectionRange(start, end);
-                                                        }}
-                                                        error={!!errors.contact}
-                                                        helperText={errors.contact && errors.contact.message}
-                                                    />
+                                                            {...field}
+                                                            id="clientContact"
+                                                            margin="dense"
+                                                            size="small"
+                                                            // fullWidth
+                                                            value={editData.contact}
+                                                            onChange={async (e: any) => {
+                                                                // const value = e.target.value.replace(/[^\d+-.]/g, '');
+                                                                // field.onChange(value);
+                                                                // await trigger("contact");
+                                                                // setEditData({ ...editData, contact: value });
+                                                                const input = e.target;
+                                                                const value = input.value.replace(/[^\d+-.]/g, '');
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
+                                                                await field.onChange(value);
+                                                                setEditData({ ...editData, contact: value });
+                                                                input.setSelectionRange(start, end);
+                                                            }}
+                                                            error={!!errors.contact}
+                                                            helperText={errors.contact && errors.contact.message}
+                                                        />
                                                     )}
                                                 />
 
@@ -418,34 +418,34 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
                                         {!isEdit ? (
                                             (<TableCell>
-                                                
+
                                                 {clientDetails?.projectDetails?.length > 0 && (
-                                            <div 
-                                            style={{
-                                                    textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                    listStyleType: "none"
-                                                }}
-                                                >
-                                                    {clientDetails.projectDetails.map((data:any) => (
-                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
-                                                    ))}
-                                            </div>
-                                            )}
-                                                
+                                                    <div
+                                                        style={{
+                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                            listStyleType: "none"
+                                                        }}
+                                                    >
+                                                        {clientDetails.projectDetails.map((data: any) => (
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
                                             </TableCell>)
                                         ) : (
                                             <TableCell>
 
-                                            {clientDetails?.projectDetails?.length > 0 && (
-                                            <div style={{
-                                                    textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                    listStyleType: "none"
-                                                }}>
-                                                    {clientDetails.projectDetails.map((data:any) => (
-                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
-                                                    ))}
-                                            </div>
-                                            )}
+                                                {clientDetails?.projectDetails?.length > 0 && (
+                                                    <div style={{
+                                                        textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                        listStyleType: "none"
+                                                    }}>
+                                                        {clientDetails.projectDetails.map((data: any) => (
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </TableCell>
 
                                         )}
@@ -469,36 +469,36 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>}
 
                                     <TableRow>
-                                     
+
                                         <TableCell component="th" scope="row">
                                             Assigned Staff
                                         </TableCell>
                                         {isEdit && (
                                             <TableCell className="default-cursor">
-                                                    {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
-                                                        <li
-                                                            className="default-cursor"
-                                                            style={{ textDecoration: "none" }}
-                                                            key={index}
-                                                        >
-                                                            <span>{staff.Name}</span>
-                                                        </li>
-                                                    ))}
-
+                                                {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
                                                     <li
                                                         className="default-cursor"
-                                                        style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-                                                        key="add-icon"
+                                                        style={{ textDecoration: "none" }}
+                                                        key={index}
                                                     >
-                                                        <div 
-                                                            onClick={() => { setHandleStaffDialog(true); }}
-                                                            style={{ cursor: 'pointer', alignItems: 'center', flexDirection:'column', }}
-                                                        >
-                                                            <AddCircleOutlineIcon fontSize='medium' style={{color:'#125895;'}} />
-                                                        </div>
+                                                        <span>{staff.Name}</span>
                                                     </li>
+                                                ))}
+
+                                                <li
+                                                    className="default-cursor"
+                                                    style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+                                                    key="add-icon"
+                                                >
+                                                    <div
+                                                        onClick={() => { setHandleStaffDialog(true); }}
+                                                        style={{ cursor: 'pointer', alignItems: 'center', flexDirection: 'column', }}
+                                                    >
+                                                        <AddCircleOutlineIcon fontSize='medium' style={{ color: '#125895;' }} />
+                                                    </div>
+                                                </li>
                                             </TableCell>
-                                        )}  
+                                        )}
                                         {!isEdit &&
                                             <TableCell className="default-cursor">
                                                 <ul className="default-cursor" style={{

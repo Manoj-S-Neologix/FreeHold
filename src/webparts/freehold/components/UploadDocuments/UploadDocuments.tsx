@@ -60,12 +60,6 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
 
     console.log(particularClientAllData, "ClientData");
 
-    // const dropdownOptions = [
-    //     { Title: 'Option 1' },
-    //     { Title: 'Option 2' },
-    //     { Title: 'Option 3' }
-    // ];
-
 
     const fetchData = async () => {
         if (particularClientAllData.length > 0) {

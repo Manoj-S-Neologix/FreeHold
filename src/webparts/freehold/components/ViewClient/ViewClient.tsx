@@ -24,7 +24,7 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
-
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -53,13 +53,13 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewClient = (props: any) => {
+const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
-  const [searchText, setSearchText]= useState('');
-  const [isPersona, setISPersona]= useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [isPersona, setISPersona] = useState(false);
 
   // console.log(filterQuery, "filterQuery");
   const [searchQueryCall, setSearchQueryCall] = useState('');
@@ -90,7 +90,7 @@ const ViewClient = (props: any) => {
   let { editClientId, viewClientId } = useParams();
   const navigate = useNavigate();
 
-  console.log(editClientId, viewClientId ,"editviewid")
+  console.log(editClientId, viewClientId, "editviewid")
 
   const fetchDataByuserId = async () => {
     if (viewClientId) {
@@ -427,17 +427,17 @@ const ViewClient = (props: any) => {
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
       const searchText = items[0].text.toLowerCase();
-      setSearchText(searchText) 
+      setSearchText(searchText)
       setSearchQueryCall(items[0].text);
       // setFilterQueryCall(items[0].text);
       setSelectedPersons(items);
     }
   };
-  
-  
 
-  
-  
+
+
+
+
 
 
 
@@ -455,7 +455,7 @@ const ViewClient = (props: any) => {
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = "";
       const orderBy = 'Modified';
-      console.log(orderBy,"orderByorderByorderBy....")
+      console.log(orderBy, "orderByorderByorderBy....")
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
       console.log(results, 'client')
       setClientData(results?.tableData);
@@ -477,10 +477,10 @@ const ViewClient = (props: any) => {
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
       // const orderBy = 'Modified';
       const filter = `Id eq '${id}'`;
-      const orderBy = "Modified"; 
+      const orderBy = "Modified";
       // const filtered = "";
       const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
-      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand,  "", orderBy);
+      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, "", orderBy);
       setAllClientData(filteredResults?.tableData);
 
       // setClientData(results?.updatedResults[0].TableData);
@@ -545,7 +545,7 @@ const ViewClient = (props: any) => {
     };
   });
 
-  console.log(tableData,"tableDatatableDatatableData")
+  console.log(tableData, "tableDatatableDatatableData")
 
   const tableDataWidth = clientData.map((item: any) => {
     return {
@@ -727,7 +727,7 @@ const ViewClient = (props: any) => {
                                 },
                               }}
                               {...field}
-                              context={props.props.props.context as any}
+                              context={props.spContext}
                               personSelectionLimit={1}
                               required={true}
                               showHiddenInUI={false}
@@ -748,9 +748,11 @@ const ViewClient = (props: any) => {
                         Clear
                       </MuiButton>
                       <MuiButton
-                        onClick={() => { handleApply(
+                        onClick={() => {
+                          handleApply(
 
-                        ); handleFilterChange(new MouseEvent('click')); }}
+                          ); handleFilterChange(new MouseEvent('click'));
+                        }}
                         variant="contained"
                         color="primary"
                         sx={{
@@ -839,22 +841,22 @@ const ViewClient = (props: any) => {
             props={props}
             searchQuery={searchQuery}
             filterQuery={filterQuery}
-            isPersona = {isPersona}
+            isPersona={isPersona}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}
-           
+
             actions={actions}
             isLoading={isLoading}
             AllClientData={AllClientData}
             tableDataWidth={tableDataWidth}
-            
+
           />
         </Box>
 
       </Stack>
       }
-      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} />}
+      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} spContext={props.spContext} />}
       {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
       <UploadDocument open={uploadDialogOpen}
         onClose={closeUploadDialog} particularClientAllData={particularClientAllData} fetchDatas={fetchData} />

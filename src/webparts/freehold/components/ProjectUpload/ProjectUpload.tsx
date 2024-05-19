@@ -126,7 +126,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     apiCall();
   }, []);
 
-  const fetchData = async (getGuid: any) => {
+  /* const fetchData = async (getGuid: any) => {
 
     const projectService: any = ProjectService();
     const folderGUID = getGuid;
@@ -140,7 +140,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       setIsLoading(false);
       console.error("Error fetching documents:", error);
     }
-  };
+  }; */
 
   const getDocumentsLibPath = async (type: string) => {
 
@@ -253,10 +253,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
         if (isUnitDocumentChecked) {
           getDocumentsLibPath("unit");
         } else {
-          const getLibraryName = getClientDetails.filter((item: any) => item.name === getValues("clientName"))[0].libraryGUID;
-
-          //Get documents for client selection
-          fetchData(getLibraryName);
+          getDocumentsLibPath("client");
         }
       })
       .catch(error => {
@@ -704,7 +701,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       </Stack>
     </Box >
   );
-  
+
 };
 
 export default ViewUpload;

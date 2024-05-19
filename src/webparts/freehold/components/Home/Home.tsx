@@ -39,15 +39,15 @@ const Home = (props: IFreeholdProps) => {
                         />
                         <Route
                             path='/ViewClient'
-                            element={<ViewClient props={props} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
                         />
                         <Route
                             path='/ViewClient/:viewClientId'
-                            element={<ViewClient props={props} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
                         />
                         <Route
                             path='/EditClient/:editClientId'
-                            element={<ViewClient props={props} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
                         />
                         <Route
                             path='/ViewProjects'

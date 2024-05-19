@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
-const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
+const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) => {
   const [files, setFiles] = useState<any[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm();
@@ -402,7 +402,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
 
                         }}
                         {...field}
-                        context={props.props.props.context as any}
+                        context={spContext}
                         personSelectionLimit={4}
                         // required={true}
                         showHiddenInUI={false}
