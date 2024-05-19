@@ -120,6 +120,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
 
 
     const handleClick = (event: any, id: any) => {
+
         const selectedIndex = selected.indexOf(id);
         let newSelected: any[] = [];
 
@@ -166,22 +167,22 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const filteredRows = searchQuery
-    ? isPersona?rows: rows.filter((row: any) =>
-        Object.values(row).some(
-            (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+        ? isPersona ? rows : rows.filter((row: any) =>
+            Object.values(row).some(
+                (value) => typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
+            )
         )
-    )
-    : sortedRows;
+        : sortedRows;
 
     console.log(filteredRows, "filteredRows.....")
-const getWidth = (id: any) => {
-    return (
-        tableDataWidth.map(
-            (item: any) => (item.hasOwnProperty(id)
-                ? item[id].width
-                : "auto"))
-    );
-};
+    const getWidth = (id: any) => {
+        return (
+            tableDataWidth.map(
+                (item: any) => (item.hasOwnProperty(id)
+                    ? item[id].width
+                    : "auto"))
+        );
+    };
 
 
     // // 15/5/ code hidden
@@ -256,6 +257,7 @@ const getWidth = (id: any) => {
                                                     <TableRow
                                                         hover
                                                         onClick={(event) => handleClick(event, row.Id)}
+                                                        // checkboxSelection disableRowSelectionOnClick
                                                         role="checkbox"
                                                         aria-checked={isItemSelected}
                                                         tabIndex={-1}
@@ -304,7 +306,7 @@ const getWidth = (id: any) => {
                                                             ))
                                                         }
 
-                                                        
+
                                                         {/* 
                                                         //working code end */}
 

@@ -137,9 +137,9 @@ const ClientService = () => {
     //     }
     // };
 
-    const getClientExpand = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
+    const getClientExpand = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
             console.log(results, 'client result,,,')
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {

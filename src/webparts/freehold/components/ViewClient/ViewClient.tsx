@@ -454,7 +454,9 @@ const ViewClient = (props: any) => {
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = "";
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+      const orderBy = 'Modified';
+      console.log(orderBy,"orderByorderByorderBy....")
+      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
       console.log(results, 'client')
       setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
@@ -473,10 +475,12 @@ const ViewClient = (props: any) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
+      // const orderBy = 'Modified';
       const filter = `Id eq '${id}'`;
-      const filtered = "";
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
-      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
+      const orderBy = "Modified"; 
+      // const filtered = "";
+      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter, orderBy);
+      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand,  "", orderBy);
       setAllClientData(filteredResults?.tableData);
 
       // setClientData(results?.updatedResults[0].TableData);
@@ -839,10 +843,12 @@ const ViewClient = (props: any) => {
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}
+           
             actions={actions}
             isLoading={isLoading}
             AllClientData={AllClientData}
             tableDataWidth={tableDataWidth}
+            
           />
         </Box>
 

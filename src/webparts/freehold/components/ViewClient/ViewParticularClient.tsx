@@ -128,71 +128,6 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
 
     };
 
-    //console.log(clientDetails, "clientdetails");
-    // const handleSearchChange = (event: any) => {
-    //     setSearchQuery(event.target.value);
-    // };
-
-
-
-    // //console.log(clientDetails, editData, "clientDetails");
-
-
-    // update code start
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     try {
-    //         const apiResponse = ClientService();
-
-    //         const updatedData = {
-    //             Title: editData.title,
-    //             ClientEmail: editData.email,
-    //             ClientContact: editData.contact,
-    //         };
-
-    //         const response = await apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-    //         //console.log(response, updatedData, 'responseresponseresponse');
-    //         // handleCancel();
-    //         // //console.log("Update response:", response);
-    //         reset();
-    //         navigateToClient();
-    //     } catch (error) {
-    //         console.error('Error updating client details:', error);
-    //         // setIsError(true);
-    //     }
-    // });
-
-
-    // working code
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     setLoading(true);
-    //     const apiResponse = ClientService();
-
-    //     const updatedData = {
-    //         Title: editData.title,
-    //         ClientEmail: editData.email,
-    //         ClientContact: editData.contact,
-    //         // AssignedStaff: editData.assignedStaff
-    //     };
-
-
-    //     apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
-    //         .then(() => {
-    //             reset();
-    //             // navigateToClient();
-    //             setLoading(false);
-    //             toast.success('Client Updated Successfully!');
-    //             fetchData();
-    //             initialFetchData();
-    //             setIsEdit(false);
-    //         })
-    //         .catch((error) => {
-    //             setLoading(false);
-    //             console.error('Error updating client details:', error);
-    //             toast.error('Failed to update client details. Please try again.');
-    //         });
-    // });
 
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
@@ -516,29 +451,6 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                         )}
 
                                     </TableRow>
-                                    {/* <TableRow>
-                                        <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                        {isEdit && <TableCell
-                                            onClick={() => { setHandleStaffDialog(true); }}
-                                        >
-                                            <ul>
-                                                {clientDetails?.assignedStaff?.map((staff: any) => (
-                                                    <li key={staff}>{staff?.Name}</li>
-                                                ))}
-                                            </ul>
-                                        </TableCell>}
-                                        {!isEdit && <TableCell
-                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            onClick={() => { setHandleStaffDialog(true); }}
-                                        >
-                                            <ul>
-                                                {clientDetails?.assignedStaff?.map((staff: any) => (
-                                                    <li key={staff}>{staff?.Name}</li>
-                                                ))}
-                                            </ul>
-
-                                        </TableCell>}
-                                    </TableRow> */}
 
                                     {false && <TableRow>
                                         <TableCell component="th" scope="row">View Document</TableCell>
@@ -557,22 +469,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                                     </TableRow>}
 
                                     <TableRow>
-                                        {/* <TableCell component="th" scope="row">Assigned Staff</TableCell>
-                                        {isEdit && <TableCell className="default-cursor">
-                                            <ul
-                                                onClick={() => { setHandleStaffDialog(true); }}
-                                                className="default-cursor" style={{
-                                                    textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                    listStyleType: "none", padding: 0
-                                                }}>
-                                                {clientDetails?.assignedStaff?.map((staff: any, index: number) => (
-                                                    <li className="default-cursor" style={{ textDecoration: "none" }}
-                                                        key={index}>
-                                                        <span>{staff.Name}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </TableCell>} */}
+                                     
                                         <TableCell component="th" scope="row">
                                             Assigned Staff
                                         </TableCell>
