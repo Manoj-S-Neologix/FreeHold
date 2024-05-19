@@ -28,6 +28,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
 import toast from "react-hot-toast";
 import _ from 'lodash';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 //import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -57,7 +58,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewProject = ({ onClose, props }: any) => {
+const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   //console.log(props, "propspropsprops");
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -344,7 +345,7 @@ const ViewProject = ({ onClose, props }: any) => {
 
   const handleCancel = () => {
     console.log("Cancel button clicked");
-    onClose();
+    //onClose();
   };
 
   const hyperLink = (data: any, names: any[], item: any) => {
@@ -568,7 +569,7 @@ const ViewProject = ({ onClose, props }: any) => {
                           },
                         }}
                         {...field}
-                        context={props.props.props.context as any}
+                        context={props.spContext}
                         personSelectionLimit={4}
                         required={true}
                         showHiddenInUI={false}
@@ -722,13 +723,6 @@ const ViewProject = ({ onClose, props }: any) => {
 
           <Box >
             <GridTable
-              // rows={rows}
-              // headCells={headCells}
-              // props={props}
-              // actions={actions}
-              // searchQuery={searchQuery}
-              // setSelected={setSelected}
-              // selected={selected} />
               rows={tableData}
               headCells={headCells}
               props={props}
@@ -757,7 +751,7 @@ const ViewProject = ({ onClose, props }: any) => {
 
       {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
 
-      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} spContext={props.spContext} siteUrl={props.siteUrl} />}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
         <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}

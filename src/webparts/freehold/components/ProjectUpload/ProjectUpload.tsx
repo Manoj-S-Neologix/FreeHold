@@ -32,35 +32,22 @@ import ClientService from "../../Services/Business/ClientService";
 import CheckIcon from "@mui/icons-material/Check";
 import formatDate from "../../hooks/dateFormat";
 
-
-// interface UploadDocumentProps {
-//   open: boolean;
-//   onClose: () => void;
-//   particularClientAllData: any;
-// }
-
-const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props }) => {
+const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  // const [deleteId, setDeleteId] = useState<number>(0);
   const [files, setFiles] = useState<File[]>([]);
   const [fileData, setFileData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  // const { handleSubmit } = useForm();
   const [uploadFiles, setUploadFiles] = useState<any[]>([]);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
-  ////
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
   const [getClient, setGetClient] = useState<any[]>([]);
   const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
   const [deleteId, setDeleteId] = useState<number>(0);
 
-
   console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { control, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
-  // const watchClientName = watch('clientName')
-  // const watchUnitDocument = watch('unitDocument')
 
   const handleFileInput = (selectedFiles: File[]) => {
     console.log(selectedFiles, "selectedFiles");
@@ -72,10 +59,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     // fetchData();
   };
 
-  // const handleSave = () => {
-  //   onClose();
-  // };
-
   const handleCancel = () => {
     onClose();
   };
@@ -84,29 +67,10 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   console.log(setFileData, "setFileData");
 
-
-
   const clientService = ClientService();
   const clientListName = "Client_Informations";
   const selectQuery = "Id,Title,ClientLibraryGUID";
 
-
-  // const apiCall = (async () => {
-  //   await clientService.getClientExpandApi(clientListName, selectQuery, "", "")
-  //     .then((data: any) => {
-  //       if (data) {
-  //         const mappedData = data.map((item: any) => ({
-  //           id: item.Id,
-  //           name: item.Title,
-  //           libraryGUID: item.ClientLibraryGUID
-  //         }));
-  //         setGetClientDetails(mappedData);
-  //       }
-
-  //     }).catch((error: any) => {
-  //       toast.error(error.message);
-  //     });
-  // });
   const apiCall = async () => {
     try {
       const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
@@ -125,9 +89,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       toast.error(error.message);
     }
   };
-
-
-
 
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -161,13 +122,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     }
   };
 
-
-
   React.useEffect(() => {
     apiCall();
   }, []);
-
-
 
   const fetchData = async (getGuid: any) => {
 
@@ -176,7 +133,24 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     try {
       const results = await projectService.getDocumentsFromFolder(folderGUID);
       console.log(results, "File Datas");
+      console.log("File response : ", results);
       setFileData(results);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching documents:", error);
+    }
+  };
+
+  const getDocumentsLibPath = async (type: string) => {
+
+    let projectRelativePath = (type === "client") ? `${getProjectCode}/${getValues("clientName")}` : `${getProjectCode}/${getValues("clientName")}/${getValues("unitDocument")}`;
+
+    try {
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `/${projectRelativePath}`, getProjectCode);
+      console.log(results, "File Datas");
+      setFileData(results);
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -198,22 +172,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       });
   };
 
-
-  const mappedFiles = fileData.map((file: any) => ({
-    id: file.Id,
-    fileName: file.FileLeafRef,
-    url: file.FileRef,
-    fileType: file.File_x0020_Type,
-    created: file.Created,
-    editorName: file.Editor.Title,
-    editorId: file.Editor.Id,
-    dmstags: file.DMS_x0020_Tags
-  }));
-
-  console.log(mappedFiles);
-
-
-
   const fileInfoArray = uploadFiles?.map((file: any) => ({
     lastModified: file.lastModified,
     lastModifiedDate: file.lastModifiedDate,
@@ -229,134 +187,15 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   console.log(particularClientAllData, 'getProjectName..');
 
-  // const handleSave = handleSubmit(async (data: any) => {
-  //   setLoading(true);
-  //   const apiResponse = ProjectService();
-  //   const collectionOfDocuments: any = [];
-  //   getClientDocumentsData.map((data: any) => {
-  //     collectionOfDocuments.push({
-  //       Id: data.Id,
-  //       GUID: data.GUID,
-  //       FileLeafRef: data.FileLeafRef,
-  //       FileRef: data.FileRef
-  //     });
-  //   });
-  //   console.log(collectionOfDocuments, 'collection..');
-  //   const updatedData = {
-  //     clientName: getClientDetails.filter((item: any) => item.libraryGUID === data.clientName)[0].name,
-  //     libraryGUID: data.clientName,
-  //     collectionOfDocuments: collectionOfDocuments,
-  //     // projectName: particularClientAllData[0]?.projectName,
-  //     projectNumber: particularClientAllData[0]?.projectNumber
-  //   };
-
-  //   console.log(updatedData, getProjectName, "updatedData");
-  //   const response = await ProjectService().createLibrary(getProjectName, "Project Document Library");
-  //   console.log(response, "responseresponse");
-  //   //create a folder in a library
-  //   const rootUrl = response[0].ParentWebUrl + "/" + updatedData.projectNumber;
-  //   const createFolder = await ProjectService().createFolder(rootUrl, updatedData.clientName);
-
-  //   console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-  //   // once folder is created, upload files
-  //   // const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID, updatedData.collectionOfDocuments);
-
-  //   const uploadDocument = await ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.libraryGUID);
-  //   console.log(uploadDocument, "uploadDocumentuploadDocument");
-  //   // console.log(updatedData, "handleSave");
-
-  //   console.log(particularClientAllData[0].name, "name");
-  //   console.log(fileInfoArray, 'fileinfo');
-
-  //   apiResponse.addDocumentsToFolder(particularClientAllData[0].name, fileInfoArray[0].name)
-  //     .then(() => {
-  //       setLoading(false);
-  //       // handleCancel();
-  //       setFiles([]);
-  //       setUploadFiles([]);
-  //       false && toast.success('Documents Added Successfully!');
-  //       false && fetchData("test");
-
-
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       console.error("Failed to add client and document:", error);
-  //       toast.error(`Failed to add client and document: ${error}`);
-  //     });
-
-  // });
-
-  // const handleSave = handleSubmit(async (data: any) => {
-  //   setLoading(true);
-  //   const apiResponse = ProjectService();
-  //   apiResponse.addDocumentsToFolder(getClientDetails[0].name, fileInfoArray[0]?.name)
-  //     .then(() => {
-  //       setLoading(false);
-  //       // handleCancel();
-  //       setFiles([]);
-  //       setUploadFiles([]);
-  //       false && toast.success('Documents Added Successfully!');
-
-  //       false && fetchData("test");
-
-
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       console.error("Failed to add client and document:", error);
-  //       toast.error(`Failed to add client and document: ${error}`);
-  //     });
-
-  // });
-
   React.useEffect(() => {
     if (uploadFiles && uploadFiles.length > 0) {
       fetchProjectData();
     }
   }, [uploadFiles]);
 
-
   const onDelete = (index: number) => {
     setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
   };
-
-  // const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
-  //   setLoading(true);
-
-  //   try {
-  //     const apiResponse = ProjectService();
-  //     console.log(data, 'projectdata..')
-  //     // Determine the selected client based on the submitted form data
-  //     // const selectedClientName = client.name;
-  //     // const selectedClient = client.find((c:any) => c.Name === selectedClientName);
-  //     // console.log(getLibraryName, 'getLibraryName.')
-  //     // Construct the folder URL for the selected client
-  //     const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
-  //     if (data.unitDocument !== '') {
-
-  //       const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-  //       await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-  //     }
-  //     else {
-  //       // Upload documents to the specified client's folder
-  //       await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-  //     }
-  //     // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-
-  //     setLoading(false);
-  //     setFiles([]);
-  //     setUploadFiles([]);
-  //     toast.success('Documents Added Successfully!');
-  //     // fetchData("test");
-  //     handleCancel(); // Close the dialog if needed
-
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error("Failed to add client and document:", error);
-  //     toast.error(`Failed to add client and document: ${error}`);
-  //   }
-  // });
 
   //project upload with meta data
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
@@ -372,7 +211,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       const apiResponse = ProjectService();
       console.log(data, 'projectdata..')
       const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
-      if (data.unitDocument !== '') {
+      if (data.unitDocument !== '' && isUnitDocumentChecked) {
 
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
         console.log(folderUrl, 'projectfolderurl..')
@@ -386,9 +225,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
       }
 
-
       // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-
       setLoading(false);
       setFiles([]);
       setUploadFiles([]);
@@ -404,13 +241,23 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   });
 
   const handleDelete = (getGuid: any) => {
+
     const apiResponse = ProjectService();
-    apiResponse.deleteFile(getGuid, deleteId)
+    apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
       .then(() => {
         setIsDeleteDialogOpen(false);
         console.log("File deleted successfully!");
         toast.success('File deleted successfully!');
-        fetchData(getGuid);
+        //fetchData(particularClientAllData[0].GUID);
+
+        if (isUnitDocumentChecked) {
+          getDocumentsLibPath("unit");
+        } else {
+          const getLibraryName = getClientDetails.filter((item: any) => item.name === getValues("clientName"))[0].libraryGUID;
+
+          //Get documents for client selection
+          fetchData(getLibraryName);
+        }
       })
       .catch(error => {
         console.error("Failed to delete document:", error);
@@ -418,30 +265,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       });
   };
 
-
-
-
   return (
     <Box sx={{ width: '100', padding: '20px' }}>
       <Stack direction="column" spacing={2}>
         <Dialog open={open} onClose={onClose}>
-          {/* <DialogTitle>
-            View/Upload Documents
-            <IconButton
-              aria-label="close"
-              onClick={onClose}
-              sx={{
-                position: 'absolute',
-                right: '14px',
-                top: '8px',
-                color: (theme: any) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle> */}
-          <DialogTitle >
 
+          <DialogTitle>
             <div className="d-flex flex-column">
               <div className="d-flex justify-content-between
                         align-items-center relative">
@@ -469,8 +298,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
           <DialogContent>
             <Stack direction="column" spacing={2}>
               {/* <form onSubmit={handleSubmit}> */}
+
+              {/* Document selection section */}
               <Stack direction="column" gap={3}>
                 <Grid container spacing={2}>
+                  {/* Client grid */}
                   <Grid item sm={6}>
                     <Controller
                       name="clientName"
@@ -494,13 +326,19 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             onChange={(e: any) => {
                               console.log(e.target.value);
                               setGetClient(e.target.value);
+                              console.log("particularClientAllData: ", particularClientAllData);
                               const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
 
                               console.log(getLibraryName, "getLibraryName");
-                              getDocumentsFromFolder(getLibraryName);
                               setValue('clientName', e.target.value);
                               setGetGuid(e.target.value);
-                              fetchData(getLibraryName);
+
+                              //Populate Unit documents folder
+                              getDocumentsFromFolder(getLibraryName);
+
+                              //Get documents for client selection
+                              //fetchData(getLibraryName);
+                              getDocumentsLibPath("client");
                             }}
                           >
                             {getClientDetails?.map((item: any) => (
@@ -514,7 +352,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     />
                   </Grid>
 
-
+                  {/* Unit document grid */}
                   <Grid item sm={6}>
                     <Stack direction="row" alignItems="center">
                       <Checkbox
@@ -539,21 +377,22 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           variant="outlined"
                           placeholder="Select Unit..."
                           size="small"
-                          // onChange={(e: any) => {
-                          //   console.log(e.target.value);
-                          //   const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
+                          onChange={(e: any) => {
+                            console.log(e.target.value);
+                            setValue('unitDocument', e.target.value);
 
-                          //   const libraryPath = `${getLibraryName}/${e.target.value}`;
-                          //   setValue('unitDocument', e.target.value);
+                            getDocumentsLibPath("unit");
 
+                            /* const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
 
-                          //   fetchData(libraryPath)
-                          // }}
+                            const libraryPath = `${getLibraryName}/${e.target.value}`;
+
+                            fetchData(libraryPath) */
+                            //Get documents for client selection
+                            //fetchData(getLibraryName);
+                          }}
                           required
                         >
-                          {/* <MenuItem value="">None</MenuItem>
-                          <MenuItem value="Option A">Option A</MenuItem>
-                          <MenuItem value="Option B">Option B</MenuItem> */}
                           {getFoldersResponse.length > 0 &&
                             getFoldersResponse.map((item: any, idx: any) => (
                               <MenuItem key={idx} value={item?.Name}>
@@ -564,7 +403,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       )}
                     />
                   </Grid>
+
                   {console.log(getClientDocumentsData, getClientDocumentsAllData, getFoldersResponse, 'getClientDocuments..')}
+
                   {false && getClientDocumentsData.length > 0 && (
                     <Grid item xs={12}>
                       <Controller
@@ -632,21 +473,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
                 </Grid>
               </Stack>
-              {/* <DialogActions>
-                  <Button onClick={handleCancel} variant="outlined">
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="contained" color="primary">
-                    Save
-                  </Button>
-                </DialogActions> */}
-              {/* </form> */}
+
+              {/* Dropzone */}
               <Box>
-                {/* <DragAndDropUpload
-                  onFilesAdded={(files: File[]) => {
-                    //console.log(files);
-                  }}
-                /> */}
 
                 <DropZone
                   onFilesAdded={handleFileInput}
@@ -654,143 +483,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   setFiles={setUploadFiles}
                 />
               </Box>
-              {/*old code for project upload */}
-              {/* {uploadFiles.length > 0 && <DialogActions sx={{ px: 0, mr: 0 }}>
-                <Stack
-                  direction="row"
-                  justifyContent="end"
-                  alignItems="center"
-                  spacing={3}
-                >
-                  <Button variant="contained"
-                    sx={{ width: loading ? '150px' : 'auto' }}
-                    onClick={handleSave} disabled={loading} type="submit">
-                    {loading ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      "Save"
-                    )}
-                  </Button>
-                  {!loading && <Button variant="outlined" onClick={() => { setUploadFiles([]) }}  >Cancel</Button>}
-                </Stack>
 
-              </DialogActions>} */}
-
-              {/*single checklist dropdown for project */}
-              {/* {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
-                <>
-                  <div>
-                    <Controller
-                      name="projectChecklist"
-                      control={control}
-                      defaultValue=""
-                      rules={{ required: 'Project Checklist is required' }}
-                      render={({ field }) => (
-                        <>
-                          <InputLabel htmlFor="project-checklist">Project Checklist</InputLabel>
-                          <TextField
-                            {...field}
-                            id="project-checklist"
-                            fullWidth
-                            variant="outlined"
-                            select
-                            size="small"
-                            required
-                            error={!!errors.projectChecklist}
-                            helperText={errors?.projectChecklist?.message}
-                            onChange={(e: any) => {
-                              console.log('Selected:', e.target.value);
-                              setValue('projectChecklist', e.target.value);
-                            }}
-                          >
-                            {dropdownOptions?.map((option: any, index: any) => (
-                              <MenuItem key={index} value={option.Title}>
-                                {option.Title}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </>
-                      )}
-                    />
-
-                  </div>
-                  <DialogActions sx={{ px: 0, mr: 0 }}>
-                    <Stack
-                      direction="row"
-                      justifyContent="end"
-                      alignItems="center"
-                      spacing={3}
-                    >
-                      <Button
-                        variant="contained"
-                        sx={{ width: loading ? '150px' : 'auto' }}
-                        onClick={handleSave}
-                        disabled={loading}
-                        type="submit"
-                      >
-                        {loading ? (
-                          <CircularProgress size={20} color="inherit" />
-                        ) : (
-                          "Save"
-                        )}
-                      </Button>
-                      {!loading && <Button variant="outlined" onClick={handleCancel}>Cancel</Button>}
-                    </Stack>
-                  </DialogActions>
-                </>
-              )} */}
-
-              {/*multiple checklist dropdown */}
+              {/*Dropzone selected document display */}
               {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
                 <>
-                  {/* {uploadFiles.map((uploadedFile, index) => (
-                    <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
-                    >
-                      <Controller
-                        name={`projectChecklist-${index}`}
-                        control={control}
-                        defaultValue=""
-                        rules={{ required: 'Project Checklist is required' }}
-                        render={({ field }) => (
-                          <>
-                            <div >
 
-                              <InputLabel htmlFor={`project-checklist-${index}`}>Project Checklist</InputLabel>
-                            </div>
-                            <TextField
-                              {...field}
-                              id={`project-checklist-${index}`}
-                              fullWidth
-                              style={{ maxWidth: '200px' }}
-                              variant="outlined"
-                              select
-                              size="small"
-                              required
-                              error={!!errors[`projectChecklist-${index}`]}
-                              helperText={errors[`projectChecklist-${index}`]?.message}
-                              onChange={(e: any) => {
-                                field.onChange(e);
-                                const newValue = e.target.value;
-                                setValue('projectChecklist', e.target.value);
-                                console.log(newValue, 'e.target')
-                                setUploadFiles(prevFiles => {
-                                  const updatedFiles = [...prevFiles];
-                                  updatedFiles[index].checklist = newValue;
-                                  return updatedFiles;
-                                });
-                              }}
-                            >
-                              {dropdownOptions?.map((option: any, index: any) => (
-                                <MenuItem key={index} value={option.Title}>
-                                  {option.Title}
-                                </MenuItem>
-                              ))}
-                            </TextField>
-                          </>
-                        )}
-                      />
-                    </div>
-                  ))} */}
                   <TableContainer>
                     <Table>
                       <TableHead>
@@ -853,8 +550,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     </Table>
                   </TableContainer>
 
-
-
                   <DialogActions sx={{ px: 0, mr: 0 }}>
                     <Stack
                       direction="row"
@@ -881,6 +576,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                 </>
               )}
 
+              {/* Document display */}
               {
                 < TableContainer >
                   <Table>
@@ -895,8 +591,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     </TableHead>
                     <TableBody>
                       {!isLoading && getClientDocumentsData.length > 0 &&
-                        mappedFiles.length > 0 ? mappedFiles.map((file: any) => (
-                          <TableRow key={file.fileName}>
+                        fileData.length > 0 ? fileData.map((file: any) => (
+                          <TableRow key={file.FileLeafRef}>
                             <TableCell>
                               <Box sx={{
                                 cursor: 'pointer',
@@ -904,18 +600,18 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                 color: 'primary'
                               }}
                                 onClick={() => {
-                                  window.open(file.url, '_blank');
+                                  window.open(file.FileRef, '_blank');
                                 }}   >
-                                {file.fileName}
+                                {file.FileLeafRef}
 
                               </Box>
                             </TableCell>
-                            <TableCell>{file.dmstags}</TableCell>
-                            <TableCell>{formatDate(file.created)}</TableCell>
-                            <TableCell>{file.editorName}</TableCell>
+                            <TableCell>{file.DMS_x0020_Tags}</TableCell>
+                            <TableCell>{formatDate(file.Created)}</TableCell>
+                            <TableCell>{file.Editor.Title}</TableCell>
                             <TableCell>
                               <IconButton onClick={() => {
-                                setIsDeleteDialogOpen(true); setDeleteId(file.id);
+                                setIsDeleteDialogOpen(true); setDeleteId(file.Id);
                               }}>
                                 <DeleteIcon color="error" />
                               </IconButton>
@@ -943,14 +639,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
             </Stack>
           </DialogContent>
-          {/* <DialogActions>
-            <Button onClick={handleSave} variant="contained" color="primary">
-              Save
-            </Button>
-            <Button onClick={handleCancel} variant="outlined">
-              Cancel
-            </Button>
-          </DialogActions> */}
+
           {isDeleteDialogOpen && (
             <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
               <DialogTitle className={styles.addTitle}
@@ -989,20 +678,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                 </div>
               </DialogContent>
               <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-                {/* <Button
-                                onClick={handleDelete}
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    maxWidth: '150px',
-                                    float: 'right',
-                                }}
-                            >
-                                Delete
-                            </Button>
-                            <Button variant="outlined" onClick={handleCancel}>
-                                Cancel
-                            </Button> */}
+
                 <Stack
                   direction="row"
                   justifyContent="end"
@@ -1028,6 +704,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       </Stack>
     </Box >
   );
+  
 };
 
 export default ViewUpload;

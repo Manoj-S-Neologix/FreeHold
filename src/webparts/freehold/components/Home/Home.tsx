@@ -51,11 +51,11 @@ const Home = (props: IFreeholdProps) => {
                         />
                         <Route
                             path='/ViewProjects'
-                            element={<ViewProjects props={props} />}
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
                         />
                         <Route
                             path='/ChecklistValidation'
-                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl}  />}
+                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} />}
                         />
                         <Route
                             path='/ChecklistConfiguration'

@@ -19,6 +19,7 @@ export type SPServiceType = {
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
     deleteLibrary: (librayName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
+    getDocumentsFromUrl: (spContext: WebPartContext, libName: string, folderPath: string, baseURL: string) => Promise<any>;
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
@@ -30,8 +31,6 @@ export type SPServiceType = {
     getListCounts: (listName: string) => Promise<number>;
     deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
     getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
-    // updateDocumentMetadata:(libraryName: string, folderName: string) => Promise<any>;
-    // addDocumentsToFolder: (libraryName: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
@@ -53,7 +52,6 @@ const SPService: SPServiceType = {
         const response = await web.lists.getByTitle(listTitle).items();
         return response;
     },
-
 
     createLibrary: async (libraryName: string, libraryDescription?: string): Promise<any> => {
         try {
@@ -81,7 +79,6 @@ const SPService: SPServiceType = {
         }
     },
 
-
     createFolder: async (relativePath: string, folderName: string): Promise<any> => {
         try {
             const folder = await web.getFolderByServerRelativePath(relativePath).folders.add(folderName);
@@ -94,21 +91,11 @@ const SPService: SPServiceType = {
     },
 
     deleteFolder: async (libraryName: string): Promise<any> => {
-        // const deletefolder = await web.lists 
-        // .getByTitle(folderServerRelativeUrl).recycle();
         const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
         return deletefolder;
     },
 
-    //   deleteAssignedStaff :async (ServerRelativeUrl:string): Promise<any> => {
-    //     const deleteAssignedStaff = await web
-
-
     deleteAssignedClient: async (listName: string, itemId: number): Promise<any> => {
-        // const deletefolder = await web.lists 
-        // .getByTitle(folderServerRelativeUrl).recycle();
-        // const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
-        // .getById(itemId).recycle();
         const deleteAssignedClient = await web.lists
             .getByTitle(listName).items.getById(itemId).recycle();
         return deleteAssignedClient;
@@ -255,6 +242,25 @@ const SPService: SPServiceType = {
         ).expand("File", "Editor").getAll();
         //console.log('Retrieved files:', files);
         return files;
+    },
+
+    getDocumentsFromUrl: async (spContext: WebPartContext, libName: string, folderPath: string, baseURL: string): Promise<any> => {
+
+        const options: ISPHttpClientOptions = {
+            body: JSON.stringify({
+                "query": {
+                    "ViewXml": `<View><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`,
+                    "FolderServerRelativeUrl": `${baseURL}${folderPath}`
+                }
+            })
+        };
+
+        return spContext.spHttpClient.post(baseURL + "/_api/Web/Lists/GetByTitle('" + libName + "')/GetItems?$select=*,FileSystemObjectType,FileDirRef,FieldValuesAsText/FileRef,FieldValuesAsText/Author,FieldValuesAsText/FileLeafRef,DMS_x0020_Tags&$expand=FieldValuesAsText", SPHttpClient.configurations.v1, options)
+            .then((response: SPHttpClientResponse) => {
+                return response.json();
+            }).catch((err: any) => {
+                console.log(err);
+            });
     },
 
     deleteFile: async (libraryGuid: string, fileId: number): Promise<any> => {

@@ -69,19 +69,6 @@ const commonStyles = {
   height: '8rem',
 }
 
-/* const empList = [
-  { project: "Local Link", client: 'Austin Tammy', unit: "Unit1", checklistname: "Checklist1", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
-  { project: "Social Circle", client: 'Cames Scott', unit: "Unit2", checklistname: "Checklist2", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-  { project: "Commerce Companion", client: 'Davis Jan', unit: "Unit3", checklistname: "Checklist3", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
-  { project: "Visionary Ventures", client: 'Edwards Jonh', unit: "Unit4", checklistname: "Checklist4", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-  { project: "Breakthrough Solutions", client: 'Steph Fedro', unit: "Unit5", checklistname: "Checklist5", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
-  { project: "Growth Guide", client: 'John Smith', unit: "Unit6", checklistname: "Checklist6", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-  { project: "Progress Planner", client: 'Brian Smith', unit: "Unit7", checklistname: "Checklist7", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
-  { project: "Collaborative Conversations", client: 'Catherine Young', unit: "Unit8", checklistname: "Checklist8", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-  { project: "Community Guard", client: 'Dana Trist', unit: "Unit9", checklistname: "Checklist9", progress: <CheckCircleOutlineIcon style={{ color: 'green' }} /> },
-  { project: "Picture Perfect", client: 'Melanie Jones', unit: "Unit10", checklistname: "Checklist10", progress: <HighlightOffIcon style={{ color: 'red' }} /> },
-] */
-
 const tableIcons: Icons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -148,7 +135,6 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
             clientName = getValues("clientName");
             projectRelativePath += "/" + getValues("clientName");
           }
-
 
           if (getValues("unitDocument") !== "" && getValues("unitDocument") !== undefined && getValues("unitDocument") !== null) {
             unitFolder = getValues("unitDocument");
@@ -470,6 +456,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                       reset();
                       setunitData([]);
                       setParticularClientAllData([]);
+                      setData([]);
                     }}>Clear</Button>
                 </FormControl>
               </div>

@@ -22,15 +22,41 @@ const ProjectService = () => {
                 spContext, baseURL, serverRelativeUrl, camlQry, libname);
             console.log(results, "results");
 
-            let docList: any[] = [];
+            const docList: any[] = [];
 
             _.forEach(results.value, function (value) {
                 docList.push({
-                    Title: value.FieldValuesAsText["FileLeafRef"],
+                    Title: value.FieldValuesAsText.FileLeafRef,
                     FileDirRef: value.FileDirRef,
                     FileSystemObjectType: value.FileSystemObjectType,
                     DMSTag: value.DMS_x0020_Tags
                 });
+            });
+            return docList;
+        }
+    };
+
+    const getFolderItems = async (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, libname: string) => {
+        if (spServiceInstance) {
+            const results: any = await spServiceInstance.getDocumentsFromUrl(
+                spContext, libname, serverRelativeUrl, baseURL);
+            console.log(results, "results");
+
+            const docList: any[] = [];
+
+            _.forEach(results.value, function (value) {
+
+                if (value.FileSystemObjectType === 0) {
+                    docList.push({
+                        Id: value.Id,
+                        Created: value.Created,
+                        FileLeafRef: value.FieldValuesAsText.FileLeafRef,
+                        FileRef: value.FieldValuesAsText.FileRef,
+                        FileDirRef: value.FileDirRef,
+                        Editor: { Title: value.FieldValuesAsText.Author },
+                        DMS_x0020_Tags: value.DMS_x0020_Tags
+                    });
+                }
             });
             return docList;
         }
@@ -49,7 +75,6 @@ const ProjectService = () => {
             return results.data;
         }
     };
-
 
     const getProjectExpand = async (ListName: string, select: string, expand: string, order: any) => {
         if (spServiceInstance) {
@@ -191,7 +216,6 @@ const ProjectService = () => {
         }
     }
 
-
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
             const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
@@ -315,7 +339,8 @@ const ProjectService = () => {
         updateProjectDocumentMetadata,
         deleteFolder,
         deleteAssignedClient,
-        getFolderItemsRecursive
+        getFolderItemsRecursive,
+        getFolderItems
         // addDocumentsToFolder
     };
 };
