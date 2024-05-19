@@ -217,7 +217,7 @@ const SPService: SPServiceType = {
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
         if (orderBy) {
-            const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter).orderBy(orderBy, false)();
+            const response = await web.lists.getByTitle(listTitle).items.select(select).expand(expand).filter(filter).orderBy(orderBy, true)();
             return response;
         }
         else {
