@@ -189,7 +189,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import CheckIcon from "@mui/icons-material/Check";
 import { Controller, useForm } from "react-hook-form";
 
-const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, fetchData }: any) => {
+const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons,existingPersons, fetchData }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
@@ -219,18 +219,23 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
         'Kelly Snyder',
     ];
 
-    console.log(particularClientAllData, particularClientAllData[0].assignClientId, "particularClientAllData.assignClientId")
+    console.log(particularClientAllData, "particularClientAllData.assignClientId")
 
 
     const apiCall = async () => {
         try {
             const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
             if (data) {
-                const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
+                const clientData = particularClientAllData[0];
+            let assignClientIds :any[] = [];
+
+            if (clientData && clientData.assignClientId) {
+                assignClientIds = clientData.assignClientId.split(',').map((id:any) => Number(id.trim()));
+            }
                 const filteredData = data.filter(item => !assignClientIds.includes(item.Id));
                 console.log(filteredData, assignClientIds, "filteredData");
                 const mappedData = filteredData.map(item => ({
-                    id: item.Id,
+                    id: item.ID,
                     name: item.Title,
                     libraryGUID: item.ClientLibraryGUID
                 }));
@@ -323,36 +328,54 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const handleSave = handleSubmit((data) => {
         setLoading(true);
         false && falseFunc();
-
+    
         // Prepare updated data for saving
+        const selectedClient = getClientDetails.find((item: any) => item.libraryGUID === data.AssignClient);
+        if (!selectedClient) {
+            toast.error('Selected client not found');
+            setLoading(false);
+            return;
+        }
+    
         const updatedData = {
-            AssignClient: getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name,
+            AssignClient: selectedClient.name,
             libraryGUID: data.AssignClient,
             collectionOfDocuments: collectionOfDocuments,
             clientName: particularClientAllData[0]?.projectName
         };
-        const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
-
-
+    
+        // Handle assignClientIds
+        const clientData = particularClientAllData[0];
+        let assignClientIds = [];
+    
+        if (clientData && clientData.assignClientId) {
+            assignClientIds = clientData.assignClientId.split(',').map((id: any) => Number(id.trim()));
+        }
+    
         const updatedDataObj = {
             ProjectIdId: {
                 results: [getProjectId]
             }
         }
-
-        //console.log(updatedDataObj, 'updatedDataObj..')
-
+    
         // Obtain the ID and ListID for updating project information
-        const Id = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].id;
-        const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
-
-        // Log information for debugging
-        // console.log(Id, ListID, "AssignID");
-        // console.log(updatedData, getProjectName, "updatedData");
-
+        const Id = selectedClient.id;
+        const ListID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : existingPersons?.Id;
+    
+        // Debugging log
+        console.log("AssignID", Id);
+        console.log("ListID", ListID);
+        console.log("Updated Data", updatedData);
+        console.log("Updated Data Obj", updatedDataObj);
+    
+        if (!ListID) {
+            toast.error('ListID is not defined');
+            setLoading(false);
+            return;
+        }
+    
         // Create a library for the project and update project information
         Promise.all([
-            //ProjectService().createLibrary(getProjectName, "Project Document Library"),
             ProjectService().updateProject("Project_Informations", ListID, { AssignClientId: { results: [...assignClientIds, Id] } }),
             ClientService().updateClient('Client_Informations', Id, updatedDataObj)
         ])
@@ -363,12 +386,11 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             })
             .then((createFolder) => {
                 console.log(createFolder.data.ServerRelativeUrl, "createFoldercreateFolder");
-
+    
                 // Upload documents to the created folder
                 return ProjectService().copyDocuments(createFolder.data.ServerRelativeUrl, updatedData.collectionOfDocuments);
             })
             .then((uploadDocument) => {
-                //console.log(uploadDocument, "uploadDocumentuploadDocument");
                 toast.success('Client Added Successfully!');
                 // Fetch updated data and reset loading state
                 fetchData();
