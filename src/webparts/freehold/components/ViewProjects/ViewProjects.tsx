@@ -168,7 +168,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
 
   const headCells = [
-    // { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
+    { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
     { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Id' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },

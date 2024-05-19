@@ -308,12 +308,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.projectNumber}
-                                                            onChange={async (e: any) => {
-                                                                // const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
                                                                 const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("projectNumber");
+                                                                await trigger('projectNumber');
                                                                 setEditData({ ...editData, projectNumber: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.projectNumber}
                                                             helperText={errors.projectNumber && errors.projectNumber.message}
@@ -349,11 +352,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.title}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("title");
+                                                                await trigger('title');
                                                                 setEditData({ ...editData, title: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.title}
                                                             helperText={errors.title && errors.title.message}
@@ -389,11 +396,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.location}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
                                                                 await trigger("location");
-                                                                setEditData({ ...editData, location: value });
+                                                                setEditData({ ...editData, Location: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.location}
                                                             helperText={errors.location && errors.location.message}
@@ -429,11 +440,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.developer}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("developer");
+                                                                await trigger('developer');
                                                                 setEditData({ ...editData, developer: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.developer}
                                                             helperText={errors.developer && errors.developer.message}
@@ -449,11 +464,11 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         <TableCell component="th" scope="row">Assign Client</TableCell>
                                         {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            onClick={(id:any) => {
-                                                // setHandleClientDialog(true);
-                                                // setIsViewDialogOpen(true)
-                                                navigate("/ViewClient/" + id)
-                                            }}
+                                            // onClick={(id:any) => {
+                                            //     // setHandleClientDialog(true);
+                                            //     // setIsViewDialogOpen(true)
+                                            //     navigate("/ViewClient/" + id)
+                                            // }}
                                         >
                                             {projectDetails.assignClient ?
                                                 projectDetails.assignClient :
