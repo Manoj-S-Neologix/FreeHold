@@ -204,7 +204,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         setParticularClientAllData(getUnique);
         navigate('/ViewProject/' + data.Id);
 
-        
+
 
 
       },
@@ -414,9 +414,9 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   React.useEffect(() => {
     if (editProjectId || viewProjectId)
-    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
-    // setIsViewDialogOpen(false);
-    console.log('Project ID changed:', editProjectId, viewProjectId);
+      // console.log(editClientId, viewClientId, "editClientId, viewClientId");
+      // setIsViewDialogOpen(false);
+      console.log('Project ID changed:', editProjectId, viewProjectId);
   }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
@@ -448,6 +448,8 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
       //console.log(folderUrl, 'folderurl..') 
       toast.success('Assigned Client Deleted Successfully!');
       setIsDelete(false);
+      setDialogOpen(false);
+      fetchData();
 
     } catch (error) {
       setIsLoading(false);

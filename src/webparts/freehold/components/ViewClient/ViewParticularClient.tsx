@@ -390,6 +390,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                 {particularClientProjects?.length > 0 && (
                                                     particularClientProjects.map((data: any) => (
                                                         <div
+                                                            onClick={() => navigate(`/ViewProject/${data.Id}`)}
                                                             style={{
                                                                 textDecoration: "underline", color: "blue", cursor: "pointer",
                                                                 listStyleType: "none"
@@ -407,10 +408,12 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                 {particularClientProjects?.length > 0 && (
 
                                                     particularClientProjects.map((data: any) => (
-                                                        <div style={{
-                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                            listStyleType: "none"
-                                                        }}>
+                                                        <div
+                                                            onClick={() => navigate(`/ViewProject/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}>
                                                             <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
                                                         </div>
                                                     ))
@@ -527,7 +530,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                 exsistingPersons={selectedPersons}
                 props={props}
                 open={handleStaffDialog} onClose={closeAddStaffDialog}
-                fetchData={fetchData} spContext={props.spContext}/>}
+                fetchData={fetchData} spContext={props.spContext} />}
 
             {uploadDialogOpen && <UploadDocument
                 open={uploadDialogOpen}

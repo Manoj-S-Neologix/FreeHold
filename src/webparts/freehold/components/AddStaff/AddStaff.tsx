@@ -11,11 +11,11 @@ import { Box, Stack } from '@mui/material';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import ClientService from "../../Services/Business/ClientService";
 import toast from 'react-hot-toast';
+import _ from 'lodash';
 
 
 const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
-    selected, exsistingPersons, selectedDetails, fetchData, spContext: WebPartContext }: any) => {
-
+    selected, exsistingPersons, selectedDetails, fetchData, spContext: WebPartContext, AllClientData }: any) => {
 
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
@@ -27,14 +27,12 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         setSelectedPersons(assignedStaffEmails);
     }, [particularClientAllData]);
 
-
     console.log(exsistingPersons, particularClientAllData, "ADDStaff");
     //console.log(selectedPersons, selected, selectedDetails, particularClientAllData, "particularClientAllDataparticularClientAllData");
 
     const handleCancel = () => {
         onClose();
     };
-
 
     const handleSave = async () => {
         const dataObj = {
@@ -44,12 +42,33 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         };
         const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
 
+        console.log("AllClientData :", AllClientData);
+
         try {
             if (!selected || selected.length === 0) {
                 await ClientService().updateClient("Client_Informations", ID, dataObj);
             } else {
-                await Promise.all(selected.map((item: any) =>
+                await Promise.all(selected.map((item: any) => {
+
+                    let staffList:any[] = [];
+                    //staffList.push(selectedPersonsId);
+                    const filteredClient = _.filter(AllClientData, function (o) { return o.Id == item; });
+
+                    if(filteredClient[0].assignedStaff != undefined && filteredClient[0].assignedStaff.length > 0){
+                        _.forEach(filteredClient[0].assignedStaff, function (staff) {
+                            staffList.push(staff.Id);
+                        });
+                    }
+
+                    staffList = _.union(staffList, selectedPersonsId);
+
+                    const dataObj = {
+                        AssignedStaffId: {
+                            results: staffList
+                        }
+                    };
                     ClientService().updateClient("Client_Informations", item, dataObj)
+                }
                 ));
             }
             onClose();
@@ -63,9 +82,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
             toast.error(`Failed to update staff(s): ${error}`);
         }
     };
-
-
-  
 
     const handlePeoplePickerChange = async (items: any[]) => {
         //console.log(items, "itemsitemsitemsitems");
@@ -89,11 +105,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         }
         setSelectedPersonsId(selectedPersonsIds);
     };
-
-
-
-
-
 
     return (
         <Box sx={{ width: '100', padding: '20px' }}>
