@@ -403,7 +403,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                                 const end = input.selectionEnd;
                                                                 field.onChange(value);
                                                                 await trigger("location");
-                                                                setEditData({ ...editData, Location: value });
+                                                                setEditData({ ...editData, location: value });
                                                                 input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.location}
