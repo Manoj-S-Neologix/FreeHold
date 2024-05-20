@@ -78,10 +78,12 @@ const ClientService = () => {
 
 
     const getClient = async (ListName: string) => {
+        
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
         }
+
     };
 
 
@@ -232,14 +234,14 @@ const ClientService = () => {
 
             _.forEach(results, function (item) {
 
-                const assignedStaffDetails = item.AssignedStaff.map((staff: any) => {
+                const assignedStaffDetails = (item.AssignedStaff !== undefined) ? (item.AssignedStaff).map((staff: any) => {
                     const staffDetails = {
                         Id: staff.Id,
                         Name: staff.Title,
                         Email: staff.EMail
                     };
                     return staffDetails;
-                });
+                }) : [];
 
                 const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
                     return (

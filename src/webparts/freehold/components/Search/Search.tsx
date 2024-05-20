@@ -14,9 +14,11 @@ import styles from "./Search.module.scss";
 // import ClientProjectUpload from "../ClientUploadDocument/ClientProjectUpload";
 import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
 import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
+import ClientService from "../../Services/Business/ClientService";
+import ProjectService from "../../Services/Business/ProjectService";
 
-const clientOptions = ['Client1', 'Client2', 'Client3'];
-const projectOptions = ['Project1', 'Project2', 'Project3'];
+// const clientOptions = ['Client1', 'Client2', 'Client3'];
+// const projectOptions = ['Project1', 'Project2', 'Project3'];
 
 const IconStyles = (icon: any, theme: any) => {
     return (
@@ -26,18 +28,32 @@ const IconStyles = (icon: any, theme: any) => {
     );
 };
 
-const Search = (props: any) => {
+const Search: React.FC<any> = ({ onClose, props }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
-    const [clientValue, setClientValue] = React.useState<string>('');
-    const [projectValue, setProjectValue] = React.useState<string>('');
+    // const [clientValue, setClientValue] = React.useState<string>('');
+    // const [projectValue, setProjectValue] = React.useState<string>('');
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [clientData, setClientData] = React.useState<any>([]);
+    const [AllClientData, setAllClientData] = React.useState<any>([]);
+    const [getClient, setGetClient] = React.useState<any[]>([]);
+    const [particularClientAllData, setParticularClientAllData] = React.useState<any>([]);
+    const [projectData, setProjectData] = React.useState<any>([]);
+
+
+
+
 
     const handleSearchChange = (e: any) => {
         setSearch(e.target.value);
     };
 
     console.log(search, "searchEvent");
+
+    console.log(isLoading, clientData, AllClientData, particularClientAllData, getClient, "ClientDataClientData")
+
+    console.log(projectData, "projectData...")
 
     const handleFilterClick = () => {
         //console.log('Filter clicked');
@@ -49,8 +65,11 @@ const Search = (props: any) => {
     };
 
     const handleClear = () => {
-        setClientValue('');
-        setProjectValue('');
+        // setClientValue('');
+        // setProjectValue('');
+
+        onClose();
+
     };
 
     // const handleCancel = () => {
@@ -59,14 +78,14 @@ const Search = (props: any) => {
 
     const handleApply = () => {
         console.log({
-            "client": clientValue,
-            "project": projectValue
+            // "client": clientValue,
+            // "project": projectValue
         });
     };
 
 
 
-    const { control, handleSubmit, formState: { errors } } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
 
@@ -81,9 +100,49 @@ const Search = (props: any) => {
         { id: 2, label: "Client" }
     ];
 
+    const fetchData = async () => {
+        try {
+            setIsLoading(true);
+            const clientService = ClientService();
+            const projectService = ProjectService();
+
+            console.log("API CALL working");
+
+            const clientResults = await clientService.getClient('Client_Informations');
+            console.log(clientResults, "client result");
+            if (clientResults && clientResults.length > 0) {
+                setClientData(clientResults);
+                setAllClientData(clientResults);
+            } else {
+                setClientData([]);
+                setAllClientData([]);
+            }
+
+            const projectResults = await projectService.getProject('Project_Informations');
+            console.log(projectResults, "project result");
+            if (projectResults && projectResults.length > 0) {
+                setProjectData(projectResults);
+            } else {
+                setProjectData([]);
+            }
+
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.error('Error fetching data:', error);
+        }
+    };
+
+
+
 
     React.useEffect(() => {
         setDocumentType('')
+    }, []);
+
+
+    React.useEffect(() => {
+        fetchData();
     }, []);
 
     return (
@@ -172,43 +231,101 @@ const Search = (props: any) => {
                 <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
                     <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
                         <Grid item xs={12} sm={12} >
-                            <TextField
-                                fullWidth
-                                label="Client"
-                                select
-                                value={clientValue}
-                                onChange={(event) => setClientValue(event.target.value)}
-                                variant="outlined"
-                            >
-                                {clientOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                            <Controller
+                                name="clientName"
+                                control={control}
+                                defaultValue=""
+                                rules={{ required: 'Client Name is required' }}
+                                render={({ field }) => (
+                                    <>
+                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                                        <TextField
+                                            {...field}
+                                            id="client-name"
+                                            fullWidth
+                                            variant="outlined"
+                                            select
+                                            size="small"
+                                            required
+                                            label=""
+                                            error={!!errors.clientName}
+                                            helperText={errors?.clientName?.message}
+                                            onChange={(e: any) => {
+                                                // console.log(e.target.value);
+                                                setGetClient(e.target.value);
+                                                const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
+                                                setParticularClientAllData(getUnique);
+                                                // setValue('projectName', e.target.value)
+                                                console.log(getUnique, "getUnique")
+
+                                                setValue('clientName', e.target.value);
+
+                                            }}
+                                        >
+                                            {AllClientData?.map((item: any) => (
+                                                <MenuItem key={item.id} value={item.Title}>
+                                                    {item.Title}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        {/* <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText> */}
+                                    </>
+                                )}
+                            />
 
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <TextField
-                                fullWidth
-                                label="Project"
-                                select
-                                value={projectValue}
-                                onChange={(event) => setProjectValue(event.target.value)}
-                                variant="outlined"
-                            >
-                                {projectOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                            {/* <Grid item sm={12}> */}
+                            <Controller
+                                name="projectName"
+                                control={control}
+                                defaultValue=""
+                                rules={{ required: 'Project Name is required' }}
+                                render={({ field }: any) => (
+                                    <>
+                                        <InputLabel htmlFor="project-name">Project Name</InputLabel>
+                                        <TextField
+                                            {...field}
+                                            id="project-name"
+                                            fullWidth
+                                            variant="outlined"
+                                            select
+                                            size="small"
+                                            required
+                                            label=""
+                                            error={!!errors.projectName}
+                                            onChange={async (e: any) => {
+                                                console.log(e.target.value);
+                                                const getUniqueProject = projectData.filter((datas: any) => datas.Title === e.target.value);
+                                                setProjectData(getUniqueProject);
+                                                setValue('projectName', e.target.value)
+                                                console.log(getUniqueProject, "getUnique")
+                                                // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
+                                                // getClientFromFolder(getUnique[0].GUID, getUnique);
+
+                                            }}
+                                        >
+                                            {projectData?.map((item: any) => (
+                                                <MenuItem key={item.id} value={item.Title
+                                                }>
+                                                    {item.Title}
+                                                </MenuItem>
+                                            ))}
+                                            {/* {AllClientData?.map((item: any) => (
+                    <MenuItem key={item.id} value={item.projectName}>
+                      {item.Title}
+                    </MenuItem>
+                  ))} */}
+                                        </TextField>
+                                    </>
+                                )}
+                            />
                         </Grid>
                     </Grid>
                     <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
-                        <MuiButton variant="outlined" onClick={handleClear}>
+                        {!isLoading && <MuiButton variant="outlined" onClick={handleClear}>
                             Clear
-                        </MuiButton>
+                        </MuiButton>}
                         <MuiButton
                             onClick={handleApply}
                             variant="contained"
