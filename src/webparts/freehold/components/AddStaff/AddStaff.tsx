@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 
 
 const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
-    selected, exsistingPersons, selectedDetails, fetchData, spContext }: any) => {
+    selected, exsistingPersons, selectedDetails, fetchData, spContext: WebPartContext }: any) => {
 
 
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
@@ -146,7 +146,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                             }}
                             // searchTextLimit={5}
                             personSelectionLimit={50}
-                            context={spContext}
+                            context={props.spContext}
                             showHiddenInUI={false}
                             principalTypes={[PrincipalType.User]}
                             resolveDelay={1000}

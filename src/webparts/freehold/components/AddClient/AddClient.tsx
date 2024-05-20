@@ -151,6 +151,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
       },
 
       // DMSTags: data.clientChecklist 
+      DMS_x0020_Tags: data.clientChecklist
     };
 
     // false && addListItem('Clients', dataObj);
@@ -164,6 +165,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         type: file.type,
         webkitRelativePath: file.webkitRelativePath,
         // DMSTags: data.clientChecklist 
+        DMS_x0020_Tags: data.clientChecklist
       }));
 
       apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
