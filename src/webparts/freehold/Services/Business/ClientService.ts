@@ -70,10 +70,12 @@ const ClientService = () => {
     };
 
     const getClient = async (ListName: string) => {
+        
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
         }
+
     };
 
     const getListCounts = async (listName: string) => {
