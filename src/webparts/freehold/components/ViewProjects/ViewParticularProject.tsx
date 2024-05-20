@@ -204,6 +204,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 reset();
                 setLoading(false);
                 toast.success('Project Updated Successfully!');
+                navigateToProject();
                 fetchData();
                 initialFetchData();
                 setIsEdit(false);

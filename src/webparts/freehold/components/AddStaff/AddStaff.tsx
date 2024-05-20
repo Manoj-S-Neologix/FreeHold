@@ -36,127 +36,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     };
 
 
-    // const handleSave = async () => {
-    //     const dataObj = {
-    //         AssignedStaffId: {
-    //             results: selectedPersonsId
-    //         }
-    //     };
-    //     if (selected?.length === 0) {
-    //         ClientService().updateClient(
-    //             "Client_Informations",
-    //             particularClientAllData[0].Id,
-    //             dataObj
-    //         ).then((response: any) => {
-    //             //console.log("Success:", response);
-    //             onClose();
-
-    //         }).catch((error: any) => {
-    //             console.error("Error:", error);
-    //         });
-    //     }
-    //     else {
-    //         for (const item of selected) {
-    //             ClientService().updateClient(
-    //                 "Client_Informations",
-    //                 item,
-    //                 dataObj
-    //             ).then((response: any) => {
-    //                 //console.log("Success:", response);
-    //                 onClose();
-
-    //             }).catch((error: any) => {
-    //                 console.error("Error:", error);
-    //             });
-
-    //         }
-    //     }
-    // };
-
-
-    // const handleSave = async () => {
-    //     const dataObj = {
-    //         AssignedStaffId: {
-    //             results: selectedPersonsId
-    //         }
-    //     };
-    //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons.Id
-
-    //     //console.log(ID, particularClientAllData, exsistingPersons)
-
-    //     try {
-    //         if (selected?.length === 0) {
-    //             const response = await ClientService().updateClient(
-    //                 "Client_Informations",
-    //                 particularClientAllData[0].Id,
-    //                 dataObj
-    //             );
-    //             //console.log("Success:", response);
-    //             onClose();
-    //             toast.success('Staff updated successfully!');
-    //         } else {
-    //             for (const item of selected) {
-    //                 const response = await ClientService().updateClient(
-    //                     "Client_Informations",
-    //                     item,
-    //                     dataObj
-    //                 );
-    //                 //console.log("Success:", response);
-    //                 onClose();
-    //             }
-    //             toast.success('Staff updated successfully!');
-    //         }
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //         toast.error(`Failed to update staff(s): ${error}`);
-    //     }
-    // };
-
-    // const handleSave = async () => {
-    //     const dataObj = {
-    //         AssignedStaffId: {
-    //             results: selectedPersonsId
-    //         }
-    //     };
-    //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
-
-
-
-
-    //     if (selected === undefined || selected?.length === 0) {
-    //         ClientService()
-    //             .updateClient("Client_Informations", ID, dataObj)
-    //             .then((response) => {
-    //                 //console.log("Success:", response);
-    //                 onClose();
-    //                 setSelectedPersons([]); setSelectedPersonsId([]);
-    //                 toast.success('Staff updated successfully!');
-    //                 fetchData();
-    //                 handleCancel();
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error:", error);
-    //                 toast.error(`Failed to update staff(s): ${error}`);
-    //             });
-    //     } else {
-    //         for (const item of selected) {
-    //             ClientService()
-    //                 .updateClient("Client_Informations", item, dataObj)
-    //                 .then((response) => {
-    //                     onClose();
-    //                     setSelectedPersons([]); setSelectedPersonsId([]);
-    //                     toast.success('Staff updated successfully!');
-    //                     fetchData();
-    //                     handleCancel();
-    //                 })
-    //                 .catch((error) => {
-    //                     toast.error(`Failed to update staff(s): ${error}`);
-    //                 });
-    //         }
-    //     }
-    // };
-
-
     const handleSave = async () => {
         const dataObj = {
             AssignedStaffId: {
@@ -186,54 +65,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     };
 
 
-    // const handleSave = () => {
-    //     const dataObj = {
-    //         AssignedStaffId: {
-    //             results: selectedPersonsId
-    //         }
-    //     };
-    //     const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons.Id;
-
-    //     //console.log(ID, particularClientAllData, exsistingPersons);
-
-    //     if (selected?.length === 0) {
-    //         ClientService()
-    //             .updateClient("Client_Informations", particularClientAllData[0].Id, dataObj)
-    //             .then((response) => {
-    //                 //console.log("Success:", response);
-    //                 onClose();
-    //                 setSelectedPersons([]); setSelectedPersonsId([]);
-    //                 toast.success('Staff updated successfully!');
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error:", error);
-    //                 toast.error(`Failed to update staff(s): ${error}`);
-    //             });
-    //     } else {
-    //         const promises = selected.map((item: any) => {
-    //             return ClientService()
-    //                 .updateClient("Client_Informations", item, dataObj)
-    //                 .then((response) => {
-    //                     //console.log("Success:", response);
-    //                 })
-    //                 .catch((error) => {
-    //                     console.error("Error:", error);
-    //                     throw error; // Propagate error to the outer catch block
-    //                 });
-    //         });
-
-    //         Promise.all(promises)
-    //             .then(() => {
-    //                 onClose();
-    //                 setSelectedPersons([]); setSelectedPersonsId([]);
-    //                 toast.success('Staff updated successfully!');
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error:", error);
-    //                 toast.error(`Failed to update staff(s): ${error}`);
-    //             });
-    //     }
-    // };
+  
 
     const handlePeoplePickerChange = async (items: any[]) => {
         //console.log(items, "itemsitemsitemsitems");
@@ -255,10 +87,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
             //console.log(getID.Id, "getIDgetID");
             selectedPersonsIds.push(getID.Id);
         }
-
-
-
-
         setSelectedPersonsId(selectedPersonsIds);
     };
 
