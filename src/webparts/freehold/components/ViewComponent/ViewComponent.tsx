@@ -85,7 +85,7 @@
 //   const [selectedName, setSelectedName] = useState<any[]>([]);
 //   const [dialogOpen, setDialogOpen] = React.useState(false);
 //   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
-//   const { control, formState: { errors } } = useForm();
+//   const { control } = useForm();
 
 //   let { editClientId, viewClientId } = useParams();
 //   const navigate = useNavigate();
@@ -115,14 +115,14 @@
 //         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
 //         setParticularClientAllData(getUnique);
 //         console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
-//         setIsViewDialogOpen(true);
+//         // setIsViewDialogOpen(true);
 //         navigate('/ViewClient/' + String(data[0]?.Id));
 //       }
 //     }
 //     if (editClientId) {
 //       setIsEdit(true);
 //       setIsOpen(true);
-//       setIsViewDialogOpen(true);
+//     //   setIsViewDialogOpen(true);
 //       const data = await fetchDataById(editClientId);
 //       console.log(data, "datadatadata");
 //       if (data) {
@@ -283,11 +283,11 @@
 //         // setParticularClientAllData(uniqueClientData);
 //         // setIsViewDialogOpen(true);
 //         // setClientDetails(data);
-//         viewClientId = String(data.Id);
-//         if (data.Id) {
-//           console.log(data, "AllClientDataAllClientData");
-//           await fetchDataByuserId();
-//         }
+//         // viewClientId = String(data.Id);
+//         // if (data.Id) {
+//         //   console.log(data, "AllClientDataAllClientData");
+//         //   await fetchDataByuserId();
+//         // }
 //         // navigate('/ViewClient/' + viewClientId);
 
 
@@ -315,11 +315,11 @@
 //         // editClientId = String(data.Id);
 //         // navigate('/EditClient/' + editClientId);
 //         // console.log(data, "AllClientDataAllClientData");
-//         editClientId = String(data.Id);
-//         if (data.Id) {
-//           console.log(data, "AllClientDataAllClientData");
-//           await fetchDataByuserId();
-//         }
+//         // editClientId = String(data.Id);
+//         // if (data.Id) {
+//         //   console.log(data, "AllClientDataAllClientData");
+//         //   await fetchDataByuserId();
+//         // }
 //       },
 //     },
 //     {
@@ -557,15 +557,16 @@
 //   });
 
 
-//   React.useEffect(() => {
-//     fetchData();
-//   }, []);
+// //   React.useEffect(() => {
+// //     fetchData();
+// //   }, []);
+
 //   React.useEffect(() => {
 //     if (editClientId || viewClientId)
 //       fetchDataByuserId();
 //     // console.log(editClientId, viewClientId, "editClientId, viewClientId");
 //     // setIsViewDialogOpen(false);
-//   }, [editClientId, viewClientId]);
+//   }, []);
 
 
 //   // React.useEffect(() => {
@@ -577,7 +578,7 @@
 
 //   return (
 //     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
-//      {!isViewDialogOpen && <Stack direction='column' sx={{ gap: "30px" }} >
+//      { false && !isViewDialogOpen && <Stack direction='column' sx={{ gap: "30px" }} >
 //         <Box >
 //           <Breadcrumbs
 //             separator={<NavigateNextIcon fontSize="medium" />}
@@ -651,7 +652,7 @@
 //           </Box>
 
 
-//           <Dialog
+//          {false && <Dialog
 //             open={open}
 //             fullWidth={true}
 //             maxWidth={"sm"}
@@ -736,7 +737,8 @@
 //                         </>
 //                       )}
 //                     />
-//                     {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
+
+//                     {/* {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>} */}
 //                   </Grid>
 //                   <Grid item xs={12} sm={12}>
 //                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '15px' }}>
@@ -761,7 +763,7 @@
 //                 </Grid>
 //               </Stack>
 //             </DialogContent>
-//           </Dialog>
+//           </Dialog> }
 //           <Dialog
 //             open={dialogOpen}
 //             fullWidth={true}
@@ -859,7 +861,7 @@
 //           onClose={handleDeleteDialogClose}
 //           fetchData={fetchData}
 //         />}
-//      { false && ( 
+  
 //        <ViewParticularClient
 //           props={props}
 //           clientDetails={clientDetails}
@@ -873,7 +875,7 @@
 //           initialFetchData={fetchData}
 //           particularClientAllData={particularClientAllData} selected={selected}
 //         />
-//      )}
+ 
 //     </Box>
 
 //   );

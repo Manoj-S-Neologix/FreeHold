@@ -557,7 +557,7 @@ const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsVie
                 exsistingPersons={selectedPersons}
                 props={props}
                 open={handleStaffDialog} onClose={closeAddStaffDialog}
-                fetchData={fetchData} />}
+                fetchData={fetchData} spContext={props.spContext}/>}
 
             {uploadDialogOpen && <UploadDocument
                 open={uploadDialogOpen}

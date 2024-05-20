@@ -3,7 +3,7 @@ import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogAc
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
@@ -90,6 +90,9 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   const [projectDelDetails, setprojectDelDetails] = useState<any>([]);
 
 
+  let { editProjectId, viewProjectId } = useParams();
+
+
   console.log(selectedName, 'selected..')
 
   const navigate = useNavigate();
@@ -155,6 +158,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   const handleApply = () => {
     // Implement apply functionality here
+
   };
 
 
@@ -190,12 +194,18 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         setIsViewDialogOpen(true);
         setProjectDetails(data);
         console.log();
+        setIsEdit(false);
+
 
         const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
         setParticularClientAllData(uniqueClientData);
 
         const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
         setParticularClientAllData(getUnique);
+        navigate('/ViewProject/' + data.Id);
+
+        
+
 
       },
     },
@@ -207,7 +217,8 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         setIsViewDialogOpen(true);
         setProjectDetails(id);
         setIsEdit(true);
-        //console.log(`Edit clicked for row ${id}`);
+        // console.log(`Edit clicked for row ${id}`,id);
+        navigate('/EditProject/' + id.Id);
       },
     },
 
@@ -399,6 +410,14 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   React.useEffect(() => {
     fetchData();
   }, []);
+
+
+  React.useEffect(() => {
+    if (editProjectId || viewProjectId)
+    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
+    // setIsViewDialogOpen(false);
+    console.log('Project ID changed:', editProjectId, viewProjectId);
+  }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
 
