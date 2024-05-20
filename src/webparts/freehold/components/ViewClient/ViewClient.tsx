@@ -718,7 +718,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       </Stack>
       }
       {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} spContext={props.spContext} />}
-      {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
+      {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} spContext={props.spContext} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
       <UploadDocument open={uploadDialogOpen}
         onClose={closeUploadDialog} particularClientAllData={particularClientAllData} fetchDatas={fetchData} />
 
@@ -730,6 +730,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
         />}
       {isViewDialogOpen &&
         <ViewParticularClient
+          spContext={props.spContext}
           props={props}
           clientDetails={clientDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}

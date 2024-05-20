@@ -48,7 +48,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularClient = ({ props, clientDetails, setClientDetails, setIsViewDialogOpen, isOpen, setIsOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData, particularClientProjects }: any) => {
+const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails, setClientDetails, setIsViewDialogOpen, isOpen, setIsOpen, isEdit, setIsEdit, handleCancel, particularClientAllData, fetchData, initialFetchData, particularClientProjects }: any) => {
 
     const [handleStaffDialog, setHandleStaffDialog] = useState(false);
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
