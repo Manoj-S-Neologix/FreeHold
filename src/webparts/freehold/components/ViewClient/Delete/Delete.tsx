@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import styles from './Delete.module.scss';
 import { Box, Stack, CircularProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { addListItem, createFolderInLibrary, uploadDocumentToLibrary } from "../../../Services/Core/ClientService";
+// import { addListItem, createFolderInLibrary, uploadDocumentToLibrary } from "../../../Services/Core/ClientService";
 import ClientService from "../../../Services/Business/ClientService";
 import toast from 'react-hot-toast';
 
@@ -58,40 +58,40 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
       console.error();
 
     }
-    false && await handleAddClientSubmit();
+    // false && await handleAddClientSubmit();
   };
 
-  const handleAddClientSubmit = async () => {
-    if (title) {
-      try {
-        const obj = {
-          Name: title,
-        };
-        await addListItem('Clients', obj);
+  // const handleAddClientSubmit = async () => {
+  //   if (title) {
+  //     try {
+  //       const obj = {
+  //         Name: title,
+  //       };
+  //       await addListItem('Clients', obj);
 
-        if (files.length > 0) {
-          const currentDate = new Date().toISOString().slice(0, 10);
-          const formattedDate = currentDate.replace(/-/g, '');
-          const folderName = `${title}_${formattedDate}`;
+  //       if (files.length > 0) {
+  //         const currentDate = new Date().toISOString().slice(0, 10);
+  //         const formattedDate = currentDate.replace(/-/g, '');
+  //         const folderName = `${title}_${formattedDate}`;
 
-          await createFolderInLibrary('SPDocument', folderName);
+  //         await createFolderInLibrary('SPDocument', folderName);
 
-          for (const file of files) {
-            await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
-          }
-        }
+  //         for (const file of files) {
+  //           await uploadDocumentToLibrary('SPDocument', folderName, file.name, file);
+  //         }
+  //       }
 
-        alert('Client and Document(s) added successfully!');
-        setFiles([]);
-        setTitle('');
-      } catch (error) {
-        console.error('Error adding client and document:', error);
-        alert('Failed to add client and document. Please check the console for details.');
-      }
-    } else {
-      alert('Please enter a title.');
-    }
-  };
+  //       alert('Client and Document(s) added successfully!');
+  //       setFiles([]);
+  //       setTitle('');
+  //     } catch (error) {
+  //       console.error('Error adding client and document:', error);
+  //       alert('Failed to add client and document. Please check the console for details.');
+  //     }
+  //   } else {
+  //     alert('Please enter a title.');
+  //   }
+  // };
 
   //delete code start
 
