@@ -40,10 +40,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
     const [getClient, setGetClient] = React.useState<any[]>([]);
     const [particularClientAllData, setParticularClientAllData] = React.useState<any>([]);
     const [projectData, setProjectData] = React.useState<any>([]);
-
-
-
-
+    //const [selectedProject, setSelectedProject] = React.useState<string>('');
 
     const handleSearchChange = (e: any) => {
         setSearch(e.target.value);
@@ -65,16 +62,10 @@ const Search: React.FC<any> = ({ onClose, props }) => {
     };
 
     const handleClear = () => {
-        // setClientValue('');
-        // setProjectValue('');
 
+        reset();
         onClose();
-
     };
-
-    // const handleCancel = () => {
-    //     onClose();
-    //   };
 
     const handleApply = () => {
         console.log({
@@ -83,9 +74,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
         });
     };
 
-
-
-    const { control, handleSubmit, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
 
@@ -133,9 +122,6 @@ const Search: React.FC<any> = ({ onClose, props }) => {
         }
     };
 
-
-
-
     React.useEffect(() => {
         setDocumentType('')
     }, []);
@@ -147,6 +133,8 @@ const Search: React.FC<any> = ({ onClose, props }) => {
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
+
+            {/* Search box */}
             <Stack direction={"column"} spacing={2}>
                 <Box sx={{
                     display: "flex",
@@ -196,6 +184,8 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                 </Box >
 
             </Stack >
+
+            {/* advanced filter */}
             <Dialog
                 open={open}
                 fullWidth={true}
@@ -275,13 +265,12 @@ const Search: React.FC<any> = ({ onClose, props }) => {
 
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            {/* <Grid item sm={12}> */}
                             <Controller
                                 name="projectName"
                                 control={control}
                                 defaultValue=""
                                 rules={{ required: 'Project Name is required' }}
-                                render={({ field }: any) => (
+                                render={({ field }) => (
                                     <>
                                         <InputLabel htmlFor="project-name">Project Name</InputLabel>
                                         <TextField
@@ -294,28 +283,17 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                                             required
                                             label=""
                                             error={!!errors.projectName}
+                                            //value={selectedProject}
                                             onChange={async (e: any) => {
-                                                console.log(e.target.value);
-                                                const getUniqueProject = projectData.filter((datas: any) => datas.Title === e.target.value);
-                                                setProjectData(getUniqueProject);
-                                                setValue('projectName', e.target.value)
-                                                console.log(getUniqueProject, "getUnique")
-                                                // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
-                                                // getClientFromFolder(getUnique[0].GUID, getUnique);
-
+                                                //setSelectedProject(e.target.value);
+                                                setValue('projectName', e.target.value);
                                             }}
                                         >
-                                            {projectData?.map((item: any) => (
-                                                <MenuItem key={item.id} value={item.Title
-                                                }>
+                                            {projectData.map((item: any) => (
+                                                <MenuItem key={item.id} value={item.Title}>
                                                     {item.Title}
                                                 </MenuItem>
                                             ))}
-                                            {/* {AllClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.projectName}>
-                      {item.Title}
-                    </MenuItem>
-                  ))} */}
                                         </TextField>
                                     </>
                                 )}
@@ -341,6 +319,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                 </DialogContent>
             </Dialog >
 
+            {/* Upload documents */}
             <Dialog
                 open={openDocuments}
                 fullWidth

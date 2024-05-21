@@ -4,7 +4,10 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
+/* import Typography from '@mui/material/Typography'; */
+import Avatar from '@mui/material/Avatar';
+import ArticleIcon from '@mui/icons-material/Article';
+import { ListItemAvatar } from '@mui/material';
 //import styles from './SearchResults.module.scss';
 
 interface ISearchPros {
@@ -20,44 +23,76 @@ const SearchResults = ({ handleSearchChange }: ISearchPros) => {
         >
             <List>
                 <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <Avatar>
+                            <ArticleIcon />
+                        </Avatar>
+                    </ListItemAvatar>
                     <ListItemText
-                        primary="Summer BBQ"
+                        primary={<a href="#">sample.docx</a>}
                         secondary={
-                            <React.Fragment>
-                                <Typography
-                                    sx={{ display: 'inline' }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    to Scott, Alex, Jennifer
-                                </Typography>
-                                {" — Wish I could come, but I'm out of town this…"}
-                            </React.Fragment>
+                            <>
+                                <li>&bull; Project &bull; Client &bull; Unit</li>
+                                <li>&bull; Engagment letter</li>
+                            </>
                         }
                     />
                 </ListItem>
-                
+
                 <Divider variant="inset" component="li" />
                 <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <Avatar>
+                            <ArticleIcon />
+                        </Avatar>
+                    </ListItemAvatar>
                     <ListItemText
-                        primary="Oui Oui"
+                        primary={<a href="#">sample2.docx</a>}
                         secondary={
-                            <React.Fragment>
-                                <Typography
-                                    sx={{ display: 'inline' }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    Sandra Adams
-                                </Typography>
-                                {' — Do you have Paris recommendations? Have you ever…'}
-                            </React.Fragment>
+                            <>
+                                <li>&bull; Project &bull; Client &bull; Unit</li>
+                                <li>&bull; Power of attorny</li>
+                            </>
                         }
                     />
                 </ListItem>
-                
+
+                <Divider variant="inset" component="li" />
+                <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <Avatar>
+                            <ArticleIcon />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={<a href="#">sample3.docx</a>}
+                        secondary={
+                            <>
+                                <li>&bull; Project &bull; Client &bull; Unit</li>
+                                <li>&bull; National Id</li>
+                            </>
+                        }
+                    />
+                </ListItem>
+
+                <Divider variant="inset" component="li" />
+                <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <Avatar>
+                            <ArticleIcon />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={<a href="#">sample4.docx</a>}
+                        secondary={
+                            <>
+                                <li>&bull; Project &bull; Client &bull; Unit</li>
+                                <li>&bull; Passport copy</li>
+                            </>
+                        }
+                    />
+                </ListItem>
+
             </List>
 
         </Box>
