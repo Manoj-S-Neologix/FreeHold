@@ -231,7 +231,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
             // Ensure results is an array before setting state
             if (Array.isArray(results)) {
-                setClientDocumentsData(results.map(item => item.FileLeafRef));
+                setClientDocumentsData(results.map(item => `${item.FileLeafRef} - ${item.DMS_x0020_Tags
+                }`));
                 setClientDocumentsAllData(results);
             } else {
                 console.error('Error: Retrieved data is not an array');
