@@ -30,7 +30,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const [count, setCount] = useState(1);
     // const [fileData, setFileData] = useState<any[]>([]);
     // const [isLoading, setIsLoading] = useState(true);
-    const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, reset,unregister,watch, formState: { errors }, setValue } = useForm();
     const [showCount, setShowCount] = useState(false);
     // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
     const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
@@ -86,11 +86,25 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         console.log("Cancel button clicked");
         onClose();
     };
-    const deleteUnit = (indexToRemove: any) => {
-        setCount((prevCount) => prevCount - 1);
-        setValue(`unitName${indexToRemove}`, "");
-    };
+    // const deleteUnit = (indexToRemove: any) => {
+    //     setCount((prevCount) => prevCount - 1);
+    //     setValue(`unitName${indexToRemove}`, "");
+    // };
 
+    const deleteUnit = (indexToRemove: number) => {
+        const currentValues = watch(); // Get current form values
+        setCount((prevCount) => {
+            const newCount = prevCount - 1;
+            // Unregister the form field to remove validation
+            unregister(`unitName${indexToRemove}`);
+            // Shift form values to avoid gaps in the indices
+            for (let i = indexToRemove; i < newCount; i++) {
+                setValue(`unitName${i}`, currentValues[`unitName${i + 1}`]);
+                unregister(`unitName${i + 1}`);
+            }
+            return newCount;
+        });
+    };
 
     const handleSwitchChange = (event: any) => {
         setShowCount(event.target.checked);
@@ -243,6 +257,8 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             await apiResponse.deleteFolder(folderUrl)
             console.log(folderUrl, 'folderurl..')
             toast.success('Unit Deleted Successfully!');
+            setIsDeleteDialogOpen(false);
+            onClose();            
       
           } catch (error) {
             setLoading(false);
