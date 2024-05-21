@@ -311,56 +311,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
       {/*multiple checklist dropdown */}
       {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
         <>
-
-          {/* {uploadFiles.map((uploadedFile:any, index:any) => (
-            <div key={index} style={{ position: 'relative', bottom: '6.2rem', marginLeft: '16rem' }}
-            >
-              <Controller
-                name={`clientChecklist-${index}`}
-                control={control}
-                defaultValue=""
-                rules={{ required: 'Client Checklist is required' }}
-                render={({ field }) => (
-                  <>
-                    <div >
-
-                      <InputLabel htmlFor={`client-checklist-${index}`}>Client Checklist</InputLabel>
-                    </div>
-                    <TextField
-                      {...field}
-                      id={`client-checklist-${index}`}
-                      fullWidth
-                      style={{ maxWidth: '200px' }}
-                      variant="outlined"
-                      select
-                      size="small"
-                      required
-                      error={!!errors[`clientChecklist-${index}`]}
-                      helperText={errors[`clientChecklist-${index}`]?.message}
-                      onChange={(e: any) => {
-                        field.onChange(e);
-                        const newValue = e.target.value;
-                        setValue('clientChecklist', e.target.value);
-                        console.log(newValue, 'e.target')
-                        setUploadFiles((prevFiles:any) => {
-                          const updatedFiles = [...prevFiles];
-                          updatedFiles[index].checklist = newValue;
-                          return updatedFiles;
-                        });
-                      }}
-                    >
-                      {dropdownOptions?.map((option: any, index: any) => (
-                        <MenuItem key={index} value={option.Title}>
-                          {option.Title}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </>
-                )}
-              />
-            </div>
-          ))} */}
-
           <TableContainer>
             <Table>
               <TableHead>

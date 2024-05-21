@@ -121,6 +121,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
     const navigateToProject = () => {
         navigate('/ViewProjects');
         setIsViewDialogOpen(false);
+        fetchData();
     };
 
     // const handleUpdate = handleSubmit(async (data) => {
@@ -274,7 +275,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         }}>
                                             {!isEdit && (
                                                 <Button
-                                                    handleClick={() => setIsEdit(true)}
+                                                    handleClick={() => { setIsEdit(true); navigate('/EditProject/' + projectDetails.Id) }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"

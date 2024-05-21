@@ -74,7 +74,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
   // const [loading, setLoading] = useState(false);
-
+  // const [vieData, setIsViewData] = useState<any[]>([])
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -204,7 +204,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         setParticularClientAllData(getUnique);
         navigate('/ViewProject/' + data.Id);
 
-        
+
 
 
       },
@@ -325,11 +325,39 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
         setAllClientData(results.updatedResults);
-      } else {
-        // Handle case where no data is returned
-        setProjectData([]);
-        setAllClientData([]);
       }
+      // else {
+      //   // Handle case where no data is returned
+      //   setProjectData([]);
+      //   setAllClientData([]);
+      // }
+      // return results?.updatedResults
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchDataEditView = async () => {
+    try {
+      setIsLoading(true);
+      const projectService = ProjectService();
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+      const expand = 'Author,AssignClient';
+      const orderBy = 'Modified';
+      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
+      console.log(results, "result");
+      if (results && results.updatedResults && results.updatedResults.length > 0) {
+        setProjectData(results.TableData);
+        setAllClientData(results.updatedResults);
+      }
+      // else {
+      //   // Handle case where no data is returned
+      //   setProjectData([]);
+      //   setAllClientData([]);
+      // }
+      return results?.updatedResults
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -407,16 +435,85 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
     };
   });
 
+  // const editView = async () => {
+
+  //   if (editProjectId || viewProjectId)
+  //     {
+  //     console.log('Project ID changed:', editProjectId, viewProjectId);
+  //       setIsViewDialogOpen(true);
+  //       await fetchData();
+  //       const getUnique = AllClientData.filter((datas: any) => datas.Id == editProjectId?Number(editProjectId):Number(viewProjectId));
+  //       console.log(AllClientData, editProjectId, viewProjectId, "AllClientDataeditView..")
+  //       console.log(getUnique, "getUniqueeditview")
+
+  //       setParticularClientAllData(getUnique);
+  //       if (editProjectId)   navigate('/EditProject/' + editProjectId);
+  //       if (viewProjectId)   navigate('/ViewProject/' + viewProjectId);
+  //     }
+  // }
+
+  const editView = async () => {
+    const initialFetch =
+      await fetchDataEditView();
+
+    if (editProjectId || viewProjectId) {
+      console.log('Project ID changed:', editProjectId, viewProjectId, initialFetch);
+
+
+
+      // Fetch the data
+      // try {
+      //   await fetchData();
+      // } catch (error) {
+      //   console.error("Error fetching data:", error);
+      //   return;
+      // }
+
+      // Get the unique client data
+      const projectId = editProjectId || viewProjectId;
+      // const getUnique = initialFetch?.map ((data: any) => data.Id == (projectId));
+      // console.log(data,"data.Iddata.Id")
+      initialFetch && initialFetch.length > 0 && initialFetch.map((data: any) => {
+        if (data) {
+          if (data.Id == projectId) {
+            console.log(data, data.Id, "MapFucntionData")
+            setProjectData([data]);
+            if(editProjectId){
+              setIsEdit(true);
+            }
+            setProjectDetails(data)
+            setParticularClientAllData([data]);
+            setIsViewDialogOpen(true);
+          }
+
+        }
+      })
+      console.log(AllClientData, editProjectId, viewProjectId, "AllClientDataeditView..");
+      // console.log(getUnique, "getUniqueeditview");
+      console.log(projectId, "projectIdprojectId")
+
+      // setProjectData([]);
+
+      // Navigate based on the project ID
+      if (editProjectId) {
+        navigate('/EditProject/' + editProjectId);
+      } else if (viewProjectId) {
+        navigate('/ViewProject/' + viewProjectId);
+      }
+    }
+  }
+
+
   React.useEffect(() => {
     fetchData();
   }, []);
 
 
+
+
   React.useEffect(() => {
-    if (editProjectId || viewProjectId)
-    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
-    // setIsViewDialogOpen(false);
-    console.log('Project ID changed:', editProjectId, viewProjectId);
+    editView();
+
   }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
@@ -460,6 +557,10 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
     setIsDelete(false);
     // fetchData();
   };
+
+  // React.useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >

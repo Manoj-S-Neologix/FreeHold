@@ -231,7 +231,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
             // Ensure results is an array before setting state
             if (Array.isArray(results)) {
-                setClientDocumentsData(results.map(item => item.FileLeafRef));
+                setClientDocumentsData(results.map(item => `${item.FileLeafRef} - ${item.DMS_x0020_Tags
+                }`));
                 setClientDocumentsAllData(results);
             } else {
                 console.error('Error: Retrieved data is not an array');
@@ -367,12 +368,13 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                             setValue('AssignClientDocuments', value);
                                                             const collectionOfDocuments: any = [];
                                                             getClientDocumentsAllData?.map((item: any) => {
-                                                                console.log(item, value, value.includes(item.FileLeafRef));
+                                                                console.log(item.DMS_x0020_Tags, "itemitem....");
                                                                 if (value.includes(item.FileLeafRef)) {
                                                                     collectionOfDocuments.push({
                                                                         Id: item.Id,
                                                                         GUID: item.GUID,
                                                                         FileLeafRef: item.FileLeafRef,
+                                                                        // DMSTag:item.DMS_x0020_Tags,
                                                                         FileRef: item.FileRef
                                                                     });
                                                                 }
