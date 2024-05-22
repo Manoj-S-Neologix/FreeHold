@@ -148,7 +148,8 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
           return;
         });
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
-        setParticularClientAllData([clientDetails]);
+        // setParticularClientAllData([clientDetails]);
+        setParticularClientAllData(getUnique);
         console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
 
         const select = '*,AssignClient/Title,AssignClient/Id';
