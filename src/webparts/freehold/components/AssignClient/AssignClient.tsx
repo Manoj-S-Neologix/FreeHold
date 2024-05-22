@@ -24,7 +24,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const [getClient, setGetClient] = useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
     const [loading, setLoading] = useState(false);
-    const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<string[]>([]);
+    const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<any[]>([]);
     const { control, handleSubmit, reset, formState: { errors }, setValue } = useForm();
 
     // const getProjectName = particularClientAllData[0]?.projectName;
@@ -218,12 +218,19 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                 console.error("Error occurred:", error);
                 setLoading(false);
             });
+
+            
     });
 
     console.log(getClient, "getClientgetClient");
 
+
     const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
     const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
+    // const [getDocumentType, setDocumentType] = useState<any[]>([]);
+
+    console.log(getClientDocumentsData,  "getClientDocumentsData")
+
     const getDocumentsFromFolder = async (libraryGuid: string) => {
         try {
             const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
@@ -233,6 +240,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             if (Array.isArray(results)) {
                 setClientDocumentsData(results.map(item => `${item.FileLeafRef} - ${item.DMS_x0020_Tags
                 }`));
+                // setClientDocumentsData(results.map(item => item.FileLeafRef));
                 setClientDocumentsAllData(results);
             } else {
                 console.error('Error: Retrieved data is not an array');
@@ -243,6 +251,8 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     };
 
     console.log(getClientDocumentsAllData);
+
+    console.log(setClientDocumentsData,"setClientDocumentsDatasetClientDocumentsData")
 
     return (
         <Box sx={{ width: '100', padding: '20px' }}>
@@ -356,29 +366,26 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                     required: 'Assign Client Documents is required',
                                                 }}
                                                 render={({ field }) => (
-
                                                     <Autocomplete
-                                                        multiple
-                                                        options={getClientDocumentsData}
-                                                        getOptionLabel={(option) => option}
-                                                        disableCloseOnSelect
-                                                        {...field}
-                                                        onChange={(e, value) => {
-                                                            field.onChange(value);
-                                                            setValue('AssignClientDocuments', value);
-                                                            const collectionOfDocuments: any = [];
-                                                            getClientDocumentsAllData?.map((item: any) => {
-                                                                console.log(item, value, value.includes(item.FileLeafRef));
-                                                                if (value.includes(item.FileLeafRef)) {
-                                                                    collectionOfDocuments.push({
-                                                                        Id: item.Id,
-                                                                        GUID: item.GUID,
-                                                                        FileLeafRef: item.FileLeafRef,
-                                                                        FileRef: item.FileRef
-                                                                    });
-                                                                }
-                                                            });
+                                                    multiple
+                                                    options={getClientDocumentsData}
+                                                    getOptionLabel={(option) => option}
+                                                    disableCloseOnSelect
+                                                    {...field}
+                                                    onChange={(e, value) => {
+                                                        field.onChange(value);
+                                                        setValue('AssignClientDocuments', value);
+                                                        
+                                                        const collectionOfDocuments = getClientDocumentsAllData.filter(item => 
+                                                        value.includes(`${item.FileLeafRef} - ${item.DMS_x0020_Tags}`)
+                                                        ).map(item => ({
+                                                        Id: item.Id,
+                                                        GUID: item.GUID,
+                                                        FileLeafRef: item.FileLeafRef,
+                                                        FileRef: item.FileRef
+                                                        }));
                                                             setCollectionOfDocuments(collectionOfDocuments);
+                                                            console.log(collectionOfDocuments,"collectionOfDocuments.....")
                                                         }}
                                                         renderInput={(params) => (
                                                             <TextField
