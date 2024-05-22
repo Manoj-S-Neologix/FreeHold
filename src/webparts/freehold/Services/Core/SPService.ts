@@ -69,7 +69,7 @@ const SPService: SPServiceType = {
                 return list;
             }
             else {
-                //toast.error("Document Library already exists.");
+                //toast.error("Project/Client Document Library already exists. Please try with other project code.");
                 return response;
             }
         } catch (error) {
@@ -250,7 +250,7 @@ const SPService: SPServiceType = {
             body: JSON.stringify({
                 "query": {
                     "ViewXml": `<View><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`,
-                    "FolderServerRelativeUrl": `${baseURL}${folderPath}`
+                    "FolderServerRelativeUrl": `${folderPath}`
                 }
             })
         };

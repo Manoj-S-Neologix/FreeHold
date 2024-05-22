@@ -97,6 +97,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
   // const getProjectName = particularClientAllData[0]?.projectName;
   const getProjectCode = particularClientAllData[0]?.projectNumber;
+  const getProjectUrl = particularClientAllData[0]?.webURL;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
@@ -104,7 +105,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
       console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
       console.log('Retrieved files:', results,);
       console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
@@ -144,10 +145,10 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const getDocumentsLibPath = async (type: string) => {
 
-    let projectRelativePath = (type === "client") ? `${getProjectCode}/${getValues("clientName")}` : `${getProjectCode}/${getValues("clientName")}/${getValues("unitDocument")}`;
+    let projectRelativePath = (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `/${projectRelativePath}`, getProjectCode);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
       console.log(results, "File Datas");
       setFileData(results);
 
