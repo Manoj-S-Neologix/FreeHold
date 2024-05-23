@@ -127,9 +127,10 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
         if (results.length > 0) {
           //Get project number
-          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
+          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+          const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
 
-          let projectRelativePath = projectInfo;
+          let projectRelativePath = projectwebURL;
 
           if (getValues("clientName") !== "" && getValues("clientName") !== undefined && getValues("clientName") !== null) {
             clientName = getValues("clientName");
@@ -142,7 +143,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
           }
 
           //Get all recursive documents
-          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `/${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
 
           const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
           console.log("docDetails :", docDetails_Grpd);
@@ -154,12 +155,12 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
             if (clientName === "" && unitFolder === "") {
 
-              const projectFolderPath: string = `${projectInfo}`;
+              const projectFolderPath: string = `${projectwebURL}`;
               const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
               _.forEach(clientDetails, function (client) {
 
-                const clientFolderPath: string = `${projectInfo}/${client.Title}`;
+                const clientFolderPath: string = `${projectwebURL}/${client.Title}`;
                 //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
                 /* _.forEach(unitDetails, function (unit) {
@@ -183,7 +184,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
             }
             else if (clientName !== "" && unitFolder === "") {
-              const clientFolderPath: string = `${projectInfo}/${clientName}`;
+              const clientFolderPath: string = `${projectwebURL}/${clientName}`;
               //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
               /* _.forEach(unitDetails, function (unit) {
@@ -321,7 +322,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                 display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
                 justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
               }}>
-                <Typography>Project Name
+                <Typography>Project Name *
                   <Box>
                     <FormControl>
                       <Controller
@@ -461,7 +462,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
  */}
                 <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button
-                    disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
+                    //disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
                     variant='contained'
                     style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
                     onClick={() => {
@@ -473,7 +474,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                     onClick={() => {
                       reset();
                       //setunitData([]);
-                      //setParticularClientAllData([]);
+                      setParticularClientAllData([]);
                       setData([]);
                     }}>Clear</Button>
                 </FormControl>

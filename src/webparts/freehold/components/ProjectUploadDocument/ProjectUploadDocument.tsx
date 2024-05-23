@@ -151,16 +151,25 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
 
-    const updatedData = {
+    /* const updatedData = {
       DMS_x0020_Tags: data.clientChecklist
-    }
+    } */
 
-    console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
+    //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
 
     try {
       const apiResponse = ClientService();
       console.log(data, 'projectdata..')
       const getLibraryName = AllClientData.filter((item: any) => item.Title === getClient)[0].ClientLibraryPath;
+      const clientInfo: any = AllClientData.filter((item: any) => item.Title === getClient)[0];
+
+      const updatedData = {
+        DMSClient: clientInfo.Title,
+        DMSProject: "",
+        DMSUnit: "",
+        DMSClientID: (clientInfo.Id).toString(),
+        DMSProjectID: ""
+      }
       console.log(getLibraryName, getClient, "getLibraryName")
 
       // const folderUrl = `${particularClientAllData[0].ClientLibraryPath}/${getLibraryName}`;
@@ -173,7 +182,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
 
       // else {
       await apiResponse.addDocumentsToFolder(getLibraryName, uploadFiles);
-      await apiResponse.updateClientDocumentMetadata(getLibraryName, uploadFiles, updatedData.DMS_x0020_Tags)
+      await apiResponse.updateClientDocumentMetadata(getLibraryName, uploadFiles, updatedData)
       // }
 
       setLoading(false);

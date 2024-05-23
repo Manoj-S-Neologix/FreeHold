@@ -106,7 +106,7 @@ const SPService: SPServiceType = {
         const library = web.getFolderByServerRelativeUrl(libraryName);
 
         const promises = files.map((file: any) => {
-            return library.files.add(file.name, file, false)
+            return library.files.add(file.name, file, true)
                 .then((document: any) => {
                     return document;
                 })
@@ -132,7 +132,7 @@ const SPService: SPServiceType = {
 
         const promises = files.map(async (file: any) => {
             try {
-                const uploadedFile = await library.files.add(file.name, file, false);
+                const uploadedFile = await library.files.add(file.name, file, true);
                 if (uploadedFile) {
                     const item = await uploadedFile.file.getItem();
                     console.log(item, 'serviceitem..')
@@ -338,7 +338,7 @@ const SPService: SPServiceType = {
             body: JSON.stringify({
                 "query": {
                     "ViewXml": camlQry,
-                    "FolderServerRelativeUrl": `${baseURL}${serverRelativeUrl}`
+                    "FolderServerRelativeUrl": `${serverRelativeUrl}`
                 }
             })
         };
