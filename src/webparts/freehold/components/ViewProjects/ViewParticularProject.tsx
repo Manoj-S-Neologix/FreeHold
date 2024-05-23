@@ -284,7 +284,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
+                                    {/* <TableRow>
                                         <TableCell component="th" scope="row">Project Number</TableCell>
                                         {!isEdit ? (
                                             <TableCell>{projectDetails.projectNumber}</TableCell>
@@ -327,6 +327,10 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
                                             </TableCell>
                                         )}
+                                    </TableRow> */}
+                                      <TableRow>
+                                        <TableCell component="th" scope="row">Project Number</TableCell>
+                                        <TableCell>{projectDetails.projectNumber}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Project Name</TableCell>
