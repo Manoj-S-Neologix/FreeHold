@@ -97,6 +97,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
   // const getProjectName = particularClientAllData[0]?.projectName;
   const getProjectCode = particularClientAllData[0]?.projectNumber;
+  const getProjectUrl = particularClientAllData[0]?.webURL;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
@@ -104,7 +105,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
       console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
       console.log('Retrieved files:', results,);
       console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
@@ -144,10 +145,10 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const getDocumentsLibPath = async (type: string) => {
 
-    let projectRelativePath = (type === "client") ? `${getProjectCode}/${getValues("clientName")}` : `${getProjectCode}/${getValues("clientName")}/${getValues("unitDocument")}`;
+    let projectRelativePath = (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `/${projectRelativePath}`, getProjectCode);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
       console.log(results, "File Datas");
       setFileData(results);
 
@@ -201,11 +202,22 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
 
+    const clientInfo: any = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
+
     const updatedData = {
-      DMS_x0020_Tags: data.projectChecklist
+      DMSProject: particularClientAllData[0].projectName,
+      DMSProjectID: (particularClientAllData[0].Id).toString(),
+      DMSClient: clientInfo[0].Name,
+      DMSClientID: (clientInfo[0].Id).toString(),
+      DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
     }
 
-    console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
+    //const clientInfo = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
+    //(particularClientAllData[0].clientDetails, function (o: any) { return o.Name == getClient; });
+
+    console.log("clientInfo", clientInfo);
+
+    //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
 
     try {
       const apiResponse = ProjectService();
@@ -216,11 +228,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
         console.log(folderUrl, 'projectfolderurl..')
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
       }
       else {
         // Upload documents to the specified client's folder
-        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData.DMS_x0020_Tags)
+        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
 
       }
@@ -381,9 +393,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             getDocumentsLibPath("unit");
 
                             /* const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
-
+  
                             const libraryPath = `${getLibraryName}/${e.target.value}`;
-
+  
                             fetchData(libraryPath) */
                             //Get documents for client selection
                             //fetchData(getLibraryName);

@@ -12,7 +12,7 @@ export type SPServiceType = {
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
     deleteFolder: (libraryName: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
-    uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: string) => Promise<any>;
+    uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: any) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
@@ -24,7 +24,7 @@ export type SPServiceType = {
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
     updateLibraryName: (GUIDID: any, updatedlibraryName: string) => Promise<any>;
-    copyDocuments: (destinationLibraryUrl: string, files: any[]) => Promise<any>;
+    copyDocuments: (destinationLibraryUrl: string, files: any[], DMStags: any) => Promise<any>;
     createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
@@ -69,7 +69,7 @@ const SPService: SPServiceType = {
                 return list;
             }
             else {
-                //toast.error("Document Library already exists.");
+                //toast.error("Project/Client Document Library already exists. Please try with other project code.");
                 return response;
             }
         } catch (error) {
@@ -106,7 +106,7 @@ const SPService: SPServiceType = {
         const library = web.getFolderByServerRelativeUrl(libraryName);
 
         const promises = files.map((file: any) => {
-            return library.files.add(file.name, file, true)
+            return library.files.add(file.name, file, false)
                 .then((document: any) => {
                     return document;
                 })
@@ -127,17 +127,19 @@ const SPService: SPServiceType = {
     },
 
     //upload document with metadata
-    uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: string): Promise<any[]> => {
+    uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: any): Promise<any[]> => {
         const library = web.getFolderByServerRelativeUrl(libraryName);
 
         const promises = files.map(async (file: any) => {
             try {
-                const uploadedFile = await library.files.add(file.name, file, true);
+                const uploadedFile = await library.files.add(file.name, file, false);
                 if (uploadedFile) {
                     const item = await uploadedFile.file.getItem();
                     console.log(item, 'serviceitem..')
                     if (item) {
                         await item.update({
+                            ...DMSTags,
+                            DMSTags: file.checklist,
                             DMS_x0020_Tags: file.checklist
                         });
                         return item;
@@ -250,7 +252,7 @@ const SPService: SPServiceType = {
             body: JSON.stringify({
                 "query": {
                     "ViewXml": `<View><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`,
-                    "FolderServerRelativeUrl": `${baseURL}${folderPath}`
+                    "FolderServerRelativeUrl": `${folderPath}`
                 }
             })
         };
@@ -279,15 +281,26 @@ const SPService: SPServiceType = {
         return results;
     },
 
-    copyDocuments(destinationLibraryUrl: string, files: any[]) {
+    copyDocuments(destinationLibraryUrl: string, files: any[], DMStags: any) {
         return new Promise((resolve, reject) => {
             const results: any[] = [];
             const promises = files.map(async file => {
                 return web.getFileByServerRelativePath(file.FileRef)
                     .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, false)
-                    .then(document => {
-                        console.log(`Document ${file.FileLeafRef} copied successfully.`);
-                        results.push({ file: file.FileLeafRef, success: true });
+                    .then(async document => {
+
+                        const item = await web.getFileByServerRelativePath(`${destinationLibraryUrl}/${file.FileLeafRef}`).getItem();
+                        console.log(item);
+                        if (item) {
+                            await item.update({
+                                DMSProject: DMStags.DMSProject,
+                                DMSProjectID: DMStags.DMSProjectID
+                            });
+                            console.log(`Document ${file.FileLeafRef} copied successfully.`);
+                            results.push({ file: file.FileLeafRef, success: true });
+                        } else {
+                            throw new Error("Failed to get item after upload");
+                        }
                     })
                     .catch(error => {
                         console.error(`Error copying document ${file.FileLeafRef}:`, error);

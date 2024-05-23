@@ -145,47 +145,28 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
     };
 
-    //working code
-
-    // const handleSave = handleSubmit(async (data: any) => {
-    //     setLoading(true);
-    //     const apiResponse = ClientService();
-
-    //     console.log(particularClientAllData[0].webURL, "name");
-    //     console.log(fileInfoArray);
-
-    //     apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles)
-    //         .then(() => {
-    //             setLoading(false);
-    //             // handleCancel();
-    //             setFiles([]);
-    //             setUploadFiles([]);
-    //             toast.success('Documents Added Successfully!');
-    //             fetchData();
-    //         })
-    //         .catch((error) => {
-    //             setLoading(false);
-    //             console.error("Failed to add client and document:", error);
-    //             toast.error(`Failed to add client and document: ${error}`);
-    //         });
-
-    // });
-
     //......Upload documents with meta data......
     const handleSave = handleSubmit(async (data: any) => {
         setLoading(true);
         const apiResponse = ClientService();
 
         const updatedData = {
-            DMS_x0020_Tags: data.clientChecklist
+            //DMS_x0020_Tags: data.clientChecklist,
+            DMSClient: particularClientAllData[0].name,
+            //DMSProject: "",
+            //DMSTags: "",
+            //DMSUnit: "",
+            DMSClientID: (particularClientAllData[0].Id).toString(),
+            //DMSProjectID: ""
         }
 
-        console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
+
+        //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
 
         console.log(particularClientAllData[0].webURL, "name");
         console.log(fileInfoArray);
 
-        apiResponse.updateClientDocumentMetadata(particularClientAllData[0].webURL, uploadFiles, updatedData.DMS_x0020_Tags)
+        apiResponse.updateClientDocumentMetadata(particularClientAllData[0].webURL, uploadFiles, updatedData)
             .then(() => {
                 setLoading(false);
                 // handleCancel();

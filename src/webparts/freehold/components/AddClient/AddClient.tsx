@@ -99,45 +99,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
   };
 
-  // const handleSave = handleSubmit(async (data) => {
-  //   try {
-  //     setLoading(true);
-  //     const apiResponse = ClientService();
-
-  //     const dataObj = {
-  //       Title: data.title,
-  //       ClientEmail: data.email,
-  //       ClientContact: data.contact,
-  //     };
-  //     false && await addListItem('Clients', dataObj);
-
-  //     const response = await apiResponse.addClient("Client_Informations", dataObj);
-  //     const fileInfoArray = files.map((file: any) => ({
-  //       lastModified: file.lastModified,
-  //       lastModifiedDate: file.lastModifiedDate,
-  //       name: file.name,
-  //       size: file.size,
-  //       type: file.type,
-  //       webkitRelativePath: file.webkitRelativePath
-  //     }));
-  //     console.log(response, fileInfoArray, 'responseresponseresponse');
-  //     await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
-  //     setLoading(false);
-  //     handleCancel();
-
-  //     setFiles([]);
-  //     // showToast(`Client Added Successfully !`, "success");
-
-  //     handleCancel();
-  //   } catch (error) {
-  //     setLoading(false);
-  //     //showToast(`Failed to add client and document.`, "error");
-
-  //   }
-  // });
-
-
   const handleSave = handleSubmit(async (data) => {
+
     setLoading(true);
     const apiResponse = ClientService();
     console.log(data, selectedPersons, "staff");
@@ -149,8 +112,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
       AssignedStaffId: {
         results: selectedPersons
       },
-
-      // DMSTags: data.clientChecklist 
       DMS_x0020_Tags: data.clientChecklist
     };
 
@@ -183,7 +144,35 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
           ClientLibraryPath: uploadDocumentResponse.data.ParentWebUrl + "/" + dataObj.Title
         };
-        return apiResponse.addClient("Client_Informations", updatedDataObj);
+        return apiResponse.addClient("Client_Informations", updatedDataObj).then((clientInfo) => {
+
+          const updatedData = {
+            //DMS_x0020_Tags: "",
+            DMSClient: dataObj.Title,
+            DMSProject: "",
+            //DMSTags: "",
+            DMSUnit: "",
+            DMSClientID: (clientInfo.Id).toString(),
+            DMSProjectID: ""
+          }
+
+          return apiResponse.updateClientDocumentMetadata(updatedDataObj.ClientLibraryPath, files, updatedData)
+            .then(() => {
+              setLoading(false);
+              // handleCancel();
+              setFiles([]);
+              toast.success('Documents Added Successfully!');
+              fetchData();
+              reset();
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.error("Failed to add client and document:", error);
+              toast.error(`Failed to add client and document: ${error}`);
+            });
+
+        });
+
       })
       .then(() => {
         setLoading(false);
@@ -444,7 +433,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {files.map((file:any, index:any) => (
+                            {files.map((file: any, index: any) => (
                               <TableRow key={index}>
                                 <TableCell>{file.name}</TableCell>
 
@@ -482,39 +471,39 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
                                               });
                                           }}
                                         > */}
-                                         <Controller
-                                                            name={`clientChecklist-${index}`}
-                                                            control={control}
-                                                            defaultValue={file.checklist || ""}
-                                                            rules={{ required: 'Client Checklist is required' }}
-                                                            render={({ field }) => (
-                                                                <TextField
-                                                                    {...field}
-                                                                    fullWidth
-                                                                    variant="outlined"
-                                                                    select
-                                                                    size="small"
-                                                                    required
-                                                                    error={!!errors[`clientChecklist-${index}`]}
-                                                                    helperText={errors[`clientChecklist-${index}`]?.message}
-                                                                    style={{ width: 200 }} // Fixed width
-                                                                    onChange={(e: any) => {
-                                                                        field.onChange(e);
-                                                                        const newValue = e.target.value;
-                                                                        setValue(`clientChecklist-${index}`, e.target.value);
-                                                                        setFiles(prevFiles => {
-                                                                            const updatedFiles = [...prevFiles];
-                                                                            updatedFiles[index].checklist = newValue;
-                                                                            return updatedFiles;
-                                                                        });
-                                                                    }}
-                                                                >
-                                          {dropdownOptions.map((option, index) => (
-                                            <MenuItem key={index} value={option.Title}>
-                                              {option.Title}
-                                            </MenuItem>
-                                          ))}
-                                        </TextField>
+                                  <Controller
+                                    name={`clientChecklist-${index}`}
+                                    control={control}
+                                    defaultValue={file.checklist || ""}
+                                    rules={{ required: 'Client Checklist is required' }}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        fullWidth
+                                        variant="outlined"
+                                        select
+                                        size="small"
+                                        required
+                                        error={!!errors[`clientChecklist-${index}`]}
+                                        helperText={errors[`clientChecklist-${index}`]?.message}
+                                        style={{ width: 200 }} // Fixed width
+                                        onChange={(e: any) => {
+                                          field.onChange(e);
+                                          const newValue = e.target.value;
+                                          setValue(`clientChecklist-${index}`, e.target.value);
+                                          setFiles(prevFiles => {
+                                            const updatedFiles = [...prevFiles];
+                                            updatedFiles[index].checklist = newValue;
+                                            return updatedFiles;
+                                          });
+                                        }}
+                                      >
+                                        {dropdownOptions.map((option, index) => (
+                                          <MenuItem key={index} value={option.Title}>
+                                            {option.Title}
+                                          </MenuItem>
+                                        ))}
+                                      </TextField>
                                       // </>
                                     )}
                                   />

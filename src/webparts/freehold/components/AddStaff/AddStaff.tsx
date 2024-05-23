@@ -86,7 +86,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     const handlePeoplePickerChange = async (items: any[]) => {
         //console.log(items, "itemsitemsitemsitems");
         const selectedPersonsIds = [];
-        if (selected && selected.length > 0 &&
+        /* if (selected && selected.length > 0 &&
             selectedDetails && selectedDetails.length > 0) {
             selected.forEach((selItem: any) => {
                 selectedDetails.forEach((selDetail: any) => {
@@ -96,7 +96,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                     }
                 });
             });
-        }
+        } */
 
         for (const item of items) {
             const getID = await ClientService().getPersonByEmail(item.secondaryText);

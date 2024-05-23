@@ -97,7 +97,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
-  const [unitData, setunitData] = useState<any>([]);
+  //const [unitData, setunitData] = useState<any>([]);
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const projectService = ProjectService();
@@ -106,7 +106,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
   const columns = [
     { title: "Project", field: "project", defaultGroupOrder: 0 },
     { title: "Client", field: "client", defaultGroupOrder: 0 },
-    { title: "Unit", field: 'unit', defaultGroupOrder: 0 },
+    //{ title: "Unit", field: 'unit', defaultGroupOrder: 0 },
     { title: "Checklist Name", field: "checklistname" },
     { title: "Progress", field: 'progress' }
   ]
@@ -160,34 +160,52 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
               _.forEach(clientDetails, function (client) {
 
                 const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${client.Title}`;
-                const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+                //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
-                _.forEach(unitDetails, function (unit) {
+                /* _.forEach(unitDetails, function (unit) {
                   docList.push({
                     project: getValues("projectName"),
                     client: client.Title,
-                    unit: unit.Title,
+                    //unit: unit.Title,
                     checklistname: value.Title,
                     progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
                   });
+                }); */
+
+                docList.push({
+                  project: getValues("projectName"),
+                  client: client.Title,
+                  //unit: unit.Title,
+                  checklistname: value.Title,
+                  progress: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
                 });
               });
 
             }
             else if (clientName !== "" && unitFolder === "") {
               const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
-              const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+              //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
-              _.forEach(unitDetails, function (unit) {
+              /* _.forEach(unitDetails, function (unit) {
                 docList.push({
                   project: getValues("projectName"),
                   client: getValues("clientName"),
-                  unit: unit.Title,
+                  //unit: unit.Title,
                   checklistname: value.Title,
                   progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
                 });
+              }); */
+
+              docList.push({
+                project: getValues("projectName"),
+                client: getValues("clientName"),
+                //unit: unit.Title,
+                checklistname: value.Title,
+                progress: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
               });
-            } else if (clientName !== "" && unitFolder !== "") {
+
+            }
+            /*  else if (clientName !== "" && unitFolder !== "") {
               const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
 
               docList.push({
@@ -198,7 +216,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                 progress: (docDetails_Grpd[`${clientFolderPath}/${unitFolder}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unitFolder}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
               });
 
-            }
+            } */
 
           });
 
@@ -260,7 +278,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
     }
   };
 
-  const getDocumentsFromFolder = async (libraryName: string, clientName: string) => {
+  /* const getDocumentsFromFolder = async (libraryName: string, clientName: string) => {
     try {
 
       const unitFolders: any = await ProjectService().getAllFoldersInLibrary(`${libraryName}/${clientName}`);
@@ -273,7 +291,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
-  };
+  }; */
 
   React.useEffect(() => {
     fetchData();
@@ -380,9 +398,9 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                               onChange={(e: any) => {
 
                                 setValue('clientName', e.target.value);
-                                const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+                                //const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
 
-                                getDocumentsFromFolder(projectInfo, e.target.value);
+                                //getDocumentsFromFolder(projectInfo, e.target.value);
 
                               }}
                             >
@@ -399,7 +417,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                   </Box>
                 </Typography>
 
-                <Typography>
+                {/* <Typography>
                   <Stack direction="row" alignItems="center">
                     Unit
                   </Stack>
@@ -440,7 +458,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                     </FormControl>
                   </Box>
                 </Typography>
-
+ */}
                 <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button
                     disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
@@ -454,8 +472,8 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                     style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
                     onClick={() => {
                       reset();
-                      setunitData([]);
-                      setParticularClientAllData([]);
+                      //setunitData([]);
+                      //setParticularClientAllData([]);
                       setData([]);
                     }}>Clear</Button>
                 </FormControl>
