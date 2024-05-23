@@ -127,7 +127,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
         if (results.length > 0) {
           //Get project number
-          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
 
           let projectRelativePath = projectInfo;
 
@@ -154,12 +154,12 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
             if (clientName === "" && unitFolder === "") {
 
-              const projectFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}`;
+              const projectFolderPath: string = `${projectInfo}`;
               const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
               _.forEach(clientDetails, function (client) {
 
-                const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${client.Title}`;
+                const clientFolderPath: string = `${projectInfo}/${client.Title}`;
                 //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
                 /* _.forEach(unitDetails, function (unit) {
@@ -183,7 +183,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
             }
             else if (clientName !== "" && unitFolder === "") {
-              const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
+              const clientFolderPath: string = `${projectInfo}/${clientName}`;
               //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
               /* _.forEach(unitDetails, function (unit) {
