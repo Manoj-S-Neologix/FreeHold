@@ -202,6 +202,7 @@ const handleApply = () => {
   setTimeout(() => {
     setOpen(false);
 }, 0);
+ reset();
 };
 
 const handleClear = () => {
