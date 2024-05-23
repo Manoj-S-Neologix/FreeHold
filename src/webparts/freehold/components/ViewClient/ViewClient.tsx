@@ -676,9 +676,8 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent>
+            <DialogContent style={{paddingTop:"0px", paddingRight:"24px"}}>
               <Typography>
-
                 {selectedName.map((data: any) => (
                   <div key={data.id}>
                     <Box>
