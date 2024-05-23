@@ -1030,7 +1030,7 @@ const handleClear = () => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent>
+            <DialogContent style={{paddingTop:"0px", paddingRight:"24px"}}>
               <Typography style={{
                 textDecoration: "underline", color: "blue", cursor: "pointer",
                 listStyleType: "none", padding: 0

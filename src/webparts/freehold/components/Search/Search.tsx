@@ -365,6 +365,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                             {/* <ClientProjectUpload /> */}
                             <ClientUploadDocument onClose={() => {
                                 setDocumentType('')
+                                setOpenDocuments(false)
                             }} />
                             {false && <form onSubmit={handleSubmit(handleSave)}>
                                 <Stack direction={"column"} gap={3}>
@@ -497,6 +498,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                         <>
                             <ProjectUploadDocument onClose={() => {
                                 setDocumentType('')
+                                setOpenDocuments(false)
                             }} />
                         </>
                         //   <form onSubmit={handleSubmit(handleSave)}>
