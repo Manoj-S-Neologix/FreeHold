@@ -462,22 +462,48 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>
 
                                     <TableRow>
-                                        <TableCell component="th" scope="row">Assign Client</TableCell>
-                                        {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
+                                        <TableCell component="th" scope="row">Assigned Client</TableCell>
+                                        {/* {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        // onClick={(id:any) => {
-                                        //     // setHandleClientDialog(true);
-                                        //     // setIsViewDialogOpen(true)
-                                        //     navigate("/ViewClient/" + id)
-                                        // }}
                                         >
                                             {projectDetails.assignClient ?
                                                 projectDetails.assignClient :
                                                 "Assign Client"
                                             }
                                         </TableCell>
+                                        )} */}
+                                        {!isEdit ? (
+                                            (<TableCell>
+                                                {projectDetails?.clientDetails?.length > 0 && (
+                                                    projectDetails.clientDetails.map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}
+                                                        >
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </TableCell>)
+                                        ) : (
+                                            <TableCell>
+                                                {projectDetails?.clientDetails?.length > 0 && (
+                                                    projectDetails.clientDetails.map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}>
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </TableCell>
                                         )}
-
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified Date</TableCell>
