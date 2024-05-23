@@ -30,20 +30,20 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const [count, setCount] = useState(1);
     // const [fileData, setFileData] = useState<any[]>([]);
     // const [isLoading, setIsLoading] = useState(true);
-    const { control, handleSubmit, reset,unregister,watch, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue } = useForm();
     const [showCount, setShowCount] = useState(false);
     // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
     const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
+    const [deleteItemPath, setDeleteItemPath] = useState("");
 
     const getProjectCode = particularClientAllData[0]?.projectNumber;
+    const getProjectUrl = particularClientAllData[0]?.webURL;
     console.log(getProjectCode, getFoldersResponse, "getProjectCode");
 
     const clientService = ClientService();
     const clientListName = "Client_Informations";
     const selectQuery = "Id,Title,ClientLibraryGUID";
-
 
     const apiCall = async () => {
         try {
@@ -64,21 +64,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         }
     };
 
-    // const onDelete = (index: number) => {
-    //     setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
-    // };
-
     console.log(getClientDetails, particularClientAllData, "getClientDetails");
 
     useEffect(() => {
         apiCall();
-        // if (particularClientAllData[0]?.ClientGUID) {
-        //     setShowCount(true);
-        //     setGetClient(particularClientAllData[0]?.ClientGUID);
-        // } else {
-        //     setShowCount(false);
-        //     setGetClient([]);
-        // }
     }, []);
 
 
@@ -86,10 +75,6 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         console.log("Cancel button clicked");
         onClose();
     };
-    // const deleteUnit = (indexToRemove: any) => {
-    //     setCount((prevCount) => prevCount - 1);
-    //     setValue(`unitName${indexToRemove}`, "");
-    // };
 
     const deleteUnit = (indexToRemove: number) => {
         const currentValues = watch(); // Get current form values
@@ -112,61 +97,9 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         reset();
     };
 
-    //Counter
-    //   const handleCount = (event:any) => {
-    //     setCount(Math.max(Number(event.target.value), 1));
-    //   };
-
     const handleCountChange = (value: any) => {
         setCount(Math.max(Number(value), 1));
     };
-
-    // const falseFunc = () => {
-    //     const dataObj = {
-    //         AssignedStaffId: {
-    //             results: [
-
-    //             ]
-    //         }
-    //     };
-
-    //     if (selected?.length === 0) {
-    //         ProjectService().updateProject(
-    //             "Project_Informations",
-    //             particularClientAllData[0].Id,
-    //             dataObj
-    //         ).then((response: any) => {
-    //             console.log("Success:", response);
-    //             onClose();
-    //             reset();
-    //             setLoading(false);
-
-    //         }).catch((error: any) => {
-    //             console.error("Error:", error);
-    //             setLoading(false);
-    //         });
-    //     }
-    //     else {
-    //         setLoading(true);
-    //         for (const item of selected) {
-    //             ProjectService().updateProject(
-    //                 "Project_Informations",
-    //                 item,
-    //                 dataObj
-    //             ).then((response: any) => {
-    //                 console.log("Success:", response);
-    //                 onClose();
-    //                 reset();
-    //                 setLoading(false);
-
-    //             }).catch((error: any) => {
-    //                 setLoading(false);
-    //                 console.error("Error:", error);
-    //             });
-
-    //         }
-    //     }
-    // };
 
     const handleSave = handleSubmit(async (data) => {
         setLoading(true);
@@ -182,7 +115,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         console.log(getProjectCode, AssignClient, collectionOfUnits, "handleSave");
 
         try {
-            const response = await ProjectService().createFolder(getProjectCode, AssignClient);
+            const response = await ProjectService().createFolder(getProjectUrl, AssignClient);
             const folderCreationPromises = collectionOfUnits.map((unit) => {
                 return ProjectService().createFolder(response.data.ServerRelativeUrl, unit.key);
             });
@@ -213,7 +146,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
 
             const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
             console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-            const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+            const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
 
             setGetFoldersResponse(getFolders);
             console.log(getFolders, "getFolders....")
@@ -234,79 +167,27 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     console.log(getClientDocumentsAllData);
     console.log(getClientDocumentsData, "document");
 
-
-    // const handleDelete = (folderServerRelativeUrl: any) => {
-    //     const apiResponse = ProjectService();
-    //     apiResponse.deleteFolder(folderServerRelativeUrl)
-    //       .then(() => {
-    //         setIsDeleteDialogOpen(false);
-    //         console.log("File deleted successfully!");
-    //         toast.success('File deleted successfully!');
-    //         fetchData(folderServerRelativeUrl);
-    //       })
-    //       .catch(error => {
-    //         console.error("Failed to delete document:", error);
-    //         toast.error(`Failed to delete document: ${error}`);
-    //       });
-    //   };
-
-    const handleDeleteUnit = async() => {
+    const handleDeleteUnit = async () => {
         try {
             const apiResponse = ProjectService();
-            const folderUrl = getFoldersResponse[0].ServerRelativeUrl
-            await apiResponse.deleteFolder(folderUrl)
-            console.log(folderUrl, 'folderurl..')
+            //const folderUrl = getFoldersResponse[0].ServerRelativeUrl
+            await apiResponse.deleteFolder(deleteItemPath)
+            console.log(deleteItemPath, 'folderurl..')
             toast.success('Unit Deleted Successfully!');
             setIsDeleteDialogOpen(false);
-            onClose();            
-      
-          } catch (error) {
+            onClose();
+
+        } catch (error) {
             setLoading(false);
             console.error("Failed to delete unit:", error);
             toast.error(`Failed to delete unit: ${error}`);
-          }
+        }
     }
-
-    // const handleDeleteUnit = async (data:any) => {
-    //     try {
-    //         // Assuming ProjectService() returns an object with the deleteFolder method
-    //         const apiResponse = ProjectService();
-    
-    //         // Get the name of the library
-    //         const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
-    
-    //         if (data.getUnitDocument !== '') {
-    //             const folderUrlToDelete = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.getUnitDocument}`;
-    //             console.log(data.getUnitDocument, 'deleteunitfolder..');
-    
-    //             // Call the API to delete the folder
-    //             await apiResponse.deleteFolder(folderUrlToDelete);
-    
-    //             // Remove the folder from the getFoldersResponse array
-    //             if (Array.isArray(getFoldersResponse)) {
-    //                 const getFoldersResponse = getFoldersResponse.filter((folder:any) => folder.ServerRelativeUrl !== folderUrlToDelete);
-    //                 console.log(getFoldersResponse, 'Updated folders after deletion');
-    //             } else {
-    //                 console.error('getFoldersResponse is not an array');
-    //             }
-    //         }
-    
-    //         toast.success('Unit Deleted Successfully!');
-    //     } catch (error) {
-    //         setLoading(false);
-    //         console.error("Failed to delete unit:", error);
-    //         toast.error(`Failed to delete unit: ${error}`);
-    //     }
-    // };
-    
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
         // fetchData();
     };
-
-
-
 
     return (
         <Box sx={{ width: '100', padding: '20px' }}>
@@ -356,7 +237,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                         }}
                                         render={({ field }) => (
                                             <TextField
-                                                label="Assign Client"
+                                                label="Assigned Client"
                                                 variant="outlined"
                                                 fullWidth
                                                 select
@@ -391,59 +272,25 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                     getFoldersResponse.map((item: any, idx: any) => (
                                                         <TableRow key={idx}>
                                                             {/* <TableCell> */}
-                                                                <Grid item xs={12} style={{display:'flex', paddingBottom:'0.5rem'}}>
-                                                                    <TextField label={item?.Name} fullWidth disabled name='getUnitDocument'>
-                                                                        {item?.Name}
-                                                                    </TextField>
-                                                                
-                                                            {/* </TableCell> */}
-                                                            {/* <TableCell> */}
-                                                                <IconButton aria-label="delete" 
-                                                                onClick={() => {setIsDeleteDialogOpen(true)}}>
+                                                            <Grid item xs={12} style={{ display: 'flex', paddingBottom: '0.5rem' }}>
+                                                                <TextField label={item?.Name} fullWidth disabled name='getUnitDocument'>
+                                                                    {item?.Name}
+                                                                </TextField>
+
+                                                                {/* </TableCell> */}
+                                                                {/* <TableCell> */}
+                                                                <IconButton aria-label="delete"
+                                                                    onClick={() => { setIsDeleteDialogOpen(true); setDeleteItemPath(item.ServerRelativeUrl); }}>
                                                                     <DeleteIcon />
                                                                 </IconButton>
-                                                                </Grid>
+                                                            </Grid>
                                                             {/* </TableCell> */}
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                      {/* {[...Array(getFoldersResponse.length)].map((_, index) => (
-                                    <Grid item xs={12} key={index} container spacing={1} alignItems="center">
-                                        <Grid item xs={11}>
-                                            <Controller
-                                                name={`unitName${index}`}
-                                                control={control}
-                                                // defaultValue=""
-                                            
-                                                render={({ field }) => (
-                                                    <TextField
-                                                        defaultValue={`Unit ${index + 1}`}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        disabled
-                                                        {...field}
-                                                        required
-                                                        error={!!errors?.[`unitName${index}`]}
-                                                        helperText={errors?.[`unitName${index}`]?.message}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={1}>
-                                            <Tooltip title="Remove Unit">
-                                                <IconButton
-                                                    disabled={getFoldersResponse.length === 1}
-                                                    aria-label={`Remove Unit ${index + 1}`}
-                                                    onClick={() => deleteUnit(index)}
-                                                >
-                                                    <DeleteIcon fontSize='medium' />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Grid>
-                                    </Grid>
-                                ))} */}
+
                                 </Grid>
                                 {isDeleteDialogOpen && (
                                     <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
@@ -483,20 +330,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             </div>
                                         </DialogContent>
                                         <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-                                            {/* <Button
-                                onClick={handleDelete}
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    maxWidth: '150px',
-                                    float: 'right',
-                                }}
-                            >
-                                Delete
-                            </Button>
-                            <Button variant="outlined" onClick={handleCancel}>
-                                Cancel
-                            </Button> */}
+
                                             <Stack
                                                 direction="row"
                                                 justifyContent="end"
