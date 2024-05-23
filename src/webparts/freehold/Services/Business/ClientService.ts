@@ -33,7 +33,7 @@ const ClientService = () => {
     const uploadDocument = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.createLibrary(libraryName);
-            await spServiceInstance.uploadDocument(libraryName, file);
+            //await spServiceInstance.uploadDocument(libraryName, file);
             //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
             return response;
 
@@ -60,7 +60,7 @@ const ClientService = () => {
     };
 
     // //Meta Data
-    const updateClientDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
+    const updateClientDocumentMetadata = async (libraryName: string, file: any, DMSTags: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
             console.log(response, "response-metaData")

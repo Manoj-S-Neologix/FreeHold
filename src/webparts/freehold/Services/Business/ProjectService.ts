@@ -7,7 +7,7 @@ const ProjectService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
     //project upload with meta data
-    const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: string) => {
+    const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
             console.log(response, "response-metaData")
@@ -269,10 +269,10 @@ const ProjectService = () => {
         }
     };
 
-    const copyDocuments = async (destinationLibraryUrl: string, files: any[]) => {
+    const copyDocuments = async (destinationLibraryUrl: string, files: any[], DMStags: any) => {
 
         if (spServiceInstance) {
-            const results = await spServiceInstance.copyDocuments(destinationLibraryUrl, files);
+            const results = await spServiceInstance.copyDocuments(destinationLibraryUrl, files, DMStags);
             console.log(results, "results");
             return results;
         }
