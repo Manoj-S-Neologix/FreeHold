@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip, MenuItem, InputLabel, TextField, Avatar } from '@mui/material';
+import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip, MenuItem, InputLabel, TextField } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -198,7 +198,8 @@ const handleApply = () => {
       setProjectData([]);
       console.log("No filter query specified.");
   }
-  setFilterQuery(filterQueryCall);
+  // setFilterQuery(filterQueryCall);
+  setFilterQueryCall(filterQuery);
   setTimeout(() => {
     setOpen(false);
 }, 0);
@@ -394,8 +395,8 @@ const handleClear = () => {
       const projectService = ProjectService();
       const clientService = ClientService();
       
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
   
       // Run both requests concurrently
@@ -726,8 +727,8 @@ const handleClear = () => {
       ) : (
         <Chip
           sx={{ marginLeft: 2 }}
-          avatar={<Avatar>{filterQuery.charAt(0)}</Avatar>}
-          label={filterQuery}
+          // avatar={<Avatar>{filterQuery.charAt(0)}</Avatar>}
+          label={filterQueryCall}
           onDelete={() => {
             setFilterQuery('');
             setFilterQueryCall('');
