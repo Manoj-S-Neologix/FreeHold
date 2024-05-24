@@ -106,7 +106,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   let { editProjectId, viewProjectId } = useParams();
 
 
-  console.log(selectedName,  'selected..')
+  console.log(selectedName, 'selected..')
 
   console.log(getClient, setGetClient, "clientData,")
 
@@ -175,42 +175,42 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   console.log(handleFilterChange, "handleFilterChange");
 
-// const handleApply = () => {
-//     if (filterQuery) {
-//         const filteredData = projectData.filter((data: any) => data.clientDetails.filter((item:any)=>{item.Title===filterQuery}));
-//         // setProjectData(filteredData);
-//         console.log(filteredData, "filteredData");
-//     } else {
-//        setProjectData([]);
-//         console.log("No filter query specified.");
-//     }
-// };
+  // const handleApply = () => {
+  //     if (filterQuery) {
+  //         const filteredData = projectData.filter((data: any) => data.clientDetails.filter((item:any)=>{item.Title===filterQuery}));
+  //         // setProjectData(filteredData);
+  //         console.log(filteredData, "filteredData");
+  //     } else {
+  //        setProjectData([]);
+  //         console.log("No filter query specified.");
+  //     }
+  // };
 
-const handleApply = () => {
-  setFilterPersonShown(true);
-  if (filterQuery) {
-      const filteredData = projectData.filter((data:any) =>
-          data.clientDetails.some((item:any) => item.Title === filterQuery)
+  const handleApply = () => {
+    setFilterPersonShown(true);
+    if (filterQuery) {
+      const filteredData = projectData.filter((data: any) =>
+        data.clientDetails.some((item: any) => item.Title === filterQuery)
       );
       setProjectData(filteredData);
       console.log(filteredData, "filteredData");
-  } else {
+    } else {
       setProjectData([]);
       console.log("No filter query specified.");
-  }
-  // setFilterQuery(filterQueryCall);
-  setFilterQueryCall(filterQuery);
-  setTimeout(() => {
-    setOpen(false);
-}, 0);
- reset();
-};
+    }
+    // setFilterQuery(filterQueryCall);
+    setFilterQueryCall(filterQuery);
+    setTimeout(() => {
+      setOpen(false);
+    }, 0);
+    reset();
+  };
 
-const handleClear = () => {
-  setFilterQueryCall('');
-  reset();
-  setOpen(false);
-};
+  const handleClear = () => {
+    setFilterQueryCall('');
+    reset();
+    setOpen(false);
+  };
 
 
   const IconStyles = (icon: any) => {
@@ -221,11 +221,11 @@ const handleClear = () => {
     );
   };
 
-  console.log(selectedPersons,"selectedPersons");
+  console.log(selectedPersons, "selectedPersons");
 
   const headCells = [
     { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project No' },
+    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Id' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
     //{ id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
@@ -394,20 +394,20 @@ const handleClear = () => {
       setIsLoading(true);
       const projectService = ProjectService();
       const clientService = ClientService();
-      
+
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-  
+
       // Run both requests concurrently
       const [projectResults, clientResults] = await Promise.all([
         projectService.getProjectExpand('Project_Informations', select, expand, orderBy),
         clientService.getClient('Client_Informations')
       ]);
-  
+
       console.log(projectResults, "project results");
       console.log(clientResults, "client results");
-  
+
       // Handle project results
       if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
         setProjectData(projectResults.TableData);
@@ -416,30 +416,31 @@ const handleClear = () => {
         setProjectData([]);
         setAllClientData([]);
       }
-  
+
       if (clientResults && clientResults.length > 0) {
         setAssignedClientData(clientResults);
         // setAssignedClientData(clientResults);
-    } else {
+      } else {
         // setClientData([]);
         setAssignedClientData([]);
-    }
-  
+      }
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
     }
   };
-  
+
 
   const fetchDataEditView = async () => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      console.log(orderBy, "orderByorderBy")
       const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
@@ -557,8 +558,8 @@ const handleClear = () => {
   const editView = async () => {
     const initialFetch =
       await fetchDataEditView();
-
-    if (editProjectId || viewProjectId) {
+    console.log(initialFetch, "initialFetchinitialFetch");
+    if ((editProjectId || viewProjectId) && initialFetch) {
       console.log('Project ID changed:', editProjectId, viewProjectId, initialFetch);
 
 
@@ -580,7 +581,7 @@ const handleClear = () => {
           if (data.Id == projectId) {
             console.log(data, data.Id, "MapFucntionData")
             setProjectData([data]);
-            if(editProjectId){
+            if (editProjectId) {
               setIsEdit(true);
             }
             setProjectDetails(data)
@@ -598,8 +599,10 @@ const handleClear = () => {
 
       // Navigate based on the project ID
       if (editProjectId) {
+        // setIsViewDialogOpen(true);
         navigate('/EditProject/' + editProjectId);
       } else if (viewProjectId) {
+        // setIsViewDialogOpen(true);
         navigate('/ViewProject/' + viewProjectId);
       }
     }
@@ -616,12 +619,18 @@ const handleClear = () => {
 
   React.useEffect(() => {
 
-    editView();
+    // editView();
 
-    if (editProjectId || viewProjectId)
-      // console.log(editClientId, viewClientId, "editClientId, viewClientId");
-      // setIsViewDialogOpen(false);
+    if (editProjectId || viewProjectId) {
+      editView();
       console.log('Project ID changed:', editProjectId, viewProjectId);
+    }
+    // else{
+    //   fetchData();
+    // }
+    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
+    // setIsViewDialogOpen(false);
+
   }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
@@ -719,27 +728,27 @@ const handleClear = () => {
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <CustomSearch handleSearchChange={handleSearchChange} />
-              
-            {!filterPersonShown ? (
-        <IconButton onClick={() => { setOpen(true); }}>
-          <FilterAltIcon />
-        </IconButton>
-      ) : (
-        <Chip
-          sx={{ marginLeft: 2 }}
-          // avatar={<Avatar>{filterQuery.charAt(0)}</Avatar>}
-          label={filterQueryCall}
-          onDelete={() => {
-            setFilterQuery('');
-            setFilterQueryCall('');
-            setSelectedPersons([]);
-            setOpen(false);
-            setFilterPersonShown(false);
-            fetchData();
-          }}
-          variant="outlined"
-        />
-      )}
+
+              {!filterPersonShown ? (
+                <IconButton onClick={() => { setOpen(true); }}>
+                  <FilterAltIcon />
+                </IconButton>
+              ) : (
+                <Chip
+                  sx={{ marginLeft: 2 }}
+                  // avatar={<Avatar>{filterQuery.charAt(0)}</Avatar>}
+                  label={filterQueryCall}
+                  onDelete={() => {
+                    setFilterQuery('');
+                    setFilterQueryCall('');
+                    setSelectedPersons([]);
+                    setOpen(false);
+                    setFilterPersonShown(false);
+                    fetchData();
+                  }}
+                  variant="outlined"
+                />
+              )}
             </Box>
           </Box>
 
@@ -846,35 +855,35 @@ const handleClear = () => {
             </DialogContent>
           </Dialog> */}
 
-<DialogTitle>
-    <div className="d-flex flex-column">
-      <div className="d-flex justify-content-between align-items-center relative">
-        <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
-          Filter
-        </h4>
-      </div>
-      <div style={{
-        height: '4px', width: '100%',
-        backgroundColor: theme.palette.primary.main
-      }} />
-    </div>
-  </DialogTitle>
+            <DialogTitle>
+              <div className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-center relative">
+                  <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
+                    Filter
+                  </h4>
+                </div>
+                <div style={{
+                  height: '4px', width: '100%',
+                  backgroundColor: theme.palette.primary.main
+                }} />
+              </div>
+            </DialogTitle>
 
-  <IconButton
-    aria-label="close"
-    onClick={() => { setOpen(false); }}
-    sx={{
-      position: "absolute",
-      right: "14px",
-      top: "8px",
-      color: (theme: any) => theme.palette.grey[500],
-    }}
-  >
-    <CloseIcon />
-  </IconButton>
-  <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-    <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-      {/* <Grid item xs={12} sm={6}>
+            <IconButton
+              aria-label="close"
+              onClick={() => { setOpen(false); }}
+              sx={{
+                position: "absolute",
+                right: "14px",
+                top: "8px",
+                color: (theme: any) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
+              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+                {/* <Grid item xs={12} sm={6}>
         <FormControl fullWidth>
           <InputLabel id="assignedClientLabel">Assigned Client<span style={{ color: 'red' }}>*</span></InputLabel>
           <Controller
@@ -901,8 +910,8 @@ const handleClear = () => {
           {errors.assignedClientId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedClientId.message}</span>}
         </FormControl>
       </Grid> */}
-        <Grid item sm={12}>
-        {/* <Controller
+                <Grid item sm={12}>
+                  {/* <Controller
             name="clientName"
             control={control}
             defaultValue=""
@@ -938,67 +947,67 @@ const handleClear = () => {
                   ))}
                 </TextField> */}
                   <Controller
-                name="clientName"
-                control={control}
-                defaultValue=""
-                rules={{ required: 'Client Name is required' }}
-                render={({ field }) => (
-                  <>
-                    <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                    <TextField
-                      {...field}
-                      id="client-name"
-                      fullWidth
-                      variant="outlined"
-                      select
-                      size="small"
-                      required
-                      error={!!errors.clientName}
-                      helperText={errors?.clientName?.message}
-                      onChange={(e) => {
-                        setValue('clientName', e.target.value);
-                        handleFilterChange(e);
-                        const getUnique = assignedClientData.filter((datas) => datas.Title === e.target.value);
-                        setParticularClientAllData(getUnique);
-                        setSelectedPersons(getUnique);
-                      }}
-                    >
-                      {assignedClientData?.map((item) => (
-                        <MenuItem key={item.Id} value={item.Title}>
-                          {item.Title}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-              </>
-            )}
-          />
-        </Grid>
-    </Grid>
-    <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
+                    name="clientName"
+                    control={control}
+                    defaultValue=""
+                    rules={{ required: 'Client Name is required' }}
+                    render={({ field }) => (
+                      <>
+                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                        <TextField
+                          {...field}
+                          id="client-name"
+                          fullWidth
+                          variant="outlined"
+                          select
+                          size="small"
+                          required
+                          error={!!errors.clientName}
+                          helperText={errors?.clientName?.message}
+                          onChange={(e) => {
+                            setValue('clientName', e.target.value);
+                            handleFilterChange(e);
+                            const getUnique = assignedClientData.filter((datas) => datas.Title === e.target.value);
+                            setParticularClientAllData(getUnique);
+                            setSelectedPersons(getUnique);
+                          }}
+                        >
+                          {assignedClientData?.map((item) => (
+                            <MenuItem key={item.Id} value={item.Title}>
+                              {item.Title}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </>
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
                 <MuiButton variant="outlined" onClick={handleClear}>
                   Clear
                 </MuiButton>
                 <MuiButton
-                        // onClick={() => {
-                        //   handleApply(
+                  // onClick={() => {
+                  //   handleApply(
 
-                        //   ); handleFilterChange(new MouseEvent('click'));
-                        // }}
-                        onClick={() => {
-                          handleApply();
-                      }}
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          maxWidth: '150px',
-                          float: 'right',
-                        }}
-                      >
-                        Apply
-                      </MuiButton>
+                  //   ); handleFilterChange(new MouseEvent('click'));
+                  // }}
+                  onClick={() => {
+                    handleApply();
+                  }}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    maxWidth: '150px',
+                    float: 'right',
+                  }}
+                >
+                  Apply
+                </MuiButton>
               </DialogActions>
-  </DialogContent>
-</Dialog>
+            </DialogContent>
+          </Dialog>
 
           {/* Assigned client dialog*/}
           <Dialog
@@ -1031,7 +1040,7 @@ const handleClear = () => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent style={{paddingTop:"0px", paddingRight:"24px"}}>
+            <DialogContent>
               <Typography style={{
                 textDecoration: "underline", color: "blue", cursor: "pointer",
                 listStyleType: "none", padding: 0

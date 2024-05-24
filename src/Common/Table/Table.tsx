@@ -84,7 +84,7 @@ function EnhancedTableHead(props: any) {
 
 const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth, isPersona }: any) => {
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('name');
+    const [orderBy, setOrderBy] = React.useState('');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
 

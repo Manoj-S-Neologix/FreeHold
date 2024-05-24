@@ -1,21 +1,35 @@
 import * as React from 'react';
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from './CustomSearch.module.scss';
 import Drawer from '@mui/material/Drawer';
 import SearchResults from '../SearchResults/SearchResults';
 
 interface ISearchPros {
-    handleSearchChange?: any;
+    handleSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
-
+    const [inputValue, setInputValue] = React.useState('');
     const [opend, setOpend] = React.useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
-        //alert("Clicked");
         setOpend(newOpen);
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+        if (handleSearchChange) {
+            handleSearchChange(event);
+        }
+    };
+
+    const clearInput = () => {
+        setInputValue('');
+        if (handleSearchChange) {
+            handleSearchChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+        }
     };
 
     return (
@@ -25,6 +39,8 @@ const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
                 size="small"
                 fullWidth
                 placeholder="Search..."
+                value={inputValue}
+                onChange={handleInputChange}
                 sx={{
                     '& .MuiInputBase-input': {
                         color: 'primary',
@@ -33,12 +49,21 @@ const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
                         fontWeight: 600
                     },
                     "& fieldset": { border: 'none' },
+                    width:'250px'
                 }}
                 InputProps={{
-                    endAdornment: <SearchIcon className={styles.IconSearch} onClick={toggleDrawer(true)} />,
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            {inputValue && (
+                                <IconButton onClick={clearInput}>
+                                    <CloseIcon />
+                                </IconButton>
+                            )}
+                            <SearchIcon className={styles.IconSearch} onClick={toggleDrawer(true)} />
+                        </InputAdornment>
+                    ),
                     style: { border: "none", color: "#125895", cursor: "pointer" }
                 }}
-                onChange={handleSearchChange}
             />
 
             <React.Fragment>
@@ -55,6 +80,5 @@ const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
 };
 
 export default CustomSearch;
-
 
 
