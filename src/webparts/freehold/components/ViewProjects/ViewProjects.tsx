@@ -911,41 +911,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         </FormControl>
       </Grid> */}
                 <Grid item sm={12}>
-                  {/* <Controller
-            name="clientName"
-            control={control}
-            defaultValue=""
-            rules={{ required: 'Client Name is required' }}
-            render={({ field }) => (
-              <>
-                <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                <TextField
-                {...field}
-                id="client-name"
-                fullWidth
-                variant="outlined"
-                select
-                size="small"
-                required
-                label=""
-                error={!!errors.clientName}
-                helperText={errors?.clientName?.message}
-                onChange={(e: any) => {
-                    console.log(e.target.value);
-                    setGetClient(e.target.value);
-                    const getUnique = assignedClientData.filter((datas: any) => datas.Title === e.target.value);
-                    setParticularClientAllData(getUnique);
-                    console.log(getUnique, "getUnique")
-                    setValue('clientName', e.target.value);
-                    handleFilterChange(e); 
-                }}
-            >
-                  {assignedClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.Title}>
-                      {item.Title}
-                    </MenuItem>
-                  ))}
-                </TextField> */}
+                
                   <Controller
                     name="clientName"
                     control={control}
