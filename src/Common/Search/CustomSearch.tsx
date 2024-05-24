@@ -2,27 +2,20 @@ import * as React from 'react';
 import { Box, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styles from './CustomSearch.module.scss';
-import Drawer from '@mui/material/Drawer';
-import SearchResults from '../SearchResults/SearchResults';
 
 interface ISearchPros {
     handleSearchChange?: any;
+    searchQryTxt?: string;
 }
 
-const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
-
-    const [opend, setOpend] = React.useState(false);
-
-    const toggleDrawer = (newOpen: boolean) => () => {
-        //alert("Clicked");
-        setOpend(newOpen);
-    };
+const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
 
     return (
         <Box>
             <TextField
                 className={styles.searchBar}
                 size="small"
+                value={searchQryTxt}
                 fullWidth
                 placeholder="Search..."
                 sx={{
@@ -35,21 +28,12 @@ const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
                     "& fieldset": { border: 'none' },
                 }}
                 InputProps={{
-                    endAdornment: <SearchIcon className={styles.IconSearch} onClick={toggleDrawer(true)} />,
+                    endAdornment: <SearchIcon className={styles.IconSearch} />,
                     style: { border: "none", color: "#125895", cursor: "pointer" }
                 }}
                 onChange={handleSearchChange}
             />
 
-            <React.Fragment>
-                <Drawer
-                    anchor={"right"}
-                    open={opend}
-                    onClose={toggleDrawer(false)}
-                >
-                    <SearchResults />
-                </Drawer>
-            </React.Fragment>
         </Box>
     );
 };

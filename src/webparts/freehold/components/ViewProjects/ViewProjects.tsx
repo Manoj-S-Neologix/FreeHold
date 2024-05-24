@@ -718,7 +718,7 @@ const handleClear = () => {
               /> */}
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <CustomSearch handleSearchChange={handleSearchChange} />
+              <CustomSearch handleSearchChange={handleSearchChange} searchQryTxt={searchQuery} />
               
             {!filterPersonShown ? (
         <IconButton onClick={() => { setOpen(true); }}>

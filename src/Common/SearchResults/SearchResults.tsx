@@ -11,17 +11,30 @@ import { ListItemAvatar } from '@mui/material';
 //import styles from './SearchResults.module.scss';
 
 interface ISearchPros {
-    handleSearchChange?: any;
+    searchResults?: any;
 }
 
-const SearchResults = ({ handleSearchChange }: ISearchPros) => {
+const SearchResults = ({ searchResults }: ISearchPros) => {
+
+    const getValue = (file: any, type: string) => {
+
+        if (type === "project") {
+            return (file.DMSProject !== null && file.DMSProject !== "") ? <a target="_blank" href={file.DMSProject}>{file.DMSProject}</a> : "";
+        } else if (type === "client") {
+            return (file.DMSClient !== null && file.DMSClient !== "") ? <a target="_blank" href={file.DMSClient}>{file.DMSClient}</a> : "";
+        } else if (type === "unit") {
+            return (file.DMSUnit !== null && file.DMSUnit !== "") ? <a target="_blank" href={file.DMSUnit}>{file.DMSUnit}</a> : "";
+        }
+
+
+    };
 
     return (
         <Box
             sx={{ width: 500 }}
             role="presentation"
         >
-            <List>
+            {/* <List>
                 <ListItem alignItems="flex-start">
                     <ListItemAvatar>
                         <Avatar>
@@ -93,6 +106,31 @@ const SearchResults = ({ handleSearchChange }: ISearchPros) => {
                     />
                 </ListItem>
 
+            </List> */}
+
+            <List>
+                {searchResults?.map((file: any) => (
+
+                    <>
+                        <ListItem alignItems="flex-start">
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <ArticleIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={<a target="_blank" href={file.Filename}>{file.Filename}</a>}
+                                secondary={
+                                    <>
+                                        <li>&bull; {getValue(file, "project")} &bull; {getValue(file, "client")} &bull; {getValue(file, "unit")}</li>
+                                        <li>&bull; {file.DMSTags}</li>
+                                    </>
+                                }
+                            />
+                        </ListItem>
+                        <Divider variant="inset" component="li" />
+                    </>
+                ))}
             </List>
 
         </Box>

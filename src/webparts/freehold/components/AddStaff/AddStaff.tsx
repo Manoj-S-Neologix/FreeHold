@@ -50,11 +50,11 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
             } else {
                 await Promise.all(selected.map((item: any) => {
 
-                    let staffList:any[] = [];
+                    let staffList: any[] = [];
                     //staffList.push(selectedPersonsId);
                     const filteredClient = _.filter(AllClientData, function (o) { return o.Id == item; });
 
-                    if(filteredClient[0].assignedStaff != undefined && filteredClient[0].assignedStaff.length > 0){
+                    if (filteredClient[0].assignedStaff != undefined && filteredClient[0].assignedStaff.length > 0) {
                         _.forEach(filteredClient[0].assignedStaff, function (staff) {
                             staffList.push(staff.Id);
                         });
@@ -170,6 +170,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button
                             onClick={handleSave}
+                            disabled={(selectedPersonsId.length == 0) ? true : false}
                             variant="contained"
                             color="primary"
                             sx={{

@@ -35,14 +35,12 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
   const getProjectCode = particularClientAllData[0]?.projectNumber;
+  const getProjectWebURL = particularClientAllData[0]?.webURL;
   const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
   const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
   const [getGuid, setGetGuid] = React.useState('');
   const [fileData, setFileData] = useState<any[]>([]);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
-  // const [getClientFromFolder, setGetClientFromFolder] = useState<any[]>([]);
-
-
 
   console.log(projectData, isLoading, setGetFoldersResponse, 'projectdata..')
 
@@ -106,8 +104,8 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
       console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
-      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectCode}/${getLibraryName}`);
+      console.log(`${getProjectWebURL}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectWebURL}/${getLibraryName}`);
 
       console.log('Retrieved files:', results,);
       console.log('getFolders', getFolders);
@@ -153,14 +151,12 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
     }
   };
 
-
-
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
       const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");

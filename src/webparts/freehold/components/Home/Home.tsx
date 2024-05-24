@@ -28,7 +28,7 @@ const Home = (props: IFreeholdProps) => {
 
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
-                    <Search props={props} />
+                    <Search spContext={props.context} siteUrl={props.siteUrl} />
                     <Routes>
                         <Route path='/'
                             element={

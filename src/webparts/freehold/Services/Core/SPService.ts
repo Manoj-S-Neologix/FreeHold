@@ -5,6 +5,7 @@ import {
 } from '@microsoft/sp-http';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { Web } from "@pnp/sp/presets/all";
+import pnp from 'sp-pnp-js';
 // import toast from 'react-hot-toast';
 
 export type SPServiceType = {
@@ -31,6 +32,7 @@ export type SPServiceType = {
     getListCounts: (listName: string) => Promise<number>;
     deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
     getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
+    getFilteredResults: (queryTxt: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
@@ -349,6 +351,20 @@ const SPService: SPServiceType = {
             }).catch((err: any) => {
                 console.log(err);
             });
+    },
+
+    getFilteredResults: async (queryTxt: string): Promise<any> => {
+
+        const searchRes = await pnp.sp.search({
+            Querytext: queryTxt,
+            RowLimit: 500,
+            SelectProperties: ["CreatedBy", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "DMSProjectID", "DMSTags", "DMSUnit"],
+            EnableInterleaving: true
+        })
+
+        return searchRes;
+
+        //return filteredArray;
     }
 
 };
