@@ -225,7 +225,7 @@ const handleClear = () => {
 
   const headCells = [
     { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Id' },
+    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project No' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
     //{ id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
