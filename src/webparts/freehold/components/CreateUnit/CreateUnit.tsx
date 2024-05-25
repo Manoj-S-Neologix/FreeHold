@@ -30,7 +30,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     const [count, setCount] = useState(1);
     // const [fileData, setFileData] = useState<any[]>([]);
     // const [isLoading, setIsLoading] = useState(true);
-    const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue,trigger } = useForm();
     const [showCount, setShowCount] = useState(false);
     // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
     const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
@@ -399,7 +399,18 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                         value: 3,
                                                                         message: `Unit ${index + 1}
                                                             must be at least 3 characters`,
-                                                                    }
+                                                                    },
+                                                                    validate: {
+                                                                        noTrailingSpaces: value => 
+                                                                            !/^\s|\s$|^(\s)+$/.test(value) || `Unit ${index + 1} cannot have leading or trailing spaces`,
+                                                                        isNotRegistered: async (value: string) => {
+ 
+                                                                            await
+                                                                                new Promise<void>((resolve) => setTimeout(resolve, 500));
+                                                                            return getFoldersResponse.find((item:any)=>item.Name === value) ?
+                                                                                "Unit is already registered" : undefined;
+                                                                        }
+                                                                    },
                                                                 }}
                                                                 render={({ field }) => (
                                                                     <TextField
@@ -410,6 +421,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                         required
                                                                         error={!!errors?.[`unitName${index}`]}
                                                                         helperText={errors?.[`unitName${index}`]?.message}
+                                                                        onChange={async (e: any) => {
+                                                                            field.onChange(e);
+                                                                            await trigger(`${`unitName${index}`}`);
+                                                                        }}
                                                                     />
                                                                 )}
                                                             />

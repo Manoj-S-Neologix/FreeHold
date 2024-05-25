@@ -261,7 +261,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     <TableRow>
 
                                         <TableCell
-                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase',borderBottom:'none' }}
                                             component="th"
                                             scope="row"
                                         >Project Details</TableCell>
@@ -387,7 +387,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        required: 'Project Number is required',
+                                                        required: 'Location is required',
                                                         // pattern: {
                                                         //     value: /^[a-zA-Z\s-]+$/,
                                                         //     message: 'Invalid project number'
