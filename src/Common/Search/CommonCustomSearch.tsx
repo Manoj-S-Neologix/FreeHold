@@ -11,9 +11,11 @@ interface ISearchPros {
     handleSearchChange?: any;
     spContext: WebPartContext;
     siteUrl: string;
+    client: string;
+    project: String;
 }
 
-const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl }: ISearchPros) => {
+const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, project }: ISearchPros) => {
 
     const [opend, setOpend] = React.useState(false);
     const spServiceInstance: SPServiceType = SPService;
@@ -24,7 +26,18 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl }: ISearchP
         //alert("Clicked");
 
         if (spServiceInstance) {
-            spServiceInstance.getFilteredResults(`${searchTxt}* IsContainer:false path:${siteUrl}`).then((results) => {
+            let qryTxt: string = `${searchTxt}* IsContainer:false path:${siteUrl}`;
+
+            if (client) {
+                qryTxt += " DMSClient: " + client;
+            }
+
+            if (project) {
+                qryTxt += " DMSProject: " + project;
+            }
+
+
+            spServiceInstance.getFilteredResults(qryTxt).then((results) => {
                 console.log("searchresults", results.PrimarySearchResults);
                 setSearchResults(results.PrimarySearchResults);
                 setOpend(newOpen);

@@ -74,7 +74,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         });
     };
 
-    const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
 
@@ -151,7 +151,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} />
+                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")}  project={getValues("projectName")} />
                                 </Box>
                                 <Box>
                                     <IconButton
