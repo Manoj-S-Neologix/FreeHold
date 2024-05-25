@@ -190,7 +190,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                 <TableHead>
                                     <TableRow>
                                         <TableCell
-                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase', borderBottom:'none' }}
                                             component="th"
                                             scope="row"
                                             colSpan={1}>Client Details</TableCell>
