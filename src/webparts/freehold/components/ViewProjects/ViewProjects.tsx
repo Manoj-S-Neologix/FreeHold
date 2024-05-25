@@ -437,9 +437,10 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      console.log(orderBy, "orderByorderBy")
       const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
@@ -616,12 +617,12 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   React.useEffect(() => {
 
-    editView();
+    // editView();
 
-    if (editProjectId || viewProjectId)
-      // console.log(editClientId, viewClientId, "editClientId, viewClientId");
-      // setIsViewDialogOpen(false);
+    if (editProjectId || viewProjectId) {
+      editView();
       console.log('Project ID changed:', editProjectId, viewProjectId);
+    }
   }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
