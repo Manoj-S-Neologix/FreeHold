@@ -274,7 +274,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         }}>
                                             {!isEdit && (
                                                 <Button
-                                                    handleClick={() => setIsEdit(true)}
+                                                    handleClick={() => { setIsEdit(true); navigate('/EditProject/'+projectDetails.Id) }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"
