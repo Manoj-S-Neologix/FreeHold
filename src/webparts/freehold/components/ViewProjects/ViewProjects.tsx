@@ -225,7 +225,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   const headCells = [
     { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project Id' },
+    { id: 'projectNumber', numeric: false, disablePadding: true, label: 'Project No' },
     { id: 'projectName', numeric: false, disablePadding: true, label: 'Project Name' },
     { id: 'location', numeric: false, disablePadding: true, label: 'Location' },
     //{ id: 'developer', numeric: false, disablePadding: true, label: 'Developer' },
@@ -437,10 +437,9 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
     try {
       setIsLoading(true);
       const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
-      const expand = 'Author,AssignClient,Editor';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+      const expand = 'Author,AssignClient';
       const orderBy = 'Modified';
-      console.log(orderBy, "orderByorderBy")
       const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
@@ -558,8 +557,8 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
   const editView = async () => {
     const initialFetch =
       await fetchDataEditView();
-    console.log(initialFetch, "initialFetchinitialFetch");
-    if ((editProjectId || viewProjectId) && initialFetch) {
+
+    if (editProjectId || viewProjectId) {
       console.log('Project ID changed:', editProjectId, viewProjectId, initialFetch);
 
 
@@ -599,10 +598,8 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
       // Navigate based on the project ID
       if (editProjectId) {
-        // setIsViewDialogOpen(true);
         navigate('/EditProject/' + editProjectId);
       } else if (viewProjectId) {
-        // setIsViewDialogOpen(true);
         navigate('/ViewProject/' + viewProjectId);
       }
     }
@@ -619,18 +616,12 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   React.useEffect(() => {
 
-    // editView();
+    editView();
 
-    if (editProjectId || viewProjectId) {
-      editView();
+    if (editProjectId || viewProjectId)
+      // console.log(editClientId, viewClientId, "editClientId, viewClientId");
+      // setIsViewDialogOpen(false);
       console.log('Project ID changed:', editProjectId, viewProjectId);
-    }
-    // else{
-    //   fetchData();
-    // }
-    // console.log(editClientId, viewClientId, "editClientId, viewClientId");
-    // setIsViewDialogOpen(false);
-
   }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
@@ -727,7 +718,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
               /> */}
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <CustomSearch handleSearchChange={handleSearchChange} />
+              <CustomSearch handleSearchChange={handleSearchChange} searchQryTxt={searchQuery} />
 
               {!filterPersonShown ? (
                 <IconButton onClick={() => { setOpen(true); }}>
@@ -911,7 +902,41 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
         </FormControl>
       </Grid> */}
                 <Grid item sm={12}>
-                
+                  {/* <Controller
+            name="clientName"
+            control={control}
+            defaultValue=""
+            rules={{ required: 'Client Name is required' }}
+            render={({ field }) => (
+              <>
+                <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                <TextField
+                {...field}
+                id="client-name"
+                fullWidth
+                variant="outlined"
+                select
+                size="small"
+                required
+                label=""
+                error={!!errors.clientName}
+                helperText={errors?.clientName?.message}
+                onChange={(e: any) => {
+                    console.log(e.target.value);
+                    setGetClient(e.target.value);
+                    const getUnique = assignedClientData.filter((datas: any) => datas.Title === e.target.value);
+                    setParticularClientAllData(getUnique);
+                    console.log(getUnique, "getUnique")
+                    setValue('clientName', e.target.value);
+                    handleFilterChange(e); 
+                }}
+            >
+                  {assignedClientData?.map((item: any) => (
+                    <MenuItem key={item.id} value={item.Title}>
+                      {item.Title}
+                    </MenuItem>
+                  ))}
+                </TextField> */}
                   <Controller
                     name="clientName"
                     control={control}
@@ -1006,7 +1031,7 @@ const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent>
+            <DialogContent style={{ paddingTop: "0px", paddingRight: "24px" }}>
               <Typography style={{
                 textDecoration: "underline", color: "blue", cursor: "pointer",
                 listStyleType: "none", padding: 0
