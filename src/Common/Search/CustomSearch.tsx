@@ -58,6 +58,3 @@ const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
 };
 
 export default CustomSearch;
-
-
-
