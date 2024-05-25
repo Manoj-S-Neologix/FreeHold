@@ -34,7 +34,8 @@ export default class FreeholdWebPart extends BaseClientSideWebPart<IFreeholdWebP
         userDisplayName: this.context.pageContext.user.displayName,
         context: this.context,
         spHttpClient: this.context.spHttpClient,
-        siteUrl: this.context.pageContext.web.absoluteUrl
+        siteUrl: this.context.pageContext.web.absoluteUrl,
+        userRole: ""
       }
     );
 

@@ -34,7 +34,7 @@ import {
 } from "@material-ui/icons";
 import ProjectService from '../../Services/Business/ProjectService';
 import _ from 'lodash';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -93,7 +93,7 @@ const tableIcons: Icons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string }) => {
+const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);

@@ -28,8 +28,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import CreateUnit from '../CreateUnit/CreateUnit';
 import toast from "react-hot-toast";
 import _ from 'lodash';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
 import ClientService from '../../Services/Business/ClientService';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 //import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -59,7 +59,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewProject = (props: { spContext: WebPartContext, siteUrl: string }) => {
+const ViewProject = (props: IFreeholdChildProps) => {
   //console.log(props, "propspropsprops");
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
