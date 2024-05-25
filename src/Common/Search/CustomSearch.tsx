@@ -1,17 +1,28 @@
 import * as React from 'react';
 import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import styles from './CustomSearch.module.scss';
 import CloseIcon from '@mui/icons-material/Close';
+import styles from './CustomSearch.module.scss';
 
 interface ISearchPros {
-    handleSearchChange?: any;
+    handleSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     searchQryTxt?: string;
 }
 
-const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
+const CustomSearch = ({ handleSearchChange, searchQryTxt = '' }: ISearchPros) => {
+    const [inputValue, setInputValue] = React.useState(searchQryTxt);
 
-    const [inputValue, setInputValue] = React.useState('');
+    React.useEffect(() => {
+        setInputValue(searchQryTxt);
+    }, [searchQryTxt]);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setInputValue(value);
+        if (handleSearchChange) {
+            handleSearchChange(event);
+        }
+    };
 
     const clearInput = () => {
         setInputValue('');
@@ -25,9 +36,10 @@ const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
             <TextField
                 className={styles.searchBar}
                 size="small"
-                value={searchQryTxt}
+                value={inputValue}
                 fullWidth
                 placeholder="Search..."
+                onChange={handleInputChange}
                 sx={{
                     '& .MuiInputBase-input': {
                         color: 'primary',
@@ -36,6 +48,7 @@ const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
                         fontWeight: 600
                     },
                     "& fieldset": { border: 'none' },
+                    width: '250px'
                 }}
                 InputProps={{
                     endAdornment: (
@@ -50,14 +63,9 @@ const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
                     ),
                     style: { border: "none", color: "#125895", cursor: "pointer" }
                 }}
-                onChange={handleSearchChange}
             />
-
         </Box>
     );
 };
 
 export default CustomSearch;
-
-
-
