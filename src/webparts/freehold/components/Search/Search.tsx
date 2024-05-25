@@ -68,10 +68,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     };
 
     const handleApply = () => {
-        console.log({
-            // "client": clientValue,
-            // "project": projectValue
-        });
+        setOpen(false);
     };
 
     const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
@@ -151,7 +148,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")}  project={getValues("projectName")} />
+                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
                                 </Box>
                                 <Box>
                                     <IconButton

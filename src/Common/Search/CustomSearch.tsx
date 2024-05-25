@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Box, TextField } from "@mui/material";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styles from './CustomSearch.module.scss';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ISearchPros {
     handleSearchChange?: any;
@@ -9,6 +10,15 @@ interface ISearchPros {
 }
 
 const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
+
+    const [inputValue, setInputValue] = React.useState('');
+
+    const clearInput = () => {
+        setInputValue('');
+        if (handleSearchChange) {
+            handleSearchChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+        }
+    };
 
     return (
         <Box>
@@ -28,7 +38,16 @@ const CustomSearch = ({ handleSearchChange, searchQryTxt }: ISearchPros) => {
                     "& fieldset": { border: 'none' },
                 }}
                 InputProps={{
-                    endAdornment: <SearchIcon className={styles.IconSearch} />,
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            {inputValue && (
+                                <IconButton onClick={clearInput}>
+                                    <CloseIcon />
+                                </IconButton>
+                            )}
+                            <SearchIcon className={styles.IconSearch} />
+                        </InputAdornment>
+                    ),
                     style: { border: "none", color: "#125895", cursor: "pointer" }
                 }}
                 onChange={handleSearchChange}
