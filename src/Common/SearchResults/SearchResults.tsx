@@ -12,6 +12,7 @@ import { ListItemAvatar } from '@mui/material';
 
 interface ISearchPros {
     searchResults?: any;
+    handleClose: () => void;
 }
 
 const SearchResults = ({ searchResults }: ISearchPros) => {

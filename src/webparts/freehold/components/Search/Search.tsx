@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip } from "@mui/material";
 import React from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
@@ -32,6 +32,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
+    const [isExpand, setIsExpand] = React.useState<boolean>(false);
     // const [clientValue, setClientValue] = React.useState<string>('');
     // const [projectValue, setProjectValue] = React.useState<string>('');
     const [isLoading, setIsLoading] = React.useState(true);
@@ -41,6 +42,12 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [particularClientAllData, setParticularClientAllData] = React.useState<any>([]);
     const [projectData, setProjectData] = React.useState<any>([]);
     //const [selectedProject, setSelectedProject] = React.useState<string>('');
+    const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
+    const [documentType, setDocumentType] = React.useState('');
+    const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
+    const [selectedPersons, setSelectedPersons] = React.useState<string[]>([]);
+
+    const theme = useTheme();
 
     const handleSearchChange = (e: any) => {
         setSearch(e.target.value);
@@ -52,33 +59,41 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
     console.log(projectData, "projectData...")
 
-    const handleFilterClick = () => {
-        //console.log('Filter clicked');
-        setOpen(true);
-    };
+    // const handleFilterClick = () => {
+    //     //console.log('Filter clicked');
+    //     setOpen(true);
+    // };
     const handleDocumentClick = () => {
         //console.log('Document clicked');
         setOpenDocuments(true);
     };
 
-    const handleClear = () => {
 
+
+    const handleSave = (data: any) => {
+        setOpenDocuments(false);
+    };
+
+    const handleClear = () => {
         reset();
-        onClose();
+        // onClose();
     };
 
     const handleApply = () => {
         setOpen(false);
-    };
-
-    const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
-    const [documentType, setDocumentType] = React.useState('');
-    const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
-
-    const theme = useTheme();
-
-    const handleSave = (data: any) => {
-        setOpenDocuments(false);
+        setOpen(false);
+        const selectedClientName = getValues("clientName");
+        const selectedProjectName = getValues("projectName");
+        const selectedNames: string[] = [];
+        if (selectedClientName) {
+            selectedNames.push(selectedClientName);
+        }
+        if (selectedProjectName) {
+            selectedNames.push(selectedProjectName);
+        }
+        setSelectedPersons(selectedNames);
+        setIsExpand(true)
+        reset();
     };
 
     const documentTypes = [
@@ -136,10 +151,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 <Box sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "space-between"
                 }}>
-                    <Grid container spacing={2} >
-                        <Grid item xs={12} sm={8}>
+                    <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
+                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                             <Box
                                 sx={{
                                     display: "flex",
@@ -148,18 +163,39 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
+                                    <CommonCustomSearch isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
                                 </Box>
                                 <Box>
-                                    <IconButton
-                                        onClick={handleFilterClick}
-                                    >
-                                        <FilterAltIcon sx={{ color: theme.palette.common.white }} />
-                                    </IconButton>
+
+                                    <Stack direction="row" spacing={1}>
+                                        <Box sx={{ maxWidth: "10rem", display: "flex" }}>
+                                            {selectedPersons.length === 0 ? (
+                                                <MuiButton onClick={() => setOpen(true)}>
+                                                    <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
+                                                </MuiButton>
+                                            ) : (
+                                                selectedPersons.map((person, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        sx={{ color: theme.palette.common.white }}
+                                                        label={person}
+                                                        onDelete={() => {
+                                                            const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
+                                                            setSelectedPersons(updatedPersons);
+                                                            if (updatedPersons.length === 0) {
+                                                                setIsExpand(false);
+                                                            }
+                                                        }}
+                                                    />
+                                                ))
+                                            )}
+                                        </Box>
+                                    </Stack>
+
                                 </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button
                                     style={{ maxWidth: "200px", whiteSpace: "pre" }}
@@ -208,7 +244,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     onClick={() => { setOpen(false); }}
                     sx={{
                         position: "absolute",
-                        right: "14px",
+                        right: "8px",
                         top: "8px",
                         color: (theme: any) => theme.palette.grey[500],
                     }}
