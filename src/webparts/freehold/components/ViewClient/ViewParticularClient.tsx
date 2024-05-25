@@ -332,40 +332,9 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
 
 
                                     <TableRow>
-
                                         <TableCell component="th" scope="row">Name</TableCell>
-                                        <TableCell>
-                                            {!isEdit ? (
-                                                clientDetails.name
-                                            ) : (
-                                                <Controller
-                                                    name="title"
-                                                    control={control}
-                                                    defaultValue=""
-                                                    rules={{ required: 'Name is required' }}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            // fullWidth
-                                                            size="small"
-                                                            value={editData.title}
-                                                            onChange={async (e) => {
-                                                                const input = e.target;
-                                                                const value = input.value;
-                                                                const start = input.selectionStart;
-                                                                const end = input.selectionEnd;
-                                                                field.onChange(value);
-                                                                await trigger('title');
-                                                                setEditData({ ...editData, title: value });
-                                                                input.setSelectionRange(start, end);
-                                                            }}
-                                                            error={!!errors.title}
-                                                            helperText={errors.title && errors.title.message}
-                                                        />
-                                                    )}
-                                                />
-                                            )}
-                                        </TableCell>
+                                        <TableCell>{clientDetails.name}</TableCell>
+
 
                                     </TableRow>
 

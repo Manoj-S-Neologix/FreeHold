@@ -77,7 +77,7 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                         color: 'primary',
                         border: 'none',
                         fontSize: '16px',
-                        fontWeight: 600
+                        fontWeight: 600,
                     },
                     "& fieldset": { border: 'none' },
                 }}
