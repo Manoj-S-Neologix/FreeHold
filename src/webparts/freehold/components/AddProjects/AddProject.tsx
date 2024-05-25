@@ -407,7 +407,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                     rules={{
                       required: 'Project Number is required',
                       pattern: {
-                        value: /^[a-zA-Z0-9+-. ]+$/,
+                        value: /^[a-zA-Z0-9+-.]+$/,
                         message: 'Invalid project number'
                       }
                     }}
@@ -420,7 +420,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                         fullWidth
                         onChange={async (e) => {
                           // const value = e.target.value;
-                          const value = e.target.value.replace(/[^a-zA-Z0-9+-. ]/g, '');
+                          const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
                           field.onChange(value);
                           await trigger('projectNumber');
                         }}
