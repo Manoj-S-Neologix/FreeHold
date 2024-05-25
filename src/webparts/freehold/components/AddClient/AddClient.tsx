@@ -161,7 +161,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
               setLoading(false);
               // handleCancel();
               setFiles([]);
-              toast.success('Documents Added Successfully!');
+              // toast.success('Documents Added Successfully!');
               fetchData();
               reset();
             })

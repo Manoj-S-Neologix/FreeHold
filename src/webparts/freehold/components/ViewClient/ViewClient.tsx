@@ -24,7 +24,7 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -53,7 +53,7 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
+const ViewClient = (props: IFreeholdChildProps) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -350,7 +350,8 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      const filter = "";
+      const filter = (props.userRole === "staff") ? `AssignedStaff/EMail eq ${props.spContext.pageContext.user.email}` : "";
+      //const filter = "";
       const orderBy = 'Modified';
       console.log(orderBy, "orderByorderByorderBy....")
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
@@ -503,7 +504,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
             />
           </Box>
           <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <CustomSearch handleSearchChange={handleSearchChange} />
+            <CustomSearch handleSearchChange={handleSearchChange} searchQryTxt={searchQuery} />
             {!filterPersonShown ? <IconButton
               onClick={() => {
                 handleFilterClick()
@@ -676,7 +677,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent style={{paddingTop:"0px", paddingRight:"24px"}}>
+            <DialogContent style={{ paddingTop: "0px", paddingRight: "24px" }}>
               <Typography>
                 {selectedName.map((data: any) => (
                   <div key={data.id}>

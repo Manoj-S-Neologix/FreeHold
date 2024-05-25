@@ -2,7 +2,7 @@ import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabe
 import React from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
-import CustomSearch from "../../../../Common/Search/CustomSearch";
+import CommonCustomSearch from "../../../../Common/Search/CommonCustomSearch";
 import UploadIcon from '@mui/icons-material/Upload';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from "@mui/icons-material/Close";
@@ -28,7 +28,7 @@ const IconStyles = (icon: any, theme: any) => {
     );
 };
 
-const Search: React.FC<any> = ({ onClose, props }) => {
+const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
@@ -68,13 +68,10 @@ const Search: React.FC<any> = ({ onClose, props }) => {
     };
 
     const handleApply = () => {
-        console.log({
-            // "client": clientValue,
-            // "project": projectValue
-        });
+        setOpen(false);
     };
 
-    const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
 
@@ -151,7 +148,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%" }}>
-                                    <CustomSearch handleSearchChange={handleSearchChange} />
+                                    <CommonCustomSearch handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
                                 </Box>
                                 <Box>
                                     <IconButton
@@ -258,7 +255,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                                                 </MenuItem>
                                             ))}
                                         </TextField>
-                                        {/* <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText> */}
+
                                     </>
                                 )}
                             />
@@ -360,6 +357,8 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                             <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
                         ))}
                     </RadioGroup>
+
+                    {/* Project document upload */}
                     {documentType === 'Project' && (
                         <>
                             {/* <ClientProjectUpload /> */}
@@ -494,6 +493,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                         </>
 
                     )}
+                    {/* Client document upload */}
                     {documentType === 'Client' && (
                         <>
                             <ProjectUploadDocument onClose={() => {
@@ -501,64 +501,7 @@ const Search: React.FC<any> = ({ onClose, props }) => {
                                 setOpenDocuments(false)
                             }} />
                         </>
-                        //   <form onSubmit={handleSubmit(handleSave)}>
-                        //           {false&& <Stack direction={"column"} gap={3}>
-                        //                 <Grid container spacing={2}>
-                        //                     <Grid item sm={12}>
-                        //                         <Controller
-                        //                             name="clientName"
-                        //                             control={control}
-                        //                             defaultValue=""
-                        //                             rules={{ required: 'Client Name is required' }}
-                        //                             render={({ field }) => (
-                        //                                 <>
-                        //                                     <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                        //                                     <TextField
-                        //                                         {...field}
-                        //                                         id="client-name"
-                        //                                         fullWidth
-                        //                                         variant="outlined"
-                        //                                         select
-                        //                                         size="small"
-                        //                                         required
-                        //                                         label=""
-                        //                                         error={!!errors.clientName}
-                        //                                     >
-                        //                                         <MenuItem value="">None</MenuItem>
-                        //                                         <MenuItem value="Client A">Client A</MenuItem>
-                        //                                         <MenuItem value="Client B">Client B</MenuItem>
-                        //                                     </TextField>
-                        //                                     <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText>
-                        //                                 </>
-                        //                             )}
-                        //                         />
-                        //                     </Grid>
-                        //                     <Grid item sm={12}>
-                        //                         <InputLabel htmlFor="client-document">Upload Document</InputLabel>
-                        //                         <DragAndDropUpload
-                        //                             onFilesAdded={(files: File[]) => {
-                        //                                 //console.log(files);
-                        //                             }}
-                        //                         />
-                        //                     </Grid>
-                        //                 </Grid>
-                        //                 <DialogActions sx={{ px: 0, mr: 0 }}>
-                        //                     <MuiButton
-                        //                         type="submit"
-                        //                         variant="contained"
-                        //                     >
-                        //                         Save
-                        //                     </MuiButton>
-                        //                     <MuiButton
-                        //                         variant="outlined"
-                        //                         onClick={() => setOpenDocuments(false)}
-                        //                     >
-                        //                         Cancel
-                        //                     </MuiButton>
 
-                        //                 </DialogActions>
-                        //             </Stack>}
-                        //         </form>
                     )}
 
                 </DialogContent>

@@ -7,10 +7,12 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AssignClient.module.scss';
-import { Autocomplete, Box, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, CircularProgress, Grid, MenuItem, Stack, Typography } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
+import TextField from '@mui/material/TextField';
+
 // import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
@@ -21,7 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 
 const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, existingPersons, fetchData }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
-    const [getClient, setGetClient] = useState<any[]>([]);
+    const [getClient, setGetClient] = React.useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [collectionOfDocuments, setCollectionOfDocuments] = React.useState<any[]>([]);
@@ -48,6 +50,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     ];
 
     console.log(particularClientAllData, "particularClientAllData.assignClientId")
+    console.log(setGetClient, "client-Informations-setGetClient")
 
     const apiCall = async () => {
         try {
@@ -78,7 +81,6 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
             target: { value },
         } = event;
         setPersonName(
-            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
@@ -396,7 +398,12 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                             <TextField
                                                                 {...params}
                                                                 variant="outlined"
-                                                                label="Select Document"
+                                                                // label="Select Document"
+                                                                label={
+                                                                    <span>
+                                                                        Select Document<span style={{color:'#125895'}}> * </span>
+                                                                    </span>
+                                                                }
                                                                 placeholder="Select Document"
                                                                 error={!!errors?.AssignClientDocuments}
                                                                 helperText={errors?.AssignClientDocuments?.message}

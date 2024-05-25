@@ -8,4 +8,5 @@ export interface IFreeholdProps {
   context: WebPartContext;
   spHttpClient: SPHttpClient;
   siteUrl: any;
+  userRole: string;
 }

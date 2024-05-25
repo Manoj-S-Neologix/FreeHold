@@ -335,6 +335,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             onChange={(e: any) => {
                               console.log(e.target.value);
                               setGetClient(e.target.value);
+                              setIsUnitDocumentChecked(false);
                               console.log("particularClientAllData: ", particularClientAllData);
                               const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
 
@@ -366,7 +367,14 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     <Stack direction="row" alignItems="center">
                       <Checkbox
                         checked={isUnitDocumentChecked}
-                        onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
+                        onChange={(e) => {
+                          setIsUnitDocumentChecked(e.target.checked);
+                          setValue('unitDocument', "");
+                          if (!e.target.checked) {
+                            getDocumentsLibPath("client");
+                          }
+
+                        }}
                         size="small"
                         sx={{ p: 0, mr: 2 }}
                       />

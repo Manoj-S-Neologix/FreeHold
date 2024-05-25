@@ -28,7 +28,7 @@ const Home = (props: IFreeholdProps) => {
 
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
-                    <Search props={props} />
+                    <Search spContext={props.context} siteUrl={props.siteUrl} />
                     <Routes>
                         <Route path='/'
                             element={
@@ -39,31 +39,31 @@ const Home = (props: IFreeholdProps) => {
                         />
                         <Route
                             path='/ViewClient'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewClient/:viewClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/EditClient/:editClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewProjects'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
-                           <Route
+                        <Route
                             path='/ViewProject/:viewProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/EditProject/:editProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistValidation'
-                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistConfiguration'

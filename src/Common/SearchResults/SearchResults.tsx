@@ -11,10 +11,23 @@ import { ListItemAvatar } from '@mui/material';
 //import styles from './SearchResults.module.scss';
 
 interface ISearchPros {
-    handleSearchChange?: any;
+    searchResults?: any;
 }
 
-const SearchResults = ({ handleSearchChange }: ISearchPros) => {
+const SearchResults = ({ searchResults }: ISearchPros) => {
+
+    const getValue = (file: any, type: string) => {
+
+        if (type === "project") {
+            return (file.DMSProject !== null && file.DMSProject !== "") ? <a href={`#/ViewProject/${file.DMSProjectID}`}>&bull; {file.DMSProject}</a> : "";
+        } else if (type === "client") {
+            return (file.DMSClient !== null && file.DMSClient !== "") ? <a href={`#/ViewClient/${file.DMSClientID}`}>&bull; {file.DMSClient}</a> : "";
+        } else if (type === "unit") {
+            return (file.DMSUnit !== null && file.DMSUnit !== "") ? <span>&bull; {file.DMSUnit}</span> : "";
+        }
+
+
+    };
 
     return (
         <Box
@@ -22,76 +35,38 @@ const SearchResults = ({ handleSearchChange }: ISearchPros) => {
             role="presentation"
         >
             <List>
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <ArticleIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={<a href="#">sample.docx</a>}
-                        secondary={
-                            <>
-                                <li>&bull; Project &bull; Client &bull; Unit</li>
-                                <li>&bull; Engagment letter</li>
-                            </>
-                        }
-                    />
-                </ListItem>
 
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <ArticleIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={<a href="#">sample2.docx</a>}
-                        secondary={
-                            <>
-                                <li>&bull; Project &bull; Client &bull; Unit</li>
-                                <li>&bull; Power of attorny</li>
-                            </>
-                        }
-                    />
-                </ListItem>
+                {searchResults?.map((file: any) => (
 
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <ArticleIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={<a href="#">sample3.docx</a>}
-                        secondary={
-                            <>
-                                <li>&bull; Project &bull; Client &bull; Unit</li>
-                                <li>&bull; National Id</li>
-                            </>
-                        }
-                    />
-                </ListItem>
+                    <>
+                        <ListItem alignItems="flex-start">
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <ArticleIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={<a target="_blank" href={`${file.ParentLink}/${file.Filename}`}>{file.Filename}</a>}
+                                secondary={
+                                    <>
+                                        <li>{getValue(file, "project")} {getValue(file, "client")} {getValue(file, "unit")}</li>
+                                        <li>&bull; {file.DMSTags}</li>
+                                    </>
+                                }
+                            />
+                        </ListItem>
+                        <Divider variant="inset" component="li" />
+                    </>
+                ))}
 
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar>
-                            <ArticleIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={<a href="#">sample4.docx</a>}
-                        secondary={
-                            <>
-                                <li>&bull; Project &bull; Client &bull; Unit</li>
-                                <li>&bull; Passport copy</li>
-                            </>
-                        }
-                    />
-                </ListItem>
+                {searchResults.length == 0 && (
+                    <ListItem alignItems="flex-start">
+
+                        <ListItemText
+                            primary={`No results found`}
+                        />
+                    </ListItem>
+                )}
 
             </List>
 
