@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import { Controller, useForm } from 'react-hook-form';
 import Stack from '@mui/material/Stack';
 import MaterialTable, { Icons } from 'material-table';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -101,6 +102,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const projectService = ProjectService();
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
   const [data, setData] = useState<any>([]);
   const columns = [
@@ -263,7 +266,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
       const expand = 'Author,AssignClient';
       const orderBy = 'Modified';
-      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
+      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.updatedResults);
@@ -279,25 +283,38 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     }
   };
 
-  /* const getDocumentsFromFolder = async (libraryName: string, clientName: string) => {
-    try {
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
 
-      const unitFolders: any = await ProjectService().getAllFoldersInLibrary(`${libraryName}/${clientName}`);
-      if (unitFolders.length > 0) {
-        setunitData(unitFolders);
-      } else {
-        toast("No unit folders found.")
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
       }
 
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  }; */
+      setUserRole(userRoleVal);
+
+    });
+  }
+
+  React.useEffect(() => {
+    getUserRoles();
+  }, []);
 
   React.useEffect(() => {
     fetchData();
     // apiCall();
-  }, []);
+  }, [userRole]);
 
   return (
     <div>

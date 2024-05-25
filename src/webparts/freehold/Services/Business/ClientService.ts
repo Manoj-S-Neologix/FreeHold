@@ -70,7 +70,7 @@ const ClientService = () => {
     };
 
     const getClient = async (ListName: string) => {
-        
+
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
@@ -81,6 +81,14 @@ const ClientService = () => {
     const getListCounts = async (listName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getListCounts(listName);
+            return response;
+
+        }
+    }
+
+    const getfilteredListCounts = async (listName: string, filter: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.getfilteredListCounts(listName, filter);
             return response;
 
         }
@@ -222,56 +230,6 @@ const ClientService = () => {
                 });
             });
 
-            /* const updatedResults = await Promise.all(results.map(async (item: any) => {
-                const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
-                    const staffDetails = {
-                        Id: staff.Id,
-                        Name: staff.Title,
-                        Email: staff.Id && await getPersonById(staff.Id)
-                    };
-                    return staffDetails;
-                }));
-
-                const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
-                    // const projectData = {
-                    //     Id: project?.Id,
-                    //     Name: project?.Title
-                    // }
-                    console.log(project, "projectDetails")
-                    return (
-                        {
-                            Id: project?.Id,
-                            Name: project?.Title
-                        }
-                    )
-                })
-
-                const assignedStaff = assignedStaffDetails;
-                console.log(item, projectDetails, 'itemresult')
-
-                return {
-                    name: item.Title,
-                    email: item.ClientEmail,
-                    modifiedDate: formatDate(item.Modified),
-                    modifiedBy: item.Editor.Title,
-                    Staff: item.AssignedStaff,
-                    assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
-                    contact: item.ClientContact,
-                    GUID: item.ClientLibraryGUID,
-                    webURL: item.ClientLibraryPath,
-                    Author: {
-                        Name: item.Author.Title,
-                        Email: item.Author.EMail
-                    },
-                    assignedStaff,
-                    Id: item.Id,
-                    projectDetails,
-                    Editor: item?.Editor
-                    // ProjectName: item.Title
-
-                };
-            })); */
-
             const tableData = updatedResults.map((item: any) => {
                 return {
                     Id: item.Id,
@@ -404,7 +362,8 @@ const ClientService = () => {
         getListCounts,
         updateClientDocumentMetadata,
         getClients,
-        getProjects
+        getProjects,
+        getfilteredListCounts
     };
 };
 

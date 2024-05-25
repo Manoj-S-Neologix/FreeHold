@@ -33,6 +33,7 @@ export type SPServiceType = {
     deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
     getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
     getFilteredResults: (queryTxt: string) => Promise<any>;
+    getfilteredListCounts: (listName: string, filter: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
@@ -195,6 +196,13 @@ const SPService: SPServiceType = {
     getListCounts: async (listName: string): Promise<number> => {
         const count = await web.lists.getByTitle(listName).items();
         return count.length
+        // console.log(count);
+    },
+
+    // get filtered count of items in the list
+    getfilteredListCounts: async (listName: string, filter: string): Promise<number> => {
+        const count = await web.lists.getByTitle(listName).items.filter(filter).get();
+        return count.length;
         // console.log(count);
     },
 

@@ -158,7 +158,7 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
+      const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);

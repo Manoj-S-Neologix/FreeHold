@@ -4,18 +4,50 @@ import { Box, Stack } from '@mui/material';
 import { Link } from "react-router-dom";
 import ClientService from '../../Services/Business/ClientService';
 import ProjectService from '../../Services/Business/ProjectService';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
+import { useState } from 'react';
+import _ from 'lodash';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
-
-const ProjectsClient = ({ props }: any) => {
+const ProjectsClient = (props: IFreeholdChildProps) => {
   const [clientData, setClientData] = React.useState<number>(0);
   const [projectData, setProjectData] = React.useState<number>(0);
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
-  React.useEffect (()=>{
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
+
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
+      }
+
+      setUserRole(userRoleVal);
+
+    });
+  }
+
+  React.useEffect(() => {
+    getUserRoles();
+  }, []);
+
+
+  React.useEffect(() => {
     fetchData();
-  },[]
-)
-   
-  
+  }, [userRole]
+  )
 
   console.log(clientData, "countclient")
   console.log(projectData, "countproject")
@@ -25,13 +57,13 @@ const ProjectsClient = ({ props }: any) => {
       const clientService = ClientService();
       const projectService = ProjectService();
 
-
-      const results = await clientService.getListCounts('Client_Informations');
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const results = await clientService.getfilteredListCounts('Client_Informations', filter);
       const projectResults = await projectService.getListCounts('Project_Informations');
-      if(results)
-      setClientData(results)
-    if(projectResults)
-      setProjectData(projectResults)
+      if (results)
+        setClientData(results)
+      if (projectResults)
+        setProjectData(projectResults)
     } catch (error) {
 
       console.error('Error fetching data:', error);
@@ -40,7 +72,6 @@ const ProjectsClient = ({ props }: any) => {
 
   const getProjectText = (count: number) => count === 1 ? 'PROJECT' : 'PROJECTS';
   const getClientText = (count: number) => count === 1 ? 'CLIENT' : 'CLIENTS';
-
 
   return (
     <Box >

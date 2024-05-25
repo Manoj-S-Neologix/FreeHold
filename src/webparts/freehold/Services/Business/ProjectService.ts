@@ -76,9 +76,9 @@ const ProjectService = () => {
         }
     };
 
-    const getProjectExpand = async (ListName: string, select: string, expand: string, order: any) => {
+    const getProjectExpand = async (ListName: string, select: string, filter: string, expand: string, order: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "", order);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, order);
 
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {

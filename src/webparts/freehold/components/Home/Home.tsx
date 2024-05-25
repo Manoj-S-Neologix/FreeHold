@@ -34,7 +34,7 @@ const Home = (props: IFreeholdProps) => {
                             element={
                                 <>
                                     <SideNavBar props={props} />
-                                    <ProjectsClients props={props} />
+                                    <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                 </>}
                         />
                         <Route

@@ -30,6 +30,7 @@ import toast from "react-hot-toast";
 import _ from 'lodash';
 import ClientService from '../../Services/Business/ClientService';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
 //import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -65,6 +66,8 @@ const ViewProject = (props: IFreeholdChildProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
   const [handleUnitDialog, setHandleUnitDialog] = useState(false);
 
@@ -96,13 +99,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
   const [filterPersonShown, setFilterPersonShown] = useState(false);
   const [filterQueryCall, setFilterQueryCall] = useState('');
 
-
-
-
-
-
-
-
   let { editProjectId, viewProjectId } = useParams();
 
 
@@ -129,36 +125,21 @@ const ViewProject = (props: IFreeholdChildProps) => {
     // fetchData();
   };
 
-  /* const openAssignClientDialog = () => {
-    setHandleClientDialog(true);
-  }; */
-
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
     // fetchData();
   };
 
-  // const openUnitDialog = () => {
-  //   setHandleClientDialog(true);
-  // };
 
   const closeUnitDialog = () => {
     setHandleUnitDialog(false);
     // fetchData();
   };
 
-
-
-  // const handleFilterClick = () => {
-  //   setOpen(true);
-  // };
-
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
     // fetchData();
   };
-
-
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
@@ -166,25 +147,11 @@ const ViewProject = (props: IFreeholdChildProps) => {
   };
 
   const theme = useTheme();
-
-
-
   const handleFilterChange = (event: any) => {
     setFilterQuery(event.target.value);
   };
 
   console.log(handleFilterChange, "handleFilterChange");
-
-  // const handleApply = () => {
-  //     if (filterQuery) {
-  //         const filteredData = projectData.filter((data: any) => data.clientDetails.filter((item:any)=>{item.Title===filterQuery}));
-  //         // setProjectData(filteredData);
-  //         console.log(filteredData, "filteredData");
-  //     } else {
-  //        setProjectData([]);
-  //         console.log("No filter query specified.");
-  //     }
-  // };
 
   const handleApply = () => {
     setFilterPersonShown(true);
@@ -211,7 +178,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     reset();
     setOpen(false);
   };
-
 
   const IconStyles = (icon: any) => {
     return (
@@ -366,29 +332,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
   console.log(handlePeoplePickerChange, "handlePeoplePickerChange");
 
-  // const fetchData = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const projectService = ProjectService();
-  //     const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-  //     const expand = 'Author,AssignClient';
-  //     const orderBy = 'Modified';
-  //     const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
-  //     console.log(results, "result");
-  //     if (results && results.updatedResults && results.updatedResults.length > 0) {
-  //       setProjectData(results.TableData);
-  //       setAllClientData(results.updatedResults);
-  //     } else {
-  //       // Handle case where no data is returned
-  //       setProjectData([]);
-  //       setAllClientData([]);
-  //     }
-  //     setIsLoading(false);
-  //   } catch (error) {
-  //     setIsLoading(false);
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -398,10 +341,11 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
       // Run both requests concurrently
       const [projectResults, clientResults] = await Promise.all([
-        projectService.getProjectExpand('Project_Informations', select, expand, orderBy),
+        projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy),
         clientService.getClient('Client_Informations')
       ]);
 
@@ -432,7 +376,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     }
   };
 
-
   const fetchDataEditView = async () => {
     try {
       setIsLoading(true);
@@ -440,8 +383,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
       console.log(orderBy, "orderByorderBy")
-      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
+      const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
@@ -459,30 +403,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
       console.error('Error fetching data:', error);
     }
   };
-
-
-
-  // const fetchClientData = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const clientService = ClientService();
-  //     console.log("API CALL working")
-  //     const results = await clientService.getClient('Client_Informations');
-  //     console.log(results, "result........");
-  //     if (results && results.length > 0) {
-  //       setClientData(results);
-  //       setAllClientData(results);
-  //     } else {
-  //       setClientData([]);
-  //       setAllClientData([]);
-  //     }
-  //     setIsLoading(false);
-  //   } catch (error) {
-  //     setIsLoading(false);
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
-
 
   const handleClickOpen = (name: any) => {
 
@@ -562,16 +482,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     if (editProjectId || viewProjectId) {
       console.log('Project ID changed:', editProjectId, viewProjectId, initialFetch);
 
-
-
-      // Fetch the data
-      // try {
-      //   await fetchData();
-      // } catch (error) {
-      //   console.error("Error fetching data:", error);
-      //   return;
-      // }
-
       // Get the unique client data
       const projectId = editProjectId || viewProjectId;
       // const getUnique = initialFetch?.map ((data: any) => data.Id == (projectId));
@@ -595,8 +505,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
       // console.log(getUnique, "getUniqueeditview");
       console.log(projectId, "projectIdprojectId")
 
-      // setProjectData([]);
-
       // Navigate based on the project ID
       if (editProjectId) {
         navigate('/EditProject/' + editProjectId);
@@ -606,14 +514,40 @@ const ViewProject = (props: IFreeholdChildProps) => {
     }
   }
 
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
+
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
+      }
+
+      setUserRole(userRoleVal);
+
+    });
+  }
+
   React.useEffect(() => {
-    fetchData();
+    getUserRoles();
   }, []);
 
-  // React.useEffect(() => {
-  //   fetchClientData();
-  //   // apiCall();
-  // }, []);
+
+  React.useEffect(() => {
+    //alert("user role : " + userRole);
+    fetchData();
+  }, [userRole]);
+
 
   React.useEffect(() => {
 
@@ -702,6 +636,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
                   background: "#125895", color: "#fff"
                 }}
                 message="Add Project"
+                disabled={userRole === "staff"}
                 Icon={
                   IconStyles(<AddIcon
                     sx={{
