@@ -17,7 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
 
-const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
+const ClientProjectUpload: React.FC<any> = ({ onClose, selected, spContext, userRole }) => {
 
   // const ClientProjectUpload: React.FC<ClientProjectUpload> = ({ open, onClose, particularClientAllData, fetchDatas }) => {
 
@@ -75,12 +75,15 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
 
   const clientService = ClientService();
   const clientListName = "Client_Informations";
-  const selectQuery = "Id,Title,ClientLibraryGUID";
+  const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
+  const expand = 'AssignedStaff';
+  //alert("userROle | " + userRole);
+  //const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
   const apiCall = async (particularClientAllData: any) => {
     try {
       console.log(particularClientAllData, "particularClientAllDataparticularClientAllData")
-      const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+      const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, "", "");
       console.log("API Call Data:", data);
 
       if (data) {
@@ -158,7 +161,14 @@ const ClientProjectUpload: React.FC<any> = ({ onClose, selected, props }) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+      let results: any = [];
+      //const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+      if (userRole === "staff") {
+        results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, spContext.pageContext.user.email);
+      } else {
+        results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+      }
+      
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);

@@ -3,7 +3,6 @@ import styles from './ProjectsClients.module.scss';
 import { Box, Stack } from '@mui/material';
 import { Link } from "react-router-dom";
 import ClientService from '../../Services/Business/ClientService';
-import ProjectService from '../../Services/Business/ProjectService';
 import SPService, { SPServiceType } from '../../Services/Core/SPService';
 import { useState } from 'react';
 import _ from 'lodash';
@@ -55,15 +54,19 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
   const fetchData = async () => {
     try {
       const clientService = ClientService();
-      const projectService = ProjectService();
 
+      const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
-      const results = await clientService.getfilteredListCounts('Client_Informations', filter);
-      const projectResults = await projectService.getListCounts('Project_Informations');
-      if (results)
-        setClientData(results)
-      if (projectResults)
-        setProjectData(projectResults)
+
+      const orderBy = 'Modified';
+      const filteredClientsnProjects = await clientService.getfilteredClientsnProjects('Client_Informations', select, expand, filter, orderBy);
+      console.log("filteredClientsnProjects : ", filteredClientsnProjects);
+
+      if (filteredClientsnProjects?.clientResults)
+        setClientData(filteredClientsnProjects.clientResults.length)
+      if (filteredClientsnProjects?.pResults)
+        setProjectData(filteredClientsnProjects.pResults.length)
     } catch (error) {
 
       console.error('Error fetching data:', error);

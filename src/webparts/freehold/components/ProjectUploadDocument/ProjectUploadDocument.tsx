@@ -19,10 +19,9 @@ import IconButton from '@mui/material/IconButton';
 
 
 
-const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
+const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
 
   const { control, handleSubmit, formState: { errors }, setValue } = useForm();
-
 
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
@@ -41,54 +40,27 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
 
   console.log(getGuid, "getGuid");
 
-  // const [projectData, setProjectData] = useState<any>([]);
-
-  // const clientService = ClientService();
-  // const clientListName = "Client_Informations";
-  // const selectQuery = "Id,Title,ClientLibraryGUID";
-
-  // const apiCall = async () => {
-  //   try {
-  //     const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
-  //     console.log("API Call Data:", data);
-  //     if (data) {
-  //       const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
-  //       const filteredData = data.filter((item:any) => assignClientIds.includes(item.Id));
-  //       console.log(filteredData, "filteredData");
-  //       const mappedData = filteredData.map((item:any) => ({
-  //         id: item.Id,
-  //         name: item.Title,
-  //         libraryGUID: item.ClientLibraryGUID
-  //       }));
-  //       setGetClientDetails(mappedData);
-  //       // console.log(getClientDetails, "")
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
-
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      // const select = '*,Title,Id';
-      // const expand = 'Author,AssignedStaff';
-      // const orderBy = 'Modified';
-      console.log("API CALL working")
-      const results = await clientService.getClient('Client_Informations');
+      const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
+      //debugger;
+      //alert("userRole : " + userRole);
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'` : "";
+      //const filter = "";
+      const orderBy = 'Modified';
+      console.log(orderBy, "orderByorderByorderBy....")
+      const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
+      //const results = await clientService.getClient('Client_Informations');
       console.log(results, "result");
-      if (results && results.length > 0) {
-        setClientData(results);
-        setAllClientData(results);
+      if (results?.updatedResults && results?.updatedResults.length > 0) {
+        //setClientData(results);
+        //setAllClientData(results);
+        setClientData(results?.tableData);
+        setAllClientData(results?.updatedResults);
 
-        // Retrieve documents from a folder (assuming getGuid is defined)
-        // const clientService = ClientService();
-        // const folderGUID = getGuid; // Assuming getGuid is defined elsewhere
-        // const folderResults = await clientService.getDocumentsFromFolder(folderGUID);
-        // console.log(folderResults, "File Datas");
-
-        // setFileData(folderResults);
       } else {
         // Handle case where no data is returned
         setClientData([]);
@@ -241,8 +213,8 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, props }) => {
                   }}
                 >
                   {AllClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.Title}>
-                      {item.Title}
+                    <MenuItem key={item.id} value={item.name}>
+                      {item.name}
                     </MenuItem>
                   ))}
                 </TextField>

@@ -203,119 +203,188 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
   console.log(AllClientData, "AllClientData");
 
-  const actions = [
-    {
-      label: 'View',
-      icon: <VisibilityIcon />,
-      handler: (data: any) => {
+  //Actions
+  let actions: any[] = [];
+  if (userRole === "staff") {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: (data: any) => {
 
-        setIsViewDialogOpen(true);
-        setProjectDetails(data);
-        console.log();
-        setIsEdit(false);
-
-
-        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        setParticularClientAllData(uniqueClientData);
-
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-        navigate('/ViewProject/' + data.Id);
+          setIsViewDialogOpen(true);
+          setProjectDetails(data);
+          console.log();
+          setIsEdit(false);
 
 
+          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          setParticularClientAllData(uniqueClientData);
 
-
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          navigate('/ViewProject/' + data.Id);
+        },
       },
-    },
-    {
-      label: 'Edit',
-      icon: <EditIcon />,
-      handler: (id: any) => {
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: (id: any) => {
 
-        setIsViewDialogOpen(true);
-        setProjectDetails(id);
-        setIsEdit(true);
-        // console.log(`Edit clicked for row ${id}`,id);
-        navigate('/EditProject/' + id.Id);
+          setIsViewDialogOpen(true);
+          setProjectDetails(id);
+          setIsEdit(true);
+          // console.log(`Edit clicked for row ${id}`,id);
+          navigate('/EditProject/' + id.Id);
+        },
       },
-    },
+      {
+        label: 'Create Unit',
+        icon: <AcUnitIcon />,
+        handler: (data: any) => {
+          setHandleUnitDialog(true);
+          setProjectDetails(data);
+          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          setParticularClientAllData(uniqueClientData);
 
-    {
-      label: 'Delete',
-      icon: <DeleteIcon />,
-      handler: (id: any) => {
-        setIsDeleteDialogOpen(true);
-        setProjectDetails(id);
-        //console.log(`Delete clicked for row ${id}`);
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          //console.log(`Delete clicked for row ${id}`);
+        },
       },
-    },
 
-    {
-      label: 'Create Unit',
-      icon: <AcUnitIcon />,
-      handler: (data: any) => {
-        setHandleUnitDialog(true);
-        setProjectDetails(data);
-        const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        setParticularClientAllData(uniqueClientData);
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
+        },
+      },
+      {
+        label: 'Assign Client',
+        button: (
+          <Button
+            color="secondary"
+            disabled={userRole === "staff"}
+            message="Assign Client"
+            handleClick={(id: any) => {
+              setHandleClientDialog(!handleClientDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
+      }
+    ];
+  } else {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: (data: any) => {
 
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-        //console.log(`Delete clicked for row ${id}`);
-      },
-    },
+          setIsViewDialogOpen(true);
+          setProjectDetails(data);
+          console.log();
+          setIsEdit(false);
 
-    {
-      label: 'View Documents',
-      button: (
-        <Button
-          color="primary"
-          message="View Documents"
-          handleClick={(id: any) => {
-            //console.log(`Upload Documents clicked for row ${id}`);
-            setUploadDialogOpen(true);
-          }}
-        />
-      ),
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-        await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
+
+          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          setParticularClientAllData(uniqueClientData);
+
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          navigate('/ViewProject/' + data.Id);
+        },
       },
-    },
-    {
-      label: 'Assign Client',
-      button: (
-        <Button
-          color="secondary"
-          message="Assign Client"
-          handleClick={(id: any) => {
-            setHandleClientDialog(!handleClientDialog);
-          }}
-        />
-      ),
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: (id: any) => {
+
+          setIsViewDialogOpen(true);
+          setProjectDetails(id);
+          setIsEdit(true);
+          // console.log(`Edit clicked for row ${id}`,id);
+          navigate('/EditProject/' + id.Id);
+        },
       },
-    },
-    // {
-    //   label: 'Create Unit',
-    //   button: (
-    //     <Button
-    //       color="secondary"
-    //       message="Create Unit"
-    //       handleClick={(id: any) => {
-    //         setHandleUnitDialog(!handleUnitDialog);
-    //       }}
-    //     />
-    //   ),
-    //   handler: async (data: any) => {
-    //     const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-    //     setParticularClientAllData(getUnique);
-    //   },
-    // },
-  ];
+
+      {
+        label: 'Delete',
+        icon: <DeleteIcon />,
+        handler: (id: any) => {
+          setIsDeleteDialogOpen(true);
+          setProjectDetails(id);
+          //console.log(`Delete clicked for row ${id}`);
+        },
+      },
+
+      {
+        label: 'Create Unit',
+        icon: <AcUnitIcon />,
+        handler: (data: any) => {
+          setHandleUnitDialog(true);
+          setProjectDetails(data);
+          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          setParticularClientAllData(uniqueClientData);
+
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          //console.log(`Delete clicked for row ${id}`);
+        },
+      },
+
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
+        },
+      },
+      {
+        label: 'Assign Client',
+        button: (
+          <Button
+            color="secondary"
+            disabled={userRole === "staff"}
+            message="Assign Client"
+            handleClick={(id: any) => {
+              setHandleClientDialog(!handleClientDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
+      }
+    ];
+  }
 
   const handlePeoplePickerChange = async (items: any[]) => {
     console.log(items, "itemsitemsitemsitems");
@@ -341,32 +410,63 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const filter = "";
 
       // Run both requests concurrently
-      const [projectResults, clientResults] = await Promise.all([
-        projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy),
-        clientService.getClient('Client_Informations')
-      ]);
+      if (userRole === "staff") {
+        const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+        const cexpand = 'AssignedStaff,Author,ProjectId,Editor';
+        const cfilter = `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'`;
 
-      console.log(projectResults, "project results");
-      console.log(clientResults, "client results");
+        const [projectResults, clientResults] = await Promise.all([
+          projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
+          clientService.getClientExpandApi('Client_Informations', cselect, cexpand, cfilter, "")
+        ]);
 
-      // Handle project results
-      if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
-        setProjectData(projectResults.TableData);
-        setAllClientData(projectResults.updatedResults);
+        console.log(projectResults, "project results");
+        console.log(clientResults, "client results");
+
+        // Handle project results
+        if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
+          setProjectData(projectResults.TableData);
+          setAllClientData(projectResults.updatedResults);
+        } else {
+          setProjectData([]);
+          setAllClientData([]);
+        }
+
+        if (clientResults && clientResults.length > 0) {
+          setAssignedClientData(clientResults);
+          // setAssignedClientData(clientResults);
+        } else {
+          // setClientData([]);
+          setAssignedClientData([]);
+        }
       } else {
-        setProjectData([]);
-        setAllClientData([]);
-      }
+        const [projectResults, clientResults] = await Promise.all([
+          projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy),
+          clientService.getClient('Client_Informations')
+        ]);
 
-      if (clientResults && clientResults.length > 0) {
-        setAssignedClientData(clientResults);
-        // setAssignedClientData(clientResults);
-      } else {
-        // setClientData([]);
-        setAssignedClientData([]);
+        console.log(projectResults, "project results");
+        console.log(clientResults, "client results");
+
+        // Handle project results
+        if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
+          setProjectData(projectResults.TableData);
+          setAllClientData(projectResults.updatedResults);
+        } else {
+          setProjectData([]);
+          setAllClientData([]);
+        }
+
+        if (clientResults && clientResults.length > 0) {
+          setAssignedClientData(clientResults);
+          // setAssignedClientData(clientResults);
+        } else {
+          // setClientData([]);
+          setAssignedClientData([]);
+        }
       }
 
       setIsLoading(false);
@@ -383,7 +483,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const filter = "";
       console.log(orderBy, "orderByorderBy")
       const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
       console.log(results, "result");
@@ -685,102 +785,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
             fullWidth={true}
             maxWidth={"sm"}
           >
-            {/* <DialogTitle>
-              <div className="d-flex flex-column">
-                <div className="d-flex justify-content-between align-items-center relative">
-                  <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
-                    Filter
-                  </h4>
-                </div>
-                <div style={{
-                  height: '4px', width: '100%',
-                  backgroundColor: theme.palette.primary.main
-                }} />
-              </div>
-            </DialogTitle>
-
-            <IconButton
-              aria-label="close"
-              onClick={() => { setOpen(false); }}
-              sx={{
-                position: "absolute",
-                right: "14px",
-                top: "8px",
-                color: (theme: any) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-
-              <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-
-                <Grid item xs={12} sm={6}>
-                  <label htmlFor="assignedStaffId">Assigned Client<span style={{ color: 'red' }}>*</span></label>
-                  <Controller
-                    name="assignedStaffId"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                      required: 'Assigned Client is required',
-                    }}
-                    render={({ field }) => (
-                      <PeoplePicker
-                        styles={{
-                          input: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px"
-                          },
-                          itemsWrapper: {
-                            'ms-PickerPersona-container': {
-                              width: '100%',
-                              backgroundColor: 'white !important'
-                            },
-                          },
-                          root: {
-                            width: '100%',
-                            height: '30px',
-                            paddingTop: "10px",
-                            'ms-BasePicker-text': {
-                              width: '100%',
-                              borderRadius: '5px'
-                            }
-                          },
-                        }}
-                        {...field}
-                        context={props.spContext}
-                        personSelectionLimit={4}
-                        required={true}
-                        showHiddenInUI={false}
-                        principalTypes={[PrincipalType.User]}
-                        resolveDelay={1000}
-                        onChange={handlePeoplePickerChange}
-                        defaultSelectedUsers={selectedPersons}
-                      />
-                    )}
-                  />
-                  {errors.assignedStaffId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedStaffId.message}</span>}
-                </Grid>
-              </Grid>
-              <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
-                <MuiButton variant="outlined" onClick={handleClear}>
-                  Clear
-                </MuiButton>
-                <MuiButton
-                  onClick={handleApply}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    maxWidth: '150px',
-                    float: 'right',
-                  }}
-                >
-                  Apply
-                </MuiButton>
-              </DialogActions>
-            </DialogContent>
-          </Dialog> */}
 
             <DialogTitle>
               <div className="d-flex flex-column">
@@ -810,69 +814,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
             </IconButton>
             <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
               <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
-                {/* <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
-          <InputLabel id="assignedClientLabel">Assigned Client<span style={{ color: 'red' }}>*</span></InputLabel>
-          <Controller
-            name="assignedClientId"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Assigned Client is required',
-            }}
-            render={({ field }) => (
-              <Select
-                labelId="assignedClientLabel"
-                label="Assigned Client"
-                {...field}
-                sx={{ height: '40px' }}
-              >
-                <MenuItem value=""><em>None</em></MenuItem>
-                <MenuItem value={10}>Client 1</MenuItem>
-                <MenuItem value={20}>Client 2</MenuItem>
-                <MenuItem value={30}>Client 3</MenuItem>
-              </Select>
-            )}
-          />
-          {errors.assignedClientId && <span style={{ color: 'red', fontSize: '12px' }}>{errors.assignedClientId.message}</span>}
-        </FormControl>
-      </Grid> */}
+
                 <Grid item sm={12}>
-                  {/* <Controller
-            name="clientName"
-            control={control}
-            defaultValue=""
-            rules={{ required: 'Client Name is required' }}
-            render={({ field }) => (
-              <>
-                <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                <TextField
-                {...field}
-                id="client-name"
-                fullWidth
-                variant="outlined"
-                select
-                size="small"
-                required
-                label=""
-                error={!!errors.clientName}
-                helperText={errors?.clientName?.message}
-                onChange={(e: any) => {
-                    console.log(e.target.value);
-                    setGetClient(e.target.value);
-                    const getUnique = assignedClientData.filter((datas: any) => datas.Title === e.target.value);
-                    setParticularClientAllData(getUnique);
-                    console.log(getUnique, "getUnique")
-                    setValue('clientName', e.target.value);
-                    handleFilterChange(e); 
-                }}
-            >
-                  {assignedClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.Title}>
-                      {item.Title}
-                    </MenuItem>
-                  ))}
-                </TextField> */}
+
                   <Controller
                     name="clientName"
                     control={control}
@@ -1082,12 +1026,13 @@ const ViewProject = (props: IFreeholdChildProps) => {
           selected={selected}
           props={props}
           fetchData={fetchData}
+          userRole={userRole}
         />
       }
 
-      {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} />}
+      {handleUnitDialog && <CreateUnit open={handleUnitDialog} onClose={closeUnitDialog} particularClientAllData={particularClientAllData} selected={selected} props={props} userRole={userRole} />}
 
-      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} spContext={props.spContext} siteUrl={props.siteUrl} />}
+      {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} spContext={props.spContext} siteUrl={props.siteUrl} userRole={userRole} />}
       {isDeleteDialogOpen &&
         // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
         <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}

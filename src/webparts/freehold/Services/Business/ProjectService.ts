@@ -82,10 +82,7 @@ const ProjectService = () => {
 
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
-                    // const clientData = {
-                    //     Id: client?.Id,
-                    //     Name: client?.Title
-                    // }
+
                     console.log(client, "clientDetails")
                     return (
                         {
@@ -122,6 +119,103 @@ const ProjectService = () => {
 
 
             const TableData: any = results.map((tableItem: any) => ({
+                Id: tableItem.Id,
+                projectName: tableItem.Title,
+                projectNumber: tableItem.ProjectNumber,
+                location: tableItem.Location,
+                developer: tableItem.Developer,
+                modifiedDate: formatDate(tableItem.Modified),
+                modifiedBy: tableItem.Editor.Title,
+                GUID: tableItem.ProjectLibraryGUID,
+                webURL: tableItem.ProjectLibraryPath,
+                assignClient: (tableItem?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
+                assignClientId: (tableItem?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
+                clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,
+                ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
+            }));
+            console.log(updatedResults, TableData, "updatedResults");
+
+            return { updatedResults, TableData };
+        }
+    };
+
+    const getfilteredProjectExpand = async (ListName: string, select: string, filter: string, expand: string, order: any, currentUserEmail: string) => {
+        if (spServiceInstance) {
+
+            const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id';
+            const cexpand = 'AssignedStaff';
+            const cfilter = `AssignedStaff/EMail eq '${currentUserEmail}'`;
+
+            const corderBy = 'Modified';
+
+            const clientResults = await spServiceInstance.getListItemsByFilter('Client_Informations', cselect, cexpand, cfilter, corderBy);
+            //console.log("Client results : ", results);
+            const clientArr: string[] = [];
+
+            _.forEach(clientResults, function (citem) {
+                clientArr.push(citem.ID);
+            });
+
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, order);
+
+            const filteredResults: any[] = [];
+
+            _.forEach(results, function (pitem) {
+
+                const match = _.intersection(clientArr, pitem.AssignClientId);
+                if (match.length > 0) {
+
+                    let assignedClientArr: any[] = [];
+
+                    _.forEach(pitem.AssignClient, function (aitem, index: number) {
+                        if (_.indexOf(match, aitem.Id) > -1) {
+                            assignedClientArr.push(aitem);
+                        }
+                    });
+                    pitem.AssignClient = assignedClientArr;
+
+                    filteredResults.push(pitem);
+                }
+            });
+
+            const updatedResults = await Promise.all(filteredResults.map(async (item: any) => {
+                const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
+
+                    console.log(client, "clientDetails")
+                    return (
+                        {
+                            Id: client?.Id,
+                            Name: client?.Title
+                        }
+                    )
+                })
+                console.log(item, "UpdatedResult")
+                return {
+                    // name: item.Title,
+                    projectName: item.Title,
+                    projectNumber: item.ProjectNumber,
+                    location: item.Location,
+                    developer: item.Developer,
+                    modifiedDate: formatDate(item.Modified),
+                    modifiedBy: item.Editor.Title,
+                    Staff: item.AssignedStaff,
+                    contact: item.ClientContact,
+                    GUID: item.ProjectLibraryGUID,
+                    webURL: item.ProjectLibraryPath,
+                    Author: {
+                        Name: item.Author.Title,
+                        Email: item.Author.EMail
+                    },
+                    Id: item.Id,
+                    assignClient: (item?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
+                    assignClientId: (item?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
+                    clientDetails,
+                    ClientGUID: item?.AssignClient ? item.AssignClient.ClientLibraryGUID : null
+
+                };
+            }));
+
+            const TableData: any = filteredResults.map((tableItem: any) => ({
                 Id: tableItem.Id,
                 projectName: tableItem.Title,
                 projectNumber: tableItem.ProjectNumber,
@@ -286,15 +380,6 @@ const ProjectService = () => {
         }
     }
 
-
-    //         const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
-
-    //             if (spServiceInstance) {
-    //                 const results = await spServiceInstance.uploadDocument(libraryGuid, file);
-    //                 console.log(results, "results");
-    //             }
-    //         };
-
     const createFolderInLibrary = async (libraryName: string, folderName: string): Promise<any> => {
         if (spServiceInstance) {
             const results = await spServiceInstance.createFolderInLibrary(libraryName, folderName);
@@ -340,8 +425,8 @@ const ProjectService = () => {
         deleteFolder,
         deleteAssignedClient,
         getFolderItemsRecursive,
-        getFolderItems
-        // addDocumentsToFolder
+        getFolderItems,
+        getfilteredProjectExpand
     };
 };
 

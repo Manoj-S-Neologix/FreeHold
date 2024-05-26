@@ -170,9 +170,9 @@ const ClientService = () => {
         }
     };
 
-    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any) => {
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, filter: string, id?: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, id);
             //console.log(results, "results");
             return results;
         }
@@ -243,12 +243,41 @@ const ClientService = () => {
                     ProjectId: item.ProjectId,
                     projectDetails: item.projectDetails,
                     Editor: item?.Editor
-
-
                 };
             });
             console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
+        }
+    };
+
+    const getfilteredClientsnProjects = async (ListName: string, select: string, expand: string, filter: string, orderBy: any) => {
+
+        if (spServiceInstance) {
+            const clientResults = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
+            //console.log("Client results : ", results);
+            const clientArr: string[] = [];
+
+            _.forEach(clientResults, function (citem) {
+                clientArr.push(citem.ID);
+            })
+
+            const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+            const pexpand = 'AssignClient';
+            const porderBy = 'Modified';
+            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
+
+            const pResults: any[] = [];
+            _.forEach(projectResults, function (pitem) {
+
+                const match = _.intersection(clientArr, pitem.AssignClientId);
+                if (match.length > 0) {
+                    pResults.push(pitem);
+                }
+            });
+
+            //console.log("Filtered project results : ", pResults);
+
+            return { clientResults, pResults };
         }
     };
 
@@ -363,7 +392,8 @@ const ClientService = () => {
         updateClientDocumentMetadata,
         getClients,
         getProjects,
-        getfilteredListCounts
+        getfilteredListCounts,
+        getfilteredClientsnProjects
     };
 };
 

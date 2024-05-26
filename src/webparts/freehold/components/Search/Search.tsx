@@ -1,5 +1,5 @@
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip } from "@mui/material";
-import React from 'react';
+import React, { useState } from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
 import CommonCustomSearch from "../../../../Common/Search/CommonCustomSearch";
@@ -16,6 +16,8 @@ import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
 import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
+import SPService, { SPServiceType } from "../../Services/Core/SPService";
+import _ from "lodash";
 
 // const clientOptions = ['Client1', 'Client2', 'Client3'];
 // const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -33,6 +35,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
     const [isExpand, setIsExpand] = React.useState<boolean>(false);
+
+    const spServiceInstance: SPServiceType = SPService;
+    const [userRole, setUserRole] = useState('');
+
     // const [clientValue, setClientValue] = React.useState<string>('');
     // const [projectValue, setProjectValue] = React.useState<string>('');
     const [isLoading, setIsLoading] = React.useState(true);
@@ -134,14 +140,39 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         }
     };
 
+    const getUserRoles = () => {
+        let loggedInUserGroups: string[] = [];
+        let userRoleVal: string = "staff";
+
+        spServiceInstance.getLoggedInUserGroups().then((response) => {
+            //console.log("Current user site groups : ", response);
+
+            _.forEach(response, function (group: any) {
+                loggedInUserGroups.push(group.Title);
+            });
+
+            if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+                userRoleVal = "superuser";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+                userRoleVal = "manager";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+                userRoleVal = "staff";
+            }
+
+            setUserRole(userRoleVal);
+
+        });
+    }
+
     React.useEffect(() => {
-        setDocumentType('')
+        setDocumentType('');
+        getUserRoles();
     }, []);
 
 
     React.useEffect(() => {
         fetchData();
-    }, []);
+    }, [userRole]);
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
@@ -398,10 +429,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     {documentType === 'Project' && (
                         <>
                             {/* <ClientProjectUpload /> */}
-                            <ClientUploadDocument onClose={() => {
-                                setDocumentType('')
-                                setOpenDocuments(false)
-                            }} />
+                            <ClientUploadDocument
+                                userRole={userRole}
+                                spContext={spContext}
+                                onClose={() => {
+                                    setDocumentType('')
+                                    setOpenDocuments(false)
+                                }} />
                             {false && <form onSubmit={handleSubmit(handleSave)}>
                                 <Stack direction={"column"} gap={3}>
                                     <Grid container spacing={2}>
@@ -532,10 +566,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     {/* Client document upload */}
                     {documentType === 'Client' && (
                         <>
-                            <ProjectUploadDocument onClose={() => {
-                                setDocumentType('')
-                                setOpenDocuments(false)
-                            }} />
+                            <ProjectUploadDocument
+                                userRole={userRole}
+                                spContext={spContext}
+                                onClose={() => {
+                                    setDocumentType('')
+                                    setOpenDocuments(false)
+                                }} />
                         </>
 
                     )}
