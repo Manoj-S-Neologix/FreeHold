@@ -263,19 +263,35 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
     try {
       setIsLoading(true);
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
-      const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
-      console.log(results, "result");
-      if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.updatedResults);
+      //const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      //const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
 
+      //const results:any[] = [];
+      if (userRole === "staff") {
+        const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
+
+        console.log(results, "result");
+        if (results && results.TableData && results.TableData.length > 0) {
+          setProjectData(results.TableData);
+        } else {
+          // Handle case where no data is returned
+          setProjectData([]);
+        }
       } else {
-        // Handle case where no data is returned
-        setProjectData([]);
+        const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+
+        console.log(results, "result");
+        if (results && results.updatedResults && results.updatedResults.length > 0) {
+          setProjectData(results.updatedResults);
+        } else {
+          // Handle case where no data is returned
+          setProjectData([]);
+        }
       }
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -423,8 +439,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                               }}
                             >
                               {particularClientAllData?.map((item: any) => (
-                                <MenuItem key={item.Id} value={item.Name}>
-                                  {item.Name}
+                                <MenuItem key={item.Id} value={item.Title}>
+                                  {item.Title}
                                 </MenuItem>
                               ))}
                             </TextField>

@@ -927,6 +927,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
                     </Box>
                     <IconButton aria-label="delete"
                       onClick={() => { setIsDelete(true); setclientDelDetails(data); }}
+                      disabled={(userRole === "staff")}
                       style={{ color: '#bbb' }}
                     >
                       <DeleteIcon />
@@ -982,7 +983,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
                       >
                         <MuiButton variant="contained" color="primary"
                           sx={{ width: isLoading ? '150px' : 'auto' }}
-                          onClick={handleClearClient} disabled={isLoading}>
+                          onClick={handleClearClient}
+
+                          disabled={isLoading}>
                           {isLoading ? (
                             <CircularProgress size={20} color="inherit" />
                           ) : (

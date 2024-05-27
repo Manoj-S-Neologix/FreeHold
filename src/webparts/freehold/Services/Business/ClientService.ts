@@ -211,6 +211,7 @@ const ClientService = () => {
 
                 updatedResults.push({
                     name: item.Title,
+                    Title: item.Title,
                     email: item.ClientEmail,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Editor.Title,

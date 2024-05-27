@@ -87,10 +87,12 @@ const ProjectService = () => {
                     return (
                         {
                             Id: client?.Id,
-                            Name: client?.Title
+                            Name: client?.Title,
+                            Title: client?.Title
                         }
                     )
-                })
+                });
+
                 console.log(item, "UpdatedResult")
                 return {
                     // name: item.Title,
@@ -116,7 +118,6 @@ const ProjectService = () => {
 
                 };
             }));
-
 
             const TableData: any = results.map((tableItem: any) => ({
                 Id: tableItem.Id,
@@ -189,10 +190,11 @@ const ProjectService = () => {
                         }
                     )
                 })
-                console.log(item, "UpdatedResult")
+
                 return {
                     // name: item.Title,
                     projectName: item.Title,
+                    Title: item.Title,
                     projectNumber: item.ProjectNumber,
                     location: item.Location,
                     developer: item.Developer,
@@ -217,6 +219,7 @@ const ProjectService = () => {
 
             const TableData: any = filteredResults.map((tableItem: any) => ({
                 Id: tableItem.Id,
+                Title: tableItem.Title,
                 projectName: tableItem.Title,
                 projectNumber: tableItem.ProjectNumber,
                 location: tableItem.Location,
