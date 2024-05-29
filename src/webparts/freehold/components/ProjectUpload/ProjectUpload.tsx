@@ -46,7 +46,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [deleteId, setDeleteId] = useState<number>(0);
 
   console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
-  const { control, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
+  const { control, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm();
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
 
   const handleFileInput = (selectedFiles: File[]) => {
@@ -130,22 +130,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     apiCall();
   }, []);
 
-  /* const fetchData = async (getGuid: any) => {
-
-    const projectService: any = ProjectService();
-    const folderGUID = getGuid;
-    try {
-      const results = await projectService.getDocumentsFromFolder(folderGUID);
-      console.log(results, "File Datas");
-      console.log("File response : ", results);
-      setFileData(results);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error fetching documents:", error);
-    }
-  }; */
-
   const getDocumentsLibPath = async (type: string) => {
 
     let projectRelativePath = (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
@@ -198,7 +182,23 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   }, [uploadFiles]);
 
   const onDelete = (index: number) => {
+
+    //console.log("getvalues", getValues());
+
     setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+
+    const clientName: string = getValues("clientName");
+    reset();
+
+    setValue("clientName", clientName);
+
+    //const upFiles:any[] = uploadFiles;
+
+    uploadFiles.filter((_, i) => i !== index).map((uploadedFile, index) => (
+      setValue(`projectChecklist-${index}`, uploadedFile.checklist)
+    ));
+
+    //console.log("getvalues", getValues());
   };
 
   //project upload with meta data
@@ -241,14 +241,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       setLoading(false);
       setFiles([]);
       setUploadFiles([]);
+
       toast.success('Documents Added Successfully!');
       if (isUnitDocumentChecked) {
         getDocumentsLibPath("unit");
       } else {
         getDocumentsLibPath("client");
       }
-      // fetchData("test");
-      //handleCancel(); // Close the dialog if needed
 
     } catch (error) {
       setLoading(false);
@@ -406,9 +405,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             getDocumentsLibPath("unit");
 
                             /* const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
-  
+   
                             const libraryPath = `${getLibraryName}/${e.target.value}`;
-  
+   
                             fetchData(libraryPath) */
                             //Get documents for client selection
                             //fetchData(getLibraryName);
@@ -536,6 +535,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                     variant="outlined"
                                     select
                                     size="small"
+                                    //value={uploadedFile.checklist}
                                     required
                                     error={!!errors[`projectChecklist-${index}`]}
                                     helperText={errors[`projectChecklist-${index}`]?.message}
@@ -629,7 +629,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                               </Box>
                             </TableCell>
                             <TableCell>{file.DMS_x0020_Tags}</TableCell>
-                            <TableCell>{formatDate(file.Created)}</TableCell>
+                            <TableCell>{formatDate(file.Modified)}</TableCell>
                             <TableCell>{file.Editor.Title}</TableCell>
                             <TableCell>
                               <IconButton onClick={() => {

@@ -50,6 +50,7 @@ const ProjectService = () => {
                     docList.push({
                         Id: value.Id,
                         Created: value.Created,
+                        Modified: value.Modified,
                         FileLeafRef: value.FieldValuesAsText.FileLeafRef,
                         FileRef: value.FieldValuesAsText.FileRef,
                         FileDirRef: value.FileDirRef,
