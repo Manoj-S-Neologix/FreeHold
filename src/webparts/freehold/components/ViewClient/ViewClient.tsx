@@ -290,11 +290,11 @@ const ViewClient = (props: IFreeholdChildProps) => {
         },
       },
       {
-        label: 'View Documents',
+        label: 'Manage Documents',
         button: (
           <Button
             color="primary"
-            message="View Documents"
+            message="Manage Documents"
             handleClick={(id: any) => {
               //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);
@@ -366,11 +366,11 @@ const ViewClient = (props: IFreeholdChildProps) => {
         },
       },
       {
-        label: 'View Documents',
+        label: 'Manage Documents',
         button: (
           <Button
             color="primary"
-            message="View Documents"
+            message="Manage Documents"
             handleClick={(id: any) => {
               //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);

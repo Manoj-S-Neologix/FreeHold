@@ -269,13 +269,13 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
                   xl={textFieldWidth.sm}
                 >
 
-                  <label htmlFor="clientEmail">Client Email<span style={{ color: 'red' }}>*</span></label>
+                  <label htmlFor="clientEmail">Client Email</label>
                   <Controller
                     name="email"
                     control={control}
                     defaultValue=""
                     rules={{
-                      required: "Email Id is required.",
+                      // required: "Email Id is required.",
                       minLength: {
                         value: 5,
                         message: "Email address must be at least 5 characters.",
@@ -315,13 +315,13 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
                   lg={textFieldWidth.sm}
                   xl={textFieldWidth.sm}
                 >
-                  <label htmlFor="clientContact">Contact Number<span style={{ color: 'red' }}>*</span></label>
+                  <label htmlFor="clientContact">Contact Number</label>
                   <Controller
                     name="contact"
                     control={control}
                     defaultValue=""
                     rules={{
-                      required: 'Client Contact is required',
+                      // required: 'Client Contact is required',
                       pattern: {
                         value: /^[0-9+-.]{0,15}$/,
                         message: 'Invalid contact number'

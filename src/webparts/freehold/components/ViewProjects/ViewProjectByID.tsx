@@ -109,7 +109,7 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
     };
 
     return (
-        <Box>
+        <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }}>
             <Stack direction='column' sx={{ gap: "30px" }} >
                 <Box>
                     <Breadcrumbs
@@ -127,7 +127,7 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                         </StyledBreadcrumb>
                     </Breadcrumbs>
                 </Box>
-                <Box>
+                <Box sx={{marginTop: "10px !important"}}>
                     <form>
                         {/* <form> */}
                         <TableContainer component={Paper}>

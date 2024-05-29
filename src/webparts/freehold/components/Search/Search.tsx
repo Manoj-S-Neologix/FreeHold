@@ -224,7 +224,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     justifyContent: "flex-start",
                                     gap: "10px"
                                 }}>
-                                <Box sx={{ width: "100%" }}>
+                                <Box sx={{ width: "100%", paddingLeft:'8px' }}>
                                     <CommonCustomSearch isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
                                 </Box>
                                 <Box>
@@ -263,7 +263,14 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                 </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4} sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                paddingTop: "1rem !important",
+                                position: "absolute",
+                                top: "70px !important",
+                                right: "10px !important"
+                            }}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button
                                     style={{ maxWidth: "200px", whiteSpace: "pre" }}

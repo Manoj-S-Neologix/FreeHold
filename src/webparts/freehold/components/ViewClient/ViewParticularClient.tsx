@@ -124,8 +124,12 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
             .then(() => {
                 setLoading(false);
                 toast.success('Client Updated Successfully!');
-                // navigateToClient();
+                   // navigateToClient();
+                // setIsEdit(false);
+                // isEdit(false);
                 navigateToClient();
+                // navigate(`/ViewClient/${clientDetails.Id}`);
+                // navigate('/ViewClient'); 
                 fetchData();
                 initialFetchData();
                 setIsEdit(false);
@@ -186,8 +190,8 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
 
     return (
         <Box>
-            <Stack direction='column' sx={{ gap: "30px" }} >
-                <Box >
+            <Stack direction='column'  >
+                <Box sx={{position:'relative', bottom:'40px'}}>
                     <Breadcrumbs
                         separator={<NavigateNextIcon fontSize="medium" />}
                         aria-label="breadcrumb"
@@ -261,7 +265,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        required: "Email Id is required.",
+                                                        // required: "Email Id is required.",
                                                         minLength: {
                                                             value: 5,
                                                             message: "Email address must be at least 5 characters.",
@@ -312,7 +316,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        required: 'Client Contact is required',
+                                                        // required: 'Client Contact is required',
                                                         pattern: {
                                                             value: /^[0-9+-.]{0,15}$/,
                                                             message: 'Invalid contact number'

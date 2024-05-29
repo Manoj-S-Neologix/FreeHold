@@ -254,11 +254,11 @@ const ViewProject = (props: IFreeholdChildProps) => {
       },
 
       {
-        label: 'View Documents',
+        label: 'Manage Documents',
         button: (
           <Button
             color="primary"
-            message="View Documents"
+            message="Manage Documents"
             handleClick={(id: any) => {
               //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);
@@ -349,11 +349,11 @@ const ViewProject = (props: IFreeholdChildProps) => {
       },
 
       {
-        label: 'View Documents',
+        label: 'Manage Documents',
         button: (
           <Button
             color="primary"
-            message="View Documents"
+            message="Manage Documents"
             handleClick={(id: any) => {
               //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);
@@ -523,7 +523,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
   const handleCancel = () => {
     console.log("Cancel button clicked");
-    //onClose();
+    setIsDelete(false);
   };
 
   const hyperLink = (data: any, names: any[], item: any) => {
@@ -707,7 +707,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
       {!isViewDialogOpen &&
         <Stack direction='column' sx={{ gap: "30px" }} >
-          <Box className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}>
+          <Box 
+          // className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}
+          >
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="medium" />}
               aria-label="breadcrumb"

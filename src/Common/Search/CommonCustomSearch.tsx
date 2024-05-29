@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Box, TextField, CircularProgress } from "@mui/material";
+import { Box, TextField, CircularProgress, IconButton } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+
 import styles from './CustomSearch.module.scss';
 import Drawer from '@mui/material/Drawer';
 import SearchResults from '../SearchResults/SearchResults';
@@ -58,11 +60,17 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
         setIsSearchIconEnabled(value.length >= 4);
     };
 
+    const handleClear = () => {
+        setsearchTxt("");
+        setIsSearchIconEnabled(false);
+    };
+
     return (
         <Box>
             <TextField
                 className={styles.searchBar}
                 size="small"
+                value={searchTxt}
                 onFocus={() => setPlaceholder("Type at least 4 characters")}
                 onBlur={() => setPlaceholder("Search...")}
                 onKeyDown={(e) => {
@@ -83,23 +91,35 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                 }}
                 InputProps={{
                     endAdornment: (
-                        loading ? (
+                        <>
+                        {loading ? (
                             <CircularProgress size={24} className={styles.IconSearch} />
                         ) : (
-                            <SearchIcon
-                                className={styles.IconSearch}
-                                onClick={isSearchIconEnabled ? toggleDrawer(true) : undefined}
-                                style={{
-                                    border: "none",
-                                    color: isSearchIconEnabled ? "#125895" : "#A9A9A9",
-                                    cursor: isSearchIconEnabled ? "pointer" : "default"
-                                }}
-                            />
-                        )
-                    ),
-                }}
-                onChange={handleInputChange}
-            />
+                            <>
+                                {searchTxt && (
+                                    <IconButton
+                                        size="small"
+                                        onClick={handleClear}
+                                        style={{
+                                            color: "#125895",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                )}
+                                <SearchIcon
+                                    className={`${styles.IconSearchCommon} ${isSearchIconEnabled ? styles.IconSearchEnabledCommon : styles.IconSearchDisabledCommon}`}
+                                    onClick={isSearchIconEnabled ? toggleDrawer(true) : undefined}
+                                />
+
+                            </>
+                        )}
+                    </>
+                ),
+            }}
+            onChange={handleInputChange}
+        />
 
             <React.Fragment>
                 <Drawer
