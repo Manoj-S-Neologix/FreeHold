@@ -125,7 +125,8 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
     };
 
     const navigateToProject = () => {
-        navigate('/ViewProject');
+        //navigate('/ViewProject');
+        navigate(-1);
     };
 
     const handleUpdate = handleSubmit(async (data) => {

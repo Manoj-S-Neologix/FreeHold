@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 // import Button from '@mui/material/Button';
-import { Autocomplete, Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack, Grid } from '@mui/material';
@@ -29,7 +29,7 @@ import ProjectService from '../../Services/Business/ProjectService';
 import toast from 'react-hot-toast';
 import DropZone from '../../../../Common/DropZone/DropZone';
 import ClientService from "../../Services/Business/ClientService";
-import CheckIcon from "@mui/icons-material/Check";
+//import CheckIcon from "@mui/icons-material/Check";
 import formatDate from "../../hooks/dateFormat";
 
 const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl, userRole }) => {
@@ -42,7 +42,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
   const [getClient, setGetClient] = useState<any[]>([]);
-  const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
+  //const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
   const [deleteId, setDeleteId] = useState<number>(0);
 
   console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
@@ -95,8 +95,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
-  const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
+  //const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
+  //const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
   // const getProjectName = particularClientAllData[0]?.projectName;
   const getProjectCode = particularClientAllData[0]?.projectNumber;
@@ -104,23 +104,23 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
-      const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log(results, 'guidresult')
+      //const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
+      //console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
       console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
-      console.log('Retrieved files:', results,);
+      //console.log('Retrieved files:', results,);
       console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
 
       // Ensure results is an array before setting state
-      if (Array.isArray(results)) {
+      /* if (Array.isArray(results)) {
         setClientDocumentsData(results.map(item => item.FileLeafRef));
         setClientDocumentsAllData(results);
         console.log(getClientDocumentsAllData, 'BBB');
       } else {
         console.error('Error: Retrieved data is not an array');
-      }
+      } */
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
@@ -215,9 +215,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
     }
 
-    console.log("clientInfo", clientInfo);
-
-    //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
+    //console.log("clientInfo", clientInfo);
 
     try {
       const apiResponse = ProjectService();
@@ -234,10 +232,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
         // Upload documents to the specified client's folder
         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-
       }
 
-      // await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+      uploadFiles.map((uploadedFile, index) => (
+        setValue(`projectChecklist-${index}`, "")
+      ));
+
       setLoading(false);
       setFiles([]);
       setUploadFiles([]);
@@ -425,73 +425,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                     />
                   </Grid>
 
-                  {console.log(getClientDocumentsData, getClientDocumentsAllData, getFoldersResponse, 'getClientDocuments..')}
-
-                  {false && getClientDocumentsData.length > 0 && (
-                    <Grid item xs={12}>
-                      <Controller
-                        name="AssignClientDocuments"
-                        control={control}
-                        defaultValue={[]}
-                        rules={{
-                          required: 'Assign Client Documents is required',
-                        }}
-                        render={({ field }) => (
-                          <>
-                            <InputLabel htmlFor="Client-Documents">Client Documents</InputLabel>
-                            <Autocomplete
-                              multiple
-                              options={getClientDocumentsData}
-                              getOptionLabel={(option: any) => option}
-                              disableCloseOnSelect
-                              {...field}
-                              size="small"
-                              onChange={(e: any, value: any) => {
-                                field.onChange(value);
-                                setValue('AssignClientDocuments', value);
-                                const collectionOfDocuments: any = [];
-                                getClientDocumentsAllData?.map((item: any) => {
-                                  console.log(item, value, value.includes(item.FileLeafRef), '...');
-                                  if (value.includes(item.FileLeafRef)) {
-                                    collectionOfDocuments.push({
-                                      Id: item.Id,
-                                      GUID: item.GUID,
-                                      FileLeafRef: item.FileLeafRef,
-                                      FileRef: item.FileRef
-                                    });
-                                    console.log(collectionOfDocuments, 'collectionOfDocuments///');
-                                  }
-                                });
-                                setCollectionOfDocuments(collectionOfDocuments);
-                              }}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  {...params}
-                                  variant="outlined"
-                                  label=""
-                                  placeholder="Select Document"
-                                  size="small"
-                                  error={!!errors?.AssignClientDocuments}
-                                  helperText={errors?.AssignClientDocuments?.message}
-                                />
-                              )}
-                              renderOption={(props: any, option: any, { selected }: any) => (
-                                <MenuItem
-                                  {...props}
-                                  value={option}
-                                  sx={{ justifyContent: "space-between" }}
-                                >
-                                  {option}
-                                  {selected ? <CheckIcon color="info" /> : null}
-                                </MenuItem>
-                              )}
-                            />
-                          </>
-                        )}
-                      />
-                    </Grid>
-                  )}
-
                 </Grid>
               </Stack>
 
@@ -612,7 +545,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {!isLoading && getClientDocumentsData.length > 0 &&
+                      {!isLoading &&
                         fileData.length > 0 ? fileData.map((file: any) => (
                           <TableRow key={file.FileLeafRef}>
                             <TableCell>
@@ -648,7 +581,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       {isLoading &&
                         <TableRow>
                           <TableCell colSpan={8} align="center">
-                            {getClientDocumentsData.length > 0 ?
+                            {fileData.length > 0 ?
                               <CircularProgress size={20} />
                               : "select Client Name"
                             }

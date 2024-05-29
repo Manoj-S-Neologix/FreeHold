@@ -27,7 +27,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
   const [loading, setLoading] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
-
   const textFieldWidth = {
     xs: 12,
     sm: 6,
@@ -36,7 +35,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     xl: 3,
     margin: "8px",
   };
-
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -56,8 +54,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
       fetchClientData();
     }
   }, [files]);
-
-
 
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
@@ -114,8 +110,6 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
       },
       DMS_x0020_Tags: data.clientChecklist
     };
-
-    // false && addListItem('Clients', dataObj);
 
     const uploadPromise: any = new Promise((resolve, reject) => {
       const fileInfoArray = files.map((file: any) => ({
