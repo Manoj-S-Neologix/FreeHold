@@ -12,6 +12,8 @@ import {
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
 import { IFreeholdProps } from '../IFreeholdProps';
+import ViewProjectByID from '../ViewProjects/ViewProjectByID';
+import EditProjectByID from '../ViewProjects/EditProjectByID';
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,7 +35,7 @@ const Home = (props: IFreeholdProps) => {
                         <Route path='/'
                             element={
                                 <>
-                                    <SideNavBar props={props} />
+                                    <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                     <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                 </>}
                         />
@@ -50,16 +52,16 @@ const Home = (props: IFreeholdProps) => {
                             element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/ViewProjects'
+                            path='/ViewProject'
                             element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/ViewProject/:viewProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
+                            path='/ViewProject/:pId'
+                            element={<ViewProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/EditProject/:editProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
+                            path='/EditProject/:pId'
+                            element={<EditProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistValidation'
@@ -67,7 +69,7 @@ const Home = (props: IFreeholdProps) => {
                         />
                         <Route
                             path='/ChecklistConfiguration'
-                            element={<ChecklistConfiguration />}
+                            element={<ChecklistConfiguration spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                     </Routes>
                 </HashRouter>

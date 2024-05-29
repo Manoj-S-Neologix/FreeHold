@@ -123,10 +123,15 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                 return ProjectService().createFolder(response.data.ServerRelativeUrl, unit.key);
             });
             await Promise.all(folderCreationPromises);
+            const updatedFolders = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${AssignClient}`);
+            setGetFoldersResponse(updatedFolders);
+
             setLoading(false);
             toast.success("Units created successfully");
+
             reset();
-            onClose();
+            setCount(1);
+            //onClose();
         } catch (error) {
             setLoading(false);
             toast.error(error.message);
@@ -177,8 +182,16 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             await apiResponse.deleteFolder(deleteItemPath)
             console.log(deleteItemPath, 'folderurl..')
             toast.success('Unit Deleted Successfully!');
+
+            setGetFoldersResponse(prevFolders =>
+                prevFolders.filter(folder => folder.ServerRelativeUrl !== deleteItemPath)
+            );
+
             setIsDeleteDialogOpen(false);
-            onClose();
+            setLoading(false);
+
+            //setIsDeleteDialogOpen(false);
+            //onClose();
 
         } catch (error) {
             setLoading(false);

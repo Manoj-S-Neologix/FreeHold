@@ -251,7 +251,7 @@ const ClientService = () => {
         }
     };
 
-    const getfilteredClientsnProjects = async (ListName: string, select: string, expand: string, filter: string, orderBy: any) => {
+    const getfilteredClientsnProjects = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, userRole: string) => {
 
         if (spServiceInstance) {
             const clientResults = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
@@ -267,14 +267,18 @@ const ClientService = () => {
             const porderBy = 'Modified';
             const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
 
-            const pResults: any[] = [];
-            _.forEach(projectResults, function (pitem) {
+            let pResults: any[] = [];
+            if (userRole === "staff") {
+                _.forEach(projectResults, function (pitem) {
 
-                const match = _.intersection(clientArr, pitem.AssignClientId);
-                if (match.length > 0) {
-                    pResults.push(pitem);
-                }
-            });
+                    const match = _.intersection(clientArr, pitem.AssignClientId);
+                    if (match.length > 0) {
+                        pResults.push(pitem);
+                    }
+                });
+            } else {
+                pResults = projectResults;
+            }
 
             //console.log("Filtered project results : ", pResults);
 

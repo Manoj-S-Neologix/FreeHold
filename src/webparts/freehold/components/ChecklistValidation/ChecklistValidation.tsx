@@ -107,8 +107,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const [data, setData] = useState<any>([]);
   const columns = [
-    { title: "Project", field: "project", defaultGroupOrder: 0 },
-    { title: "Client", field: "client", defaultGroupOrder: 0 },
+    /* { title: "Project", field: "project", defaultGroupOrder: 0 }, */
+    { title: "Client", field: "client" },
     //{ title: "Unit", field: 'unit', defaultGroupOrder: 0 },
     { title: "Checklist Name", field: "checklistname" },
     { title: "Progress", field: 'progress' }
@@ -201,7 +201,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
               }); */
 
               docList.push({
-                project: getValues("projectName"),
+                //project: getValues("projectName"),
                 client: getValues("clientName"),
                 //unit: unit.Title,
                 checklistname: value.Title,
@@ -244,7 +244,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const checkProgress = (docDetails: any, checkListName: string) => {
 
-    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag == checkListName; });
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag.toLowerCase() == checkListName.toLowerCase(); });
 
     return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
   };

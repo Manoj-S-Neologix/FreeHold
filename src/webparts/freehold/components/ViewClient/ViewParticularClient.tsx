@@ -349,9 +349,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                         )}
                                     </TableRow>
 
-
-
-                                    <TableRow>
+                                    {/* <TableRow>
 
                                         <TableCell component="th" scope="row">Name</TableCell>
                                         <TableCell>
@@ -387,6 +385,11 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                             )}
                                         </TableCell>
 
+                                    </TableRow> */}
+
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Name</TableCell>
+                                        <TableCell>{clientDetails.name}</TableCell>
                                     </TableRow>
 
                                     <TableRow>

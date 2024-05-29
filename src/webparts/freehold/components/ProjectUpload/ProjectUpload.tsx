@@ -215,9 +215,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
     }
 
-    //const clientInfo = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
-    //(particularClientAllData[0].clientDetails, function (o: any) { return o.Name == getClient; });
-
     console.log("clientInfo", clientInfo);
 
     //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
@@ -245,8 +242,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       setFiles([]);
       setUploadFiles([]);
       toast.success('Documents Added Successfully!');
+      if (isUnitDocumentChecked) {
+        getDocumentsLibPath("unit");
+      } else {
+        getDocumentsLibPath("client");
+      }
       // fetchData("test");
-      handleCancel(); // Close the dialog if needed
+      //handleCancel(); // Close the dialog if needed
 
     } catch (error) {
       setLoading(false);

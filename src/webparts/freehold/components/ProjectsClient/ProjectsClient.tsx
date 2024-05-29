@@ -60,7 +60,7 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
       const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
       const orderBy = 'Modified';
-      const filteredClientsnProjects = await clientService.getfilteredClientsnProjects('Client_Informations', select, expand, filter, orderBy);
+      const filteredClientsnProjects = await clientService.getfilteredClientsnProjects('Client_Informations', select, expand, filter, orderBy, userRole);
       console.log("filteredClientsnProjects : ", filteredClientsnProjects);
 
       if (filteredClientsnProjects?.clientResults)
@@ -91,7 +91,7 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                     />
                   </div>
                   {/* <div className={`${styles.col3} ${styles.projectC3}`} >PROJECTS </div> */}
-                  <Link to={"/ViewProjects"}>
+                  <Link to={"/ViewProject"}>
                     <div className={`${styles.col3} ${styles.projectC3}`}>
                       <img
                         src={require('/src/assets/Images/ProjectsClients.png')}

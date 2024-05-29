@@ -366,7 +366,7 @@ const SPService: SPServiceType = {
         const searchRes = await pnp.sp.search({
             Querytext: queryTxt,
             RowLimit: 500,
-            SelectProperties: ["CreatedBy", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "ParentLink", "DMSProjectID", "DMSTags", "DMSUnit"],
+            SelectProperties: ["CreatedBy", "ServerRedirectedURL", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "ParentLink", "DMSProjectID", "DMSTags", "DMSUnit"],
             EnableInterleaving: true
         })
 

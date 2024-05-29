@@ -52,9 +52,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
     // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
-    // const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-
-
 
     const navigate = useNavigate();
 
@@ -64,10 +61,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm(
         {
-            // setValue('projectName', projectDetails.projectName);
-            // setValue('projectNumber', projectDetails.projectNumber);
-            // setValue('location', projectDetails.location);
-            // setValue('developer', projectDetails.developer);
 
             defaultValues: {
                 title: projectDetails.projectName,
@@ -77,7 +70,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 // contact: clientDetails.contact,
                 // assignedStaff: clientDetails.assignedStaff
             }
-
         }
     );
 
@@ -89,11 +81,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
         developer: projectDetails.developer
 
     });
-
-    // const projectDetailsId: any[] = [];
-    // projectDetails?.map((data: any) => {
-    //     return projectDetailsId.push(data.Id);
-    // });
 
     React.useEffect(() => {
         if (projectDetails) {
@@ -119,73 +106,9 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
     };
 
     const navigateToProject = () => {
-        navigate('/ViewProjects');
         setIsViewDialogOpen(false);
+        navigate('/ViewProject');
     };
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     console.log(editData,"data")
-    //     try {
-    //         setLoading(true);
-    //         const apiResponse = ProjectService();
-    //         const updatedData = {
-    //             Title: editData.projectName,
-    //             projectName: editData.projectName,
-    //             ProjectNumber: editData.projectNumber,
-    //             Location: editData.location,
-    //             Developer:editData.developer
-    //             // AssignedStaff: editData.assignedStaff
-    //         };
-
-
-    //         const response = await apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData);
-
-    //         console.log('Update Client Response:', response);
-
-    //         reset();
-    //         // navigateToClient();
-    //         setLoading(false);
-    //         toast.success('Client Updated Successfully!');
-    //         fetchData();
-    //         initialFetchData();
-    //         setIsEdit(false);
-    //     } catch (error) {
-    //         setLoading(false);
-    //         console.error('Error updating client details:', error);
-    //         toast.error('Failed to update client details. Please try again.');
-    //     }
-    // });
-
-
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     // console.log('Starting update process...');
-    //     setLoading(true);
-    //     const apiResponse = ProjectService();
-    //     const updatedData = {
-    //         Title: editData.title,
-    //         // projectName: editData.projectName,
-    //         ProjectNumber: editData.projectNumber,
-    //         Location: editData.location,
-    //         Developer: editData.developer
-    //     };
-
-    //     apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
-    //         .then(() => {
-    //         console.log(updatedData,"updatedData")
-    //             reset();
-    //             setLoading(false);
-    //             toast.success('Project Updated Successfully!');
-    //             fetchData();
-    //             initialFetchData();
-    //             setIsEdit(false);
-    //         })
-    //         .catch((error) => {
-    //             setLoading(false);
-    //             console.error('Error updating project details:', error);
-    //             toast.error('Failed to update project details. Please try again.');
-    //         });
-    // });
 
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
@@ -261,7 +184,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     <TableRow>
 
                                         <TableCell
-                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase',borderBottom:'none' }}
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase', borderBottom: 'none' }}
                                             component="th"
                                             scope="row"
                                         >Project Details</TableCell>
@@ -274,7 +197,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         }}>
                                             {!isEdit && (
                                                 <Button
-                                                    handleClick={() => { setIsEdit(true); navigate('/EditProject/'+projectDetails.Id) }}
+                                                    handleClick={() => { setIsEdit(true); navigate('/EditProject/' + projectDetails.Id) }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"
@@ -328,7 +251,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                             </TableCell>
                                         )}
                                     </TableRow> */}
-                                      <TableRow>
+                                    <TableRow>
                                         <TableCell component="th" scope="row">Project Number</TableCell>
                                         <TableCell>{projectDetails.projectNumber}</TableCell>
                                     </TableRow>

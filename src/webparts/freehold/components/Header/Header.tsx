@@ -28,12 +28,12 @@ const Header = ({ props }: any) => {
                                         width="150"
                                         height="50"
                                         alt="Logo"
-                                        style={{ marginLeft: '7px' }}
+                                        /* style={{ marginLeft: '7px' }} */
                                     />
                                 </Link>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={4} sx={{position:'relative', left:'10px'}}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Persona
                                     imageUrl=""

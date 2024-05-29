@@ -234,7 +234,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
     console.log(filteredData, clientData, "filteredData....")
     setClientData(filteredData);
     setFilterQuery(filterQueryCall);
-    setSearchQuery(searchQueryCall);
+    //setSearchQuery(searchQueryCall);
     setISPersona(true);
     setOpen(false);
   };
