@@ -127,7 +127,7 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                         </StyledBreadcrumb>
                     </Breadcrumbs>
                 </Box>
-                <Box sx={{marginTop: "10px !important"}}>
+                <Box sx={{ marginTop: "10px !important" }}>
                     <form>
                         {/* <form> */}
                         <TableContainer component={Paper}>
@@ -148,6 +148,12 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                             marginRight: "10px"
                                         }}>
 
+                                            {/* <MuiButton variant="contained" color="secondary"
+                                                onClick={navigateToProject} sx={{right:'10px'}}
+                                            >
+                                                Back
+                                            </MuiButton> */}
+
                                             <Button
                                                 handleClick={() => { navigate('/EditProject/' + projectDetails[0]?.Id) }}
                                                 color="secondary"
@@ -155,7 +161,11 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                                 message="Edit"
                                             />
 
+
+
                                         </Box>
+
+
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -211,7 +221,7 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell>{(projectDetails.length > 0) ? projectDetails[0].modifiedBy : ""}</TableCell>
                                     </TableRow>
 
-                                    <TableRow>
+                                    {/* <TableRow>
                                         <TableCell component="th" scope="row">
                                             <MuiButton variant="contained" color="secondary"
                                                 onClick={navigateToProject}
@@ -219,7 +229,7 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                                 Cancel
                                             </MuiButton>
                                         </TableCell>
-                                    </TableRow>
+                                    </TableRow> */}
 
 
                                 </TableBody>

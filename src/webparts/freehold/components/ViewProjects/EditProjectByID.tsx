@@ -188,6 +188,39 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                             scope="row"
                                         >Project Details</TableCell>
 
+
+                                        <Box sx={{
+                                            display: "flex",
+                                            position:"absolute",
+                                            justifyContent: "flex-end",
+                                            alignItems: "center",
+                                            float: "right",
+                                            // gap: "10px",
+                                            marginTop: "10px",
+                                            marginRight: "10px",
+                                            right: "20px"
+
+                                        }}>
+                                        <MuiButton type="submit"
+                                                variant="contained"
+                                                color="secondary"
+
+                                                onClick={() => {
+                                                    // console.log("data")
+                                                    handleUpdate();
+                                                }}
+                                                disabled={loading}
+                                            >
+                                                {loading ? 'Updating...' : 'Update'}
+                                            </MuiButton>
+                                            <MuiButton sx={{ marginLeft: "10px" }} variant="contained" color="secondary"
+                                                onClick={navigateToProject}
+                                            >
+                                                Cancel
+                                            </MuiButton>
+                                        </Box>
+                                        
+
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -351,7 +384,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell>{projectDetails[0]?.modifiedBy}</TableCell>
                                     </TableRow>
 
-                                    <TableRow>
+                                    {/* <TableRow>
                                         <TableCell component="th" scope="row">
 
                                             <MuiButton type="submit"
@@ -372,9 +405,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 Cancel
                                             </MuiButton>
                                         </TableCell>
-                                    </TableRow>
-
-
+                                    </TableRow> */}
                                 </TableBody>
 
                             </Table>

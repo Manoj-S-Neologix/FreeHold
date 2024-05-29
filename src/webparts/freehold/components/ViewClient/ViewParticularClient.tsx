@@ -124,7 +124,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
             .then(() => {
                 setLoading(false);
                 toast.success('Client Updated Successfully!');
-                   // navigateToClient();
+                // navigateToClient();
                 // setIsEdit(false);
                 // isEdit(false);
                 navigateToClient();
@@ -191,7 +191,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
     return (
         <Box>
             <Stack direction='column'  >
-                <Box sx={{position:'relative', bottom:'40px'}}>
+                <Box sx={{ position: 'relative', bottom: '40px' }}>
                     <Breadcrumbs
                         separator={<NavigateNextIcon fontSize="medium" />}
                         aria-label="breadcrumb"
@@ -230,14 +230,14 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                         }}>
                                             <Button
                                                 color="secondary"
-                                                message="View Documents"
+                                                message="Managed Documents"
                                                 handleClick={() => {
                                                     setUploadDialogOpen(true);
                                                 }}
 
                                             />
 
-                                            {!isEdit && (
+                                            {/* {!isEdit && (
                                                 <Button
                                                     handleClick={() => {
                                                         setIsEdit(true);
@@ -247,7 +247,42 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                     Icon={<EditIcon />}
                                                     message="Edit"
                                                 />
+                                                
+                                                
+                                            )} */}
+                                            {!isEdit ? (
+                                                <Button
+                                                    handleClick={() => {
+                                                        setIsEdit(true);
+                                                    }}
+                                                    color="secondary"
+                                                    Icon={<EditIcon />}
+                                                    message="Edit"
+                                                />
+                                            ) : (
+                                                <>
+                                                    <MuiButton
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        onClick={() => {
+                                                            handleUpdate();
+                                                        }}
+                                                        disabled={loading}
+                                                    >
+                                                        {loading ? 'Updating...' : 'Update'}
+                                                    </MuiButton>
+                                                    <MuiButton
+                                                        // sx={{ marginLeft: "20px" }}
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        onClick={navigateToClient}
+                                                    >
+                                                        Cancel
+                                                    </MuiButton>
+                                                </>
                                             )}
+
 
                                         </Box>
                                     </TableRow>
@@ -517,18 +552,13 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                     </TableRow>
 
 
-                                    {isEdit && <TableRow>
+                                    {/* {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">
-                                            {/* <MuiButton type="submit" variant="contained" color="primary"
-                                                onClick={handleUpdate}
-                                            >
-                                                Update
-                                            </MuiButton> */}
+
                                             <MuiButton type="submit"
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={() => {
-                                                    // debugger
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}
@@ -542,7 +572,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                 Cancel
                                             </MuiButton>
                                         </TableCell>
-                                    </TableRow>}
+                                    </TableRow>} */}
                                 </TableBody>
 
                             </Table>
