@@ -47,3 +47,17 @@
 .label, .textfield  {
     color: black;
   }
+
+.IconSearchCommon {
+    border: none;
+    cursor: default;
+}
+
+.IconSearchEnabledCommon {
+    color: #125895 !important;
+    cursor: pointer;
+}
+
+.IconSearchDisabledCommon {
+    color: #878787 !important;
+}

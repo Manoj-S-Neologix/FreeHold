@@ -93,6 +93,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     useEffect(() => {
         apiCall();
     }, [particularClientAllData]);
+    
     const handleCancel = () => {
         onClose();
     };
@@ -372,9 +373,9 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                 name="AssignClientDocuments"
                                                 control={control}
                                                 defaultValue={[]}
-                                                rules={{
-                                                    required: 'Assign Client Documents is required',
-                                                }}
+                                                // rules={{
+                                                //     required: 'Assign Client Documents is required',
+                                                // }}
                                                 render={({ field }) => (
                                                     <Autocomplete
                                                         multiple
@@ -404,7 +405,9 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                                 // label="Select Document"
                                                                 label={
                                                                     <span>
-                                                                        Select Document<span style={{ color: '#125895' }}> * </span>
+                                                                        Select Document
+                                                                        {/* <span style={{ color: '#125895' }}> * 
+                                                                        </span> */}
                                                                     </span>
                                                                 }
                                                                 placeholder="Select Document"
@@ -437,8 +440,9 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                             </Grid>
                         </Box>
                     </DialogContent>
-                    {getClient.length > 0 &&
-                        getClientDocumentsData.length > 0 && <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                    {/* {getClient.length > 0 &&
+                        getClientDocumentsData.length > 0 && 
+                        <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                             <Button variant="contained"
                                 sx={{ width: loading ? '150px' : 'auto' }}
                                 onClick={handleSave} disabled={loading || getClientDocumentsAllData?.length === 0}>
@@ -451,7 +455,13 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                             <Button variant="outlined" onClick={handleCancel}>
                                 Cancel
                             </Button>
-                        </DialogActions>}
+                        </DialogActions>} */}
+                         <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                        <Button variant="contained" sx={{ width: loading ? '150px' : 'auto' }} onClick={handleSave} disabled={loading}>
+                            {loading ? <CircularProgress size={20} color="inherit" /> : "Save"}
+                        </Button>
+                        <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
+                    </DialogActions>
                 </Dialog>
             </Stack>
         </Box >

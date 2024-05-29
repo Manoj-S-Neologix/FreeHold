@@ -156,7 +156,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
     });
 
     return (
-        <Box>
+        <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }}>
             <Stack direction='column' sx={{ gap: "30px" }} >
                 <Box >
                     <Breadcrumbs
@@ -174,12 +174,12 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                         </StyledBreadcrumb>
                     </Breadcrumbs>
                 </Box>
-                <Box>
+                <Box sx={{marginTop: "10px !important"}}>
                     <form onSubmit={handleUpdate}>
                         {/* <form> */}
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
-                                <TableHead>
+                                <TableHead sx={{display:'table-caption'}}>
                                     <TableRow>
 
                                         <TableCell
