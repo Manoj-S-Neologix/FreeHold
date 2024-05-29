@@ -21,7 +21,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import CheckIcon from "@mui/icons-material/Check";
 import { Controller, useForm } from "react-hook-form";
 
-const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, existingPersons, fetchData }: any) => {
+const AssignClient = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, existingPersons, fetchData, userRole }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = React.useState<any[]>([]);
     const [personName, setPersonName] = React.useState<string[]>([]);
@@ -34,7 +34,10 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
     const clientService = ClientService();
     const clientListName = "Client_Informations";
-    const selectQuery = "Id,Title,ClientLibraryGUID";
+    const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
+    const expand = 'AssignedStaff';
+    //alert("userROle | " + userRole);
+    const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
     const names = [
         'Oliver Hansen',
@@ -54,7 +57,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
 
     const apiCall = async () => {
         try {
-            const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+            const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, filter, "");
             if (data) {
                 const clientData = particularClientAllData[0];
                 let assignClientIds: any[] = [];
@@ -401,7 +404,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                                                 // label="Select Document"
                                                                 label={
                                                                     <span>
-                                                                        Select Document<span style={{color:'#125895'}}> * </span>
+                                                                        Select Document<span style={{ color: '#125895' }}> * </span>
                                                                     </span>
                                                                 }
                                                                 placeholder="Select Document"

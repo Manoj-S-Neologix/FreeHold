@@ -30,7 +30,7 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
         setLoading(true);
         try {
             if (spServiceInstance) {
-                let qryTxt: string = `${searchTxt}* IsContainer:false path:${siteUrl}`;
+                let qryTxt: string = `Filename:${searchTxt}* contentclass:STS_ListItem_DocumentLibrary IsContainer:false path:${siteUrl}`;
 
                 if (client) {
                     qryTxt += " DMSClient: " + client;
@@ -107,7 +107,7 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                     open={opend}
                     onClose={toggleDrawer(false)}
                 >
-                    <SearchResults searchResults={searchResults} handleClose={toggleDrawer(false)} />
+                    <SearchResults searchResults={searchResults} handleClose={toggleDrawer(false)} spContext={spContext} siteUrl={siteUrl} />
                 </Drawer>
             </React.Fragment>
         </Box>

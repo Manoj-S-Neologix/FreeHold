@@ -8,26 +8,48 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import ArticleIcon from '@mui/icons-material/Article';
 import { ListItemAvatar } from '@mui/material';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { useNavigate } from "react-router-dom";
 //import styles from './SearchResults.module.scss';
 
 interface ISearchPros {
     searchResults?: any;
     handleClose: () => void;
+    spContext: WebPartContext;
+    siteUrl: string;
 }
 
-const SearchResults = ({ searchResults }: ISearchPros) => {
+const SearchResults = ({ searchResults, spContext, siteUrl, handleClose }: ISearchPros) => {
+
+    let navigate = useNavigate();
 
     const getValue = (file: any, type: string) => {
 
         if (type === "project") {
-            return (file.DMSProject !== null && file.DMSProject !== "") ? <a href={`#/ViewProject/${file.DMSProjectID}`}>&bull; {file.DMSProject}</a> : "";
+            return (file.DMSProject !== null && file.DMSProject !== "") ? <a onClick={() => pageRedirect(`/ViewProject/${file.DMSProjectID}`, "same")} href={`#`}>&bull; {file.DMSProject}</a> : "";
         } else if (type === "client") {
-            return (file.DMSClient !== null && file.DMSClient !== "") ? <a href={`#/ViewClient/${file.DMSClientID}`}>&bull; {file.DMSClient}</a> : "";
+            return (file.DMSClient !== null && file.DMSClient !== "") ? <a onClick={() => pageRedirect(`/ViewClient/${file.DMSClientID}`, "same")} href={`#`}>&bull; {file.DMSClient}</a> : "";
+            //return (file.DMSClient !== null && file.DMSClient !== "") ? <a onClick={pageRedirect(`/ViewClient/${file.DMSClientID}`, "same")} href={`#/ViewClient/${file.DMSClientID}`}>&bull; {file.DMSClient}</a> : "";
         } else if (type === "unit") {
             return (file.DMSUnit !== null && file.DMSUnit !== "") ? <span>&bull; {file.DMSUnit}</span> : "";
         }
 
+    };
 
+    const getRedirectUrl = (parentLink: String, filename: string) => {
+
+        const parentlnk: string = parentLink.replace("/Forms/AllItems.aspx", "");
+        return (`${parentlnk}/${filename}`);
+    };
+
+    const pageRedirect = (url: string, redirectType: string) => {
+
+        if (redirectType == "other") {
+            window.open(url, "_blank", "noreferrer");
+        } else {
+            handleClose();
+            navigate(url);
+        }
     };
 
     return (
@@ -47,7 +69,7 @@ const SearchResults = ({ searchResults }: ISearchPros) => {
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={<a target="_blank" href={`${file.ParentLink}/${file.Filename}`}>{file.Filename}</a>}
+                                primary={<a onClick={() => pageRedirect(`${siteUrl}/_layouts/download.aspx?SourceUrl=${getRedirectUrl(file.ParentLink, file.Filename)}`, "other")} target="_blank" href={"#"}>{file.Filename}</a>}
                                 secondary={
                                     <>
                                         <li>{getValue(file, "project")} {getValue(file, "client")} {getValue(file, "unit")}</li>

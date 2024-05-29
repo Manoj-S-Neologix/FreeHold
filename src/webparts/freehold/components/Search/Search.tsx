@@ -1,5 +1,5 @@
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip } from "@mui/material";
-import React from 'react';
+import React, { useState } from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
 import CommonCustomSearch from "../../../../Common/Search/CommonCustomSearch";
@@ -16,6 +16,8 @@ import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
 import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
+import SPService, { SPServiceType } from "../../Services/Core/SPService";
+import _ from "lodash";
 
 // const clientOptions = ['Client1', 'Client2', 'Client3'];
 // const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -33,6 +35,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
     const [isExpand, setIsExpand] = React.useState<boolean>(false);
+
+    const spServiceInstance: SPServiceType = SPService;
+    const [userRole, setUserRole] = useState('');
+
     // const [clientValue, setClientValue] = React.useState<string>('');
     // const [projectValue, setProjectValue] = React.useState<string>('');
     const [isLoading, setIsLoading] = React.useState(true);
@@ -86,14 +92,14 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         const selectedProjectName = getValues("projectName");
         const selectedNames: string[] = [];
         if (selectedClientName) {
-            selectedNames.push(selectedClientName);
+            selectedNames.push("Client : " + selectedClientName);
         }
         if (selectedProjectName) {
-            selectedNames.push(selectedProjectName);
+            selectedNames.push("Project : " + selectedProjectName);
         }
         setSelectedPersons(selectedNames);
         setIsExpand(true)
-        reset();
+        //reset();
     };
 
     const documentTypes = [
@@ -107,24 +113,55 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
             const clientService = ClientService();
             const projectService = ProjectService();
 
-            console.log("API CALL working");
+            if (userRole === "staff") {
+                const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+                const expand = 'Author,AssignClient,Editor';
+                const orderBy = 'Modified';
+                const filter = "";
 
-            const clientResults = await clientService.getClient('Client_Informations');
-            console.log(clientResults, "client result");
-            if (clientResults && clientResults.length > 0) {
-                setClientData(clientResults);
-                setAllClientData(clientResults);
-            } else {
-                setClientData([]);
-                setAllClientData([]);
-            }
+                const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+                const cexpand = 'AssignedStaff,Author,ProjectId,Editor';
+                const cfilter = `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'`;
 
-            const projectResults = await projectService.getProject('Project_Informations');
-            console.log(projectResults, "project result");
-            if (projectResults && projectResults.length > 0) {
-                setProjectData(projectResults);
+                const [projectResults, clientResults] = await Promise.all([
+                    projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, spContext.pageContext.user.email),
+                    clientService.getClientExpandApi('Client_Informations', cselect, cexpand, cfilter, "")
+                ]);
+
+                // Handle project results
+                if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
+                    setProjectData(projectResults.TableData);
+                } else {
+                    setProjectData([]);
+                    setAllClientData([]);
+                }
+
+                if (clientResults && clientResults.length > 0) {
+                    setAllClientData(clientResults);
+                    // setAssignedClientData(clientResults);
+                } else {
+                    // setClientData([]);
+                    setAllClientData(clientResults);
+                }
             } else {
-                setProjectData([]);
+                //const clientResults = await clientService.getClient('Client_Informations');
+                const clientResults = await clientService.getClient('Client_Informations');
+                console.log(clientResults, "client result");
+                if (clientResults && clientResults.length > 0) {
+                    setClientData(clientResults);
+                    setAllClientData(clientResults);
+                } else {
+                    setClientData([]);
+                    setAllClientData([]);
+                }
+
+                const projectResults = await projectService.getProject('Project_Informations');
+                console.log(projectResults, "project result");
+                if (projectResults && projectResults.length > 0) {
+                    setProjectData(projectResults);
+                } else {
+                    setProjectData([]);
+                }
             }
 
             setIsLoading(false);
@@ -134,14 +171,39 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         }
     };
 
+    const getUserRoles = () => {
+        let loggedInUserGroups: string[] = [];
+        let userRoleVal: string = "staff";
+
+        spServiceInstance.getLoggedInUserGroups().then((response) => {
+            //console.log("Current user site groups : ", response);
+
+            _.forEach(response, function (group: any) {
+                loggedInUserGroups.push(group.Title);
+            });
+
+            if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+                userRoleVal = "superuser";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+                userRoleVal = "manager";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+                userRoleVal = "staff";
+            }
+
+            setUserRole(userRoleVal);
+
+        });
+    }
+
     React.useEffect(() => {
-        setDocumentType('')
+        setDocumentType('');
+        getUserRoles();
     }, []);
 
 
     React.useEffect(() => {
         fetchData();
-    }, []);
+    }, [userRole]);
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
@@ -181,6 +243,12 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                                         label={person}
                                                         onDelete={() => {
                                                             const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
+
+                                                            if (selectedPersons[index].startsWith("Project :")) {
+                                                                setValue('projectName', "");
+                                                            } else if (selectedPersons[index].startsWith("Client :")) {
+                                                                setValue('clientName', "");
+                                                            }
                                                             setSelectedPersons(updatedPersons);
                                                             if (updatedPersons.length === 0) {
                                                                 setIsExpand(false);
@@ -398,10 +466,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     {documentType === 'Project' && (
                         <>
                             {/* <ClientProjectUpload /> */}
-                            <ClientUploadDocument onClose={() => {
-                                setDocumentType('')
-                                setOpenDocuments(false)
-                            }} />
+                            <ProjectUploadDocument
+                                userRole={userRole}
+                                spContext={spContext}
+                                onClose={() => {
+                                    setDocumentType('')
+                                    setOpenDocuments(false)
+                                }} />
                             {false && <form onSubmit={handleSubmit(handleSave)}>
                                 <Stack direction={"column"} gap={3}>
                                     <Grid container spacing={2}>
@@ -532,10 +603,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     {/* Client document upload */}
                     {documentType === 'Client' && (
                         <>
-                            <ProjectUploadDocument onClose={() => {
-                                setDocumentType('')
-                                setOpenDocuments(false)
-                            }} />
+                            <ClientUploadDocument
+                                userRole={userRole}
+                                spContext={spContext}
+                                onClose={() => {
+                                    setDocumentType('')
+                                    setOpenDocuments(false)
+                                }} />
                         </>
 
                     )}

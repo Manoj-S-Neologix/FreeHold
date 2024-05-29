@@ -32,7 +32,7 @@ import ClientService from "../../Services/Business/ClientService";
 import CheckIcon from "@mui/icons-material/Check";
 import formatDate from "../../hooks/dateFormat";
 
-const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl }) => {
+const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl, userRole }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [fileData, setFileData] = useState<any[]>([]);
@@ -69,11 +69,14 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const clientService = ClientService();
   const clientListName = "Client_Informations";
-  const selectQuery = "Id,Title,ClientLibraryGUID";
+  const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
+  const expand = 'AssignedStaff';
+  //alert("userROle | " + userRole);
+  const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'` : "";
 
   const apiCall = async () => {
     try {
-      const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+      const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, filter, "");
       if (data) {
         const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
         const filteredData = data.filter(item => assignClientIds.includes(item.Id));
@@ -212,9 +215,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
     }
 
-    //const clientInfo = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
-    //(particularClientAllData[0].clientDetails, function (o: any) { return o.Name == getClient; });
-
     console.log("clientInfo", clientInfo);
 
     //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
@@ -242,8 +242,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       setFiles([]);
       setUploadFiles([]);
       toast.success('Documents Added Successfully!');
+      if (isUnitDocumentChecked) {
+        getDocumentsLibPath("unit");
+      } else {
+        getDocumentsLibPath("client");
+      }
       // fetchData("test");
-      handleCancel(); // Close the dialog if needed
+      //handleCancel(); // Close the dialog if needed
 
     } catch (error) {
       setLoading(false);

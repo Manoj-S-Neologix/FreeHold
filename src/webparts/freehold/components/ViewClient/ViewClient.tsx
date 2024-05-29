@@ -24,7 +24,9 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
+import _ from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -53,13 +55,15 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
+const ViewClient = (props: IFreeholdChildProps) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
   const [searchText, setSearchText] = useState('');
   const [isPersona, setISPersona] = useState(false);
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
   // console.log(filterQuery, "filterQuery");
   const [searchQueryCall, setSearchQueryCall] = useState('');
@@ -230,7 +234,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     console.log(filteredData, clientData, "filteredData....")
     setClientData(filteredData);
     setFilterQuery(filterQueryCall);
-    setSearchQuery(searchQueryCall);
+    //setSearchQuery(searchQueryCall);
     setISPersona(true);
     setOpen(false);
   };
@@ -257,82 +261,151 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
 
   console.log(AllClientData, "AllClientData");
 
+  let actions: any[] = [];
+  if (userRole === "staff") {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: async (data: any) => {
 
-  const actions = [
-    {
-      label: 'View',
-      icon: <VisibilityIcon />,
-      handler: async (data: any) => {
+          viewClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
 
-        viewClientId = String(data.Id);
-        if (data.Id) {
-          console.log(data, "AllClientDataAllClientData");
-          await fetchDataByuserId();
-        }
+        },
+      },
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: async (data: any) => {
+
+          editClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
+        },
+      },
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
+
+          />
+        ),
+
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+
+        },
 
       },
-    },
-    {
-      label: 'Edit',
-      icon: <EditIcon />,
-      handler: async (data: any) => {
-
-        editClientId = String(data.Id);
-        if (data.Id) {
-          console.log(data, "AllClientDataAllClientData");
-          await fetchDataByuserId();
-        }
+      {
+        label: 'Assign Staff',
+        button: (
+          <Button
+            color="secondary"
+            message="Assign Staff"
+            handleClick={(data: any) => {
+              setHandleStaffDialog(!handleStaffDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
       },
-    },
-    {
-      label: 'Delete',
-      icon: <DeleteIcon />,
-      handler: (id: any) => {
-        //console.log(`Delete clicked for row ${id}`);
-        setIsDeleteDialogOpen(true);
-        setClientDetails(id);
-        // handledeleteClient(id);
+    ];
+  } else {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: async (data: any) => {
+
+          viewClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
+
+        },
       },
-    },
-    {
-      label: 'View Documents',
-      button: (
-        <Button
-          color="primary"
-          message="View Documents"
-          handleClick={(id: any) => {
-            //console.log(`Upload Documents clicked for row ${id}`);
-            setUploadDialogOpen(true);
-          }}
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: async (data: any) => {
 
-        />
-      ),
+          editClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
+        },
+      },
+      {
+        label: 'Delete',
+        icon: <DeleteIcon />,
+        handler: (id: any) => {
+          //console.log(`Delete clicked for row ${id}`);
+          setIsDeleteDialogOpen(true);
+          setClientDetails(id);
+          // handledeleteClient(id);
+        },
+      },
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
 
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-        await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+          />
+        ),
+
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+
+        },
 
       },
-
-    },
-    {
-      label: 'Assign Staff',
-      button: (
-        <Button
-          color="secondary"
-          message="Assign Staff"
-          handleClick={(data: any) => {
-            setHandleStaffDialog(!handleStaffDialog);
-          }}
-        />
-      ),
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
+      {
+        label: 'Assign Staff',
+        button: (
+          <Button
+            color="secondary"
+            message="Assign Staff"
+            handleClick={(data: any) => {
+              setHandleStaffDialog(!handleStaffDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
       },
-    },
-  ];
+    ];
+  }
+
 
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
@@ -350,7 +423,10 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      const filter = "";
+      //debugger;
+      //alert("userRole : " + userRole);
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      //const filter = "";
       const orderBy = 'Modified';
       console.log(orderBy, "orderByorderByorderBy....")
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
@@ -402,6 +478,30 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
     setDialogOpen(false);
   };
 
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
+
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
+      }
+
+      setUserRole(userRoleVal);
+
+    });
+  }
+
   const hyperLink = (data: any, name: any[], id?: any) => {
     return (
       <Box>
@@ -447,8 +547,14 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
   });
 
   React.useEffect(() => {
-    fetchData();
+    getUserRoles();
   }, []);
+
+  React.useEffect(() => {
+    getUserRoles();
+    //alert("userRole : " + userRole);
+    fetchData();
+  }, [userRole]);
 
   React.useEffect(() => {
     if (editClientId || viewClientId)
@@ -483,6 +589,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
               handleClick={openAddClientDialog}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
               message="Add Client"
+              disabled={userRole === "staff"}
               Icon={
                 IconStyles(<AddIcon
                   sx={{
@@ -676,7 +783,7 @@ const ViewClient = (props: { spContext: WebPartContext, siteUrl: string }) => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent style={{paddingTop:"0px", paddingRight:"24px"}}>
+            <DialogContent style={{ paddingTop: "0px", paddingRight: "24px" }}>
               <Typography>
                 {selectedName.map((data: any) => (
                   <div key={data.id}>

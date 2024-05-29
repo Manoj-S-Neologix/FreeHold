@@ -70,7 +70,7 @@ const ClientService = () => {
     };
 
     const getClient = async (ListName: string) => {
-        
+
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
@@ -81,6 +81,14 @@ const ClientService = () => {
     const getListCounts = async (listName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getListCounts(listName);
+            return response;
+
+        }
+    }
+
+    const getfilteredListCounts = async (listName: string, filter: string) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.getfilteredListCounts(listName, filter);
             return response;
 
         }
@@ -162,9 +170,9 @@ const ClientService = () => {
         }
     };
 
-    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any) => {
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, filter: string, id?: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, id);
             //console.log(results, "results");
             return results;
         }
@@ -203,6 +211,7 @@ const ClientService = () => {
 
                 updatedResults.push({
                     name: item.Title,
+                    Title: item.Title,
                     email: item.ClientEmail,
                     modifiedDate: formatDate(item.Modified),
                     modifiedBy: item.Editor.Title,
@@ -222,56 +231,6 @@ const ClientService = () => {
                 });
             });
 
-            /* const updatedResults = await Promise.all(results.map(async (item: any) => {
-                const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
-                    const staffDetails = {
-                        Id: staff.Id,
-                        Name: staff.Title,
-                        Email: staff.Id && await getPersonById(staff.Id)
-                    };
-                    return staffDetails;
-                }));
-
-                const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
-                    // const projectData = {
-                    //     Id: project?.Id,
-                    //     Name: project?.Title
-                    // }
-                    console.log(project, "projectDetails")
-                    return (
-                        {
-                            Id: project?.Id,
-                            Name: project?.Title
-                        }
-                    )
-                })
-
-                const assignedStaff = assignedStaffDetails;
-                console.log(item, projectDetails, 'itemresult')
-
-                return {
-                    name: item.Title,
-                    email: item.ClientEmail,
-                    modifiedDate: formatDate(item.Modified),
-                    modifiedBy: item.Editor.Title,
-                    Staff: item.AssignedStaff,
-                    assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
-                    contact: item.ClientContact,
-                    GUID: item.ClientLibraryGUID,
-                    webURL: item.ClientLibraryPath,
-                    Author: {
-                        Name: item.Author.Title,
-                        Email: item.Author.EMail
-                    },
-                    assignedStaff,
-                    Id: item.Id,
-                    projectDetails,
-                    Editor: item?.Editor
-                    // ProjectName: item.Title
-
-                };
-            })); */
-
             const tableData = updatedResults.map((item: any) => {
                 return {
                     Id: item.Id,
@@ -285,12 +244,45 @@ const ClientService = () => {
                     ProjectId: item.ProjectId,
                     projectDetails: item.projectDetails,
                     Editor: item?.Editor
-
-
                 };
             });
             console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
+        }
+    };
+
+    const getfilteredClientsnProjects = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, userRole: string) => {
+
+        if (spServiceInstance) {
+            const clientResults = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
+            //console.log("Client results : ", results);
+            const clientArr: string[] = [];
+
+            _.forEach(clientResults, function (citem) {
+                clientArr.push(citem.ID);
+            })
+
+            const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+            const pexpand = 'AssignClient';
+            const porderBy = 'Modified';
+            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
+
+            let pResults: any[] = [];
+            if (userRole === "staff") {
+                _.forEach(projectResults, function (pitem) {
+
+                    const match = _.intersection(clientArr, pitem.AssignClientId);
+                    if (match.length > 0) {
+                        pResults.push(pitem);
+                    }
+                });
+            } else {
+                pResults = projectResults;
+            }
+
+            //console.log("Filtered project results : ", pResults);
+
+            return { clientResults, pResults };
         }
     };
 
@@ -404,7 +396,9 @@ const ClientService = () => {
         getListCounts,
         updateClientDocumentMetadata,
         getClients,
-        getProjects
+        getProjects,
+        getfilteredListCounts,
+        getfilteredClientsnProjects
     };
 };
 

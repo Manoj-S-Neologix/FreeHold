@@ -5,20 +5,38 @@ import React from 'react';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../SideNavBar/Sidenav.module.scss';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 const homeImage: string = require('../../../../assets/Images/Home.png');
 
 initializeIcons();
 
-const menuItems = [
-    { to: '/ViewClient', text: 'View Clients' },
-    { to: '/ViewProjects', text: 'View Projects' },
-    { to: '/ChecklistValidation', text: 'Checklist Validation' },
-    { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
-
-];
-const Sidenav = (props: any) => {
+const Sidenav = (props: IFreeholdChildProps) => {
     const navigate = useNavigate();
     //console.log(props);
+
+    let menuItems: any[] = [];
+
+    if (props.userRole === "staff") {
+        menuItems = [
+            { to: '/ViewClient', text: 'View Clients' },
+            { to: '/ViewProject', text: 'View Projects' },
+            { to: '/ChecklistValidation', text: 'Checklist Validation' }
+        ];
+    } else {
+        menuItems = [
+            { to: '/ViewClient', text: 'View Clients' },
+            { to: '/ViewProject', text: 'View Projects' },
+            { to: '/ChecklistValidation', text: 'Checklist Validation' },
+            { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
+        ];
+    }
+    /* const menuItems = [
+        { to: '/ViewClient', text: 'View Clients' },
+        { to: '/ViewProjects', text: 'View Projects' },
+        { to: '/ChecklistValidation', text: 'Checklist Validation' },
+        { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }
+    ]; */
+
     return (
         <div className={styles.sideNav}>
             <div className={`${styles.container} ${styles.sideContainer}`}>

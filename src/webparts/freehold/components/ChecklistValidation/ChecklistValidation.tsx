@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import { Controller, useForm } from 'react-hook-form';
 import Stack from '@mui/material/Stack';
 import MaterialTable, { Icons } from 'material-table';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -34,7 +35,7 @@ import {
 } from "@material-ui/icons";
 import ProjectService from '../../Services/Business/ProjectService';
 import _ from 'lodash';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -93,7 +94,7 @@ const tableIcons: Icons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string }) => {
+const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
@@ -101,11 +102,13 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const projectService = ProjectService();
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
   const [data, setData] = useState<any>([]);
   const columns = [
-    { title: "Project", field: "project", defaultGroupOrder: 0 },
-    { title: "Client", field: "client", defaultGroupOrder: 0 },
+    /* { title: "Project", field: "project", defaultGroupOrder: 0 }, */
+    { title: "Client", field: "client" },
     //{ title: "Unit", field: 'unit', defaultGroupOrder: 0 },
     { title: "Checklist Name", field: "checklistname" },
     { title: "Progress", field: 'progress' }
@@ -198,7 +201,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
               }); */
 
               docList.push({
-                project: getValues("projectName"),
+                //project: getValues("projectName"),
                 client: getValues("clientName"),
                 //unit: unit.Title,
                 checklistname: value.Title,
@@ -241,7 +244,7 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
   const checkProgress = (docDetails: any, checkListName: string) => {
 
-    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag == checkListName; });
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag.toLowerCase() == checkListName.toLowerCase(); });
 
     return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
   };
@@ -260,18 +263,35 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
 
     try {
       setIsLoading(true);
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
-      const expand = 'Author,AssignClient';
+      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const results = await projectService.getProjectExpand('Project_Informations', select, expand, orderBy);
-      console.log(results, "result");
-      if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.updatedResults);
+      //const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      //const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
 
+      //const results:any[] = [];
+      if (userRole === "staff") {
+        const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
+
+        console.log(results, "result");
+        if (results && results.TableData && results.TableData.length > 0) {
+          setProjectData(results.TableData);
+        } else {
+          // Handle case where no data is returned
+          setProjectData([]);
+        }
       } else {
-        // Handle case where no data is returned
-        setProjectData([]);
+        const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+
+        console.log(results, "result");
+        if (results && results.updatedResults && results.updatedResults.length > 0) {
+          setProjectData(results.updatedResults);
+        } else {
+          // Handle case where no data is returned
+          setProjectData([]);
+        }
       }
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -279,25 +299,38 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
     }
   };
 
-  /* const getDocumentsFromFolder = async (libraryName: string, clientName: string) => {
-    try {
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
 
-      const unitFolders: any = await ProjectService().getAllFoldersInLibrary(`${libraryName}/${clientName}`);
-      if (unitFolders.length > 0) {
-        setunitData(unitFolders);
-      } else {
-        toast("No unit folders found.")
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
       }
 
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  }; */
+      setUserRole(userRoleVal);
+
+    });
+  }
+
+  React.useEffect(() => {
+    getUserRoles();
+  }, []);
 
   React.useEffect(() => {
     fetchData();
     // apiCall();
-  }, []);
+  }, [userRole]);
 
   return (
     <div>
@@ -406,8 +439,8 @@ const ChecklistValidation = (props: { spContext: WebPartContext, siteUrl: string
                               }}
                             >
                               {particularClientAllData?.map((item: any) => (
-                                <MenuItem key={item.Id} value={item.Name}>
-                                  {item.Name}
+                                <MenuItem key={item.Id} value={item.Title}>
+                                  {item.Title}
                                 </MenuItem>
                               ))}
                             </TextField>

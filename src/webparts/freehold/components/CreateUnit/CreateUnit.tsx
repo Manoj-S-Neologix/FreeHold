@@ -23,14 +23,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 // import RemoveIcon from '@mui/icons-material/Remove';
 
 
-const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, exsistingProjectLibrary }: any) => {
+const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, exsistingProjectLibrary, userRole }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = useState<any>('');
     const [loading, setLoading] = useState(false);
     const [count, setCount] = useState(1);
     // const [fileData, setFileData] = useState<any[]>([]);
     // const [isLoading, setIsLoading] = useState(true);
-    const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue } = useForm();
+    const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue, trigger } = useForm();
     const [showCount, setShowCount] = useState(false);
     // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
     const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
@@ -43,11 +43,14 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
 
     const clientService = ClientService();
     const clientListName = "Client_Informations";
-    const selectQuery = "Id,Title,ClientLibraryGUID";
+    const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
+    const expand = 'AssignedStaff';
+    //alert("userROle | " + userRole);
+    const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
     const apiCall = async () => {
         try {
-            const data = await clientService.getClientExpandApi(clientListName, selectQuery, "", "");
+            const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, filter, "");
             if (data) {
                 const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
                 const filteredData = data.filter(item => assignClientIds.includes(item.Id));
@@ -120,10 +123,15 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                 return ProjectService().createFolder(response.data.ServerRelativeUrl, unit.key);
             });
             await Promise.all(folderCreationPromises);
+            const updatedFolders = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${AssignClient}`);
+            setGetFoldersResponse(updatedFolders);
+
             setLoading(false);
             toast.success("Units created successfully");
+
             reset();
-            onClose();
+            setCount(1);
+            //onClose();
         } catch (error) {
             setLoading(false);
             toast.error(error.message);
@@ -174,8 +182,16 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             await apiResponse.deleteFolder(deleteItemPath)
             console.log(deleteItemPath, 'folderurl..')
             toast.success('Unit Deleted Successfully!');
+
+            setGetFoldersResponse(prevFolders =>
+                prevFolders.filter(folder => folder.ServerRelativeUrl !== deleteItemPath)
+            );
+
             setIsDeleteDialogOpen(false);
-            onClose();
+            setLoading(false);
+
+            //setIsDeleteDialogOpen(false);
+            //onClose();
 
         } catch (error) {
             setLoading(false);
@@ -399,7 +415,18 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                         value: 3,
                                                                         message: `Unit ${index + 1}
                                                             must be at least 3 characters`,
-                                                                    }
+                                                                    },
+                                                                    validate: {
+                                                                        noTrailingSpaces: value =>
+                                                                            !/^\s|\s$|^(\s)+$/.test(value) || `Unit ${index + 1} cannot have leading or trailing spaces`,
+                                                                        isNotRegistered: async (value: string) => {
+
+                                                                            await
+                                                                                new Promise<void>((resolve) => setTimeout(resolve, 500));
+                                                                            return getFoldersResponse.find((item: any) => item.Name === value) ?
+                                                                                "Unit is already registered" : undefined;
+                                                                        }
+                                                                    },
                                                                 }}
                                                                 render={({ field }) => (
                                                                     <TextField
@@ -410,6 +437,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                                         required
                                                                         error={!!errors?.[`unitName${index}`]}
                                                                         helperText={errors?.[`unitName${index}`]?.message}
+                                                                        onChange={async (e: any) => {
+                                                                            field.onChange(e);
+                                                                            await trigger(`${`unitName${index}`}`);
+                                                                        }}
                                                                     />
                                                                 )}
                                                             />

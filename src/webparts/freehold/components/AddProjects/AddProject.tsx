@@ -344,8 +344,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
     } catch (error) {
       //showToast(`Failed to add client and document.`, "error");
       setLoading(false);
-      const errorMessage = error.message || 'An error occurred while adding the project.';
-      toast.error(`Failed to add the project. ${errorMessage}`);
+      // const errorMessage = error.message || 'An error occurred while adding the project.';
+      toast.error(`Project Id is already exists`);
 
     }
   });
@@ -509,14 +509,14 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                     control={control}
                     defaultValue=""
                     rules={{
-                      required: 'Project Number is required',
+                      required: 'Developer is required',
                       minLength: {
                         value: 3,
-                        message: "Project Number must be at least 3 characters.",
+                        message: "Developer must be at least 3 characters.",
                       },
                       maxLength: {
                         value: 100,
-                        message: "Project Number must be at most 100 characters.",
+                        message: "Developer must be at most 100 characters.",
                       }
                     }}
                     render={({ field }) => (

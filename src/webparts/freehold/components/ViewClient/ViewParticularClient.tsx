@@ -114,13 +114,33 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
         const apiResponse = ClientService();
 
         const updatedData = {
-            Title: editData.title,
+            //Title: editData.title,
             ClientEmail: editData.email,
             ClientContact: editData.contact,
             AssignedStaff: editData.assignedStaff
         };
 
-        apiResponse.updateLibraryName(clientDetails.GUID, data.title)
+        apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData)
+            .then(() => {
+                setLoading(false);
+                toast.success('Client Updated Successfully!');
+                // navigateToClient();
+                navigateToClient();
+                fetchData();
+                initialFetchData();
+                setIsEdit(false);
+                reset();
+                // debugger
+                // setIsOpen(false);
+
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.error('Error updating client details:', error);
+                // toast.error('Failed to update client details. Please try again.');
+            });
+
+        /* apiResponse.updateLibraryName(clientDetails.GUID, data.title)
 
             .then(() => {
                 // Update library name (assuming data.title is the new library name)
@@ -143,7 +163,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                 setLoading(false);
                 console.error('Error updating client details:', error);
                 // toast.error('Failed to update client details. Please try again.');
-            });
+            }); */
     });
 
     // update code end
@@ -190,7 +210,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                 <TableHead>
                                     <TableRow>
                                         <TableCell
-                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase', borderBottom: 'none' }}
                                             component="th"
                                             scope="row"
                                             colSpan={1}>Client Details</TableCell>
@@ -329,13 +349,23 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                         )}
                                     </TableRow>
 
+<<<<<<< HEAD
 
 
                                     <TableRow>
+=======
+                                    {/* <TableRow>
+
+>>>>>>> 935ecd3f78625f20a25b09b645b77772afd9a3a8
                                         <TableCell component="th" scope="row">Name</TableCell>
                                         <TableCell>{clientDetails.name}</TableCell>
 
 
+                                    </TableRow> */}
+
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Name</TableCell>
+                                        <TableCell>{clientDetails.name}</TableCell>
                                     </TableRow>
 
                                     <TableRow>

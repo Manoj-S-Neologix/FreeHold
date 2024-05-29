@@ -12,6 +12,8 @@ import {
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
 import { IFreeholdProps } from '../IFreeholdProps';
+import ViewProjectByID from '../ViewProjects/ViewProjectByID';
+import EditProjectByID from '../ViewProjects/EditProjectByID';
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,41 +35,41 @@ const Home = (props: IFreeholdProps) => {
                         <Route path='/'
                             element={
                                 <>
-                                    <SideNavBar props={props} />
-                                    <ProjectsClients props={props} />
+                                    <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
+                                    <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                 </>}
                         />
                         <Route
                             path='/ViewClient'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewClient/:viewClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/EditClient/:editClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/ViewProjects'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
-                        />
-                           <Route
-                            path='/ViewProject/:viewProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
+                            path='/ViewProject'
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/EditProject/:editProjectId'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} />}
+                            path='/ViewProject/:pId'
+                            element={<ViewProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
+                        />
+                        <Route
+                            path='/EditProject/:pId'
+                            element={<EditProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistValidation'
-                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} />}
+                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistConfiguration'
-                            element={<ChecklistConfiguration />}
+                            element={<ChecklistConfiguration spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                     </Routes>
                 </HashRouter>

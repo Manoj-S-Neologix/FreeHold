@@ -33,6 +33,7 @@ export type SPServiceType = {
     deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
     getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
     getFilteredResults: (queryTxt: string) => Promise<any>;
+    getfilteredListCounts: (listName: string, filter: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
@@ -198,6 +199,13 @@ const SPService: SPServiceType = {
         // console.log(count);
     },
 
+    // get filtered count of items in the list
+    getfilteredListCounts: async (listName: string, filter: string): Promise<number> => {
+        const count = await web.lists.getByTitle(listName).items.filter(filter).get();
+        return count.length;
+        // console.log(count);
+    },
+
     // Delete list items
     deleteListItem: async (listName: string, itemId: number): Promise<any> => {
         const deleteItem = await web.lists
@@ -358,7 +366,7 @@ const SPService: SPServiceType = {
         const searchRes = await pnp.sp.search({
             Querytext: queryTxt,
             RowLimit: 500,
-            SelectProperties: ["CreatedBy", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "ParentLink", "DMSProjectID", "DMSTags", "DMSUnit"],
+            SelectProperties: ["CreatedBy", "ServerRedirectedURL", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "ParentLink", "DMSProjectID", "DMSTags", "DMSUnit"],
             EnableInterleaving: true
         })
 
