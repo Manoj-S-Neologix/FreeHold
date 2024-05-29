@@ -48,13 +48,10 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     },
 }));
 
-const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit,particularClientAllData  }: any) => {
+const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit, particularClientAllData }: any) => {
     // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
-    // const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-
-
 
     const navigate = useNavigate();
 
@@ -64,10 +61,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm(
         {
-            // setValue('projectName', projectDetails.projectName);
-            // setValue('projectNumber', projectDetails.projectNumber);
-            // setValue('location', projectDetails.location);
-            // setValue('developer', projectDetails.developer);
 
             defaultValues: {
                 title: projectDetails.projectName,
@@ -77,7 +70,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 // contact: clientDetails.contact,
                 // assignedStaff: clientDetails.assignedStaff
             }
-
         }
     );
 
@@ -89,11 +81,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
         developer: projectDetails.developer
 
     });
-
-    // const projectDetailsId: any[] = [];
-    // projectDetails?.map((data: any) => {
-    //     return projectDetailsId.push(data.Id);
-    // });
 
     React.useEffect(() => {
         if (projectDetails) {
@@ -119,91 +106,28 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
     };
 
     const navigateToProject = () => {
-        navigate('/ViewProjects');
         setIsViewDialogOpen(false);
+        navigate('/ViewProject');
     };
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     console.log(editData,"data")
-    //     try {
-    //         setLoading(true);
-    //         const apiResponse = ProjectService();
-    //         const updatedData = {
-    //             Title: editData.projectName,
-    //             projectName: editData.projectName,
-    //             ProjectNumber: editData.projectNumber,
-    //             Location: editData.location,
-    //             Developer:editData.developer
-    //             // AssignedStaff: editData.assignedStaff
-    //         };
-
-
-    //         const response = await apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData);
-
-    //         console.log('Update Client Response:', response);
-
-    //         reset();
-    //         // navigateToClient();
-    //         setLoading(false);
-    //         toast.success('Client Updated Successfully!');
-    //         fetchData();
-    //         initialFetchData();
-    //         setIsEdit(false);
-    //     } catch (error) {
-    //         setLoading(false);
-    //         console.error('Error updating client details:', error);
-    //         toast.error('Failed to update client details. Please try again.');
-    //     }
-    // });
-
-
-
-    // const handleUpdate = handleSubmit(async (data) => {
-    //     // console.log('Starting update process...');
-    //     setLoading(true);
-    //     const apiResponse = ProjectService();
-    //     const updatedData = {
-    //         Title: editData.title,
-    //         // projectName: editData.projectName,
-    //         ProjectNumber: editData.projectNumber,
-    //         Location: editData.location,
-    //         Developer: editData.developer
-    //     };
-
-    //     apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
-    //         .then(() => {
-    //         console.log(updatedData,"updatedData")
-    //             reset();
-    //             setLoading(false);
-    //             toast.success('Project Updated Successfully!');
-    //             fetchData();
-    //             initialFetchData();
-    //             setIsEdit(false);
-    //         })
-    //         .catch((error) => {
-    //             setLoading(false);
-    //             console.error('Error updating project details:', error);
-    //             toast.error('Failed to update project details. Please try again.');
-    //         });
-    // });
 
     const handleUpdate = handleSubmit(async (data) => {
         setLoading(true);
-    
+
         const updatedData = {
             Title: editData.title,
             ProjectNumber: editData.projectNumber,
             Location: editData.location,
             Developer: editData.developer
         };
-    
+
         const apiResponse = ProjectService();
-        
+
         apiResponse.updateProject("Project_Informations", projectDetails.Id, updatedData)
             .then(() => {
                 reset();
                 setLoading(false);
                 toast.success('Project Updated Successfully!');
+                navigateToProject();
                 fetchData();
                 initialFetchData();
                 setIsEdit(false);
@@ -214,7 +138,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 // toast.error('Failed to update project details. Please try again.');
             });
     });
-    
+
 
 
 
@@ -260,7 +184,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     <TableRow>
 
                                         <TableCell
-                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase' }}
+                                            sx={{ fontWeight: 'bold', fontSize: '18px', textTransform: 'uppercase', borderBottom: 'none' }}
                                             component="th"
                                             scope="row"
                                         >Project Details</TableCell>
@@ -273,7 +197,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         }}>
                                             {!isEdit && (
                                                 <Button
-                                                    handleClick={() => setIsEdit(true)}
+                                                    handleClick={() => { setIsEdit(true); navigate('/EditProject/' + projectDetails.Id) }}
                                                     color="secondary"
                                                     Icon={<EditIcon />}
                                                     message="Edit"
@@ -283,7 +207,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
+                                    {/* <TableRow>
                                         <TableCell component="th" scope="row">Project Number</TableCell>
                                         {!isEdit ? (
                                             <TableCell>{projectDetails.projectNumber}</TableCell>
@@ -308,12 +232,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.projectNumber}
-                                                            onChange={async (e: any) => {
-                                                                // const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
                                                                 const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("projectNumber");
+                                                                await trigger('projectNumber');
                                                                 setEditData({ ...editData, projectNumber: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.projectNumber}
                                                             helperText={errors.projectNumber && errors.projectNumber.message}
@@ -323,6 +250,10 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
                                             </TableCell>
                                         )}
+                                    </TableRow> */}
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">Project Number</TableCell>
+                                        <TableCell>{projectDetails.projectNumber}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Project Name</TableCell>
@@ -349,11 +280,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.title}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("title");
+                                                                await trigger('title');
                                                                 setEditData({ ...editData, title: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.title}
                                                             helperText={errors.title && errors.title.message}
@@ -375,7 +310,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        required: 'Project Number is required',
+                                                        required: 'Location is required',
                                                         // pattern: {
                                                         //     value: /^[a-zA-Z\s-]+$/,
                                                         //     message: 'Invalid project number'
@@ -389,11 +324,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.location}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
                                                                 await trigger("location");
                                                                 setEditData({ ...editData, location: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.location}
                                                             helperText={errors.location && errors.location.message}
@@ -429,11 +368,15 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             size="small"
                                                             // fullWidth
                                                             value={editData.developer}
-                                                            onChange={async (e: any) => {
-                                                                const value = e.target.value;
+                                                            onChange={async (e) => {
+                                                                const input = e.target;
+                                                                const value = input.value;
+                                                                const start = input.selectionStart;
+                                                                const end = input.selectionEnd;
                                                                 field.onChange(value);
-                                                                await trigger("developer");
+                                                                await trigger('developer');
                                                                 setEditData({ ...editData, developer: value });
+                                                                input.setSelectionRange(start, end);
                                                             }}
                                                             error={!!errors.developer}
                                                             helperText={errors.developer && errors.developer.message}
@@ -446,22 +389,48 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>
 
                                     <TableRow>
-                                        <TableCell component="th" scope="row">Assign Client</TableCell>
-                                        {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
+                                        <TableCell component="th" scope="row">Assigned Client</TableCell>
+                                        {/* {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
                                             sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                            onClick={(id:any) => {
-                                                // setHandleClientDialog(true);
-                                                // setIsViewDialogOpen(true)
-                                                navigate("/ViewClient/" + id)
-                                            }}
                                         >
                                             {projectDetails.assignClient ?
                                                 projectDetails.assignClient :
                                                 "Assign Client"
                                             }
                                         </TableCell>
+                                        )} */}
+                                        {!isEdit ? (
+                                            (<TableCell>
+                                                {projectDetails?.clientDetails?.length > 0 && (
+                                                    projectDetails.clientDetails.map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}
+                                                        >
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </TableCell>)
+                                        ) : (
+                                            <TableCell>
+                                                {projectDetails?.clientDetails?.length > 0 && (
+                                                    projectDetails.clientDetails.map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}>
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Name}</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </TableCell>
                                         )}
-                                        
                                     </TableRow>
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified Date</TableCell>

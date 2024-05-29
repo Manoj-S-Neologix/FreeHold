@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-expressions */
-
 import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -9,25 +8,24 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './AddClient.module.scss';
-import { Box, Stack, Grid, CircularProgress } from '@mui/material';
-// import { addListItem } from '../../Services/Core/ClientService';
-// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
+import { Box, Stack, Grid, CircularProgress, MenuItem, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, } from '@mui/material';
 import ClientService from '../../Services/Business/ClientService';
 import { Controller, useForm } from "react-hook-form";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import toast from 'react-hot-toast';
 import DropZone from "../../../../Common/DropZone/DropZone";
+// import InputLabel from '@mui/material/InputLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
-
-
-const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
-  const [files, setFiles] = useState<File[]>([]);
+const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) => {
+  const [files, setFiles] = useState<any[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
-  const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+  const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm();
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
 
   const textFieldWidth = {
@@ -53,6 +51,13 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     onClose();
   };
 
+  React.useEffect(() => {
+    if (files && files.length > 0) {
+      fetchClientData();
+    }
+  }, [files]);
+
+
 
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
@@ -76,46 +81,26 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
     setSelectedPersons(selectedPersonsIds);
   };
 
+  const fetchClientData = () => {
+    const clientService = ClientService();
+    clientService.getClient('Client Checklist')
+      .then((results) => {
+        console.log(results, 'client');
+        if (results) {
+          setDropdownOptions(results);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching SharePoint data:', error);
+      });
+  };
 
-  // const handleSave = handleSubmit(async (data) => {
-  //   try {
-  //     setLoading(true);
-  //     const apiResponse = ClientService();
-
-  //     const dataObj = {
-  //       Title: data.title,
-  //       ClientEmail: data.email,
-  //       ClientContact: data.contact,
-  //     };
-  //     false && await addListItem('Clients', dataObj);
-
-  //     const response = await apiResponse.addClient("Client_Informations", dataObj);
-  //     const fileInfoArray = files.map((file: any) => ({
-  //       lastModified: file.lastModified,
-  //       lastModifiedDate: file.lastModifiedDate,
-  //       name: file.name,
-  //       size: file.size,
-  //       type: file.type,
-  //       webkitRelativePath: file.webkitRelativePath
-  //     }));
-  //     console.log(response, fileInfoArray, 'responseresponseresponse');
-  //     await apiResponse.uploadDocument(response.Title, fileInfoArray, 'Client_Informations', response.Id);
-  //     setLoading(false);
-  //     handleCancel();
-
-  //     setFiles([]);
-  //     // showToast(`Client Added Successfully !`, "success");
-
-  //     handleCancel();
-  //   } catch (error) {
-  //     setLoading(false);
-  //     //showToast(`Failed to add client and document.`, "error");
-
-  //   }
-  // });
-
+  const onDelete = (index: number) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+  };
 
   const handleSave = handleSubmit(async (data) => {
+
     setLoading(true);
     const apiResponse = ClientService();
     console.log(data, selectedPersons, "staff");
@@ -126,7 +111,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
       ClientContact: data.contact,
       AssignedStaffId: {
         results: selectedPersons
-      }
+      },
+      DMS_x0020_Tags: data.clientChecklist
     };
 
     // false && addListItem('Clients', dataObj);
@@ -138,7 +124,9 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
         name: file.name,
         size: file.size,
         type: file.type,
-        webkitRelativePath: file.webkitRelativePath
+        webkitRelativePath: file.webkitRelativePath,
+        // DMSTags: data.clientChecklist 
+        DMS_x0020_Tags: data.clientChecklist
       }));
 
       apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
@@ -156,7 +144,35 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
           ClientLibraryPath: uploadDocumentResponse.data.ParentWebUrl + "/" + dataObj.Title
         };
-        return apiResponse.addClient("Client_Informations", updatedDataObj);
+        return apiResponse.addClient("Client_Informations", updatedDataObj).then((clientInfo) => {
+
+          const updatedData = {
+            //DMS_x0020_Tags: "",
+            DMSClient: dataObj.Title,
+            DMSProject: "",
+            //DMSTags: "",
+            DMSUnit: "",
+            DMSClientID: (clientInfo.Id).toString(),
+            DMSProjectID: ""
+          }
+
+          return apiResponse.updateClientDocumentMetadata(updatedDataObj.ClientLibraryPath, files, updatedData)
+            .then(() => {
+              setLoading(false);
+              // handleCancel();
+              setFiles([]);
+              // toast.success('Documents Added Successfully!');
+              fetchData();
+              reset();
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.error("Failed to add client and document:", error);
+              toast.error(`Failed to add client and document: ${error}`);
+            });
+
+        });
+
       })
       .then(() => {
         setLoading(false);
@@ -338,7 +354,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                   xl={textFieldWidth.sm}
                 >
                   <label htmlFor="AssignedStaffId">Assigned Staff
-                  {/* <span style={{ color: 'red' }}>*</span> */}
+                    {/* <span style={{ color: 'red' }}>*</span> */}
                   </label>
                   <Controller
                     name="contact"
@@ -377,7 +393,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
 
                         }}
                         {...field}
-                        context={props.props.props.context as any}
+                        context={spContext}
                         personSelectionLimit={4}
                         // required={true}
                         showHiddenInUI={false}
@@ -398,12 +414,118 @@ const AddClientDialog = ({ open, onClose, props, fetchData }: any) => {
                   lg={textFieldWidth.xs}
                   xl={textFieldWidth.xs}
                 >
+                  {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
+
                   <div >
                     <label htmlFor="clientDocuments">Client Documents</label>
-                    {/* <DragAndDropUpload onFilesAdded={handleFileInput} setIsError={setIsError} /> */}
                     {<DropZone onFilesAdded={handleFileInput} setIsError={setIsError} setFiles={setFiles} files={files} />}
                     {isError && <span style={{ color: 'red', fontSize: '12px' }}>File size should be less than 10 MB</span>}
                   </div>
+                  {files.length > 0 && dropdownOptions.length > 0 && (
+                    <>
+                      <TableContainer>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Document</TableCell>
+                              <TableCell>Document Type</TableCell>
+                              <TableCell>Delete</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {files.map((file: any, index: any) => (
+                              <TableRow key={index}>
+                                <TableCell>{file.name}</TableCell>
+
+                                {/* <div key={index}> */}
+                                <TableCell>
+                                  {/* <Controller
+                                    name="clientChecklist"
+                                    control={control}
+                                    defaultValue=""
+                                    // rules={{ required: 'Client Name is required' }}
+                                    render={({ field }) => (
+                                      <>
+                                        <TextField
+                                          {...field}
+                                          id="client-name"
+                                          fullWidth
+                                          variant="outlined"
+                                          select
+                                          size="small"
+                                          // required
+                                          label=""
+                                          error={!!errors.clientChecklist}
+                                          helperText={errors?.clientChecklist?.message}
+                                          style={{ width: 200 }} // Fixed width
+                                          onChange={(e: any) => {
+                                              console.log('Selected:', e.target.value);
+                                              setValue('clientChecklist', e.target.value);
+                                              field.onChange(e);
+                                              const newValue = e.target.value;
+                                              // setValue(`clientChecklist-${index}`, e.target.value);
+                                              setFiles(prevFiles => {
+                                                  const updatedFiles = [...prevFiles];
+                                                  updatedFiles[index].checklist = newValue;
+                                                  return updatedFiles;
+                                              });
+                                          }}
+                                        > */}
+                                  <Controller
+                                    name={`clientChecklist-${index}`}
+                                    control={control}
+                                    defaultValue={file.checklist || ""}
+                                    rules={{ required: 'Client Checklist is required' }}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        fullWidth
+                                        variant="outlined"
+                                        select
+                                        size="small"
+                                        required
+                                        error={!!errors[`clientChecklist-${index}`]}
+                                        helperText={errors[`clientChecklist-${index}`]?.message}
+                                        style={{ width: 200 }} // Fixed width
+                                        onChange={(e: any) => {
+                                          field.onChange(e);
+                                          const newValue = e.target.value;
+                                          setValue(`clientChecklist-${index}`, e.target.value);
+                                          setFiles(prevFiles => {
+                                            const updatedFiles = [...prevFiles];
+                                            updatedFiles[index].checklist = newValue;
+                                            return updatedFiles;
+                                          });
+                                        }}
+                                      >
+                                        {dropdownOptions.map((option, index) => (
+                                          <MenuItem key={index} value={option.Title}>
+                                            {option.Title}
+                                          </MenuItem>
+                                        ))}
+                                      </TextField>
+                                      // </>
+                                    )}
+                                  />
+                                </TableCell>
+                                {/* </div> */}
+                                <TableCell>
+                                  <IconButton aria-label="delete" onClick={() => onDelete(index)}>
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+
+
+
+                    </>
+                  )}
+
+
                 </Grid>
               </Grid>
             </Box>

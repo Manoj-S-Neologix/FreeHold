@@ -24,7 +24,9 @@ import { useTheme } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
-
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
+import _ from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -53,14 +55,18 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   },
 }));
 
-const ViewClient = (props: any) => {
+const ViewClient = (props: IFreeholdChildProps) => {
   const [selected, setSelected] = React.useState<any[]>([]);
   const [selectedDetails, setSelectedDetails] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [isPersona, setISPersona] = useState(false);
+  const spServiceInstance: SPServiceType = SPService;
+  const [userRole, setUserRole] = useState('');
 
-  console.log(filterQuery, "filterQuery");
-  // const [searchQueryCall, setSearchQueryCall] = useState('');
+  // console.log(filterQuery, "filterQuery");
+  const [searchQueryCall, setSearchQueryCall] = useState('');
 
   const [filterQueryCall, setFilterQueryCall] = useState('');
 
@@ -70,6 +76,7 @@ const ViewClient = (props: any) => {
   const [clientData, setClientData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [particularClientProjects, setparticularClientProjects] = useState<any>([]);
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
 
   const [filterPersonShown, setFilterPersonShown] = useState(false);
@@ -80,7 +87,7 @@ const ViewClient = (props: any) => {
   const [clientDetails, setClientDetails] = useState<any | undefined>({});
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
-  const [selectedName, setSelectedName] = useState('');
+  const [selectedName, setSelectedName] = useState<any[]>([]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   // const assignStaffOptions = ['Staff 1', 'Staff 2', 'Staff 3'];
   const { control, formState: { errors } } = useForm();
@@ -88,10 +95,11 @@ const ViewClient = (props: any) => {
   let { editClientId, viewClientId } = useParams();
   const navigate = useNavigate();
 
+  console.log(editClientId, viewClientId, "editviewid")
 
   const fetchDataByuserId = async () => {
     if (viewClientId) {
-
+      setIsEdit(false);
       const data = await fetchDataById(viewClientId);
       console.log(data, "datadatadata");
 
@@ -102,18 +110,28 @@ const ViewClient = (props: any) => {
         console.log(clientDetails, "datadatadata");
         setClientDetails(clientDetails); // Assuming data is an object
         console.log("datadatadata", AllClientData, ID);
-        const getValue = AllClientData.map((data: any) => {
+        /* const getValue = AllClientData.map((data: any) => {
           if (data.Id === ID) {
             return data;
           }
           return;
-        });
+        }); */
+
+        const select = '*,AssignClient/Title,AssignClient/Id';
+        const expand = 'AssignClient';
+        const orderBy = 'Modified';
+        const filter = `AssignClient/Id eq '${ID}'`;
+
+        // const filtered = "";
+        const results = await ClientService().getProjects('Project_Informations', select, expand, filter, orderBy);
+        //console.log("Project details : ", results);
 
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
         setParticularClientAllData(getUnique);
-        console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
+        setparticularClientProjects(results);
+        //console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
         setIsViewDialogOpen(true);
-        navigate('/ViewClient/' + String(data[0]?.Id));
+        navigate('/ViewClient/' + String(clientDetails?.Id));
       }
     }
     if (editClientId) {
@@ -134,19 +152,25 @@ const ViewClient = (props: any) => {
           return;
         });
         const getUnique = AllClientData.filter((datas: any) => datas.Id === ID);
-        setParticularClientAllData([clientDetails]);
+        // setParticularClientAllData([clientDetails]);
+        setParticularClientAllData(getUnique);
         console.log("datadatadata", getValue, getUnique, "getUniquegetUnique");
-        navigate('/EditClient/' + String(data[0]?.Id));
+
+        const select = '*,AssignClient/Title,AssignClient/Id';
+        const expand = 'AssignClient';
+        const orderBy = 'Modified';
+        const filter = `AssignClient/Id eq '${ID}'`;
+
+        const results = await ClientService().getProjects('Project_Informations', select, expand, filter, orderBy);
+        setparticularClientProjects(results);
+        navigate('/EditClient/' + String(clientDetails?.Id));
       }
     }
   };
 
-
-
   console.log(particularClientAllData, "getUniquegetUnique");
-
-  console.log(clientData, 'clientData..')
-
+  console.log(clientData, '.clientData.')
+  console.log(selectedName, 'selectedname')
 
   const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);
@@ -181,40 +205,41 @@ const ViewClient = (props: any) => {
     setOpen(true);
   };
 
-
-
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
-
   };
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
-
   };
 
   const theme = useTheme();
 
   const handleClear = () => {
-    // setSearchQueryCall('');
+    setSearchQueryCall('');
     setFilterQueryCall('');
     setSelectedPersons([]);
     setOpen(false);
   };
 
-  // const handleApply = () => {
-  //   setSearchQuery(searchQueryCall);
-  //   setOpen(false);
-  //   setFilterPersonShown(true);
-  // };
-
   const handleApply = () => {
-    setFilterQuery(filterQueryCall);
-    setOpen(false);
+
     setFilterPersonShown(true);
+    const filteredData = clientData.filter((data: any) => {
+      if (data.assignStaff && typeof data.assignStaff === 'string') {
+        return data.assignStaff.toLowerCase().includes(searchText);
+      }
+      return false;
+    });
+    console.log(filteredData, clientData, "filteredData....")
+    setClientData(filteredData);
+    setFilterQuery(filterQueryCall);
+    //setSearchQuery(searchQueryCall);
+    setISPersona(true);
+    setOpen(false);
   };
 
-
+  console.log(clientData, "clientDataclientData")
 
   const IconStyles = (icon: any) => {
     return (
@@ -223,24 +248,6 @@ const ViewClient = (props: any) => {
       </div >
     );
   };
-
-  // const hyperLink = (data: any, id: any) => {
-
-  //   return (
-  //     data !== '-' && <Box
-  //       onClick={() => {
-  //         navigate('/ViewClient/' + id);
-  //         // setIsViewDialogOpen(true);
-  //       }}
-  //       style={{
-  //         textDecoration: "underline", color: "blue", cursor: "pointer",
-  //         listStyleType: "none", padding: 0
-  //       }}>
-  //       {data}
-
-  //     </Box>
-  //   );
-  // };
 
   const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Client Name' },
@@ -254,179 +261,181 @@ const ViewClient = (props: any) => {
 
   console.log(AllClientData, "AllClientData");
 
+  let actions: any[] = [];
+  if (userRole === "staff") {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: async (data: any) => {
 
-  const actions = [
-    {
-      label: 'View',
-      icon: <VisibilityIcon />,
-      handler: async (data: any) => {
-        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        // setParticularClientAllData(uniqueClientData);
-        // setIsViewDialogOpen(true);
-        // setClientDetails(data);
-        viewClientId = String(data.Id);
-        if (data.Id) {
-          console.log(data, "AllClientDataAllClientData");
-          await fetchDataByuserId();
-        }
-        // navigate('/ViewClient/' + viewClientId);
+          viewClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
 
-
-        // // Filter out unique client data
-        // const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
-        // setParticularClientAllData(uniqueClientData);
-        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        // setParticularClientAllData(getUnique);
+        },
       },
-    },
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: async (data: any) => {
 
-
-
-
-    {
-      label: 'Edit',
-      icon: <EditIcon />,
-      handler: async (data: any) => {
-        // //console.log(`Edit clicked for row ${data}`);
-        // const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        // setParticularClientAllData(getUnique);
-        // setIsViewDialogOpen(true);
-        // setClientDetails(data);
-        // setIsEdit(true);
-        // editClientId = String(data.Id);
-        // navigate('/EditClient/' + editClientId);
-        // console.log(data, "AllClientDataAllClientData");
-        editClientId = String(data.Id);
-        if (data.Id) {
-          console.log(data, "AllClientDataAllClientData");
-          await fetchDataByuserId();
-        }
+          editClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
+        },
       },
-    },
-    {
-      label: 'Delete',
-      icon: <DeleteIcon />,
-      handler: (id: any) => {
-        //console.log(`Delete clicked for row ${id}`);
-        setIsDeleteDialogOpen(true);
-        setClientDetails(id);
-        // handledeleteClient(id);
-      },
-    },
-    {
-      label: 'View Documents',
-      button: (
-        <Button
-          color="primary"
-          message="View Documents"
-          handleClick={(id: any) => {
-            //console.log(`Upload Documents clicked for row ${id}`);
-            setUploadDialogOpen(true);
-          }}
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
 
-        />
-      ),
+          />
+        ),
 
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
-        await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+
+        },
 
       },
-
-      // handler: async (data: any) => {
-      //   const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-      //   setParticularClientAllData(getUnique);
-      //   if (getUnique.length > 0) {
-      //     const folderGUID = getUnique[0].GUID;
-      //     try {
-      //       const results = await ClientService().getDocumentsFromFolder(folderGUID);
-      //       console.log('Documents fetched successfully:', results);
-      //     } catch (error) {
-      //       console.error('Error fetching documents:', error);
-      //     }
-      //   } else {
-      //     console.warn('No client data found for the provided ID');
-      //   }
-      // },
-
-    },
-    {
-      label: 'Assign Staff',
-      button: (
-        <Button
-          color="secondary"
-          message="Assign Staff"
-          handleClick={(data: any) => {
-            setHandleStaffDialog(!handleStaffDialog);
-          }}
-        />
-      ),
-      handler: async (data: any) => {
-        const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
-        setParticularClientAllData(getUnique);
+      {
+        label: 'Assign Staff',
+        button: (
+          <Button
+            color="secondary"
+            message="Assign Staff"
+            handleClick={(data: any) => {
+              setHandleStaffDialog(!handleStaffDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
       },
-    },
-  ];
+    ];
+  } else {
+    actions = [
+      {
+        label: 'View',
+        icon: <VisibilityIcon />,
+        handler: async (data: any) => {
 
+          viewClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
 
+        },
+      },
+      {
+        label: 'Edit',
+        icon: <EditIcon />,
+        handler: async (data: any) => {
 
+          editClientId = String(data.Id);
+          if (data.Id) {
+            console.log(data, "AllClientDataAllClientData");
+            await fetchDataByuserId();
+          }
+        },
+      },
+      {
+        label: 'Delete',
+        icon: <DeleteIcon />,
+        handler: (id: any) => {
+          //console.log(`Delete clicked for row ${id}`);
+          setIsDeleteDialogOpen(true);
+          setClientDetails(id);
+          // handledeleteClient(id);
+        },
+      },
+      {
+        label: 'View Documents',
+        button: (
+          <Button
+            color="primary"
+            message="View Documents"
+            handleClick={(id: any) => {
+              //console.log(`Upload Documents clicked for row ${id}`);
+              setUploadDialogOpen(true);
+            }}
 
-  // const searchPeopleInTable = async (items: any[]) => {
-  //   console.log(items[0].text, "itemsitemsitemsitems");
-  //   setSearchQueryCall(items[0].text);
-  //   setSelectedPersons(items);
-  // };
+          />
+        ),
 
-  // const searchPeopleInTable = async (items: any[]) => {
-  //   console.log(items[0].text, "itemsitemsitemsitems");
-  //   setFilterQueryCall(items[0].text);
-  //   const testing = clientData.filter((data: any) => data.includes(items[0].text));
-  //   console.log(testing, "testing")
-  //   setSelectedPersons(items);
-  // };
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+          await ClientService().getDocumentsFromFolder(getUnique[0].GUID);
+
+        },
+
+      },
+      {
+        label: 'Assign Staff',
+        button: (
+          <Button
+            color="secondary"
+            message="Assign Staff"
+            handleClick={(data: any) => {
+              setHandleStaffDialog(!handleStaffDialog);
+            }}
+          />
+        ),
+        handler: async (data: any) => {
+          const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
+          setParticularClientAllData(getUnique);
+        },
+      },
+    ];
+  }
+
 
   const searchPeopleInTable = async (items: any[]) => {
     if (items.length > 0 && items[0]?.text) {
-      const searchText = items[0].text.toLowerCase(); // Convert search text to lowercase for case-insensitive matching
-      const filteredData = clientData.filter((data:any) => {
-        if (data.assignStaff && typeof data.assignStaff === 'string') {
-          return data.assignStaff.toLowerCase().includes(searchText);
-        }
-        return false; // If assignStaff is not a string or is undefined/null, exclude this data
-      });
-      console.log(filteredData, "filteredData");
-      setClientData(filteredData);
-      console.log(items[0].text, "itemsitemsitemsitems");
-      // setSearchQueryCall(items[0].text);
-      setFilterQueryCall(items[0].text);
+      const searchText = items[0].text.toLowerCase();
+      setSearchText(searchText)
+      setSearchQueryCall(items[0].text);
+      // setFilterQueryCall(items[0].text);
       setSelectedPersons(items);
-
     }
   };
-  
-
-
-
-  // console.log(selectedPersons, searchQueryCall, "DataparticularClientAllData");
-
-  console.log(selectedPersons, filterQueryCall, "DataparticularClientAllData");
-
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
-      const expand = 'AssignedStaff,Author,ProjectId';
-      const filter = "";
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
+      const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
+      //debugger;
+      //alert("userRole : " + userRole);
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      //const filter = "";
+      const orderBy = 'Modified';
+      console.log(orderBy, "orderByorderByorderBy....")
+      const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
       console.log(results, 'client')
       setClientData(results?.tableData);
       setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
-      
+
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
@@ -437,13 +446,15 @@ const ViewClient = (props: any) => {
     try {
       setIsLoading(true);
       const clientService = ClientService();
-      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title';
-      const expand = 'AssignedStaff,Author,ProjectId';
+      const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
+      const expand = 'AssignedStaff,Author,ProjectId,Editor';
+      // const orderBy = 'Modified';
       const filter = `Id eq '${id}'`;
-      const filtered = "";
-      const results = await clientService.getClientExpand('Client_Informations', select, expand, filter);
-      const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, filtered);
-      setAllClientData(filteredResults?.tableData);
+      const orderBy = "Modified";
+      // const filtered = "";
+      const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
+      //const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, "", orderBy);
+      //setAllClientData(filteredResults?.tableData);
 
       // setClientData(results?.updatedResults[0].TableData);
       //setAllClientData(results?.updatedResults);
@@ -456,27 +467,42 @@ const ViewClient = (props: any) => {
     }
   };
 
-  // const modifiedAssignedStaff = (data: any) => {
-  //   if (!data) return null;
-  //   const words = data?.split(',');
-  //   return (
-  //     <Box>
-  //       {words.map((word: string, index: number) => (
-  //         <p key={index}>{word}</p>
-  //       ))}
-  //     </Box>
-  //   );
-  // };
-
-  const handleClickOpen = (name: any, id:any) => {
-    setSelectedName(name);
+  const handleClickOpen = (name: any, id?: number) => {
+    const newItem = { name, id };
+    setSelectedName([...selected, newItem]);
     setDialogOpen(true);
-  }
+    console.log(name, id, 'selected');
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
   };
 
-  const hyperLink = (data: any, name: any, id:any) => {
+  const getUserRoles = () => {
+    let loggedInUserGroups: string[] = [];
+    let userRoleVal: string = "staff";
+
+    spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
+      _.forEach(response, function (group: any) {
+        loggedInUserGroups.push(group.Title);
+      });
+
+      if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+        userRoleVal = "superuser";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+        userRoleVal = "manager";
+      } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+        userRoleVal = "staff";
+      }
+
+      setUserRole(userRoleVal);
+
+    });
+  }
+
+  const hyperLink = (data: any, name: any[], id?: any) => {
     return (
       <Box>
         <Chip
@@ -499,17 +525,19 @@ const ViewClient = (props: any) => {
       contact: item.contact,
       modifiedDate: item.modifiedDate,
       modifiedBy: item.modifiedBy,
-      assignStaff:  hyperLink(item?.assignedStaff.length, item.assignStaff, item.assignedStaffId),
+      assignStaff: hyperLink(item?.assignedStaff.length, item?.assignedStaff, item.Id),
       assignedStaff: item?.assignedStaff,
-      ProjectId: hyperLink(item.projectName, item?.ProjectIdId, item.Id)
+      ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
     };
   });
+
+  console.log(tableData, "tableDatatableDatatableData")
 
   const tableDataWidth = clientData.map((item: any) => {
     return {
       Id: { value: item.Id, width: "50px" },
       name: { value: item.name, width: "130px" },
-      email: { value: item.email, width: "230px" },
+      email: { value: item.email, width: "180px" },
       contact: { value: item.contact, width: "150px" },
       modifiedDate: { value: item.modifiedDate, width: "150px" },
       modifiedBy: { value: item.modifiedBy, width: "150px" },
@@ -518,24 +546,22 @@ const ViewClient = (props: any) => {
     };
   });
 
+  React.useEffect(() => {
+    getUserRoles();
+  }, []);
 
   React.useEffect(() => {
+    getUserRoles();
+    //alert("userRole : " + userRole);
     fetchData();
-  }, []);
+  }, [userRole]);
+
   React.useEffect(() => {
     if (editClientId || viewClientId)
       fetchDataByuserId();
     // console.log(editClientId, viewClientId, "editClientId, viewClientId");
     // setIsViewDialogOpen(false);
   }, [editClientId, viewClientId]);
-
-
-  // React.useEffect(() => {
-  // 
-  // }, [addClientDialog, isViewDialogOpen, isDeleteDialogOpen, handleStaffDialog]);
-
-
-
 
   return (
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
@@ -563,6 +589,7 @@ const ViewClient = (props: any) => {
               handleClick={openAddClientDialog}
               style={{ maxWidth: "200px", whiteSpace: "pre", background: "#125895", color: "#fff" }}
               message="Add Client"
+              disabled={userRole === "staff"}
               Icon={
                 IconStyles(<AddIcon
                   sx={{
@@ -574,7 +601,7 @@ const ViewClient = (props: any) => {
             />
             <Button
               handleClick={openAddStaffDialog}
-              disabled={selected.length <= 1}
+              disabled={selected.length <= 0}
               style={{
                 maxWidth: "200px", whiteSpace: "pre",
                 background: "#dba236", color: "#000"
@@ -583,7 +610,7 @@ const ViewClient = (props: any) => {
             />
           </Box>
           <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <CustomSearch handleSearchChange={handleSearchChange} />
+            <CustomSearch handleSearchChange={handleSearchChange} searchQryTxt={searchQuery} />
             {!filterPersonShown ? <IconButton
               onClick={() => {
                 handleFilterClick()
@@ -591,31 +618,20 @@ const ViewClient = (props: any) => {
             >
               <FilterAltIcon />
             </IconButton> :
-              // <Chip
-              //   sx={{ marginLeft: 2, }}
-              //   avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
-              //   label={searchQueryCall}
-              //   onDelete={() => {
-              //     setSearchQuery('');
-              //     setSearchQueryCall('');
-              //     setSelectedPersons([]);
-              //     setOpen(false);
-              //     setFilterPersonShown(false);
-              //   }}
-              //   variant="outlined"
-              // />
 
               <Chip
                 sx={{ marginLeft: 2, }}
-                avatar={<Avatar alt={filterQueryCall} src={selectedPersons[0]?.imageUrl} />}
-                label={filterQueryCall}
+                avatar={<Avatar alt={searchQueryCall} src={selectedPersons[0]?.imageUrl} />}
+                label={searchQueryCall}
                 onDelete={() => {
-                  // setSearchQuery('');
+                  setSearchQuery('');
+                  setSearchQueryCall('');
                   setFilterQuery('');
                   setFilterQueryCall('');
                   setSelectedPersons([]);
                   setOpen(false);
                   setFilterPersonShown(false);
+                  setISPersona(false);
                   fetchData()
                 }}
                 variant="outlined"
@@ -696,7 +712,7 @@ const ViewClient = (props: any) => {
                                 },
                               }}
                               {...field}
-                              context={props.props.props.context as any}
+                              context={props.spContext}
                               personSelectionLimit={1}
                               required={true}
                               showHiddenInUI={false}
@@ -717,7 +733,11 @@ const ViewClient = (props: any) => {
                         Clear
                       </MuiButton>
                       <MuiButton
-                        onClick={() => { handleApply(); handleFilterChange(new MouseEvent('click')); }}
+                        onClick={() => {
+                          handleApply(
+
+                          ); handleFilterChange(new MouseEvent('click'));
+                        }}
                         variant="contained"
                         color="primary"
                         sx={{
@@ -763,29 +783,19 @@ const ViewClient = (props: any) => {
             >
               <CloseIcon />
             </IconButton>
-            <DialogContent>
-              <Typography style={{
-                textDecoration: "underline", color: "blue", cursor: "pointer",
-                listStyleType: "none", padding: 0
-              }}>
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.Id}> 
-                  {console.log(data?.clientDetails.length, 'length')}   
-                  {data?.clientDetails?.length > 0 ? (data?.clientDetails?.map((client: any) => (
-                  <Typography key={client.Id}>
-                    {client.Title}
-                    {console.log(client.Title, 'clientproject')}
-                  </Typography>
-                  ))) : (null)} 
-                  
-                  </Box>
-                ))} */}
-                {/* {projectData?.map((data: any) => (
-                  <Box key={data.assignClientId}>    
-                 {data.assignClient} 
-                  </Box>
-                ))} */}
-                {selectedName}
+            <DialogContent style={{ paddingTop: "0px", paddingRight: "24px" }}>
+              <Typography>
+                {selectedName.map((data: any) => (
+                  <div key={data.id}>
+                    <Box>
+                      {data?.name?.map((item: any) => (
+                        <Typography key={item.Id}>
+                          {item.Name}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </div>
+                ))}
               </Typography>
             </DialogContent>
           </Dialog>
@@ -798,21 +808,24 @@ const ViewClient = (props: any) => {
             headCells={headCells}
             props={props}
             searchQuery={searchQuery}
-            filterQuery={""}
+            filterQuery={filterQuery}
+            isPersona={isPersona}
             setSelected={setSelected}
             setSelectedDetails={setSelectedDetails}
             selected={selected}
+
             actions={actions}
             isLoading={isLoading}
             AllClientData={AllClientData}
             tableDataWidth={tableDataWidth}
+
           />
         </Box>
 
       </Stack>
       }
-      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} />}
-      {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} />}
+      {addClientDialog && <AddClientDialog open={addClientDialog} onClose={closeAddClientDialog} fetchData={fetchData} props={props} spContext={props.spContext} />}
+      {handleStaffDialog && <AddStaffDialog selectedDetails={selectedDetails} props={props} open={handleStaffDialog} onClose={closeAddStaffDialog} particularClientAllData={particularClientAllData} selected={selected} fetchData={fetchData} spContext={props.spContext} AllClientData={AllClientData} />}
       <UploadDocument open={uploadDialogOpen}
         onClose={closeUploadDialog} particularClientAllData={particularClientAllData} fetchDatas={fetchData} />
 
@@ -824,6 +837,7 @@ const ViewClient = (props: any) => {
         />}
       {isViewDialogOpen &&
         <ViewParticularClient
+          spContext={props.spContext}
           props={props}
           clientDetails={clientDetails}
           setIsViewDialogOpen={setIsViewDialogOpen}
@@ -834,7 +848,9 @@ const ViewClient = (props: any) => {
           isOpen={isOpen}
           fetchData={fetchDataByuserId}
           initialFetchData={fetchData}
-          particularClientAllData={particularClientAllData} selected={selected}
+          particularClientAllData={particularClientAllData}
+          selected={selected}
+          particularClientProjects={particularClientProjects}
         />}
     </Box>
 

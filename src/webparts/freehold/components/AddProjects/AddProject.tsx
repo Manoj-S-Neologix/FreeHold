@@ -267,7 +267,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack, CircularProgress } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
-import {Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
 
 
@@ -289,7 +289,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
     onClose();
     reset();
   };
-  
+
   const fileInfoArray = files?.map((file: any) => ({
     lastModified: file.lastModified,
     lastModifiedDate: file.lastModifiedDate,
@@ -301,7 +301,6 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
 
   console.log(fileInfoArray, 'fileInfoArray');
 
-
   const handleSave = handleSubmit(async (data) => {
     try {
       setLoading(true);
@@ -311,7 +310,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
         Title: data.title,
         ProjectNumber: data.projectNumber,
         Location: data.location,
-        Developer:data.developer
+        Developer: data.developer
       };
       // false && await addListItem('Clients', dataObj);
 
@@ -320,9 +319,9 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
       const updatedDataObj = {
         ...dataObj,
         ProjectLibraryGUID: library.data.Id,
-        ProjectLibraryPath: library.data.ParentWebUrl + "/" + dataObj.ProjectNumber
+        ProjectLibraryPath: library.data.ParentWebUrl + "/" + library.data.EntityTypeName
       }
-      console.log(library,updatedDataObj, 'Projectlibrary');
+      console.log(library, updatedDataObj, 'Projectlibrary');
       const response = await apiResponse.addProject("Project_Informations", updatedDataObj);
       const fileInfoArray = files.map((file: any) => ({
         lastModified: file.lastModified,
@@ -345,12 +344,11 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
     } catch (error) {
       //showToast(`Failed to add client and document.`, "error");
       setLoading(false);
-      const errorMessage = error.message || 'An error occurred while adding the project.';
-      toast.error(`Failed to add the project. ${errorMessage}`);
+      // const errorMessage = error.message || 'An error occurred while adding the project.';
+      toast.error(`Project Id is already exists`);
 
     }
   });
-
 
   return (
     // <Box sx={{ width: '100', padding: '20px' }} >
@@ -387,164 +385,164 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
           </IconButton>}
 
           <DialogContent >
-          <form onSubmit={handleSave}>
-            <div style={{ display: 'flex', marginBottom: '20px' }}>
-              <div style={{ marginRight: '20px', flex: 1 }}>
-                <label htmlFor="projectNumber">Project Number<span style={{ color: 'red' }}>*</span></label>
-                <Controller
-                      name="projectNumber"
-                      control={control}
-                      defaultValue=""
-                      // rules={{
-                      //   required: 'Project Number is required',
-                      //   minLength: {
-                      //     value: 3,
-                      //     message: "Project Number must be at least 3 characters.",
-                      //   },
-                      //   maxLength: {
-                      //     value: 100,
-                      //     message: "Project Number must be at most 100 characters.",
-                      //   }
-                      // }}
-                      rules={{
-                        required: 'Project Number is required',
-                        pattern: {
-                            value: /^[a-zA-Z0-9+-.]+$/,
-                            message: 'Invalid project number'
-                        }
+            <form onSubmit={handleSave}>
+              <div style={{ display: 'flex', marginBottom: '20px' }}>
+                <div style={{ marginRight: '20px', flex: 1 }}>
+                  <label htmlFor="projectNumber">Project Number<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="projectNumber"
+                    control={control}
+                    defaultValue=""
+                    // rules={{
+                    //   required: 'Project Number is required',
+                    //   minLength: {
+                    //     value: 3,
+                    //     message: "Project Number must be at least 3 characters.",
+                    //   },
+                    //   maxLength: {
+                    //     value: 100,
+                    //     message: "Project Number must be at most 100 characters.",
+                    //   }
+                    // }}
+                    rules={{
+                      required: 'Project Number is required',
+                      pattern: {
+                        value: /^[a-zA-Z0-9+-.]+$/,
+                        message: 'Invalid project number'
+                      }
                     }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="projectNumber"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e) => {
-                            // const value = e.target.value;
-                            const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
-                            field.onChange(value);
-                            await trigger('projectNumber');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.projectNumber && errors.projectNumber.message}
-                        />
-                      )}
-                    />
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="projectNumber"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e) => {
+                          // const value = e.target.value;
+                          const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
+                          field.onChange(value);
+                          await trigger('projectNumber');
+                        }}
+                        error={!!errors.title}
+                        helperText={errors.projectNumber && errors.projectNumber.message}
+                      />
+                    )}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label htmlFor="projectName">Project Name<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="title"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Project Name is required',
+                      minLength: {
+                        value: 3,
+                        message: "Project Name must be at least 3 characters.",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Client Name must be at most 100 characters.",
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="projectName"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          await trigger('title');
+                        }}
+                        error={!!errors.title}
+                        helperText={errors.title && errors.title.message}
+                      />
+                    )}
+                  />
+                </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <label htmlFor="projectName">Project Name<span style={{ color: 'red' }}>*</span></label>
-                <Controller
-                      name="title"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: 'Project Name is required',
-                        minLength: {
-                          value: 3,
-                          message: "Project Name must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Client Name must be at most 100 characters.",
-                        }
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="projectName"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger('title');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.title && errors.title.message}
-                        />
-                      )}
-                    />
+              <div style={{ display: 'flex', marginBottom: '10px' }}>
+                <div style={{ marginRight: '20px', flex: 1 }}>
+                  <label htmlFor="location">Location<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="location"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'location is required',
+                      minLength: {
+                        value: 3,
+                        message: "location must be at least 3 characters.",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "location must be at most 100 characters.",
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="location"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          await trigger('location');
+                        }}
+                        error={!!errors.title}
+                        helperText={errors.location && errors.location.message}
+                      />
+                    )}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label htmlFor="developer">Developer<span style={{ color: 'red' }}>*</span></label>
+                  <Controller
+                    name="developer"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: 'Developer is required',
+                      minLength: {
+                        value: 3,
+                        message: "Developer must be at least 3 characters.",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Developer must be at most 100 characters.",
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="developer"
+                        margin="dense"
+                        size="small"
+                        fullWidth
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          await trigger('developer');
+                        }}
+                        error={!!errors.title}
+                        helperText={errors.developer && errors.developer.message}
+                      />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'flex', marginBottom: '10px' }}>
-              <div style={{ marginRight: '20px', flex: 1 }}>
-              <label htmlFor="location">Location<span style={{ color: 'red' }}>*</span></label>
-              <Controller
-                      name="location"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: 'location is required',
-                        minLength: {
-                          value: 3,
-                          message: "location must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "location must be at most 100 characters.",
-                        }
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="location"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger('location');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.location && errors.location.message}
-                        />
-                      )}
-                    />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label htmlFor="developer">Developer<span style={{ color: 'red' }}>*</span></label>
-                <Controller
-                      name="developer"
-                      control={control}
-                      defaultValue=""
-                      rules={{
-                        required: 'Project Number is required',
-                        minLength: {
-                          value: 3,
-                          message: "Project Number must be at least 3 characters.",
-                        },
-                        maxLength: {
-                          value: 100,
-                          message: "Project Number must be at most 100 characters.",
-                        }
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          id="developer"
-                          margin="dense"
-                          size="small"
-                          fullWidth
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            await trigger('developer');
-                          }}
-                          error={!!errors.title}
-                          helperText={errors.developer && errors.developer.message}
-                        />
-                      )}
-                    />
-              </div>
-            </div>
 
-          </form>
+            </form>
           </DialogContent>
           <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
-              <Stack
+            <Stack
               direction="row"
               justifyContent="end"
               alignItems="center"

@@ -124,6 +124,17 @@ $container-gap: 1rem !important;
     height: 20px !important;
 }
 
+.dialogTitle {
+    text-align: center !important;
+    font-weight: bold !important;
+    color: var(--primarycolor);
+    margin-top: 0px !important;
+
+}
+
+.addTitle {
+    color: var(--primarycolor) !important;
+}
 
 
 .AddProjectbutton {

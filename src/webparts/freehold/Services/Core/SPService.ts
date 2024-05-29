@@ -1,26 +1,39 @@
+import {
+    SPHttpClient,
+    SPHttpClientResponse,
+    ISPHttpClientOptions
+} from '@microsoft/sp-http';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { Web } from "@pnp/sp/presets/all";
+import pnp from 'sp-pnp-js';
 // import toast from 'react-hot-toast';
 
 export type SPServiceType = {
     createLibrary: (libraryName: string, libraryDescription?: string) => Promise<any>;
     createFolder: (relativePath: string, folderName: string) => Promise<any>;
+    deleteFolder: (libraryName: string) => Promise<any>;
     uploadDocument: (libraryName: string, file: any) => Promise<any>;
+    uploadDocumentMetaData: (libraryName: string, file: any, DMSTags: any) => Promise<any>;
     getAllListItems: (listTitle: string) => Promise<any[]>;
     addListItem: (listName: string, listData: any) => Promise<any>;
     updateListItem: (listName: string, itemId: number, itemData: any) => Promise<any>;
     deleteListItem: (listName: string, itemId: number) => Promise<any>;
-    deleteLibrary: (libraryName: string) => Promise<any>;
+    deleteLibrary: (librayName: string) => Promise<any>;
     getDocumentsFromFolder: (libraryName: string) => Promise<any>;
+    getDocumentsFromUrl: (spContext: WebPartContext, libName: string, folderPath: string, baseURL: string) => Promise<any>;
     getPersonByEmail: (email: string) => Promise<any>;
     getPersonById: (id: number) => Promise<any>;
     deleteFile: (libraryName: string, fileId: number) => Promise<any>;
     updateLibraryName: (GUIDID: any, updatedlibraryName: string) => Promise<any>;
-    copyDocuments: (destinationLibraryUrl: string, files: any[]) => Promise<any>;
+    copyDocuments: (destinationLibraryUrl: string, files: any[], DMStags: any) => Promise<any>;
     createFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getFolderInLibrary: (libraryName: string, folderName: string) => Promise<any>;
     getAllFoldersInLibrary: (libraryName: string) => Promise<any>;
     getListCounts: (listName: string) => Promise<number>;
-    // addDocumentsToFolder: (libraryName: string) => Promise<any>;
+    deleteAssignedClient: (listName: string, itemId: number) => Promise<any>;
+    getFoldernFilesRecurs: (spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string) => Promise<any>;
+    getFilteredResults: (queryTxt: string) => Promise<any>;
+    getfilteredListCounts: (listName: string, filter: string) => Promise<any>;
 
     getLoggedInUserGroups: () => Promise<any>;
     getListItemsByFilter: (
@@ -43,7 +56,6 @@ const SPService: SPServiceType = {
         return response;
     },
 
-
     createLibrary: async (libraryName: string, libraryDescription?: string): Promise<any> => {
         try {
             // if (!libraryName) {
@@ -60,7 +72,7 @@ const SPService: SPServiceType = {
                 return list;
             }
             else {
-                //toast.error("Document Library already exists.");
+                //toast.error("Project/Client Document Library already exists. Please try with other project code.");
                 return response;
             }
         } catch (error) {
@@ -69,7 +81,6 @@ const SPService: SPServiceType = {
             throw error;
         }
     },
-
 
     createFolder: async (relativePath: string, folderName: string): Promise<any> => {
         try {
@@ -82,38 +93,16 @@ const SPService: SPServiceType = {
         }
     },
 
+    deleteFolder: async (libraryName: string): Promise<any> => {
+        const deletefolder = await web.getFolderByServerRelativeUrl(libraryName).recycle();
+        return deletefolder;
+    },
 
-
-
-
-
-    // Upload Document to a library
-    // uploadDocument: async (libraryName: string, files: any): Promise<any> => {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             const library = web.getFolderByServerRelativeUrl(libraryName);
-    //             const promises = files.map((file: any) => {
-    //                 return library.files.add(file.name, file, true).then((document): any => {
-    //                     return document
-    //                 }).catch((err) => {
-    //                     throw err
-    //                 })
-    //             });
-    //             promises.all(Promise).then((documents: any) => resolve(documents)).catch((err: any) => reject(err))
-    //             //console.log(files, "filesfilesfiles");
-    //             // for (const file of files) {
-    //             //     console.log(files, "filesfilesfilesInside");
-    //             //     const document = await library.files.add(file.name, file, true);
-    //             //     return document;
-    //             // }
-    //         } catch (error) {
-    //             console.error("Error uploading document:", error);
-    //             throw error;
-    //         }
-    //     })
-    // },
-
-
+    deleteAssignedClient: async (listName: string, itemId: number): Promise<any> => {
+        const deleteAssignedClient = await web.lists
+            .getByTitle(listName).items.getById(itemId).recycle();
+        return deleteAssignedClient;
+    },
 
     // Upload Document to a library
     uploadDocument: async (libraryName: string, files: any[]): Promise<any[]> => {
@@ -140,7 +129,45 @@ const SPService: SPServiceType = {
             });
     },
 
+    //upload document with metadata
+    uploadDocumentMetaData: async (libraryName: string, files: File[], DMSTags: any): Promise<any[]> => {
+        const library = web.getFolderByServerRelativeUrl(libraryName);
 
+        const promises = files.map(async (file: any) => {
+            try {
+                const uploadedFile = await library.files.add(file.name, file, true);
+                if (uploadedFile) {
+                    const item = await uploadedFile.file.getItem();
+                    console.log(item, 'serviceitem..')
+                    if (item) {
+                        await item.update({
+                            ...DMSTags,
+                            DMSTags: file.checklist,
+                            DMS_x0020_Tags: file.checklist
+                        });
+                        return item;
+                    } else {
+                        throw new Error("Failed to get item after upload");
+                    }
+                } else {
+                    throw new Error("Failed to upload file");
+                }
+            } catch (error) {
+                console.error("Error uploading document:", error);
+                throw error;
+            }
+        });
+        return Promise.all(promises)
+            .then((documents: any[]) => {
+                console.log("Documents with metadata updated successfully")
+                return documents;
+            })
+            .catch((error: any) => {
+                console.error("Error uploading documents:", error);
+                throw error;
+
+            });
+    },
 
     // Update library name
     updateLibraryName: async (GUIDID: any, updatedlibraryName: string): Promise<any> => {
@@ -172,6 +199,12 @@ const SPService: SPServiceType = {
         // console.log(count);
     },
 
+    // get filtered count of items in the list
+    getfilteredListCounts: async (listName: string, filter: string): Promise<number> => {
+        const count = await web.lists.getByTitle(listName).items.filter(filter).get();
+        return count.length;
+        // console.log(count);
+    },
 
     // Delete list items
     deleteListItem: async (listName: string, itemId: number): Promise<any> => {
@@ -180,10 +213,6 @@ const SPService: SPServiceType = {
         return deleteItem;
     },
 
-
-
-
-
     // Delete list items
     deleteLibrary: async (libraryName: string): Promise<any> => {
         const deleteItem = await web.lists
@@ -191,16 +220,11 @@ const SPService: SPServiceType = {
         return deleteItem;
     },
 
-
-
     // Get current logged in user groups
     getLoggedInUserGroups: async (): Promise<any> => {
         const response = await web.currentUser.groups();
         return response;
     },
-
-
-
 
     // Get filtered list items
     getListItemsByFilter: async (listTitle: string, select: string, expand: string, filter: string, orderBy?: any): Promise<any[]> => {
@@ -232,6 +256,25 @@ const SPService: SPServiceType = {
         return files;
     },
 
+    getDocumentsFromUrl: async (spContext: WebPartContext, libName: string, folderPath: string, baseURL: string): Promise<any> => {
+
+        const options: ISPHttpClientOptions = {
+            body: JSON.stringify({
+                "query": {
+                    "ViewXml": `<View><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`,
+                    "FolderServerRelativeUrl": `${folderPath}`
+                }
+            })
+        };
+
+        return spContext.spHttpClient.post(baseURL + "/_api/Web/Lists/GetByTitle('" + libName + "')/GetItems?$select=*,FileSystemObjectType,FileDirRef,FieldValuesAsText/FileRef,FieldValuesAsText/Author,FieldValuesAsText/FileLeafRef,DMS_x0020_Tags&$expand=FieldValuesAsText", SPHttpClient.configurations.v1, options)
+            .then((response: SPHttpClientResponse) => {
+                return response.json();
+            }).catch((err: any) => {
+                console.log(err);
+            });
+    },
+
     deleteFile: async (libraryGuid: string, fileId: number): Promise<any> => {
         const files = await web.lists.getById(libraryGuid).items.getById(fileId).recycle();
         //console.log('Retrieved files:', files);
@@ -248,15 +291,26 @@ const SPService: SPServiceType = {
         return results;
     },
 
-    copyDocuments(destinationLibraryUrl: string, files: any[]) {
+    copyDocuments(destinationLibraryUrl: string, files: any[], DMStags: any) {
         return new Promise((resolve, reject) => {
             const results: any[] = [];
             const promises = files.map(async file => {
                 return web.getFileByServerRelativePath(file.FileRef)
                     .copyTo(`${destinationLibraryUrl}/${file.FileLeafRef}`, false)
-                    .then(document => {
-                        console.log(`Document ${file.FileLeafRef} copied successfully.`);
-                        results.push({ file: file.FileLeafRef, success: true });
+                    .then(async document => {
+
+                        const item = await web.getFileByServerRelativePath(`${destinationLibraryUrl}/${file.FileLeafRef}`).getItem();
+                        console.log(item);
+                        if (item) {
+                            await item.update({
+                                DMSProject: DMStags.DMSProject,
+                                DMSProjectID: DMStags.DMSProjectID
+                            });
+                            console.log(`Document ${file.FileLeafRef} copied successfully.`);
+                            results.push({ file: file.FileLeafRef, success: true });
+                        } else {
+                            throw new Error("Failed to get item after upload");
+                        }
                     })
                     .catch(error => {
                         console.error(`Error copying document ${file.FileLeafRef}:`, error);
@@ -281,14 +335,45 @@ const SPService: SPServiceType = {
         const folder = await library.folders.getByName(folderName);
         return folder;
     },
+
     getAllFoldersInLibrary: async (libraryName: string): Promise<any> => {
         const library = web.getFolderByServerRelativeUrl(libraryName);
         const folders = await library.folders();
         return folders;
+    },
+
+    getFoldernFilesRecurs(spContext: WebPartContext, baseURL: string, serverRelativeUrl: string, camlQry: string, libname: string): Promise<any> {
+
+        const options: ISPHttpClientOptions = {
+            body: JSON.stringify({
+                "query": {
+                    "ViewXml": camlQry,
+                    "FolderServerRelativeUrl": `${serverRelativeUrl}`
+                }
+            })
+        };
+
+        return spContext.spHttpClient.post(baseURL + "/_api/Web/Lists/GetByTitle('" + libname + "')/GetItems?$select=*,FileSystemObjectType,FileDirRef,FieldValuesAsText/Author,FieldValuesAsText/FileLeafRef,DMS_x0020_Tags&$expand=FieldValuesAsText", SPHttpClient.configurations.v1, options)
+            .then((response: SPHttpClientResponse) => {
+                return response.json();
+            }).catch((err: any) => {
+                console.log(err);
+            });
+    },
+
+    getFilteredResults: async (queryTxt: string): Promise<any> => {
+
+        const searchRes = await pnp.sp.search({
+            Querytext: queryTxt,
+            RowLimit: 500,
+            SelectProperties: ["CreatedBy", "ServerRedirectedURL", "Path", "Filename", "ModifiedBy", "LastModifiedTime", "DMSClient", "DMSClientID", "DMSProject", "ParentLink", "DMSProjectID", "DMSTags", "DMSUnit"],
+            EnableInterleaving: true
+        })
+
+        return searchRes;
+
+        //return filteredArray;
     }
-
-
-
 
 };
 

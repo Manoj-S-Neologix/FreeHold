@@ -1,20 +1,45 @@
 import * as React from 'react';
-import { Box, TextField } from "@mui/material";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from './CustomSearch.module.scss';
 
 interface ISearchPros {
-    handleSearchChange?: any;
+    handleSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    searchQryTxt?: string;
 }
 
-const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
+const CustomSearch = ({ handleSearchChange, searchQryTxt = '' }: ISearchPros) => {
+    const [inputValue, setInputValue] = React.useState(searchQryTxt);
+
+    React.useEffect(() => {
+        setInputValue(searchQryTxt);
+    }, [searchQryTxt]);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setInputValue(value);
+        if (handleSearchChange) {
+            handleSearchChange(event);
+        }
+    };
+
+    const clearInput = () => {
+        setInputValue('');
+        if (handleSearchChange) {
+            handleSearchChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+        }
+    };
+
     return (
         <Box>
             <TextField
                 className={styles.searchBar}
                 size="small"
+                value={inputValue}
                 fullWidth
                 placeholder="Search..."
+                onChange={handleInputChange}
                 sx={{
                     '& .MuiInputBase-input': {
                         color: 'primary',
@@ -23,18 +48,24 @@ const CustomSearch = ({ handleSearchChange }: ISearchPros) => {
                         fontWeight: 600
                     },
                     "& fieldset": { border: 'none' },
+                    width: '250px'
                 }}
                 InputProps={{
-                    endAdornment: <SearchIcon className={styles.IconSearch} />,
-                    style: { border: "none", color: "#125895" }
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            {inputValue && (
+                                <IconButton onClick={clearInput}>
+                                    <CloseIcon />
+                                </IconButton>
+                            )}
+                            <SearchIcon className={styles.IconSearch} />
+                        </InputAdornment>
+                    ),
+                    style: { border: "none", color: "#125895", cursor: "pointer" }
                 }}
-                onChange={handleSearchChange}
             />
         </Box>
     );
 };
 
 export default CustomSearch;
-
-
-

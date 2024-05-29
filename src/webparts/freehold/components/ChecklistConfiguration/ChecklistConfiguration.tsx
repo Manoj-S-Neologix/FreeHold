@@ -1,9 +1,17 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
-import React from 'react';
+const ChecklistConfiguration = (props: IFreeholdChildProps) => {
+  const navigate = useNavigate();
 
-const ChecklistConfiguration = (props: any) => {
+  useEffect(() => {
+    window.open(`${props.siteUrl}/SitePages/Checklist.aspx`, '_blank');
+    navigate('/');
+  }, [navigate]);
+
   return (
-    <div>ChecklistConfiguration</div>
+    <div></div>
   );
 };
 

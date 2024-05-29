@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Delete } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
+// import { Delete } from '@mui/icons-material';
+// import IconButton from '@mui/material/IconButton';
 import { Box, Typography, InputLabel } from "@mui/material";
 interface DragAndDropUploadProps {
     onFilesAdded: (files: File[]) => void;
@@ -17,14 +17,14 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
             setFiles((prevFiles: any) => [...prevFiles, ...acceptedFiles]);
     }, []);
 
-    const onDelete = (index: number) => {
-        if (setFiles)
-            setFiles((prevFiles: any) => {
-                const updatedFiles = [...prevFiles];
-                updatedFiles.splice(index, 1);
-                return updatedFiles;
-            });
-    };
+    // const onDelete = (index: number) => {
+    //     if (setFiles)
+    //         setFiles((prevFiles: any) => {
+    //             const updatedFiles = [...prevFiles];
+    //             updatedFiles.splice(index, 1);
+    //             return updatedFiles;
+    //         });
+    // };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -69,7 +69,7 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
                     </Box>
                 )}
             </Box>
-            {files && files.length > 0 && (
+            {/* {files && files.length > 0 && (
                 <div>
                     <h4 style={{ margin: 0 }}>Uploaded files:</h4>
                     <ul>
@@ -83,7 +83,7 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
                         ))}
                     </ul>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
@@ -99,6 +99,4 @@ const dropzoneStyle: React.CSSProperties = {
     // width: 'calc(100vw - 500px)',
     outline: 'none',
 };
-
-
 

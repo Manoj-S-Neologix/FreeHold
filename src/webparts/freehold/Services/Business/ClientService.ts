@@ -1,3 +1,4 @@
+import _ from "lodash";
 import formatDate from "../../hooks/dateFormat";
 import SPService, { SPServiceType } from "../Core/SPService";
 import { Web as SP } from "sp-pnp-js";
@@ -29,11 +30,10 @@ export const addListItem = async (siteUrl: string, listName: string, listData: a
 const ClientService = () => {
     const spServiceInstance: SPServiceType = SPService;
 
-
     const uploadDocument = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.createLibrary(libraryName);
-            await spServiceInstance.uploadDocument(libraryName, file);
+            //await spServiceInstance.uploadDocument(libraryName, file);
             //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
             return response;
 
@@ -41,7 +41,6 @@ const ClientService = () => {
     };
 
     //UpdateLibraryName
-
     const updateLibraryName = async (GUIDID: any, updatedlibraryName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.updateLibraryName(GUIDID, updatedlibraryName);
@@ -49,82 +48,55 @@ const ClientService = () => {
         }
     };
 
-
     //uploadDocumentInLibrary
-
     const uploadDocumentInLibrary = async (libraryName: string, file: any, listName?: any, Id?: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocument(libraryName, file);
+
             //console.log(response, "ClientLibraryGUIDClientLibraryGUID");
             return response;
 
         }
     };
 
+    // //Meta Data
+    const updateClientDocumentMetadata = async (libraryName: string, file: any, DMSTags: any) => {
+        if (spServiceInstance) {
+            const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
+            console.log(response, "response-metaData")
+            return response;
+        }
+
+    };
+
     const getClient = async (ListName: string) => {
+
         if (spServiceInstance) {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
         }
+
     };
 
-
-    const getListCounts = async (listName: string) =>{
+    const getListCounts = async (listName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getListCounts(listName);
             return response;
 
         }
     }
-    // const getClientExpand = async (ListName: string, select: string, expand: string) => {
-    //     if (spServiceInstance) {
-    //         const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, "");
-    //         const TableData = results.map((item: any) => {
-    //             return {
-    //                 Id: item.Id,
-    //                 name: item.Title,
-    //                 email: item.ClientEmail,
-    //                 contact: item.ClientContact,
-    //                 modifiedDate: formatDate(item.Modified),
-    //                 modifiedBy: item.Author.Title,
-    //                 assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
-    //             };
-    //         });
-    //         const updatedResults = results.map((item: any) => {
-    //             return {
-    //                 name: item.Title,
-    //                 email: item.ClientEmail,
-    //                 modifiedDate: formatDate(item.Modified),
-    //                 modifiedBy: item.Author.Title,
-    //                 Staff: item?.AssignedStaff,
-    //                 assignStaff: item?.AssignedStaff?.map((staff: any) => staff.Title).join(', ') || '',
-    //                 contact: item.ClientContact,
-    //                 GUID: item.ClientLibraryGUID,
 
-    //                 Author: {
-    //                     Name: item.Author.Title,
-    //                     Email: item.Author.EMail
-    //                 },
-    //                 assignedStaff: item.AssignedStaff &&
-    //                     item.AssignedStaff.map((staff: any) => {
-    //                         return {
-    //                             Id: staff.Id,
-    //                             Name: staff.Title,
-    //                             Email: getPersonByEmail(staff.EMail)
-    //                         };
-    //                     }),
-    //                 Id: item.Id,
-    //                 TableData
-    //             };
-    //         });
-
-    //         return { updatedResults };
-    //     }
-    // };
-
-    const getClientExpand = async (ListName: string, select: string, expand: string, id?: string | number | undefined) => {
+    const getfilteredListCounts = async (listName: string, filter: string) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            const response = await spServiceInstance.getfilteredListCounts(listName, filter);
+            return response;
+
+        }
+    }
+
+    const getClientExpand = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
             console.log(results, 'client result,,,')
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
@@ -157,7 +129,7 @@ const ClientService = () => {
                     name: item.Title,
                     email: item.ClientEmail,
                     modifiedDate: formatDate(item.Modified),
-                    modifiedBy: item.Author.Title,
+                    modifiedBy: item.Editor.Title,
                     Staff: item.AssignedStaff,
                     assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
                     contact: item.ClientContact,
@@ -169,7 +141,8 @@ const ClientService = () => {
                     },
                     assignedStaff,
                     Id: item.Id,
-                    projectDetails
+                    projectDetails,
+                    Editor: item?.Editor
                     // ProjectName: item.Title
 
                 };
@@ -186,8 +159,9 @@ const ClientService = () => {
                     assignStaff: item.assignStaff,
                     assignedStaff: item.assignedStaff,
                     ProjectId: item.ProjectId,
-                    projectDetails: item.projectDetails, 
-                    
+                    projectDetails: item.projectDetails,
+                    Editor: item?.Editor
+
 
                 };
             });
@@ -195,14 +169,132 @@ const ClientService = () => {
             return { updatedResults, tableData };
         }
     };
-    const getClientExpandApi = async (ListName: string, select: string, expand: string, id?: any) => {
+
+    const getClientExpandApi = async (ListName: string, select: string, expand: string, filter: string, id?: any) => {
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, id);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, id);
             //console.log(results, "results");
             return results;
         }
     };
 
+    const getClients = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
+            console.log("Client results : ", results);
+
+            const updatedResults: any[] = [];
+
+            _.forEach(results, function (item) {
+
+                const assignedStaffDetails = (item.AssignedStaff !== undefined) ? (item.AssignedStaff).map((staff: any) => {
+                    const staffDetails = {
+                        Id: staff.Id,
+                        Name: staff.Title,
+                        Email: staff.EMail
+                    };
+                    return staffDetails;
+                }) : [];
+
+                const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
+                    return (
+                        {
+                            Id: project?.Id,
+                            Name: project?.Title
+                        }
+                    )
+                });
+
+                const assignedStaff = assignedStaffDetails;
+                //console.log(item, projectDetails, 'itemresult')
+
+                updatedResults.push({
+                    name: item.Title,
+                    Title: item.Title,
+                    email: item.ClientEmail,
+                    modifiedDate: formatDate(item.Modified),
+                    modifiedBy: item.Editor.Title,
+                    Staff: item.AssignedStaff,
+                    assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
+                    contact: item.ClientContact,
+                    GUID: item.ClientLibraryGUID,
+                    webURL: item.ClientLibraryPath,
+                    Author: {
+                        Name: item.Author.Title,
+                        Email: item.Author.EMail
+                    },
+                    assignedStaff,
+                    Id: item.Id,
+                    projectDetails,
+                    Editor: item?.Editor
+                });
+            });
+
+            const tableData = updatedResults.map((item: any) => {
+                return {
+                    Id: item.Id,
+                    name: item.name,
+                    email: item.email,
+                    contact: item.contact,
+                    modifiedDate: item.modifiedDate,
+                    modifiedBy: item.modifiedBy,
+                    assignStaff: item.assignStaff,
+                    assignedStaff: item.assignedStaff,
+                    ProjectId: item.ProjectId,
+                    projectDetails: item.projectDetails,
+                    Editor: item?.Editor
+                };
+            });
+            console.log(updatedResults, tableData, "updatedResults");
+            return { updatedResults, tableData };
+        }
+    };
+
+    const getfilteredClientsnProjects = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, userRole: string) => {
+
+        if (spServiceInstance) {
+            const clientResults = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
+            //console.log("Client results : ", results);
+            const clientArr: string[] = [];
+
+            _.forEach(clientResults, function (citem) {
+                clientArr.push(citem.ID);
+            })
+
+            const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+            const pexpand = 'AssignClient';
+            const porderBy = 'Modified';
+            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
+
+            let pResults: any[] = [];
+            if (userRole === "staff") {
+                _.forEach(projectResults, function (pitem) {
+
+                    const match = _.intersection(clientArr, pitem.AssignClientId);
+                    if (match.length > 0) {
+                        pResults.push(pitem);
+                    }
+                });
+            } else {
+                pResults = projectResults;
+            }
+
+            //console.log("Filtered project results : ", pResults);
+
+            return { clientResults, pResults };
+        }
+    };
+
+    const getProjects = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
+            console.log("Client results : ", results);
+
+            return results;
+        }
+    };
 
     const updateClient = async (ListName: string, itemId: number, itemData: any) => {
         if (spServiceInstance) {
@@ -266,6 +358,7 @@ const ClientService = () => {
             return results;
         }
     };
+
     const getPersonById = async (id: number) => {
 
         if (spServiceInstance) {
@@ -274,6 +367,7 @@ const ClientService = () => {
             return results.Email;
         }
     };
+
     const addDocumentsToFolder = async (libraryGuid: string, file: any) => {
 
         if (spServiceInstance) {
@@ -282,12 +376,6 @@ const ClientService = () => {
             return results;
         }
     };
-
-
-
-
-
-
 
     return {
         getClient,
@@ -305,8 +393,12 @@ const ClientService = () => {
         getPersonById,
         getClientExpandApi,
         updateLibraryName,
-        getListCounts
-
+        getListCounts,
+        updateClientDocumentMetadata,
+        getClients,
+        getProjects,
+        getfilteredListCounts,
+        getfilteredClientsnProjects
     };
 };
 
