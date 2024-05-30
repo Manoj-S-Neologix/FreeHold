@@ -41,7 +41,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
-  const [getClient, setGetClient] = useState<any[]>([]);
+  const [getClient, setGetClient] = useState("");
   //const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
   const [deleteId, setDeleteId] = useState<number>(0);
 
@@ -95,11 +95,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
-  //const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
-  //const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
-  // const getProjectName = particularClientAllData[0]?.projectName;
   const getProjectCode = particularClientAllData[0]?.projectNumber;
+  //const getProjectId = particularClientAllData[0]?.Id;
   const getProjectUrl = particularClientAllData[0]?.webURL;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
@@ -113,14 +111,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
 
-      // Ensure results is an array before setting state
-      /* if (Array.isArray(results)) {
-        setClientDocumentsData(results.map(item => item.FileLeafRef));
-        setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB');
-      } else {
-        console.error('Error: Retrieved data is not an array');
-      } */
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
@@ -132,7 +122,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const getDocumentsLibPath = async (type: string) => {
 
-    let projectRelativePath = (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
+    let projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
       const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
@@ -181,6 +171,10 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     }
   }, [uploadFiles]);
 
+  React.useEffect(() => {
+    getDocumentsLibPath("project");
+  }, []);
+
   const onDelete = (index: number) => {
 
     //console.log("getvalues", getValues());
@@ -205,55 +199,107 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
 
-    const clientInfo: any = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
+    if (getClient !== "") {
+      const clientInfo: any = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
 
-    const updatedData = {
-      DMSProject: particularClientAllData[0].projectName,
-      DMSProjectID: (particularClientAllData[0].Id).toString(),
-      DMSClient: clientInfo[0].Name,
-      DMSClientID: (clientInfo[0].Id).toString(),
-      DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
+      const updatedData = {
+        DMSProject: particularClientAllData[0].projectName,
+        DMSProjectID: (particularClientAllData[0].Id).toString(),
+        DMSClient: clientInfo[0].Name,
+        DMSClientID: (clientInfo[0].Id).toString(),
+        DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
+      }
+
+      //console.log("clientInfo", clientInfo);
+
+      try {
+        const apiResponse = ProjectService();
+        console.log(data, 'projectdata..')
+        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+        if (data.unitDocument !== '' && isUnitDocumentChecked) {
+
+          const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+          console.log(folderUrl, 'projectfolderurl..')
+          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+        }
+        else {
+          // Upload documents to the specified client's folder
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        }
+
+        uploadFiles.map((uploadedFile, index) => (
+          setValue(`projectChecklist-${index}`, "")
+        ));
+
+        setLoading(false);
+        setFiles([]);
+        setUploadFiles([]);
+
+        toast.success('Documents Added Successfully!');
+        if (isUnitDocumentChecked) {
+          getDocumentsLibPath("unit");
+        } else {
+          getDocumentsLibPath("client");
+        }
+
+      } catch (error) {
+        setLoading(false);
+        console.error("Failed to add client and document:", error);
+        toast.error(`Failed to add client and document: ${error}`);
+      }
+    } else {
+
+      const updatedData = {
+        DMSProject: particularClientAllData[0].projectName,
+        DMSProjectID: (particularClientAllData[0].Id).toString(),
+        DMSClient: "",
+        DMSClientID: "",
+        DMSUnit: "",
+      }
+
+      //console.log("clientInfo", clientInfo);
+
+      try {
+        const apiResponse = ProjectService();
+        console.log(data, 'projectdata..')
+        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
+        if (data.unitDocument !== '' && isUnitDocumentChecked) {
+
+          const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
+          console.log(folderUrl, 'projectfolderurl..')
+          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+        }
+        else {
+          // Upload documents to the specified client's folder
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        }
+
+        uploadFiles.map((uploadedFile, index) => (
+          setValue(`projectChecklist-${index}`, "")
+        ));
+
+        setLoading(false);
+        setFiles([]);
+        setUploadFiles([]);
+
+        toast.success('Documents Added Successfully!');
+        if (isUnitDocumentChecked) {
+          getDocumentsLibPath("unit");
+        } else {
+          getDocumentsLibPath("client");
+        }
+
+      } catch (error) {
+        setLoading(false);
+        console.error("Failed to add client and document:", error);
+        toast.error(`Failed to add client and document: ${error}`);
+      }
     }
 
-    //console.log("clientInfo", clientInfo);
-
-    try {
-      const apiResponse = ProjectService();
-      console.log(data, 'projectdata..')
-      const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
-      if (data.unitDocument !== '' && isUnitDocumentChecked) {
-
-        const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-        console.log(folderUrl, 'projectfolderurl..')
-        await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-      }
-      else {
-        // Upload documents to the specified client's folder
-        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-        await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-      }
-
-      uploadFiles.map((uploadedFile, index) => (
-        setValue(`projectChecklist-${index}`, "")
-      ));
-
-      setLoading(false);
-      setFiles([]);
-      setUploadFiles([]);
-
-      toast.success('Documents Added Successfully!');
-      if (isUnitDocumentChecked) {
-        getDocumentsLibPath("unit");
-      } else {
-        getDocumentsLibPath("client");
-      }
-
-    } catch (error) {
-      setLoading(false);
-      console.error("Failed to add client and document:", error);
-      toast.error(`Failed to add client and document: ${error}`);
-    }
   });
 
   const handleDelete = (getGuid: any) => {
@@ -321,7 +367,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       name="clientName"
                       control={control}
                       defaultValue=""
-                      rules={{ required: 'Client Name is required' }}
+                      //rules={{ required: 'Client Name is required' }}
                       render={({ field }) => (
                         <>
                           <InputLabel htmlFor="client-name">Client Name</InputLabel>
