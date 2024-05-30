@@ -16,9 +16,10 @@ interface ISearchPros {
     client: string;
     project: String;
     isExpand?: boolean;
+    isApplied?: boolean;
 }
 
-const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, project, isExpand }: ISearchPros) => {
+const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, project, isExpand, isApplied }: ISearchPros) => {
 
     const [opend, setOpend] = React.useState(false);
     const spServiceInstance: SPServiceType = SPService;
@@ -65,6 +66,12 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
         setIsSearchIconEnabled(false);
     };
 
+    React.useEffect(() => {
+        if (isSearchIconEnabled && isApplied) {
+            toggleDrawer(true)();
+        }
+    }, [isApplied]);
+
     return (
         <Box>
             <TextField
@@ -92,34 +99,34 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                 InputProps={{
                     endAdornment: (
                         <>
-                        {loading ? (
-                            <CircularProgress size={24} className={styles.IconSearch} />
-                        ) : (
-                            <>
-                                {searchTxt && (
-                                    <IconButton
-                                        size="small"
-                                        onClick={handleClear}
-                                        style={{
-                                            color: "#125895",
-                                            cursor: "pointer"
-                                        }}
-                                    >
-                                        <ClearIcon />
-                                    </IconButton>
-                                )}
-                                <SearchIcon
-                                    className={`${styles.IconSearchCommon} ${isSearchIconEnabled ? styles.IconSearchEnabledCommon : styles.IconSearchDisabledCommon}`}
-                                    onClick={isSearchIconEnabled ? toggleDrawer(true) : undefined}
-                                />
+                            {loading ? (
+                                <CircularProgress size={24} className={styles.IconSearch} />
+                            ) : (
+                                <>
+                                    {searchTxt && (
+                                        <IconButton
+                                            size="small"
+                                            onClick={handleClear}
+                                            style={{
+                                                color: "#125895",
+                                                cursor: "pointer"
+                                            }}
+                                        >
+                                            <ClearIcon />
+                                        </IconButton>
+                                    )}
+                                    <SearchIcon
+                                        className={`${styles.IconSearchCommon} ${isSearchIconEnabled ? styles.IconSearchEnabledCommon : styles.IconSearchDisabledCommon}`}
+                                        onClick={isSearchIconEnabled ? toggleDrawer(true) : undefined}
+                                    />
 
-                            </>
-                        )}
-                    </>
-                ),
-            }}
-            onChange={handleInputChange}
-        />
+                                </>
+                            )}
+                        </>
+                    ),
+                }}
+                onChange={handleInputChange}
+            />
 
             <React.Fragment>
                 <Drawer

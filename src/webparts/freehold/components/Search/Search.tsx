@@ -11,12 +11,13 @@ import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import DragAndDropUpload from "../../../../Common/DragAndDrop/DragAndDrop";
 import styles from "./Search.module.scss";
-// import ClientProjectUpload from "../ClientUploadDocument/ClientProjectUpload";
+
 import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
 import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
 import SPService, { SPServiceType } from "../../Services/Core/SPService";
+import ListIcon from '@mui/icons-material/List';
 import _ from "lodash";
 
 // const clientOptions = ['Client1', 'Client2', 'Client3'];
@@ -30,7 +31,7 @@ const IconStyles = (icon: any, theme: any) => {
     );
 };
 
-const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
+const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNavOpen }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
@@ -42,6 +43,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     // const [clientValue, setClientValue] = React.useState<string>('');
     // const [projectValue, setProjectValue] = React.useState<string>('');
     const [isLoading, setIsLoading] = React.useState(true);
+    const [isApplied, setIsApplied] = React.useState(false);
     const [clientData, setClientData] = React.useState<any>([]);
     const [AllClientData, setAllClientData] = React.useState<any>([]);
     const [getClient, setGetClient] = React.useState<any[]>([]);
@@ -65,19 +67,14 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
     console.log(projectData, "projectData...")
 
-    // const handleFilterClick = () => {
-    //     //console.log('Filter clicked');
-    //     setOpen(true);
-    // };
     const handleDocumentClick = () => {
         //console.log('Document clicked');
         setOpenDocuments(true);
     };
 
-
-
     const handleSave = (data: any) => {
         setOpenDocuments(false);
+        setIsApplied(false);
     };
 
     const handleClear = () => {
@@ -88,6 +85,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const handleApply = () => {
         setOpen(false);
         setOpen(false);
+        console.log("isApplied : ", isApplied);
         const selectedClientName = getValues("clientName");
         const selectedProjectName = getValues("projectName");
         const selectedNames: string[] = [];
@@ -98,7 +96,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
             selectedNames.push("Project : " + selectedProjectName);
         }
         setSelectedPersons(selectedNames);
-        setIsExpand(true)
+        setIsExpand(true);
+        if (selectedClientName != "" || selectedProjectName != "") {
+            setIsApplied(true);
+        } else {
+            setIsApplied(false);
+        }
+
         //reset();
     };
 
@@ -200,7 +204,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         getUserRoles();
     }, []);
 
-
     React.useEffect(() => {
         fetchData();
     }, [userRole]);
@@ -224,8 +227,8 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     justifyContent: "flex-start",
                                     gap: "10px"
                                 }}>
-                                <Box sx={{ width: "100%", paddingLeft:'8px' }}>
-                                    <CommonCustomSearch isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} />
+                                <Box sx={{ width: "100%", paddingLeft: '8px' }}>
+                                    <CommonCustomSearch isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} isApplied={isApplied} />
                                 </Box>
                                 <Box>
 
@@ -246,8 +249,16 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
                                                             if (selectedPersons[index].startsWith("Project :")) {
                                                                 setValue('projectName', "");
+
+                                                                if (getValues("clientName") == "") {
+                                                                    setIsApplied(false);
+                                                                }
                                                             } else if (selectedPersons[index].startsWith("Client :")) {
                                                                 setValue('clientName', "");
+
+                                                                if (getValues("projectName") == "") {
+                                                                    setIsApplied(false);
+                                                                }
                                                             }
                                                             setSelectedPersons(updatedPersons);
                                                             if (updatedPersons.length === 0) {
@@ -264,13 +275,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={12} md={4} lg={4} xl={4} sx={{
-                                display: "flex",
-                                justifyContent: "flex-end",
-                                paddingTop: "1rem !important",
-                                position: "absolute",
-                                top: "70px !important",
-                                right: "10px !important"
-                            }}>
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            paddingTop: "1rem !important",
+                            position: "absolute",
+                            top: "70px !important",
+                            right: "10px !important"
+                        }}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button
                                     style={{ maxWidth: "200px", whiteSpace: "pre" }}
@@ -286,6 +297,11 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     message="Upload Documents"
                                     handleClick={handleDocumentClick}
                                 />
+
+                                <MuiButton onClick={() => setIsNavOpen(!isNavOpen)}>
+                                    <ListIcon sx={{ color: theme.palette.common.white }} />
+                                </MuiButton>
+
                             </Box>
                         </Grid>
                     </Grid>

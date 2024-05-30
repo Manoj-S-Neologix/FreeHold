@@ -66,7 +66,6 @@ const ClientService = () => {
             console.log(response, "response-metaData")
             return response;
         }
-
     };
 
     const getClient = async (ListName: string) => {
@@ -75,14 +74,93 @@ const ClientService = () => {
             const results = await spServiceInstance.getAllListItems(ListName);
             return results;
         }
+    };
 
+    const getClientbyID = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, id?: string | number | undefined) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
+
+            const updatedResults: any[] = [];
+
+            const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
+            const pexpand = 'AssignClient';
+            const porderBy = 'Modified';
+            const pfilter = `AssignClient/Id eq '${id}'`;
+
+            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, pfilter, porderBy);
+
+            const projectDetails: any = projectResults?.length > 0 && projectResults?.map((project: any) => {
+                return (
+                    {
+                        Id: project?.Id,
+                        Name: project?.Title
+                    }
+                )
+            });
+
+            const sortedProjectDetails = _.sortBy(projectDetails,
+                [function (o: any) { return o.Name; }]);
+
+            _.forEach(results, function (item) {
+
+                const assignedStaffDetails = (item.AssignedStaff !== undefined) ? (item.AssignedStaff).map((staff: any) => {
+                    const staffDetails = {
+                        Id: staff.Id,
+                        Name: staff.Title,
+                        Email: staff.EMail
+                    };
+                    return staffDetails;
+                }) : [];
+
+                const assignedStaff = assignedStaffDetails;
+
+                updatedResults.push({
+                    name: item.Title,
+                    Title: item.Title,
+                    email: item.ClientEmail,
+                    modifiedDate: formatDate(item.Modified),
+                    modifiedBy: item.Editor.Title,
+                    Staff: item.AssignedStaff,
+                    assignStaff: (item.AssignedStaff || []).map((staff: any) => staff.Title).join(', ') || '',
+                    contact: item.ClientContact,
+                    GUID: item.ClientLibraryGUID,
+                    webURL: item.ClientLibraryPath,
+                    Author: {
+                        Name: item.Author.Title,
+                        Email: item.Author.EMail
+                    },
+                    assignedStaff,
+                    Id: item.Id,
+                    projectDetails: sortedProjectDetails,
+                    Editor: item?.Editor
+                });
+            });
+
+            const tableData = updatedResults.map((item: any) => {
+                return {
+                    Id: item.Id,
+                    name: item.name,
+                    email: item.email,
+                    contact: item.contact,
+                    modifiedDate: item.modifiedDate,
+                    modifiedBy: item.modifiedBy,
+                    assignStaff: item.assignStaff,
+                    assignedStaff: item.assignedStaff,
+                    ProjectId: item.ProjectId,
+                    projectDetails: sortedProjectDetails,
+                    Editor: item?.Editor
+                };
+            });
+            console.log(updatedResults, tableData, "updatedResults");
+            return { updatedResults, tableData };
+        }
     };
 
     const getListCounts = async (listName: string) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getListCounts(listName);
             return response;
-
         }
     }
 
@@ -90,7 +168,6 @@ const ClientService = () => {
         if (spServiceInstance) {
             const response = await spServiceInstance.getfilteredListCounts(listName, filter);
             return response;
-
         }
     }
 
@@ -109,11 +186,6 @@ const ClientService = () => {
                 }));
 
                 const projectDetails = item?.ProjectId && item?.ProjectId.length > 0 && item?.ProjectId.map((project: any) => {
-                    // const projectData = {
-                    //     Id: project?.Id,
-                    //     Name: project?.Title
-                    // }
-                    console.log(project, "projectDetails")
                     return (
                         {
                             Id: project?.Id,
@@ -161,8 +233,6 @@ const ClientService = () => {
                     ProjectId: item.ProjectId,
                     projectDetails: item.projectDetails,
                     Editor: item?.Editor
-
-
                 };
             });
             console.log(updatedResults, tableData, "updatedResults");
@@ -182,7 +252,6 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
-            console.log("Client results : ", results);
 
             const updatedResults: any[] = [];
 
@@ -206,6 +275,9 @@ const ClientService = () => {
                     )
                 });
 
+                const sortedProjectDetails = _.sortBy(projectDetails,
+                    [function (o: any) { return o.Name; }]);
+
                 const assignedStaff = assignedStaffDetails;
                 //console.log(item, projectDetails, 'itemresult')
 
@@ -226,7 +298,7 @@ const ClientService = () => {
                     },
                     assignedStaff,
                     Id: item.Id,
-                    projectDetails,
+                    projectDetails: sortedProjectDetails,
                     Editor: item?.Editor
                 });
             });
@@ -265,6 +337,7 @@ const ClientService = () => {
             const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
             const pexpand = 'AssignClient';
             const porderBy = 'Modified';
+
             const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
 
             let pResults: any[] = [];
@@ -321,7 +394,6 @@ const ClientService = () => {
             //console.log(results, "results");
             return results;
         }
-
     };
 
     const deleteLibrary = async (LibraryName: string) => {
@@ -398,7 +470,8 @@ const ClientService = () => {
         getClients,
         getProjects,
         getfilteredListCounts,
-        getfilteredClientsnProjects
+        getfilteredClientsnProjects,
+        getClientbyID
     };
 };
 

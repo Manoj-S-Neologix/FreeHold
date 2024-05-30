@@ -184,6 +184,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
         setIsViewDialogOpen(false);
         // setIsEdit(false);
         navigate('/ViewClient');
+        ////navigate(-1);
         // setIsOpen(false);
         // fetchData();
     };

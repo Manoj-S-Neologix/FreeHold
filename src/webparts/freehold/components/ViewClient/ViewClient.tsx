@@ -451,13 +451,8 @@ const ViewClient = (props: IFreeholdChildProps) => {
       // const orderBy = 'Modified';
       const filter = `Id eq '${id}'`;
       const orderBy = "Modified";
-      // const filtered = "";
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
-      //const filteredResults = await clientService.getClientExpand('Client_Informations', select, expand, "", orderBy);
-      //setAllClientData(filteredResults?.tableData);
 
-      // setClientData(results?.updatedResults[0].TableData);
-      //setAllClientData(results?.updatedResults);
       setIsLoading(false);
       setSelected([]);
       return results?.updatedResults;

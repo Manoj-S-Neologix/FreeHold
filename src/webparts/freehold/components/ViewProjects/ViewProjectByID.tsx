@@ -58,9 +58,6 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
 
     const { formState: { } } = useForm(
         {
-
-
-
         }
     );
 

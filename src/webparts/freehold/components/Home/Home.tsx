@@ -14,6 +14,8 @@ import { ThemeProvider } from '../../../../Common/ThemeProvider/Themeprovider';
 import { IFreeholdProps } from '../IFreeholdProps';
 import ViewProjectByID from '../ViewProjects/ViewProjectByID';
 import EditProjectByID from '../ViewProjects/EditProjectByID';
+import ViewClientByID from '../ViewClient/ViewClientByID';
+import EditClientByID from '../ViewClient/EditClientByID';
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,6 +25,9 @@ const colorCodes = {
 };
 
 const Home = (props: IFreeholdProps) => {
+
+    const [isNavOpen, setIsNavOpen] = React.useState(false);
+
     return (
         <React.Fragment>
             {/* <ToastContainer /> */}
@@ -30,13 +35,18 @@ const Home = (props: IFreeholdProps) => {
 
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
-                    <Search spContext={props.context} siteUrl={props.siteUrl} />
+                    <Search spContext={props.context} siteUrl={props.siteUrl} setIsNavOpen={setIsNavOpen} isNavOpen={isNavOpen} />
                     <Routes>
                         <Route path='/'
                             element={
                                 <>
-                                    <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
-                                    <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
+
+                                    <div>
+                                        <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} isNavOpen={isNavOpen} />
+                                    </div>
+                                    <div>
+                                        <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
+                                    </div>
                                 </>}
                         />
                         <Route
@@ -44,12 +54,12 @@ const Home = (props: IFreeholdProps) => {
                             element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/ViewClient/:viewClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
+                            path='/ViewClient/:cId'
+                            element={<ViewClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
-                            path='/EditClient/:editClientId'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
+                            path='/EditClient/:cId'
+                            element={<EditClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewProject'
