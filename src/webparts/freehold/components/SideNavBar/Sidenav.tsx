@@ -45,7 +45,10 @@ const Sidenav = (props: ISideNavProps) => {
                     <div className={`${styles.column} ${styles.sideNavColumn}`}>
                         <div className={`${styles.col12} ${styles.sideContainer}`}>
                             
-                            <div style={{ backgroundImage: `url(${homeImage})` }}
+                            <div style={{ backgroundImage: `url(${homeImage})`,
+                               width: props.isNavOpen ? '100%' : 'inherit', // Adjust width based on isNavOpen
+                               position: props.isNavOpen ? 'absolute' : 'relative' // Adjust position based on isNavOpen
+                        }}
                                 className={`${styles.col8} ${styles.sideImage}`} />
                             {props.isNavOpen && (<div className={`${styles.col2} ${styles.sideNavContainer}`} style={{ float: 'right' }}>
                                 <ul className={styles.sidenavBar}>

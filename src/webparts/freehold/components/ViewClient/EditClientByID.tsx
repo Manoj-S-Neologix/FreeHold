@@ -167,9 +167,9 @@ const EditClientByID = (props: IFreeholdChildProps) => {
     };
 
     return (
-        <Box>
+        <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }}>
             <Stack direction='column'  >
-                <Box sx={{ position: 'relative', bottom: '40px' }}>
+                <Box sx={{ position: 'relative', bottom: '40px', marginTop: "10px" }}>
                     <Breadcrumbs
                         separator={<NavigateNextIcon fontSize="medium" />}
                         aria-label="breadcrumb"
