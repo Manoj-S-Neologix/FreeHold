@@ -140,7 +140,7 @@ const ViewClientByID = (props: IFreeholdChildProps) => {
                                     }}>
                                         <Button
                                             color="secondary"
-                                            message="Managed Documents"
+                                            message="Manage Documents"
                                             handleClick={() => {
                                                 setUploadDialogOpen(true);
                                             }}
@@ -190,7 +190,10 @@ const ViewClientByID = (props: IFreeholdChildProps) => {
                                     <TableCell component="th" scope="row">Assigned Project</TableCell>
                                     <TableCell>
                                         {clientDetails[0]?.projectDetails.length > 0 && (
-                                            clientDetails[0]?.projectDetails.map((data: any) => (
+                                            clientDetails[0]?.projectDetails
+                                            .slice() 
+                                            .sort((a:any, b:any) => a.Name.localeCompare(b.Name))
+                                            .map((data: any) => (
                                                 <div
                                                     onClick={() => navigate(`/ViewProject/${data.Id}`)}
                                                     style={{
@@ -216,7 +219,9 @@ const ViewClientByID = (props: IFreeholdChildProps) => {
                                             listStyleType: "none",
                                             padding: 0
                                         }}>
-                                            {clientDetails[0]?.assignedStaff?.map((staff: any, index: number) => (
+                                            {clientDetails[0]?.assignedStaff
+                                            ?.sort((a: any, b: any) => a.Name.localeCompare(b.Name))
+                                            .map((staff: any, index: number) => (
                                                 <li className="default-cursor" style={{ textDecoration: "none" }}
                                                     key={index}>
                                                     <span>{staff.Name}</span>

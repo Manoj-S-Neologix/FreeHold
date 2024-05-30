@@ -169,7 +169,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
     return (
         <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }}>
             <Stack direction='column'  >
-                <Box sx={{ position: 'relative', bottom: '40px', marginTop: "10px" }}>
+                <Box sx={{ position: 'relative', bottom: '40px', marginTop: "40px" }}>
                     <Breadcrumbs
                         separator={<NavigateNextIcon fontSize="medium" />}
                         aria-label="breadcrumb"
@@ -208,7 +208,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                         }}>
                                             <Button
                                                 color="secondary"
-                                                message="Managed Documents"
+                                                message="Manage Documents"
                                                 handleClick={() => {
                                                     setUploadDialogOpen(true);
                                                 }}
@@ -352,8 +352,10 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                         <TableCell>
 
                                             {clientDetails[0]?.projectDetails?.length > 0 && (
-
-                                                clientDetails[0]?.projectDetails.map((data: any) => (
+                                                clientDetails[0]?.projectDetails
+                                                .slice() 
+                                                .sort((a:any, b:any) => a.Name.localeCompare(b.Name))
+                                                .map((data: any) => (
                                                     <div
                                                         onClick={() => navigate(`/ViewProject/${data.Id}`)}
                                                         style={{
@@ -375,7 +377,9 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                         </TableCell>
 
                                         <TableCell className="default-cursor">
-                                            {clientDetails[0]?.assignedStaff?.map((staff: any, index: number) => (
+                                            {clientDetails[0]?.assignedStaff
+                                            ?.sort((a: any, b: any) => a.Name.localeCompare(b.Name))
+                                            .map((staff: any, index: number) => (
                                                 <li
                                                     className="default-cursor"
                                                     style={{ textDecoration: "none" }}

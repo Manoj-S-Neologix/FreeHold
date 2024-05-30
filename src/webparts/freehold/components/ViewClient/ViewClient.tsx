@@ -783,7 +783,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
                 {selectedName.map((data: any) => (
                   <div key={data.id}>
                     <Box>
-                      {data?.name?.map((item: any) => (
+                      {data?.name?.slice().sort((a: any, b: any) => a.Name.localeCompare(b.Name)).map((item: any) => (
                         <Typography key={item.Id}>
                           {item.Name}
                         </Typography>

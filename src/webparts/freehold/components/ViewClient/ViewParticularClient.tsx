@@ -231,7 +231,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                         }}>
                                             <Button
                                                 color="secondary"
-                                                message="Managed Documents"
+                                                message="Manage Documents"
                                                 handleClick={() => {
                                                     setUploadDialogOpen(true);
                                                 }}
