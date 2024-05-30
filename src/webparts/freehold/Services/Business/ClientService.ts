@@ -248,10 +248,10 @@ const ClientService = () => {
         }
     };
 
-    const getClients = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
+    const getClients = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, id?: string | number | undefined) => {
 
         if (spServiceInstance) {
-            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
+            const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, filter, orderBy);
 
             const updatedResults: any[] = [];
 
