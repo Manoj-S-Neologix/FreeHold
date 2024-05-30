@@ -345,7 +345,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
       //showToast(`Failed to add client and document.`, "error");
       setLoading(false);
       // const errorMessage = error.message || 'An error occurred while adding the project.';
-      toast.error(`Project Id is already exists`);
+      toast.error(`Project Number already exists`);
 
     }
   });

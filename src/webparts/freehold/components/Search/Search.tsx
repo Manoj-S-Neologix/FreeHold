@@ -17,7 +17,7 @@ import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocumen
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
 import SPService, { SPServiceType } from "../../Services/Core/SPService";
-import ListIcon from '@mui/icons-material/List';
+// import ListIcon from '@mui/icons-material/List';
 import _ from "lodash";
 
 // const clientOptions = ['Client1', 'Client2', 'Client3'];
@@ -298,9 +298,9 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
                                     handleClick={handleDocumentClick}
                                 />
 
-                                <MuiButton onClick={() => setIsNavOpen(!isNavOpen)}>
+                                {/* <MuiButton onClick={() => setIsNavOpen(!isNavOpen)}>
                                     <ListIcon sx={{ color: theme.palette.common.white }} />
-                                </MuiButton>
+                                </MuiButton> */}
 
                             </Box>
                         </Grid>

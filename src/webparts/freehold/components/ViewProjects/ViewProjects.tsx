@@ -918,7 +918,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
                 textDecoration: "underline", color: "blue", cursor: "pointer",
                 listStyleType: "none", padding: 0
               }}>
-                {selectedName.map((data: any) => (
+                {selectedName
+                .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
+                .map((data: any) => (
                   <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center", justifyContent: "flex-start" }}>
                     <Box
                       key={data.Id}

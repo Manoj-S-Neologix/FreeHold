@@ -43,11 +43,10 @@ const Sidenav = (props: ISideNavProps) => {
             <div className={`${styles.container} ${styles.sideContainer}`}>
                 <div className={`${styles.row} ${styles.sideRowContainer}`}>
                     <div className={`${styles.column} ${styles.sideNavColumn}`}>
-                        <div className={`${styles.col12} ${styles.sideContainer}`}>
-                            
+                    <div className={`${styles.col12} ${styles.sideContainer}`}>
                             <div style={{ backgroundImage: `url(${homeImage})` }}
                                 className={`${styles.col8} ${styles.sideImage}`} />
-                            {props.isNavOpen && (<div className={`${styles.col2} ${styles.sideNavContainer}`} style={{ float: 'right' }}>
+                            <div className={`${styles.col2} ${styles.sideNavContainer}`} style={{ float: 'right' }}>
                                 <ul className={styles.sidenavBar}>
                                     {menuItems.map((item, index) => (
                                         <React.Fragment key={index}>
@@ -60,7 +59,7 @@ const Sidenav = (props: ISideNavProps) => {
                                         </React.Fragment>
                                     ))}
                                 </ul>
-                            </div>)}
+                            </div>
 
                             <div className={`${styles.col2} ${styles.loremTextContainer}`}>
                                 <div className={styles.loremText}>

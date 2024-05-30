@@ -362,7 +362,9 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
 
                                         <TableCell>
                                             {projectDetails[0]?.clientDetails?.length > 0 && (
-                                                projectDetails[0].clientDetails.map((data: any) => (
+                                                projectDetails[0].clientDetails
+                                                .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
+                                                .map((data: any) => (
                                                     <div
                                                         onClick={() => navigate(`/ViewClient/${data.Id}`)}
                                                         style={{

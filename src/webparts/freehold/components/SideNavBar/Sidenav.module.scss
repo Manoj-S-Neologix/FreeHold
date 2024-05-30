@@ -87,6 +87,13 @@
         position: absolute;
         min-height: 15rem;
         object-fit: cover;
+        // width: auto; // Default width when navigation is closed
+        width: 100%; /* Set width to 100% to occupy the full width */
+        height: 100%; /* Set height to 100% to occupy the full height */
+
+        &.fullWidth {
+            width: 100% !important; 
+        }
     }
 
     .loremTextContainer {
