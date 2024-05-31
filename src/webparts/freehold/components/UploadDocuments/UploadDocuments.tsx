@@ -36,7 +36,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [files, setFiles] = useState<File[]>([]);
     const [fileData, setFileData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm();
+    const { control, handleSubmit, formState: { errors }, setValue, getValues,  reset } = useForm();
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
@@ -142,7 +142,20 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     console.log(uploadFiles, "uploadFiles");
 
     const onDelete = (index: number) => {
-        setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+        // setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+        const updatedFiles = uploadFiles.filter((_, i) => i !== index);
+        setUploadFiles(updatedFiles);
+    
+        // Get the current form values
+        const clientName: string = getValues("clientName");
+    
+        // Reset the form while keeping the clientName value
+        reset({ clientName });
+    
+        // Set the form values for the remaining files
+        updatedFiles.forEach((file, i) => {
+            setValue(`clientChecklist-${i}`, file.checklist || "");
+        });
     };
 
     //......Upload documents with meta data......
