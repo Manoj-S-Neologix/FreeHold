@@ -53,6 +53,18 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     setUploadFiles((prevFiles: any[]) =>
       prevFiles.filter((_, i: number) => i !== index)
     );
+    // setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+
+    // const clientName: string = getValues("clientName");
+    // reset();
+
+    // setValue("clientName", clientName);
+
+    // //const upFiles:any[] = uploadFiles;
+
+    // uploadFiles.filter((_, i) => i !== index).map((uploadedFile, index) => (
+    //   setValue(`projectChecklist-${index}`, uploadedFile.checklist)
+    // ));
   };
 
   const mappedFiles = fileData.map((file: any) => ({

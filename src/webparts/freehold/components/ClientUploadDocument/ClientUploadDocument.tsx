@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 
 const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
 
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { control, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm();
 
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
@@ -100,9 +100,22 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
   };
 
   const onDelete = (index: number) => {
-    setUploadFiles((prevFiles: any[]) =>
-      prevFiles.filter((_, i: number) => i !== index)
-    );
+    // setUploadFiles((prevFiles: any[]) =>
+    //   prevFiles.filter((_, i: number) => i !== index)
+    // );
+    const updatedFiles = uploadFiles.filter((_:any, i:any) => i !== index);
+    setUploadFiles(updatedFiles);
+
+    // Get the current form values
+    const clientName: string = getValues("clientName");
+
+    // Reset the form while keeping the clientName value
+    reset({ clientName });
+
+    // Set the form values for the remaining files
+    updatedFiles.forEach((file:any, i:any) => {
+        setValue(`clientChecklist-${i}`, file.checklist || "");
+    });
   };
 
   console.log(files, setValue, particularClientAllData, getClient, setGetClient, clientData, "files");
