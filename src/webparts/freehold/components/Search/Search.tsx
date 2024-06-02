@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip, Menu } from "@mui/material";
 import React, { useState } from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
@@ -7,9 +7,8 @@ import UploadIcon from '@mui/icons-material/Upload';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useForm } from "react-hook-form";
-import { Radio, RadioGroup, Checkbox, FormHelperText } from '@mui/material';
+import { Radio, RadioGroup } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
-import DragAndDropUpload from "../../../../Common/DragAndDrop/DragAndDrop";
 import styles from "./Search.module.scss";
 
 import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
@@ -17,8 +16,10 @@ import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocumen
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
 import SPService, { SPServiceType } from "../../Services/Core/SPService";
+import MenuIcon from '@mui/icons-material/Menu';
 // import ListIcon from '@mui/icons-material/List';
 import _ from "lodash";
+import { useNavigate } from "react-router-dom";
 
 // const clientOptions = ['Client1', 'Client2', 'Client3'];
 // const projectOptions = ['Project1', 'Project2', 'Project3'];
@@ -31,7 +32,7 @@ const IconStyles = (icon: any, theme: any) => {
     );
 };
 
-const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNavOpen }) => {
+const Search: React.FC<any> = ({ onClose, spContext, siteUrl, isNavOpen, locationPath }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
@@ -50,15 +51,25 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
     const [particularClientAllData, setParticularClientAllData] = React.useState<any>([]);
     const [projectData, setProjectData] = React.useState<any>([]);
     //const [selectedProject, setSelectedProject] = React.useState<string>('');
-    const { control, handleSubmit, formState: { errors }, setValue, reset, getValues } = useForm();
+    const { control, formState: { errors }, setValue, reset, getValues } = useForm();
     const [documentType, setDocumentType] = React.useState('');
-    const [isUnitDocumentChecked, setIsUnitDocumentChecked] = React.useState(false);
     const [selectedPersons, setSelectedPersons] = React.useState<string[]>([]);
+    let navigate = useNavigate();
+
 
     const theme = useTheme();
 
     const handleSearchChange = (e: any) => {
         setSearch(e.target.value);
+    };
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const mopen = Boolean(anchorEl);
+    const mhandleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const mhandleClose = () => {
+        setAnchorEl(null);
     };
 
     console.log(search, "searchEvent");
@@ -70,11 +81,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
     const handleDocumentClick = () => {
         //console.log('Document clicked');
         setOpenDocuments(true);
-    };
-
-    const handleSave = (data: any) => {
-        setOpenDocuments(false);
-        setIsApplied(false);
     };
 
     const handleClear = () => {
@@ -197,9 +203,17 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
             setUserRole(userRoleVal);
 
         });
-    }
+    };
+
+    const pageRedirect = (url: string) => {
+        mhandleClose();
+        navigate(url);
+    };
 
     React.useEffect(() => {
+
+        alert(isNavOpen);
+        alert(locationPath)
         setDocumentType('');
         getUserRoles();
     }, []);
@@ -301,6 +315,43 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
                                 {/* <MuiButton onClick={() => setIsNavOpen(!isNavOpen)}>
                                     <ListIcon sx={{ color: theme.palette.common.white }} />
                                 </MuiButton> */}
+
+                                {isNavOpen &&
+                                    <div>
+                                        <IconButton
+                                            aria-label="more"
+                                            id="long-button"
+                                            aria-controls={mopen ? 'long-menu' : undefined}
+                                            aria-expanded={mopen ? 'true' : undefined}
+                                            aria-haspopup="true"
+                                            onClick={mhandleClick}
+                                        >
+                                            <MenuIcon />
+                                        </IconButton>
+                                        <Menu
+                                            id="long-menu"
+                                            anchorEl={anchorEl}
+                                            MenuListProps={{
+                                                'aria-labelledby': 'long-button',
+                                            }}
+                                            open={mopen}
+                                            sx={{ color: theme.palette.common.white }}
+                                            onClose={mhandleClose}
+                                        >
+
+                                            <MenuItem onClick={() => pageRedirect("/ViewClient")}>
+                                                View Clients
+                                            </MenuItem>
+                                            <MenuItem onClick={() => pageRedirect("/ViewProject")}>
+                                                View Projects
+                                            </MenuItem>
+                                            <MenuItem onClick={() => pageRedirect("/ChecklistValidation")}>
+                                                Checklist Validation
+                                            </MenuItem>
+
+                                        </Menu>
+                                    </div>
+                                }
 
                             </Box>
                         </Grid>
@@ -496,130 +547,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, setIsNavOpen, isNa
                                     setDocumentType('')
                                     setOpenDocuments(false)
                                 }} />
-                            {false && <form onSubmit={handleSubmit(handleSave)}>
-                                <Stack direction={"column"} gap={3}>
-                                    <Grid container spacing={2}>
-                                        <Grid item sm={12}>
-                                            <Controller
-                                                name="projectName"
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Project Name is required' }}
-                                                render={({ field }: any) => (
-                                                    <>
-                                                        <InputLabel htmlFor="project-name">Project Name</InputLabel>
-                                                        <TextField
-                                                            {...field}
-                                                            id="project-name"
-                                                            fullWidth
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            label=""
-                                                            error={!!errors.projectName}
-                                                        >
-                                                            <MenuItem value="">None</MenuItem>
-                                                            <MenuItem value="Project A">Project A</MenuItem>
-                                                            <MenuItem value="Project B">Project B</MenuItem>
-                                                        </TextField>
-                                                        <FormHelperText error>{errors.projectName && errors.projectName.message}</FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </Grid>
-
-                                        {false && <Grid item sm={6}>
-                                            <Controller
-                                                name="clientName"
-                                                control={control}
-                                                defaultValue=""
-                                                rules={{ required: 'Client Name is required' }}
-                                                render={({ field }) => (
-                                                    <>
-                                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                                                        <TextField
-                                                            {...field}
-                                                            id="client-name"
-                                                            fullWidth
-                                                            variant="outlined"
-                                                            select
-                                                            size="small"
-                                                            required
-                                                            label=""
-                                                            error={!!errors.clientName}
-                                                        >
-                                                            <MenuItem value="">None</MenuItem>
-                                                            <MenuItem value="Client A">Client A</MenuItem>
-                                                            <MenuItem value="Client B">Client B</MenuItem>
-                                                        </TextField>
-                                                        <FormHelperText error>
-                                                            {errors.clientName && errors.clientName.message}
-                                                        </FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </Grid>}
-
-                                        {false && <Grid item sm={6}>
-                                            <Stack direction="row" alignItems="center">
-                                                <Checkbox checked={isUnitDocumentChecked}
-                                                    onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
-                                                    size="small" sx={{ p: 0, mr: 2 }} />
-                                                <InputLabel>Is Unit Document</InputLabel>
-                                            </Stack>
-                                            {<Controller
-                                                name="unitDocument"
-
-                                                control={control}
-                                                defaultValue=""
-                                                render={({ field }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        id="is-unit-document"
-                                                        fullWidth
-                                                        select
-                                                        disabled={!isUnitDocumentChecked}
-                                                        variant="outlined"
-                                                        placeholder="Select Unit..."
-                                                        size="small"
-                                                        required
-                                                    >
-                                                        <MenuItem value="">None</MenuItem>
-                                                        <MenuItem value="Option A">Option A</MenuItem>
-                                                        <MenuItem value="Option B">Option B</MenuItem>
-                                                    </TextField>
-                                                )}
-                                            />}
-                                        </Grid>}
-
-                                        {false && <Grid item sm={12}>
-                                            <InputLabel htmlFor="project-document">Upload Document</InputLabel>
-                                            <DragAndDropUpload
-                                                onFilesAdded={(files: File[]) => {
-                                                    //console.log(files);
-                                                }}
-                                            />
-                                        </Grid>}
-
-                                    </Grid>
-                                </Stack>
-                                <DialogActions sx={{ px: 0, mr: 0 }}>
-                                    <MuiButton
-                                        type="submit"
-                                        variant="contained"
-                                    >
-                                        Save
-                                    </MuiButton>
-                                    <MuiButton
-                                        variant="outlined"
-                                        onClick={() => setOpenDocuments(false)}
-                                    >
-                                        Cancel
-                                    </MuiButton>
-
-                                </DialogActions>
-                            </form>}
                         </>
 
                     )}
