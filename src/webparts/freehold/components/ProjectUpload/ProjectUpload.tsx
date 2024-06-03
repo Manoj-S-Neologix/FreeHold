@@ -182,9 +182,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
 
     const clientName: string = getValues("clientName");
+    const unitDocumentName: string = getValues("unitDocument");
     reset();
 
     setValue("clientName", clientName);
+    setValue("unitDocument", unitDocumentName);
 
     //const upFiles:any[] = uploadFiles;
 

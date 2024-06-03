@@ -106,11 +106,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   const [userRole, setUserRole] = useState('');
 
   const [data, setData] = useState<any>([]);
-  /* const columns = [
-    { title: "Client", field: "client" },
-    { title: "Checklist Name", field: "checklistname" },
-    { title: "Progress", field: 'progress' }
-  ]; */
 
   const columns = [
     { title: "Client", field: "client" },
@@ -154,7 +149,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
           //Create document list
           const docList: any[] = [];
-
 
           if (clientName === "" && getValues("projectName") !== "") {
 
@@ -208,95 +202,9 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   };
 
-  /* const handleSearch = async () => {
-
-    projectService.getProject('project Checklist')
-      .then(async (results: any) => {
-        console.log(results);
-
-        let clientName: string = "";
-        let unitFolder: string = "";
-
-        if (results.length > 0) {
-          //Get project number
-          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
-          const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
-
-          let projectRelativePath = projectwebURL;
-
-          if (getValues("clientName") !== "" && getValues("clientName") !== undefined && getValues("clientName") !== null) {
-            clientName = getValues("clientName");
-            projectRelativePath += "/" + getValues("clientName");
-          }
-
-          if (getValues("unitDocument") !== "" && getValues("unitDocument") !== undefined && getValues("unitDocument") !== null) {
-            unitFolder = getValues("unitDocument");
-            projectRelativePath += "/" + getValues("unitDocument");
-          }
-
-          //Get all recursive documents
-          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
-
-          const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
-          console.log("docDetails :", docDetails_Grpd);
-
-          //Create document list
-          const docList: any[] = [];
-
-          _.forEach(results, function (value) {
-
-            if (clientName === "" && unitFolder === "") {
-
-              const projectFolderPath: string = `${projectwebURL}`;
-              const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
-
-              _.forEach(clientDetails, function (client) {
-
-                const clientFolderPath: string = `${projectwebURL}/${client.Title}`;
-
-                docList.push({
-                  project: getValues("projectName"),
-                  client: client.Title,
-                  //unit: unit.Title,
-                  checklistname: value.Title,
-                  progress: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
-                });
-              });
-
-            }
-            else if (clientName !== "" && unitFolder === "") {
-              const clientFolderPath: string = `${projectwebURL}/${clientName}`;
-
-              docList.push({
-                //project: getValues("projectName"),
-                client: getValues("clientName"),
-                //unit: unit.Title,
-                checklistname: value.Title,
-                progress: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
-              });
-
-            }
-
-          });
-
-          console.log('docList', docList);
-
-          //Set table
-          setData(docList);
-
-        } else {
-          toast("No checklist configured for the selected project");
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching checklist data:', error);
-      });
-
-  }; */
-
   const checkProgress = (docDetails: any, checkListName: string) => {
 
-    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && o.DMSTag.toLowerCase() == checkListName.toLowerCase(); });
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && (o.DMSTag !== null) ? o.DMSTag.toLowerCase() == checkListName.toLowerCase() : false; });
 
     return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
   };
@@ -370,7 +278,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       setUserRole(userRoleVal);
 
     });
-  }
+  };
 
   React.useEffect(() => {
     getUserRoles();
@@ -437,6 +345,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                                   toast("No client found, Please select any other project");
                                 }
                                 setValue('projectName', e.target.value);
+                                setValue('clientName', "");
 
                               }}
                             >
@@ -479,12 +388,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                               error={!!errors.clientName}
                               helperText={errors?.clientName?.message}
                               onChange={(e: any) => {
-
                                 setValue('clientName', e.target.value);
-                                //const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
-
-                                //getDocumentsFromFolder(projectInfo, e.target.value);
-
                               }}
                             >
                               {particularClientAllData?.map((item: any) => (
@@ -500,48 +404,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                   </Box>
                 </Typography>
 
-                {/* <Typography>
-                  <Stack direction="row" alignItems="center">
-                    Unit
-                  </Stack>
-                  <Box >
-                    <FormControl fullWidth>
-                      <Controller
-                        name="unitDocument"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            id="is-unit-document"
-                            fullWidth
-                            select
-                            //disabled={!isUnitDocumentChecked}
-                            variant="outlined"
-                            placeholder="Select Unit..."
-                            size="small"
-                            sx={{
-                              width: '15rem',
-                              height: '2rem'
-                            }}
-                            onChange={(e: any) => {
-                              setValue('unitDocument', e.target.value);
-                            }}
-                            required
-                          >
-                            {unitData.length > 0 &&
-                              unitData.map((item: any, idx: any) => (
-                                <MenuItem key={idx} value={item?.Name}>
-                                  {item?.Name}
-                                </MenuItem>
-                              ))}
-                          </TextField>
-                        )}
-                      />
-                    </FormControl>
-                  </Box>
-                </Typography>
- */}
                 <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button
                     //disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
