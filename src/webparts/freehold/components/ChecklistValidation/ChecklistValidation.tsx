@@ -185,7 +185,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const checkProgress = (docDetails: any, checkListName: string) => {
 
-    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType === 0 && o.DMSTag.toLowerCase() === checkListName.toLowerCase(); });
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && (o.DMSTag !== null) ? o.DMSTag.toLowerCase() == checkListName.toLowerCase() : false; });
 
     return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
   };
@@ -314,6 +314,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                                   toast("No client found, Please select any other project");
                                 }
                                 setValue('projectName', e.target.value);
+                                setValue('clientName', "");
                               }}
                             >
                               {projectData?.map((item: any) => (
