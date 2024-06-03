@@ -31,7 +31,6 @@ import _ from 'lodash';
 import ClientService from '../../Services/Business/ClientService';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
 import SPService, { SPServiceType } from '../../Services/Core/SPService';
-//import { filter } from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -707,7 +706,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
     <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }} >
       {!isViewDialogOpen &&
         <Stack direction='column' sx={{ gap: "30px" }} >
-          <Box 
+          <Box
           // className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}
           >
             <Breadcrumbs
@@ -919,25 +918,25 @@ const ViewProject = (props: IFreeholdChildProps) => {
                 listStyleType: "none", padding: 0
               }}>
                 {selectedName
-                .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
-                .map((data: any) => (
-                  <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center", justifyContent: "flex-start" }}>
-                    <Box
-                      key={data.Id}
-                      onClick={() => {
-                        navigate("/ViewClient/" + data.Id)
-                      }}>
-                      {data.Title}
-                    </Box>
-                    <IconButton aria-label="delete"
-                      onClick={() => { setIsDelete(true); setclientDelDetails(data); }}
-                      disabled={(userRole === "staff")}
-                      style={{ color: '#bbb' }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                ))}
+                  .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
+                  .map((data: any) => (
+                    <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", alignItems: "center", justifyContent: "flex-start" }}>
+                      <Box
+                        key={data.Id}
+                        onClick={() => {
+                          navigate("/ViewClient/" + data.Id)
+                        }}>
+                        {data.Title}
+                      </Box>
+                      <IconButton aria-label="delete"
+                        onClick={() => { setIsDelete(true); setclientDelDetails(data); }}
+                        disabled={(userRole === "staff")}
+                        style={{ color: '#bbb' }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  ))}
 
                 {/* Child delete confirmation */}
                 {isDelete && (

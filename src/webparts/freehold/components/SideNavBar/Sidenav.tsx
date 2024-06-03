@@ -14,7 +14,6 @@ export interface ISideNavProps {
     spContext: WebPartContext;
     siteUrl: any;
     userRole: string;
-    isNavOpen: boolean;
 }
 
 const Sidenav = (props: ISideNavProps) => {

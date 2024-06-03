@@ -16,8 +16,6 @@ import ViewProjectByID from '../ViewProjects/ViewProjectByID';
 import EditProjectByID from '../ViewProjects/EditProjectByID';
 import ViewClientByID from '../ViewClient/ViewClientByID';
 import EditClientByID from '../ViewClient/EditClientByID';
-// import { ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
 
 const colorCodes = {
     primary: "#125895",
@@ -26,8 +24,6 @@ const colorCodes = {
 
 const Home = (props: IFreeholdProps) => {
 
-    const [isNavOpen, setIsNavOpen] = React.useState(false);
-
     return (
         <React.Fragment>
             {/* <ToastContainer /> */}
@@ -35,14 +31,13 @@ const Home = (props: IFreeholdProps) => {
 
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
-                    <Search spContext={props.context} siteUrl={props.siteUrl} setIsNavOpen={setIsNavOpen} isNavOpen={isNavOpen} />
+                    <Search spContext={props.context} siteUrl={props.siteUrl} />
                     <Routes>
                         <Route path='/'
                             element={
                                 <>
-
                                     <div>
-                                        <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} isNavOpen={isNavOpen} />
+                                        <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                     </div>
                                     <div>
                                         <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />

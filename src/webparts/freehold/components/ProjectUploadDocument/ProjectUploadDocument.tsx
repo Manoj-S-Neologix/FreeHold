@@ -22,7 +22,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<any>([]);
-  const [getClient, setGetClient] = useState<any[]>([]);
+  const [getClient, setGetClient] = useState("");
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
@@ -175,7 +175,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
       } else {
         results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
       }
-      
+
       console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
@@ -239,38 +239,62 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     setLoading(true);
 
     try {
-      const apiResponse = ProjectService();
-      console.log(data, 'projectdata..')
-      const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
 
-      const clientInfo: any = getClientDetails.filter((item: any) => item.libraryGUID === getClient);
+      if (getClient !== "") {
+        const apiResponse = ProjectService();
+        console.log(data, 'projectdata..')
+        const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
 
-      const updatedData = {
-        DMSProject: particularClientAllData[0].projectName,
-        DMSProjectID: (particularClientAllData[0].Id).toString(),
-        DMSClient: clientInfo[0].name,
-        DMSClientID: (clientInfo[0].id).toString(),
-        DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
-      }
+        const clientInfo: any = getClientDetails.filter((item: any) => item.libraryGUID === getClient);
 
-      const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}`;
-      console.log(folderUrl, "folderUrlfolderUrl")
-      if (data.unitDocument !== '') {
+        const updatedData = {
+          DMSProject: particularClientAllData[0].projectName,
+          DMSProjectID: (particularClientAllData[0].Id).toString(),
+          DMSClient: clientInfo[0].name,
+          DMSClientID: (clientInfo[0].id).toString(),
+          DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
+        }
 
-        const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
-        //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+        const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}`;
+        console.log(folderUrl, "folderUrlfolderUrl")
+        if (data.unitDocument !== '') {
+
+          const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+        }
+        else {
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+        }
+
+        setLoading(false);
+        setFiles([]);
+        setUploadFiles([]);
+        toast.success('Documents Added Successfully!');
+        handleCancel();
+      } else {
+        const apiResponse = ProjectService();
+
+        const updatedData = {
+          DMSProject: particularClientAllData[0].projectName,
+          DMSProjectID: (particularClientAllData[0].Id).toString(),
+          DMSClient: "",
+          DMSClientID: "",
+          DMSUnit: "",
+        }
+
+        const folderUrl = `${particularClientAllData[0].webURL}`;
+        console.log(folderUrl, "folderUrlfolderUrl")
         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-      }
-      else {
-        //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
-        await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
+
+        setLoading(false);
+        setFiles([]);
+        setUploadFiles([]);
+        toast.success('Documents Added Successfully!');
+        handleCancel();
       }
 
-      setLoading(false);
-      setFiles([]);
-      setUploadFiles([]);
-      toast.success('Documents Added Successfully!');
-      handleCancel();
 
     } catch (error) {
       setLoading(false);
@@ -335,7 +359,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             name="clientName"
             control={control}
             defaultValue=""
-            rules={{ required: 'Client Name is required' }}
+            //rules={{ required: 'Client Name is required' }}
             render={({ field }) => (
               <>
                 <InputLabel htmlFor="client-name">Client Name</InputLabel>

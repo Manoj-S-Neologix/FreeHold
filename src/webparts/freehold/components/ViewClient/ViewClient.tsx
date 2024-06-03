@@ -542,6 +542,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
   });
 
   React.useEffect(() => {
+    //alert(location.pathname);
     getUserRoles();
   }, []);
 

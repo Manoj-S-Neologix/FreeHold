@@ -106,13 +106,20 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   const [userRole, setUserRole] = useState('');
 
   const [data, setData] = useState<any>([]);
-  const columns = [
-    /* { title: "Project", field: "project", defaultGroupOrder: 0 }, */
+  /* const columns = [
     { title: "Client", field: "client" },
-    //{ title: "Unit", field: 'unit', defaultGroupOrder: 0 },
     { title: "Checklist Name", field: "checklistname" },
     { title: "Progress", field: 'progress' }
-  ]
+  ]; */
+
+  const columns = [
+    { title: "Client", field: "client" },
+    { title: "Passport copy", field: "passportCopy" },
+    { title: "National ID", field: 'nationalID' },
+    { title: "Engagement letter", field: 'engLetter' },
+    { title: "Power of attorney", field: 'powerAttr' }
+  ];
+
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate('/');
@@ -120,6 +127,88 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   //Get search results
   const handleSearch = async () => {
+
+    projectService.getProject('project Checklist')
+      .then(async (results: any) => {
+        //console.log(results);
+
+        let clientName: string = "";
+
+        if (results.length > 0) {
+          //Get project number
+          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+          const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
+
+          let projectRelativePath = projectwebURL;
+
+          if (getValues("clientName") !== "" && getValues("clientName") !== undefined && getValues("clientName") !== null) {
+            clientName = getValues("clientName");
+            projectRelativePath += "/" + getValues("clientName");
+          }
+
+          //Get all recursive documents
+          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+
+          const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
+          console.log("docDetails :", docDetails_Grpd);
+
+          //Create document list
+          const docList: any[] = [];
+
+
+          if (clientName === "" && getValues("projectName") !== "") {
+
+            const projectFolderPath: string = `${projectwebURL}`;
+            const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+
+            _.forEach(clientDetails, function (client) {
+
+              const clientFolderPath: string = `${projectwebURL}/${client.Title}`;
+
+              docList.push({
+                project: getValues("projectName"),
+                client: client.Title,
+                passportCopy: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Passport copy") : <HighlightOffIcon style={{ color: 'red' }} />,
+                nationalID: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "National ID") : <HighlightOffIcon style={{ color: 'red' }} />,
+                engLetter: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Engagement letter") : <HighlightOffIcon style={{ color: 'red' }} />,
+                powerAttr: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Power of attorney") : <HighlightOffIcon style={{ color: 'red' }} />,
+              });
+            });
+
+          }
+          else if (clientName !== "" && getValues("projectName") !== "") {
+            const clientFolderPath: string = `${projectwebURL}/${clientName}`;
+
+            docList.push({
+              project: getValues("projectName"),
+              client: getValues("clientName"),
+              passportCopy: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Passport copy") : <HighlightOffIcon style={{ color: 'red' }} />,
+              nationalID: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "National ID") : <HighlightOffIcon style={{ color: 'red' }} />,
+              engLetter: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Engagement letter") : <HighlightOffIcon style={{ color: 'red' }} />,
+              powerAttr: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Power of attorney") : <HighlightOffIcon style={{ color: 'red' }} />,
+            });
+
+          }
+
+          console.log('docList', docList);
+
+          //Set table
+          setData(docList);
+
+        } else {
+          toast("No checklist configured for the selected project");
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching checklist data:', error);
+      });
+
+    //Set table
+    //setData(empList);
+
+  };
+
+  /* const handleSearch = async () => {
 
     projectService.getProject('project Checklist')
       .then(async (results: any) => {
@@ -164,17 +253,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
               _.forEach(clientDetails, function (client) {
 
                 const clientFolderPath: string = `${projectwebURL}/${client.Title}`;
-                //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
-
-                /* _.forEach(unitDetails, function (unit) {
-                  docList.push({
-                    project: getValues("projectName"),
-                    client: client.Title,
-                    //unit: unit.Title,
-                    checklistname: value.Title,
-                    progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
-                  });
-                }); */
 
                 docList.push({
                   project: getValues("projectName"),
@@ -188,17 +266,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
             }
             else if (clientName !== "" && unitFolder === "") {
               const clientFolderPath: string = `${projectwebURL}/${clientName}`;
-              //const unitDetails = _.filter(docDetails_Grpd[clientFolderPath], function (o) { return o.FileSystemObjectType == 1; });
-
-              /* _.forEach(unitDetails, function (unit) {
-                docList.push({
-                  project: getValues("projectName"),
-                  client: getValues("clientName"),
-                  //unit: unit.Title,
-                  checklistname: value.Title,
-                  progress: (docDetails_Grpd[`${clientFolderPath}/${unit.Title}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unit.Title}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
-                });
-              }); */
 
               docList.push({
                 //project: getValues("projectName"),
@@ -209,18 +276,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
               });
 
             }
-            /*  else if (clientName !== "" && unitFolder !== "") {
-              const clientFolderPath: string = `${props.spContext.pageContext.web.serverRelativeUrl}/${projectInfo}/${clientName}`;
-
-              docList.push({
-                project: getValues("projectName"),
-                client: getValues("clientName"),
-                unit: unitFolder,
-                checklistname: value.Title,
-                progress: (docDetails_Grpd[`${clientFolderPath}/${unitFolder}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}/${unitFolder}`], value.Title) : <HighlightOffIcon style={{ color: 'red' }} />
-              });
-
-            } */
 
           });
 
@@ -237,10 +292,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
         console.error('Error fetching checklist data:', error);
       });
 
-    //Set table
-    //setData(empList);
-
-  };
+  }; */
 
   const checkProgress = (docDetails: any, checkListName: string) => {
 
@@ -266,10 +318,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      //const filter = (userRole === "staff") ? `AssignClient/EMail eq '${props.spContext.pageContext.user.email}'` : "";
-      //const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
 
-      //const results:any[] = [];
       if (userRole === "staff") {
         const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
 
