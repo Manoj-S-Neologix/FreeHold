@@ -4,5 +4,4 @@ export interface IFreeholdChildProps {
   spContext: WebPartContext;
   siteUrl: string;
   userRole: string;
-  setLocationPath: Function;
 }

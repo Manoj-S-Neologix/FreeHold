@@ -96,6 +96,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
     };
 
     React.useEffect(() => {
+
         setLoading(false);
         fetchData();
     }, []);

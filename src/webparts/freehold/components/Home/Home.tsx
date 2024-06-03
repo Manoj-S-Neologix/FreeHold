@@ -16,8 +16,6 @@ import ViewProjectByID from '../ViewProjects/ViewProjectByID';
 import EditProjectByID from '../ViewProjects/EditProjectByID';
 import ViewClientByID from '../ViewClient/ViewClientByID';
 import EditClientByID from '../ViewClient/EditClientByID';
-// import { ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
 
 const colorCodes = {
     primary: "#125895",
@@ -26,8 +24,6 @@ const colorCodes = {
 
 const Home = (props: IFreeholdProps) => {
 
-    const [locationPath, setLocationPath] = React.useState("");
-
     return (
         <React.Fragment>
             {/* <ToastContainer /> */}
@@ -35,7 +31,7 @@ const Home = (props: IFreeholdProps) => {
 
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
-                    <Search spContext={props.context} siteUrl={props.siteUrl} locationPath={locationPath} isNavOpen={locationPath !== "/" ? true : false} />
+                    <Search spContext={props.context} siteUrl={props.siteUrl} />
                     <Routes>
                         <Route path='/'
                             element={
@@ -44,41 +40,41 @@ const Home = (props: IFreeholdProps) => {
                                         <SideNavBar spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                     </div>
                                     <div>
-                                        <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />
+                                        <ProjectsClients spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />
                                     </div>
                                 </>}
                         />
                         <Route
                             path='/ViewClient'
-                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewClient/:cId'
-                            element={<ViewClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ViewClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/EditClient/:cId'
-                            element={<EditClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<EditClientByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewProject'
-                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ViewProjects spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ViewProject/:pId'
-                            element={<ViewProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ViewProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/EditProject/:pId'
-                            element={<EditProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<EditProjectByID spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistValidation'
-                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ChecklistValidation spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route
                             path='/ChecklistConfiguration'
-                            element={<ChecklistConfiguration spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} setLocationPath={setLocationPath} />}
+                            element={<ChecklistConfiguration spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                     </Routes>
                 </HashRouter>

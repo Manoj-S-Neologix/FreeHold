@@ -20,9 +20,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 // import ListIcon from '@mui/icons-material/List';
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-
-// const clientOptions = ['Client1', 'Client2', 'Client3'];
-// const projectOptions = ['Project1', 'Project2', 'Project3'];
+import { useLocation } from "react-router-dom";
 
 const IconStyles = (icon: any, theme: any) => {
     return (
@@ -32,11 +30,12 @@ const IconStyles = (icon: any, theme: any) => {
     );
 };
 
-const Search: React.FC<any> = ({ onClose, spContext, siteUrl, isNavOpen, locationPath }) => {
+const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
     const [isExpand, setIsExpand] = React.useState<boolean>(false);
+    const [isNavOpen, setisNavOpen] = React.useState(false);
 
     const spServiceInstance: SPServiceType = SPService;
     const [userRole, setUserRole] = useState('');
@@ -55,7 +54,17 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, isNavOpen, locatio
     const [documentType, setDocumentType] = React.useState('');
     const [selectedPersons, setSelectedPersons] = React.useState<string[]>([]);
     let navigate = useNavigate();
+    const location = useLocation();
 
+    React.useEffect(() => {
+        //alert(location.pathname);
+
+        if (location.pathname !== "/") {
+            setisNavOpen(true);
+        }else{
+            setisNavOpen(false);
+        }
+    }, [location]);
 
     const theme = useTheme();
 
@@ -212,11 +221,14 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, isNavOpen, locatio
 
     React.useEffect(() => {
 
-        alert(isNavOpen);
-        alert(locationPath)
         setDocumentType('');
         getUserRoles();
     }, []);
+
+    /* React.useEffect(() => {
+        
+        
+    }, [locationPath]); */
 
     React.useEffect(() => {
         fetchData();
@@ -311,10 +323,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl, isNavOpen, locatio
                                     message="Upload Documents"
                                     handleClick={handleDocumentClick}
                                 />
-
-                                {/* <MuiButton onClick={() => setIsNavOpen(!isNavOpen)}>
-                                    <ListIcon sx={{ color: theme.palette.common.white }} />
-                                </MuiButton> */}
 
                                 {isNavOpen &&
                                     <div>

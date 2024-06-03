@@ -31,8 +31,6 @@ import _ from 'lodash';
 import ClientService from '../../Services/Business/ClientService';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
 import SPService, { SPServiceType } from '../../Services/Core/SPService';
-//import { filter } from 'lodash';
-import { useLocation } from "react-router-dom";
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -69,7 +67,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
   const [handleClientDialog, setHandleClientDialog] = useState(false);
   const spServiceInstance: SPServiceType = SPService;
   const [userRole, setUserRole] = useState('');
-  const location = useLocation();
 
   const [handleUnitDialog, setHandleUnitDialog] = useState(false);
 
@@ -641,7 +638,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
   }
 
   React.useEffect(() => {
-    alert(location.pathname);
     getUserRoles();
   }, []);
 

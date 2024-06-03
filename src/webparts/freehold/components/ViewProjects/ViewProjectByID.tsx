@@ -89,7 +89,6 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
     };
 
     React.useEffect(() => {
-
         setLoading(false);
         fetchData();
     }, []);
@@ -145,23 +144,13 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                             marginRight: "10px"
                                         }}>
 
-                                            {/* <MuiButton variant="contained" color="secondary"
-                                                onClick={navigateToProject} sx={{right:'10px'}}
-                                            >
-                                                Back
-                                            </MuiButton> */}
-
                                             <Button
                                                 handleClick={() => { navigate('/EditProject/' + projectDetails[0]?.Id) }}
                                                 color="secondary"
                                                 Icon={<EditIcon />}
                                                 message="Edit"
                                             />
-
-
-
                                         </Box>
-
 
                                     </TableRow>
                                 </TableHead>
@@ -196,17 +185,17 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell>
                                             {projectDetails[0]?.clientDetails?.length > 0 && (
                                                 projectDetails[0].clientDetails
-                                                .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
-                                                .map((data: any) => (
-                                                    <div
-                                                        onClick={() => navigate(`/ViewClient/${data.Id}`)}
-                                                        style={{
-                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                            listStyleType: "none"
-                                                        }}>
-                                                        <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
-                                                    </div>
-                                                ))
+                                                    .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
+                                                    .map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}>
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
+                                                        </div>
+                                                    ))
                                             )}
                                         </TableCell>
 

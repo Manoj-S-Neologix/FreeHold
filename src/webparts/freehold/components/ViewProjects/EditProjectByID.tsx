@@ -114,7 +114,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
     });
 
     React.useEffect(() => {
-
         fetchData();
     }, []);
 
@@ -175,12 +174,12 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                         </StyledBreadcrumb>
                     </Breadcrumbs>
                 </Box>
-                <Box sx={{marginTop: "10px !important"}}>
+                <Box sx={{ marginTop: "10px !important" }}>
                     <form onSubmit={handleUpdate}>
                         {/* <form> */}
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
-                                <TableHead sx={{display:'table-caption'}}>
+                                <TableHead sx={{ display: 'table-caption' }}>
                                     <TableRow>
 
                                         <TableCell
@@ -192,7 +191,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
 
                                         <Box sx={{
                                             display: "flex",
-                                            position:"absolute",
+                                            position: "absolute",
                                             justifyContent: "flex-end",
                                             alignItems: "center",
                                             float: "right",
@@ -202,7 +201,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                             right: "20px"
 
                                         }}>
-                                        <MuiButton type="submit"
+                                            <MuiButton type="submit"
                                                 variant="contained"
                                                 color="secondary"
 
@@ -220,7 +219,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 Cancel
                                             </MuiButton>
                                         </Box>
-                                        
+
 
                                     </TableRow>
                                 </TableHead>
@@ -363,17 +362,17 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell>
                                             {projectDetails[0]?.clientDetails?.length > 0 && (
                                                 projectDetails[0].clientDetails
-                                                .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
-                                                .map((data: any) => (
-                                                    <div
-                                                        onClick={() => navigate(`/ViewClient/${data.Id}`)}
-                                                        style={{
-                                                            textDecoration: "underline", color: "blue", cursor: "pointer",
-                                                            listStyleType: "none"
-                                                        }}>
-                                                        <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
-                                                    </div>
-                                                ))
+                                                    .sort((a: any, b: any) => a.Title.localeCompare(b.Title))
+                                                    .map((data: any) => (
+                                                        <div
+                                                            onClick={() => navigate(`/ViewClient/${data.Id}`)}
+                                                            style={{
+                                                                textDecoration: "underline", color: "blue", cursor: "pointer",
+                                                                listStyleType: "none"
+                                                            }}>
+                                                            <span key={data.Id} style={{ margin: 'auto' }}>{data.Title}</span>
+                                                        </div>
+                                                    ))
                                             )}
                                         </TableCell>
 

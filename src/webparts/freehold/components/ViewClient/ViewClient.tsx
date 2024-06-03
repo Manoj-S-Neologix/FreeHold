@@ -27,7 +27,6 @@ import { Controller, useForm } from "react-hook-form";
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
 import SPService, { SPServiceType } from '../../Services/Core/SPService';
 import _ from 'lodash';
-import { useLocation } from "react-router-dom";
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -65,7 +64,6 @@ const ViewClient = (props: IFreeholdChildProps) => {
   const [isPersona, setISPersona] = useState(false);
   const spServiceInstance: SPServiceType = SPService;
   const [userRole, setUserRole] = useState('');
-  const location = useLocation();
 
   // console.log(filterQuery, "filterQuery");
   const [searchQueryCall, setSearchQueryCall] = useState('');
@@ -544,7 +542,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
   });
 
   React.useEffect(() => {
-    props.setLocationPath(location.pathname);
+    //alert(location.pathname);
     getUserRoles();
   }, []);
 
