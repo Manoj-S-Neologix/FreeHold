@@ -315,6 +315,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                                 }
                                 setValue('projectName', e.target.value);
                                 setValue('clientName', "");
+                                
                               }}
                             >
                               {projectData?.map((item: any) => (
