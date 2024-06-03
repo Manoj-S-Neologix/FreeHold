@@ -3,7 +3,7 @@ import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogAc
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CustomSearch from "../../../../Common/Search/CustomSearch";
 import Button from "../../../../Common/Button/CustomButton";
@@ -20,7 +20,6 @@ import AssignClient from "../AssignClient/AssignClient";
 import ViewParticularProject from "./ViewParticularProject";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ProjectService from '../../Services/Business/ProjectService';
-// import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Controller, useForm } from "react-hook-form";
 import DeleteDialog from './Delete/Delete';
 import { useTheme } from "@mui/material/styles";
@@ -60,25 +59,19 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 }));
 
 const ViewProject = (props: IFreeholdChildProps) => {
-  //console.log(props, "propspropsprops");
   const [selected, setSelected] = React.useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [handleClientDialog, setHandleClientDialog] = useState(false);
   const spServiceInstance: SPServiceType = SPService;
   const [userRole, setUserRole] = useState('');
-
   const [handleUnitDialog, setHandleUnitDialog] = useState(false);
-
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [projectDetails, setProjectDetails] = useState({});
   const [projectData, setProjectData] = useState<any>([]);
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
-  const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
-  // const [loading, setLoading] = useState(false);
-
-
+  const [, setSelectedPersons] = useState<any[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -88,22 +81,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedName, setSelectedName] = useState<any[]>([]);
-
   const [clientDelDetails, setclientDelDetails] = useState<any>([]);
   const [projectDelDetails, setprojectDelDetails] = useState<any>([]);
-  // const [clientData, setClientData] = useState<any>([]);
-  const [getClient, setGetClient] = useState<any[]>([]);
   const [assignedClientData, setAssignedClientData] = useState<any[]>([]);
   const [filterQuery, setFilterQuery] = useState('');
   const [filterPersonShown, setFilterPersonShown] = useState(false);
   const [filterQueryCall, setFilterQueryCall] = useState('');
-
-  let { editProjectId, viewProjectId } = useParams();
-
-
-  console.log(selectedName, 'selected..')
-
-  console.log(getClient, setGetClient, "clientData,")
 
   const navigate = useNavigate();
 
@@ -121,36 +104,28 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
   const closeAddClientDialog = () => {
     setAddClientDialogOpen(false);
-    // fetchData();
   };
 
   const closeAssignClientDialog = () => {
     setHandleClientDialog(false);
-    // fetchData();
   };
-
 
   const closeUnitDialog = () => {
     setHandleUnitDialog(false);
-    // fetchData();
   };
 
   const closeUploadDialog = () => {
     setUploadDialogOpen(false);
-    // fetchData();
   };
 
   const handleDeleteDialogClose = () => {
     setIsDeleteDialogOpen(false);
-    // fetchData();
   };
 
   const theme = useTheme();
   const handleFilterChange = (event: any) => {
     setFilterQuery(event.target.value);
   };
-
-  console.log(handleFilterChange, "handleFilterChange");
 
   const handleApply = () => {
     setFilterPersonShown(true);
@@ -159,12 +134,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
         data.clientDetails.some((item: any) => item.Title === filterQuery)
       );
       setProjectData(filteredData);
-      console.log(filteredData, "filteredData");
     } else {
       setProjectData([]);
-      console.log("No filter query specified.");
     }
-    // setFilterQuery(filterQueryCall);
     setFilterQueryCall(filterQuery);
     setTimeout(() => {
       setOpen(false);
@@ -186,7 +158,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     );
   };
 
-  console.log(selectedPersons, "selectedPersons");
 
   const headCells = [
     { id: 'Id', numeric: false, disablePadding: true, label: 'Id' },
@@ -200,9 +171,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     { id: 'action', numeric: false, disablePadding: true, label: 'Action' },
   ];
 
-  console.log(AllClientData, "AllClientData");
-
-  //Actions
   let actions: any[] = [];
   if (userRole === "staff") {
     actions = [
@@ -213,11 +181,8 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
           setIsViewDialogOpen(true);
           setProjectDetails(data);
-          console.log();
           setIsEdit(false);
-
-
-          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data}));
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
@@ -233,7 +198,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
           setIsViewDialogOpen(true);
           setProjectDetails(id);
           setIsEdit(true);
-          // console.log(`Edit clicked for row ${id}`,id);
           navigate('/EditProject/' + id.Id);
         },
       },
@@ -243,12 +207,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
         handler: (data: any) => {
           setHandleUnitDialog(true);
           setProjectDetails(data);
-          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          const uniqueClientData = AllClientData.map((client: any) => 
+         ({Id:client.Id, data:data})
+        );
           setParticularClientAllData(uniqueClientData);
-
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
           setParticularClientAllData(getUnique);
-          //console.log(`Delete clicked for row ${id}`);
         },
       },
 
@@ -259,7 +223,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
             color="primary"
             message="Manage Documents"
             handleClick={(id: any) => {
-              //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);
             }}
           />
@@ -297,11 +260,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
           setIsViewDialogOpen(true);
           setProjectDetails(data);
-          console.log();
           setIsEdit(false);
-
-
-          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data})
+        );
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
@@ -313,11 +274,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
         label: 'Edit',
         icon: <EditIcon />,
         handler: (id: any) => {
-
           setIsViewDialogOpen(true);
           setProjectDetails(id);
           setIsEdit(true);
-          // console.log(`Edit clicked for row ${id}`,id);
           navigate('/EditProject/' + id.Id);
         },
       },
@@ -328,7 +287,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
         handler: (id: any) => {
           setIsDeleteDialogOpen(true);
           setProjectDetails(id);
-          //console.log(`Delete clicked for row ${id}`);
         },
       },
 
@@ -338,12 +296,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
         handler: (data: any) => {
           setHandleUnitDialog(true);
           setProjectDetails(data);
-          const uniqueClientData = AllClientData.map((client: any) => console.log(client.Id, data));
+          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data})
+        );
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
           setParticularClientAllData(getUnique);
-          //console.log(`Delete clicked for row ${id}`);
         },
       },
 
@@ -354,7 +312,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
             color="primary"
             message="Manage Documents"
             handleClick={(id: any) => {
-              //console.log(`Upload Documents clicked for row ${id}`);
               setUploadDialogOpen(true);
             }}
           />
@@ -385,21 +342,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     ];
   }
 
-  const handlePeoplePickerChange = async (items: any[]) => {
-    console.log(items, "itemsitemsitemsitems");
-    const selectedPersonsIds = [];
-    for (const item of items) {
-      const getID = await ProjectService().getPersonByEmail(item.secondaryText);
-      console.log(getID.Id, "getIDgetID");
-      selectedPersonsIds.push(getID.Id);
-    }
-    setSelectedPersons(selectedPersonsIds);
-  };
-
-  console.log(particularClientAllData, "Data");
-
-  console.log(handlePeoplePickerChange, "handlePeoplePickerChange");
-
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -410,8 +352,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
       const filter = "";
-
-      // Run both requests concurrently
       if (userRole === "staff") {
         const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
         const cexpand = 'AssignedStaff,Author,ProjectId,Editor';
@@ -421,11 +361,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
           projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
           clientService.getClientExpandApi('Client_Informations', cselect, cexpand, cfilter, "")
         ]);
-
-        console.log(projectResults, "project results");
-        console.log(clientResults, "client results");
-
-        // Handle project results
         if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
           setProjectData(projectResults.TableData);
           setAllClientData(projectResults.updatedResults);
@@ -436,9 +371,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
         if (clientResults && clientResults.length > 0) {
           setAssignedClientData(clientResults);
-          // setAssignedClientData(clientResults);
         } else {
-          // setClientData([]);
           setAssignedClientData([]);
         }
       } else {
@@ -447,10 +380,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
           clientService.getClient('Client_Informations')
         ]);
 
-        console.log(projectResults, "project results");
-        console.log(clientResults, "client results");
-
-        // Handle project results
         if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
           setProjectData(projectResults.TableData);
           setAllClientData(projectResults.updatedResults);
@@ -461,41 +390,10 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
         if (clientResults && clientResults.length > 0) {
           setAssignedClientData(clientResults);
-          // setAssignedClientData(clientResults);
         } else {
-          // setClientData([]);
           setAssignedClientData([]);
         }
       }
-
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const fetchDataEditView = async () => {
-    try {
-      setIsLoading(true);
-      const projectService = ProjectService();
-      const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
-      const expand = 'Author,AssignClient,Editor';
-      const orderBy = 'Modified';
-      const filter = "";
-      console.log(orderBy, "orderByorderBy")
-      const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
-      console.log(results, "result");
-      if (results && results.updatedResults && results.updatedResults.length > 0) {
-        setProjectData(results.TableData);
-        setAllClientData(results.updatedResults);
-      }
-      // else {
-      //   // Handle case where no data is returned
-      //   setProjectData([]);
-      //   setAllClientData([]);
-      // }
-      return results?.updatedResults
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -506,14 +404,10 @@ const ViewProject = (props: IFreeholdChildProps) => {
   const handleClickOpen = (name: any) => {
 
     setSelectedName(() => {
-      // navigate("/ViewClient/" + id)
       return name;
     });
 
-    //Set selected row client details
-
     setDialogOpen(true);
-    console.log(selectedName, 'selected')
   };
 
   const handleClose = () => {
@@ -521,7 +415,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
   };
 
   const handleCancel = () => {
-    console.log("Cancel button clicked");
     setIsDelete(false);
   };
 
@@ -533,7 +426,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
           onClick={() => {
             handleClickOpen(names);
             setprojectDelDetails(item);
-            console.log(names, 'e.target');
           }}
         >
           {data}
@@ -542,14 +434,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
     )
   };
 
-  console.log(projectData, 'projectdata..')
   const tableData = projectData.map((item: any) => {
     return {
       Id: item.Id,
       projectNumber: item.projectNumber,
       projectName: item.projectName,
       location: item.location,
-      //developer: item.developer,
       assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails, item),
       modifiedDate: item?.modifiedDate,
       modifiedBy: item?.modifiedBy,
@@ -557,8 +447,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
     };
   }
   );
-
-  console.log(tableData, "table..data");
 
   const tableDataWidth = projectData.map((item: any) => {
     return {
@@ -574,52 +462,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
     };
   });
 
-  const editView = async () => {
-    const initialFetch =
-      await fetchDataEditView();
-
-    if (editProjectId || viewProjectId) {
-      console.log('Project ID changed:', editProjectId, viewProjectId, initialFetch);
-
-      // Get the unique client data
-      const projectId = editProjectId || viewProjectId;
-      // const getUnique = initialFetch?.map ((data: any) => data.Id == (projectId));
-      // console.log(data,"data.Iddata.Id")
-      initialFetch && initialFetch.length > 0 && initialFetch.map((data: any) => {
-        if (data) {
-          if (data.Id == projectId) {
-            console.log(data, data.Id, "MapFucntionData")
-            setProjectData([data]);
-            if (editProjectId) {
-              setIsEdit(true);
-            }
-            setProjectDetails(data)
-            setParticularClientAllData([data]);
-            setIsViewDialogOpen(true);
-          }
-
-        }
-      })
-      console.log(AllClientData, editProjectId, viewProjectId, "AllClientDataeditView..");
-      // console.log(getUnique, "getUniqueeditview");
-      console.log(projectId, "projectIdprojectId")
-
-      // Navigate based on the project ID
-      if (editProjectId) {
-        navigate('/EditProject/' + editProjectId);
-      } else if (viewProjectId) {
-        navigate('/ViewProject/' + viewProjectId);
-      }
-    }
-  }
 
   const getUserRoles = () => {
-    let loggedInUserGroups: string[] = [];
+    const loggedInUserGroups: string[] = [];
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {
-      //console.log("Current user site groups : ", response);
-
       _.forEach(response, function (group: any) {
         loggedInUserGroups.push(group.Title);
       });
@@ -631,9 +479,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
       } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
         userRoleVal = "staff";
       }
-
       setUserRole(userRoleVal);
-
     });
   }
 
@@ -643,48 +489,28 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
 
   React.useEffect(() => {
-    //alert("user role : " + userRole);
     fetchData();
   }, [userRole]);
-
-
-  React.useEffect(() => {
-
-    // editView();
-
-    if (editProjectId || viewProjectId) {
-      editView();
-      console.log('Project ID changed:', editProjectId, viewProjectId);
-    }
-  }, [editProjectId, viewProjectId]);
 
   const handleClearClient = async () => {
 
     try {
-      //console.log('projectData : ', projectData);
-      //console.log('clientDelDetails : ', clientDelDetails);
-      //console.log('projectDelDetails : ', projectDelDetails);
-
-      let assignClientIds: any[] = [];
-
+      const assignClientIds: any[] = [];
       _.forEach(projectDelDetails.clientDetails, function (client) {
         if (client.Id !== clientDelDetails.Id) {
           assignClientIds.push(client.Id);
         }
       });
 
-      //Delete client folder
       const folderUrl = `${projectDelDetails.webURL}/${clientDelDetails.Title}`;
       await ProjectService().deleteFolder(folderUrl);
 
-      //De-associate client
       await ProjectService().updateProject(
         "Project_Informations",
         projectDelDetails.Id,
         { AssignClientId: { results: [...assignClientIds] } }
       );
 
-      //console.log(folderUrl, 'folderurl..') 
       toast.success('Assigned Client Deleted Successfully!');
       setIsDelete(false);
       setDialogOpen(false);
@@ -692,14 +518,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
     } catch (error) {
       setIsLoading(false);
-      console.error("Failed to delete assigned client:", error);
       toast.error(`Failed to delete assigned client: ${error}`);
     }
   }
 
   const handleCloseDeleteDialog = () => {
     setIsDelete(false);
-    // fetchData();
   };
 
   return (
@@ -707,7 +531,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
       {!isViewDialogOpen &&
         <Stack direction='column' sx={{ gap: "30px" }} >
           <Box
-          // className={styles.Homebreadcrumb} style={{ padding: '0 10px !important' }}
           >
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="medium" />}
@@ -747,12 +570,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
                     }} />)
                 }
               />
-              {/* <Button
-                handleClick={openAssignClientDialog}
-                disabled={selected.length === 0}
-                style={{ maxWidth: "200px", whiteSpace: "pre", background: "#dba236", color: "#000" }}
-                message="Assign Client"
-              /> */}
             </Box>
             <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <CustomSearch handleSearchChange={handleSearchChange} searchQryTxt={searchQuery} />
@@ -764,7 +581,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
               ) : (
                 <Chip
                   sx={{ marginLeft: 2 }}
-                  // avatar={<Avatar>{filterQuery.charAt(0)}</Avatar>}
                   label={filterQueryCall}
                   onDelete={() => {
                     setFilterQuery('');
@@ -780,7 +596,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
             </Box>
           </Box>
 
-          {/* Filter dialog */}
           <Dialog
             open={open}
             fullWidth={true}
@@ -844,7 +659,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
                             setSelectedPersons(getUnique);
                           }}
                         >
-                          {assignedClientData?.map((item) => (
+                          {assignedClientData?.sort((a, b) => a.Title.localeCompare(b.Title)).map((item) => (
                             <MenuItem key={item.Id} value={item.Title}>
                               {item.Title}
                             </MenuItem>
@@ -860,11 +675,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
                   Clear
                 </MuiButton>
                 <MuiButton
-                  // onClick={() => {
-                  //   handleApply(
-
-                  //   ); handleFilterChange(new MouseEvent('click'));
-                  // }}
                   onClick={() => {
                     handleApply();
                   }}
@@ -881,7 +691,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
             </DialogContent>
           </Dialog>
 
-          {/* Assigned client dialog*/}
           <Dialog
             open={dialogOpen}
             fullWidth={true}
@@ -938,7 +747,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
                     </div>
                   ))}
 
-                {/* Child delete confirmation */}
                 {isDelete && (
                   <Dialog open={isDelete} maxWidth='sm' fullWidth  >
                     <DialogTitle className={styles.addTitle}
@@ -1040,7 +848,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
 
       {uploadDialogOpen && <ViewUpload open={uploadDialogOpen} onClose={closeUploadDialog} particularClientAllData={particularClientAllData} selected={selected} spContext={props.spContext} siteUrl={props.siteUrl} userRole={userRole} />}
       {isDeleteDialogOpen &&
-        // <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />}
         <DeleteDialog projectDetails={projectDetails} open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}
           fetchData={fetchData}
         />}
@@ -1057,7 +864,6 @@ const ViewProject = (props: IFreeholdChildProps) => {
           particularClientAllData={particularClientAllData} selected={selected}
           fetchData={fetchData}
         />}
-      {/* {isViewDialogOpen && <ViewParticularClient projectDetails={projectDetails}/>} */}
     </Box>
   );
 };

@@ -63,13 +63,9 @@ const EditClientByID = (props: IFreeholdChildProps) => {
             const clientService = ClientService();
             const select = '*,AssignedStaff/Title,AssignedStaff/Id,AssignedStaff/EMail,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
             const expand = 'AssignedStaff,Author,ProjectId,Editor';
-            // const orderBy = 'Modified';
             const filter = `Id eq '${cId}'`;
             const orderBy = "Modified";
-            // const filtered = "";
             const results = await clientService.getClientbyID('Client_Informations', select, expand, filter, orderBy, cId);
-
-            // Handle project results
             if (results && results?.updatedResults && results?.updatedResults.length > 0) {
                 setClientDetails(results.updatedResults);
 
@@ -130,7 +126,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
         const apiResponse = ClientService();
 
         const updatedData = {
-            //Title: editData.title,
             ClientEmail: editData.email,
             ClientContact: editData.contact,
             AssignedStaff: editData.assignedStaff
@@ -147,13 +142,12 @@ const EditClientByID = (props: IFreeholdChildProps) => {
             })
             .catch((error) => {
                 setLoading(false);
-                //console.error('Error updating client details:', error);
+                console.error('Error updating client details:', error);
                 toast.error('Failed to update client details. Please try again.');
             });
 
     });
 
-    // update code end
     const navigateToHome = () => {
         navigate('/');
     };
@@ -229,7 +223,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                                     {loading ? 'Updating...' : 'Update'}
                                                 </MuiButton>
                                                 <MuiButton
-                                                    // sx={{ marginLeft: "20px" }}
                                                     variant="contained"
                                                     color="secondary"
                                                     onClick={navigateToClient}
@@ -245,7 +238,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                         <TableCell component="th" scope="row">Email</TableCell>
 
                                         <TableCell>
-
                                             <Controller
                                                 name="email"
                                                 control={control}
@@ -299,7 +291,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                                 control={control}
                                                 defaultValue=""
                                                 rules={{
-                                                    // required: 'Client Contact is required',
                                                     pattern: {
                                                         value: /^[0-9+-.]{0,15}$/,
                                                         message: 'Invalid contact number'
@@ -326,7 +317,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                                     />
                                                 )}
                                             />
-
                                         </TableCell>
 
                                     </TableRow>
@@ -344,7 +334,6 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                     <TableRow>
                                         <TableCell component="th" scope="row">Modified By</TableCell>
                                         <TableCell>{clientDetails[0]?.modifiedBy}</TableCell>
-
                                     </TableRow>
 
 

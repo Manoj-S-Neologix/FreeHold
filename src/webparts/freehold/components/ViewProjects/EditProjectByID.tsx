@@ -45,7 +45,6 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 }));
 
 const EditProjectByID = (props: IFreeholdChildProps) => {
-    // const [isEdit, setIsEdit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [projectDetails, setProjectDetails] = useState<any[]>([]);
     const { pId } = useParams();
@@ -54,18 +53,15 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
 
     const fetchData = async () => {
         try {
-
             const projectService = ProjectService();
             const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
             const expand = 'Author,AssignClient,Editor';
             const orderBy = 'Modified';
             const filter = `Id eq '${pId}'`;
-
             const [projectResults] = await Promise.all([
                 projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
             ]);
 
-            // Handle project results
             if (projectResults && projectResults.TableData && projectResults.TableData.length > 0) {
                 setProjectDetails(projectResults.TableData);
 
@@ -85,23 +81,18 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                 setProjectDetails([]);
             }
 
-
         } catch (error) {
-            //setIsLoading(false);
             console.error('Error fetching project data:', error);
         }
     };
 
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm(
         {
-
             defaultValues: {
                 title: projectDetails[0]?.projectName,
                 projectNumber: projectDetails[0]?.projectNumber,
                 location: projectDetails[0]?.location,
                 developer: projectDetails[0]?.developer
-                // contact: clientDetails.contact,
-                // assignedStaff: clientDetails.assignedStaff
             }
         }
     );
@@ -117,14 +108,11 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
         fetchData();
     }, []);
 
-    console.log(projectDetails, "projectDetails");
-
     const navigateToHome = () => {
         navigate('/');
     };
 
     const navigateToProject = () => {
-        //navigate('/ViewProject');
         navigate(-1);
     };
 
@@ -150,8 +138,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
             })
             .catch((error) => {
                 setLoading(false);
-                console.error('Error updating project details:', error);
-                // toast.error('Failed to update project details. Please try again.');
+                toast.error('Failed to update project details. Please try again.');
             });
     });
 
@@ -176,7 +163,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                 </Box>
                 <Box sx={{ marginTop: "10px !important" }}>
                     <form onSubmit={handleUpdate}>
-                        {/* <form> */}
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
                                 <TableHead sx={{ display: 'table-caption' }}>
@@ -195,7 +181,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                             justifyContent: "flex-end",
                                             alignItems: "center",
                                             float: "right",
-                                            // gap: "10px",
                                             marginTop: "10px",
                                             marginRight: "10px",
                                             right: "20px"
@@ -206,7 +191,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 color="secondary"
 
                                                 onClick={() => {
-                                                    // console.log("data")
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}
@@ -219,8 +203,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 Cancel
                                             </MuiButton>
                                         </Box>
-
-
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -239,10 +221,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 defaultValue=""
                                                 rules={{
                                                     required: 'Project Name is required',
-                                                    //    pattern: {
-                                                    //     value: /^[a-zA-Z\s]+$/,
-                                                    //        message: 'Invalid project name'
-                                                    //    }
                                                 }}
                                                 render={({ field }) => (
                                                     <TextField
@@ -250,7 +228,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                         id="title"
                                                         margin="dense"
                                                         size="small"
-                                                        // fullWidth
                                                         value={editData.title}
                                                         onChange={async (e) => {
                                                             const input = e.target;
@@ -281,10 +258,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 defaultValue=""
                                                 rules={{
                                                     required: 'Location is required',
-                                                    // pattern: {
-                                                    //     value: /^[a-zA-Z\s-]+$/,
-                                                    //     message: 'Invalid project number'
-                                                    // }
                                                 }}
                                                 render={({ field }) => (
                                                     <TextField
@@ -292,7 +265,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                         id="location"
                                                         margin="dense"
                                                         size="small"
-                                                        // fullWidth
                                                         value={editData.location}
                                                         onChange={async (e) => {
                                                             const input = e.target;
@@ -309,7 +281,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                     />
                                                 )}
                                             />
-
                                         </TableCell>
 
                                     </TableRow>
@@ -323,10 +294,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                 defaultValue=""
                                                 rules={{
                                                     required: 'Developer is required',
-                                                    // pattern: {
-                                                    //     value: /^[a-zA-Z\s-]+$/,
-                                                    //     message: 'Invalid Developer'
-                                                    // }
                                                 }}
                                                 render={({ field }) => (
                                                     <TextField
@@ -334,7 +301,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                         id="developer"
                                                         margin="dense"
                                                         size="small"
-                                                        // fullWidth
                                                         value={editData.developer}
                                                         onChange={async (e) => {
                                                             const input = e.target;
@@ -351,7 +317,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                                     />
                                                 )}
                                             />
-
                                         </TableCell>
 
                                     </TableRow>
@@ -385,29 +350,6 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell component="th" scope="row">Modified By</TableCell>
                                         <TableCell>{projectDetails[0]?.modifiedBy}</TableCell>
                                     </TableRow>
-
-                                    {/* <TableRow>
-                                        <TableCell component="th" scope="row">
-
-                                            <MuiButton type="submit"
-                                                variant="contained"
-                                                color="primary"
-
-                                                onClick={() => {
-                                                    // console.log("data")
-                                                    handleUpdate();
-                                                }}
-                                                disabled={loading}
-                                            >
-                                                {loading ? 'Updating...' : 'Update'}
-                                            </MuiButton>
-                                            <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
-                                                onClick={navigateToProject}
-                                            >
-                                                Cancel
-                                            </MuiButton>
-                                        </TableCell>
-                                    </TableRow> */}
                                 </TableBody>
 
                             </Table>

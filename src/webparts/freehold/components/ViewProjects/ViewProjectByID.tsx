@@ -14,10 +14,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-//import AssignClient from "../AssignClient/AssignClient";
-import { useForm } from "react-hook-form";
 import ProjectService from '../../Services/Business/ProjectService';
-//import toast from 'react-hot-toast';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
@@ -48,19 +45,11 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 }));
 
 const ViewProjectByID = (props: IFreeholdChildProps) => {
-
-    //const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [projectDetails, setProjectDetails] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const { pId } = useParams();
 
     const navigate = useNavigate();
-
-    const { formState: { } } = useForm(
-        {
-        }
-    );
-
     const fetchData = async () => {
         try {
 
@@ -73,17 +62,13 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
             const [projectResults] = await Promise.all([
                 projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
             ]);
-
-            // Handle project results
             if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
                 setProjectDetails(projectResults.TableData);
             } else {
                 setProjectDetails([]);
             }
 
-
         } catch (error) {
-            //setIsLoading(false);
             console.error('Error fetching project data:', error);
         }
     };
@@ -92,9 +77,6 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
         setLoading(false);
         fetchData();
     }, []);
-
-
-    console.log(projectDetails, "projectDetails", loading);
 
     const navigateToHome = () => {
         navigate('/');
@@ -125,7 +107,6 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                 </Box>
                 <Box sx={{ marginTop: "10px !important" }}>
                     <form>
-                        {/* <form> */}
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
                                 <TableHead>
@@ -208,17 +189,6 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
                                         <TableCell component="th" scope="row">Modified By</TableCell>
                                         <TableCell>{(projectDetails.length > 0) ? projectDetails[0].modifiedBy : ""}</TableCell>
                                     </TableRow>
-
-                                    {/* <TableRow>
-                                        <TableCell component="th" scope="row">
-                                            <MuiButton variant="contained" color="secondary"
-                                                onClick={navigateToProject}
-                                            >
-                                                Cancel
-                                            </MuiButton>
-                                        </TableCell>
-                                    </TableRow> */}
-
 
                                 </TableBody>
 

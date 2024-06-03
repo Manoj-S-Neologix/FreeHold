@@ -26,9 +26,7 @@ const Home = (props: IFreeholdProps) => {
 
     return (
         <React.Fragment>
-            {/* <ToastContainer /> */}
             <ThemeProvider primary={colorCodes.primary} secondary={colorCodes.secondary}>
-
                 <HashRouter basename='/'>
                     <Header props={props.userDisplayName} />
                     <Search spContext={props.context} siteUrl={props.siteUrl} />

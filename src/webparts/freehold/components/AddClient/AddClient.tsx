@@ -40,7 +40,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
-  console.log(files, 'files');
+  // console.log(files, 'files');
 
   const handleCancel = () => {
     setFiles([]);
@@ -55,23 +55,23 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     }
   }, [files]);
 
-  const fileInfoArray = files?.map((file: any) => ({
-    lastModified: file.lastModified,
-    lastModifiedDate: file.lastModifiedDate,
-    name: file.name,
-    size: file.size,
-    type: file.type,
-    webkitRelativePath: file.webkitRelativePath
-  }));
+  // const fileInfoArray = files?.map((file: any) => ({
+  //   lastModified: file.lastModified,
+  //   lastModifiedDate: file.lastModifiedDate,
+  //   name: file.name,
+  //   size: file.size,
+  //   type: file.type,
+  //   webkitRelativePath: file.webkitRelativePath
+  // }));
 
-  console.log(fileInfoArray, selectedPersons, 'fileInfoArray');
+  // console.log(fileInfoArray, selectedPersons, 'fileInfoArray');
 
   const handlePeoplePickerChange = async (items: any[]) => {
-    console.log(items, "itemsitemsitemsitems");
+    // console.log(items, "itemsitemsitemsitems");
     const selectedPersonsIds = [];
     for (const item of items) {
       const getID = await ClientService().getPersonByEmail(item.secondaryText);
-      console.log(getID.Id, "getIDgetID");
+      // console.log(getID.Id, "getIDgetID");
       selectedPersonsIds.push(getID.Id);
     }
     setSelectedPersons(selectedPersonsIds);
@@ -81,7 +81,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     const clientService = ClientService();
     clientService.getClient('Client Checklist')
       .then((results) => {
-        console.log(results, 'client');
+        // console.log(results, 'client');
         if (results) {
           setDropdownOptions(results);
         }
@@ -99,7 +99,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
 
     setLoading(true);
     const apiResponse = ClientService();
-    console.log(data, selectedPersons, "staff");
+    // console.log(data, selectedPersons, "staff");
 
     const dataObj = {
       Title: data.title,
@@ -128,11 +128,11 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         .catch(error => reject(error));
     });
 
-    console.log(uploadPromise, "uploadPromise");
+    // console.log(uploadPromise, "uploadPromise");
     // Create item in the list after document upload
     uploadPromise
       .then((uploadDocumentResponse: any) => {
-        console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse");
+        // console.log(uploadDocumentResponse, uploadDocumentResponse.data, uploadDocumentResponse.data.ParentWebUrl, "uploadDocumentResponse");
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
@@ -161,7 +161,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
             })
             .catch((error) => {
               setLoading(false);
-              console.error("Failed to add client and document:", error);
+              // console.error("Failed to add client and document:", error);
               toast.error(`Failed to add client and document: ${error}`);
             });
 

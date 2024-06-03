@@ -55,8 +55,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
     const [loading, setLoading] = useState(false);
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-    console.log(selectedPersons, particularClientAllData, "ViewParticularClient");
-
     useEffect(() => {
         const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
             item.assignedStaff.map((assignStaff: any) => assignStaff.Email)
@@ -114,7 +112,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
         const apiResponse = ClientService();
 
         const updatedData = {
-            //Title: editData.title,
             ClientEmail: editData.email,
             ClientContact: editData.contact,
             AssignedStaff: editData.assignedStaff
@@ -124,53 +121,18 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
             .then(() => {
                 setLoading(false);
                 toast.success('Client Updated Successfully!');
-                // navigateToClient();
-                // setIsEdit(false);
-                // isEdit(false);
                 navigateToClient();
-                // navigate(`/ViewClient/${clientDetails.Id}`);
-                // navigate('/ViewClient'); 
                 fetchData();
                 initialFetchData();
                 setIsEdit(false);
                 reset();
-                // debugger
-                // setIsOpen(false);
-
             })
             .catch((error) => {
                 setLoading(false);
                 console.error('Error updating client details:', error);
-                // toast.error('Failed to update client details. Please try again.');
             });
-
-        /* apiResponse.updateLibraryName(clientDetails.GUID, data.title)
-
-            .then(() => {
-                // Update library name (assuming data.title is the new library name)
-                return apiResponse.updateClient("Client_Informations", clientDetails.Id, updatedData);
-            })
-            .then(() => {
-                setLoading(false);
-                toast.success('Client Updated Successfully!');
-                // navigateToClient();
-                navigateToClient();
-                fetchData();
-                initialFetchData();
-                setIsEdit(false);
-                reset();
-                // debugger
-                // setIsOpen(false);
-
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.error('Error updating client details:', error);
-                // toast.error('Failed to update client details. Please try again.');
-            }); */
     });
 
-    // update code end
     const navigateToHome = () => {
         navigate('/');
     };
@@ -182,11 +144,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
 
     const navigateToClient = () => {
         setIsViewDialogOpen(false);
-        // setIsEdit(false);
         navigate('/ViewClient');
-        ////navigate(-1);
-        // setIsOpen(false);
-        // fetchData();
     };
 
     return (
@@ -237,20 +195,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                 }}
 
                                             />
-
-                                            {/* {!isEdit && (
-                                                <Button
-                                                    handleClick={() => {
-                                                        setIsEdit(true);
-
-                                                    }}
-                                                    color="secondary"
-                                                    Icon={<EditIcon />}
-                                                    message="Edit"
-                                                />
-                                                
-                                                
-                                            )} */}
                                             {!isEdit ? (
                                                 <Button
                                                     handleClick={() => {
@@ -274,7 +218,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                         {loading ? 'Updating...' : 'Update'}
                                                     </MuiButton>
                                                     <MuiButton
-                                                        // sx={{ marginLeft: "20px" }}
                                                         variant="contained"
                                                         color="secondary"
                                                         onClick={navigateToClient}
@@ -301,7 +244,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        // required: "Email Id is required.",
                                                         minLength: {
                                                             value: 5,
                                                             message: "Email address must be at least 5 characters.",
@@ -352,7 +294,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        // required: 'Client Contact is required',
                                                         pattern: {
                                                             value: /^[0-9+-.]{0,15}$/,
                                                             message: 'Invalid contact number'
@@ -364,13 +305,8 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                             id="clientContact"
                                                             margin="dense"
                                                             size="small"
-                                                            // fullWidth
                                                             value={editData.contact}
                                                             onChange={async (e: any) => {
-                                                                // const value = e.target.value.replace(/[^\d+-.]/g, '');
-                                                                // field.onChange(value);
-                                                                // await trigger("contact");
-                                                                // setEditData({ ...editData, contact: value });
                                                                 const input = e.target;
                                                                 const value = input.value.replace(/[^\d+-.]/g, '');
                                                                 const start = input.selectionStart;
@@ -384,48 +320,9 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                         />
                                                     )}
                                                 />
-
                                             </TableCell>
                                         )}
                                     </TableRow>
-
-                                    {/* <TableRow>
-
-                                        <TableCell component="th" scope="row">Name</TableCell>
-                                        <TableCell>
-                                            {!isEdit ? (
-                                                clientDetails.name
-                                            ) : (
-                                                <Controller
-                                                    name="title"
-                                                    control={control}
-                                                    defaultValue=""
-                                                    rules={{ required: 'Name is required' }}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            // fullWidth
-                                                            size="small"
-                                                            value={editData.title}
-                                                            onChange={async (e) => {
-                                                                const input = e.target;
-                                                                const value = input.value;
-                                                                const start = input.selectionStart;
-                                                                const end = input.selectionEnd;
-                                                                field.onChange(value);
-                                                                await trigger('title');
-                                                                setEditData({ ...editData, title: value });
-                                                                input.setSelectionRange(start, end);
-                                                            }}
-                                                            error={!!errors.title}
-                                                            helperText={errors.title && errors.title.message}
-                                                        />
-                                                    )}
-                                                />
-                                            )}
-                                        </TableCell>
-
-                                    </TableRow> */}
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Name</TableCell>
@@ -442,7 +339,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                         <TableCell>{clientDetails.modifiedBy}</TableCell>
 
                                     </TableRow>
-
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Project</TableCell>
@@ -496,7 +392,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                                 color="primary"
                                                 message="View Documents"
                                                 handleClick={() => {
-                                                    //console.log(`Upload Documents clicked for row ${id}`);
                                                     setUploadDialogOpen(true);
                                                 }}
 
@@ -552,28 +447,6 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
                                             </TableCell>}
                                     </TableRow>
 
-
-                                    {/* {isEdit && <TableRow>
-                                        <TableCell component="th" scope="row">
-
-                                            <MuiButton type="submit"
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={() => {
-                                                    handleUpdate();
-                                                }}
-                                                disabled={loading}
-                                            >
-                                                {loading ? 'Updating...' : 'Update'}
-                                            </MuiButton>
-                                            <MuiButton sx={{ marginLeft: "20px" }} variant="contained" color="secondary"
-                                                onClick={navigateToClient}
-
-                                            >
-                                                Cancel
-                                            </MuiButton>
-                                        </TableCell>
-                                    </TableRow>} */}
                                 </TableBody>
 
                             </Table>

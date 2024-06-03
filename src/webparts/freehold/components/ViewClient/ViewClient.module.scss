@@ -15,9 +15,7 @@ $container-gap: 1rem !important;
 .Addcontainer {
     display: flex;
     align-items: center; 
-    // gap: 2px !important; 
     margin-left: 10px !important;
-
 }
 
 
@@ -29,7 +27,6 @@ $container-gap: 1rem !important;
     margin-right: 85px !important;
     margin-bottom: 20px !important;
     margin-top: 20px !important;
-    // padding-left: 20px !important;
     input{
         margin-left: 10px !important;
     }
@@ -50,15 +47,11 @@ $container-gap: 1rem !important;
     height: 20px !important;
 }
 
-
-
 .Addbutton {
     background-color: var(--primarycolor) !important;
     border: none !important;
     color: white !important;
     padding: 5px !important;
-    // padding-left: 5px !important;
-    // padding-right: 5px !important;
     border-radius: 4px !important;
 }
 
@@ -76,12 +69,10 @@ $container-gap: 1rem !important;
 
 }
 .Homebreadcrumb{
-    // margin-left: -16 !important;
     padding: 0 10px !important;
-    // padding-top: 15px !important;
 }
 .defaultCursorClass {
-    cursor: default !important; /* Use !important to ensure the style is applied */
+    cursor: default !important; 
 }
 
 

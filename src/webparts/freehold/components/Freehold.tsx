@@ -23,7 +23,7 @@ export default class FreeHold extends React.Component<IFreeholdProps, IState> {
 
   public async componentDidMount() {
 
-    let loggedInUserGroups: string[] = [];
+    const loggedInUserGroups: string[] = [];
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {

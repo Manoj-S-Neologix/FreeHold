@@ -10,14 +10,12 @@ import { Controller, useForm } from "react-hook-form";
 import { Radio, RadioGroup } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import styles from "./Search.module.scss";
-
 import ClientUploadDocument from "../ClientUploadDocument/ClientUploadDocument";
 import ProjectUploadDocument from "../ProjectUploadDocument/ProjectUploadDocument";
 import ClientService from "../../Services/Business/ClientService";
 import ProjectService from "../../Services/Business/ProjectService";
 import SPService, { SPServiceType } from "../../Services/Core/SPService";
 import MenuIcon from '@mui/icons-material/Menu';
-// import ListIcon from '@mui/icons-material/List';
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -32,33 +30,26 @@ const IconStyles = (icon: any, theme: any) => {
 
 const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [open, setOpen] = React.useState(false);
-    const [search, setSearch] = React.useState<string>('');
+    const [, setSearch] = React.useState<string>('');
     const [openDocuments, setOpenDocuments] = React.useState(false);
     const [isExpand, setIsExpand] = React.useState<boolean>(false);
     const [isNavOpen, setisNavOpen] = React.useState(false);
-
     const spServiceInstance: SPServiceType = SPService;
     const [userRole, setUserRole] = useState('');
-
-    // const [clientValue, setClientValue] = React.useState<string>('');
-    // const [projectValue, setProjectValue] = React.useState<string>('');
     const [isLoading, setIsLoading] = React.useState(true);
     const [isApplied, setIsApplied] = React.useState(false);
-    const [clientData, setClientData] = React.useState<any>([]);
+    const [, setClientData] = React.useState<any>([]);
     const [AllClientData, setAllClientData] = React.useState<any>([]);
-    const [getClient, setGetClient] = React.useState<any[]>([]);
-    const [particularClientAllData, setParticularClientAllData] = React.useState<any>([]);
+    const [, setGetClient] = React.useState<any[]>([]);
+    const [, setParticularClientAllData] = React.useState<any>([]);
     const [projectData, setProjectData] = React.useState<any>([]);
-    //const [selectedProject, setSelectedProject] = React.useState<string>('');
     const { control, formState: { errors }, setValue, reset, getValues } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [selectedPersons, setSelectedPersons] = React.useState<string[]>([]);
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
 
     React.useEffect(() => {
-        //alert(location.pathname);
-
         if (location.pathname !== "/") {
             setisNavOpen(true);
         }else{
@@ -81,26 +72,17 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         setAnchorEl(null);
     };
 
-    console.log(search, "searchEvent");
-
-    console.log(isLoading, clientData, AllClientData, particularClientAllData, getClient, "ClientDataClientData")
-
-    console.log(projectData, "projectData...")
-
     const handleDocumentClick = () => {
-        //console.log('Document clicked');
         setOpenDocuments(true);
     };
 
     const handleClear = () => {
         reset();
-        // onClose();
     };
 
     const handleApply = () => {
         setOpen(false);
         setOpen(false);
-        console.log("isApplied : ", isApplied);
         const selectedClientName = getValues("clientName");
         const selectedProjectName = getValues("projectName");
         const selectedNames: string[] = [];
@@ -112,13 +94,11 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
         }
         setSelectedPersons(selectedNames);
         setIsExpand(true);
-        if (selectedClientName != "" || selectedProjectName != "") {
+        if (selectedClientName !== "" || selectedProjectName !== "") {
             setIsApplied(true);
         } else {
             setIsApplied(false);
         }
-
-        //reset();
     };
 
     const documentTypes = [
@@ -146,26 +126,19 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, spContext.pageContext.user.email),
                     clientService.getClientExpandApi('Client_Informations', cselect, cexpand, cfilter, "")
                 ]);
-
-                // Handle project results
                 if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
                     setProjectData(projectResults.TableData);
                 } else {
                     setProjectData([]);
                     setAllClientData([]);
                 }
-
                 if (clientResults && clientResults.length > 0) {
                     setAllClientData(clientResults);
-                    // setAssignedClientData(clientResults);
                 } else {
-                    // setClientData([]);
                     setAllClientData(clientResults);
                 }
             } else {
-                //const clientResults = await clientService.getClient('Client_Informations');
                 const clientResults = await clientService.getClient('Client_Informations');
-                console.log(clientResults, "client result");
                 if (clientResults && clientResults.length > 0) {
                     setClientData(clientResults);
                     setAllClientData(clientResults);
@@ -173,16 +146,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     setClientData([]);
                     setAllClientData([]);
                 }
-
                 const projectResults = await projectService.getProject('Project_Informations');
-                console.log(projectResults, "project result");
                 if (projectResults && projectResults.length > 0) {
                     setProjectData(projectResults);
                 } else {
                     setProjectData([]);
                 }
             }
-
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
@@ -191,12 +161,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     };
 
     const getUserRoles = () => {
-        let loggedInUserGroups: string[] = [];
+        const loggedInUserGroups: string[] = [];
         let userRoleVal: string = "staff";
 
         spServiceInstance.getLoggedInUserGroups().then((response) => {
-            //console.log("Current user site groups : ", response);
-
             _.forEach(response, function (group: any) {
                 loggedInUserGroups.push(group.Title);
             });
@@ -208,9 +176,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
             } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
                 userRoleVal = "staff";
             }
-
             setUserRole(userRoleVal);
-
         });
     };
 
@@ -220,15 +186,9 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     };
 
     React.useEffect(() => {
-
         setDocumentType('');
         getUserRoles();
     }, []);
-
-    /* React.useEffect(() => {
-        
-        
-    }, [locationPath]); */
 
     React.useEffect(() => {
         fetchData();
@@ -236,8 +196,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
-
-            {/* Search box */}
             <Stack direction={"column"} spacing={2}>
                 <Box sx={{
                     display: "flex",
@@ -276,13 +234,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                                             if (selectedPersons[index].startsWith("Project :")) {
                                                                 setValue('projectName', "");
 
-                                                                if (getValues("clientName") == "") {
+                                                                if (getValues("clientName") === "") {
                                                                     setIsApplied(false);
                                                                 }
                                                             } else if (selectedPersons[index].startsWith("Client :")) {
                                                                 setValue('clientName', "");
 
-                                                                if (getValues("projectName") == "") {
+                                                                if (getValues("projectName") === "") {
                                                                     setIsApplied(false);
                                                                 }
                                                             }
@@ -333,6 +291,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             aria-expanded={mopen ? 'true' : undefined}
                                             aria-haspopup="true"
                                             onClick={mhandleClick}
+                                            sx={{ color: theme.palette.common.white }}
                                         >
                                             <MenuIcon />
                                         </IconButton>
@@ -356,19 +315,15 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             <MenuItem onClick={() => pageRedirect("/ChecklistValidation")}>
                                                 Checklist Validation
                                             </MenuItem>
-
                                         </Menu>
                                     </div>
                                 }
-
                             </Box>
                         </Grid>
                     </Grid>
                 </Box >
-
             </Stack >
 
-            {/* advanced filter */}
             <Dialog
                 open={open}
                 fullWidth={true}
@@ -390,7 +345,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
                 <IconButton
                     aria-label="close"
-                    // onClick={handleCancel}
                     onClick={() => { setOpen(false); }}
                     sx={{
                         position: "absolute",
@@ -424,15 +378,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             error={!!errors.clientName}
                                             helperText={errors?.clientName?.message}
                                             onChange={(e: any) => {
-                                                // console.log(e.target.value);
                                                 setGetClient(e.target.value);
                                                 const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
                                                 setParticularClientAllData(getUnique);
-                                                // setValue('projectName', e.target.value)
-                                                console.log(getUnique, "getUnique")
-
                                                 setValue('clientName', e.target.value);
-
                                             }}
                                         >
                                             {AllClientData?.map((item: any) => (
@@ -441,7 +390,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                                 </MenuItem>
                                             ))}
                                         </TextField>
-
                                     </>
                                 )}
                             />
@@ -466,9 +414,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             required
                                             label=""
                                             error={!!errors.projectName}
-                                            //value={selectedProject}
                                             onChange={async (e: any) => {
-                                                //setSelectedProject(e.target.value);
                                                 setValue('projectName', e.target.value);
                                             }}
                                         >
@@ -501,8 +447,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     </DialogActions>
                 </DialogContent>
             </Dialog >
-
-            {/* Upload documents */}
             <Dialog
                 open={openDocuments}
                 fullWidth
@@ -543,11 +487,8 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                             <FormControlLabel key={docType.id} value={docType.label} control={<Radio />} label={docType.label} />
                         ))}
                     </RadioGroup>
-
-                    {/* Project document upload */}
                     {documentType === 'Project' && (
                         <>
-                            {/* <ClientProjectUpload /> */}
                             <ProjectUploadDocument
                                 userRole={userRole}
                                 spContext={spContext}
@@ -558,7 +499,6 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                         </>
 
                     )}
-                    {/* Client document upload */}
                     {documentType === 'Client' && (
                         <>
                             <ClientUploadDocument

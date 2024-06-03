@@ -88,8 +88,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
-    //console.log(rows, tableData, "rowsrows");
-
     const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -108,14 +106,12 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                     }));
                 }
                 return [];
-            }).flat(); // To flatten the array of arrays into a single array
-            //console.log(newSelectedDetails, "newSelected");
+            }).flat();
             setSelectedDetails(newSelectedDetails);
             return;
         }
         setSelected([]);
         setSelectedDetails([]);
-
     };
 
 
@@ -139,8 +135,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
         setSelected(newSelected);
     };
 
-    console.log(rows, "rowsrows")
-
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
@@ -163,7 +157,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
         return [...rows].sort(comparator);
     }, [rows, orderBy, order]);
 
-
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const filteredRows = searchQuery
@@ -174,7 +167,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
         )
         : sortedRows;
 
-    console.log(filteredRows, "filteredRows.....")
     const getWidth = (id: any) => {
         return (
             tableDataWidth.map(
@@ -184,51 +176,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
         );
     };
 
-
-    // // 15/5/ code hidden
-
-    // const filteredRows = filterQuery
-    // ? rows.filter((row:any) => {
-    //     if (row.assignedStaff) {
-    //         return row.assignedStaff.some((staff:any) =>
-    //             Object.values(staff).some(
-    //                 (value) =>
-    //                     typeof value === 'string' &&
-    //                     value.toLowerCase().includes(filterQuery.toLowerCase())
-    //             )
-    //         );
-    //     }
-    //     return false;
-    // })
-    // : sortedRows;
-
-    // // 15/5/ code hidden end
-
-    // const filteredRows = searchQuery
-    // ? rows.filter((row:any) => {
-    //     const searchMatches = Object.values(row).some((value) =>
-    //         typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase())
-    //     );
-    //     return searchMatches || (row.assignedStaff && filterQuery && row.assignedStaff.some((staff:any) =>
-    //         Object.values(staff).some(
-    //             (value) =>
-    //                 typeof value === 'string' &&
-    //                 value.toLowerCase().includes(filterQuery.toLowerCase())
-    //         )
-    //     ));
-    // })
-    // : sortedRows;
-
-
-
-    // const getWidth = (id: any) => {
-    //     return (
-    //         tableDataWidth.map(
-    //             (item: any) => (item.hasOwnProperty(id)
-    //                 ? item[id].width
-    //                 : "auto"))
-    //     );
-    // };
     return (
         <Box>
             <Grid container>
@@ -257,7 +204,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                     <TableRow
                                                         hover
                                                         onClick={(event) => handleClick(event, row.Id)}
-                                                        // checkboxSelection disableRowSelectionOnClick
                                                         role="checkbox"
                                                         aria-checked={isItemSelected}
                                                         tabIndex={-1}
@@ -305,11 +251,6 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                                 </TableCell>
                                                             ))
                                                         }
-
-
-                                                        {/* 
-                                                        //working code end */}
-
 
                                                         <TableCell width={"40%"} align="left" padding="none">
                                                             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>

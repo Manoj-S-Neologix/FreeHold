@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-expressions */
-
 import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -20,32 +19,22 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// import RemoveIcon from '@mui/icons-material/Remove';
-
 
 const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, exsistingPersons, exsistingProjectLibrary, userRole }: any) => {
     const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
     const [getClient, setGetClient] = useState<any>('');
     const [loading, setLoading] = useState(false);
     const [count, setCount] = useState(1);
-    // const [fileData, setFileData] = useState<any[]>([]);
-    // const [isLoading, setIsLoading] = useState(true);
     const { control, handleSubmit, reset, unregister, watch, formState: { errors }, setValue, trigger } = useForm();
     const [showCount, setShowCount] = useState(false);
-    // const [fetchUnitData, setFetchUnitData] = useState<any[]>([]);
     const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [deleteItemPath, setDeleteItemPath] = useState("");
-
-    const getProjectCode = particularClientAllData[0]?.projectNumber;
     const getProjectUrl = particularClientAllData[0]?.webURL;
-    console.log(getProjectCode, getFoldersResponse, "getProjectCode");
-
     const clientService = ClientService();
     const clientListName = "Client_Informations";
     const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
     const expand = 'AssignedStaff';
-    //alert("userROle | " + userRole);
     const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
     const apiCall = async () => {
@@ -54,7 +43,6 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             if (data) {
                 const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
                 const filteredData = data.filter(item => assignClientIds.includes(item.Id));
-                console.log(filteredData, "filteredData");
                 const mappedData = filteredData.map(item => ({
                     id: item.Id,
                     name: item.Title,
@@ -67,25 +55,19 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         }
     };
 
-    console.log(getClientDetails, particularClientAllData, "getClientDetails");
-
     useEffect(() => {
         apiCall();
     }, []);
 
-
     const handleCancel = () => {
-        console.log("Cancel button clicked");
         onClose();
     };
 
     const deleteUnit = (indexToRemove: number) => {
-        const currentValues = watch(); // Get current form values
+        const currentValues = watch(); 
         setCount((prevCount) => {
             const newCount = prevCount - 1;
-            // Unregister the form field to remove validation
             unregister(`unitName${indexToRemove}`);
-            // Shift form values to avoid gaps in the indices
             for (let i = indexToRemove; i < newCount; i++) {
                 setValue(`unitName${i}`, currentValues[`unitName${i + 1}`]);
                 unregister(`unitName${i + 1}`);
@@ -114,9 +96,6 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         });
 
         const AssignClient = getClientDetails.filter((item: any) => item.libraryGUID === data.AssignClient)[0].name;
-
-        console.log(getProjectCode, AssignClient, collectionOfUnits, "handleSave");
-
         try {
             const response = await ProjectService().createFolder(getProjectUrl, AssignClient);
             const folderCreationPromises = collectionOfUnits.map((unit) => {
@@ -131,7 +110,6 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
 
             reset();
             setCount(1);
-            //onClose();
         } catch (error) {
             setLoading(false);
             toast.error(error.message);
@@ -139,27 +117,14 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         }
     });
 
-
-
-    console.log(getClient, "getClientgetClient");
-
-
-
-    const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
-    const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
+    const [, setClientDocumentsData] = useState<any[]>([]);
+    const [, setClientDocumentsAllData] = useState<any[]>([]);
     const getDocumentsFromFolder = async (libraryGuid: string) => {
         try {
             const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-            console.log('Retrieved files:', results);
-
             const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-            console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
             const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
-
             setGetFoldersResponse(getFolders);
-            console.log(getFolders, "getFolders....")
-
-            // Ensure results is an array before setting state
             if (Array.isArray(results)) {
                 setClientDocumentsData(results.map(item => item.FileLeafRef));
                 setClientDocumentsAllData(results);
@@ -172,37 +137,24 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
         }
     };
 
-    console.log(getClientDocumentsAllData);
-    console.log(getClientDocumentsData, "document");
-
     const handleDeleteUnit = async () => {
         try {
             const apiResponse = ProjectService();
-            //const folderUrl = getFoldersResponse[0].ServerRelativeUrl
             await apiResponse.deleteFolder(deleteItemPath)
-            console.log(deleteItemPath, 'folderurl..')
             toast.success('Unit Deleted Successfully!');
-
             setGetFoldersResponse(prevFolders =>
                 prevFolders.filter(folder => folder.ServerRelativeUrl !== deleteItemPath)
             );
-
             setIsDeleteDialogOpen(false);
             setLoading(false);
-
-            //setIsDeleteDialogOpen(false);
-            //onClose();
-
         } catch (error) {
             setLoading(false);
-            console.error("Failed to delete unit:", error);
             toast.error(`Failed to delete unit: ${error}`);
         }
     }
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
-        // fetchData();
     };
 
     return (
@@ -259,14 +211,10 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 select
                                                 {...field}
                                                 required
-                                                // disabled={particularClientAllData[0]?.ClientGUID ? true : false}
                                                 onChange={(e: any) => {
-                                                    console.log(e.target.value);
                                                     setGetClient(e.target.value);
-                                                    // const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
                                                     getDocumentsFromFolder(e.target.value);
                                                     setValue('AssignClient', e.target.value);
-                                                    // fetchData(getLibraryName);
                                                 }}
                                                 error={!!errors?.AssignClient}
                                                 helperText={errors?.AssignClient?.message}
@@ -287,26 +235,20 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 {getFoldersResponse.length > 0 &&
                                                     getFoldersResponse.map((item: any, idx: any) => (
                                                         <TableRow key={idx}>
-                                                            {/* <TableCell> */}
                                                             <Grid item xs={12} style={{ display: 'flex', paddingBottom: '0.5rem' }}>
                                                                 <TextField label={item?.Name} fullWidth disabled name='getUnitDocument'>
                                                                     {item?.Name}
                                                                 </TextField>
-
-                                                                {/* </TableCell> */}
-                                                                {/* <TableCell> */}
                                                                 <IconButton aria-label="delete"
                                                                     onClick={() => { setIsDeleteDialogOpen(true); setDeleteItemPath(item.ServerRelativeUrl); }}>
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                             </Grid>
-                                                            {/* </TableCell> */}
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-
                                 </Grid>
                                 {isDeleteDialogOpen && (
                                     <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >

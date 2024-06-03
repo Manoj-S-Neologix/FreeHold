@@ -10,7 +10,7 @@ const ProjectService = () => {
     const updateProjectDocumentMetadata = async (libraryName: string, file: any, DMSTags: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
-            console.log(response, "response-metaData")
+            // console.log(response, "response-metaData")
             return response;
         }
 
@@ -20,7 +20,7 @@ const ProjectService = () => {
         if (spServiceInstance) {
             const results: any = await spServiceInstance.getFoldernFilesRecurs(
                 spContext, baseURL, serverRelativeUrl, camlQry, libname);
-            console.log(results, "results");
+            // console.log(results, "results");
 
             const docList: any[] = [];
 
@@ -40,7 +40,7 @@ const ProjectService = () => {
         if (spServiceInstance) {
             const results: any = await spServiceInstance.getDocumentsFromUrl(
                 spContext, libname, serverRelativeUrl, baseURL);
-            console.log(results, "results");
+            // console.log(results, "results");
 
             const docList: any[] = [];
 
@@ -84,7 +84,7 @@ const ProjectService = () => {
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
 
-                    console.log(client, "clientDetails")
+                    // console.log(client, "clientDetails")
                     return (
                         {
                             Id: client?.Id,
@@ -94,7 +94,7 @@ const ProjectService = () => {
                     )
                 });
 
-                console.log(item, "UpdatedResult")
+                // console.log(item, "UpdatedResult")
                 return {
                     // name: item.Title,
                     projectName: item.Title,
@@ -135,7 +135,7 @@ const ProjectService = () => {
                 clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,
                 ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
             }));
-            console.log(updatedResults, TableData, "updatedResults");
+            // console.log(updatedResults, TableData, "updatedResults");
 
             return { updatedResults, TableData };
         }
@@ -167,7 +167,7 @@ const ProjectService = () => {
                 const match = _.intersection(clientArr, pitem.AssignClientId);
                 if (match.length > 0) {
 
-                    let assignedClientArr: any[] = [];
+                    const assignedClientArr: any[] = [];
 
                     _.forEach(pitem.AssignClient, function (aitem, index: number) {
                         if (_.indexOf(match, aitem.Id) > -1) {
@@ -183,7 +183,7 @@ const ProjectService = () => {
             const updatedResults = await Promise.all(filteredResults.map(async (item: any) => {
                 const clientDetails = item?.AssignClient && item?.AssignClient.length > 0 && item?.AssignClient.map((client: any) => {
 
-                    console.log(client, "clientDetails")
+                    // console.log(client, "clientDetails")
                     return (
                         {
                             Id: client?.Id,
@@ -234,7 +234,7 @@ const ProjectService = () => {
                 clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,
                 ClientGUID: tableItem?.AssignClient ? tableItem.AssignClient.ClientLibraryGUID : null
             }));
-            console.log(updatedResults, TableData, "updatedResults");
+            // console.log(updatedResults, TableData, "updatedResults");
 
             return { updatedResults, TableData };
         }
@@ -246,7 +246,7 @@ const ProjectService = () => {
                 ListName,
                 itemId,
                 itemData);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
     };
@@ -262,7 +262,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteListItem(ListName, itemId);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
 
@@ -272,7 +272,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteListItem(ListName, itemId);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
 
@@ -290,7 +290,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteLibrary(LibraryName);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
 
@@ -300,7 +300,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.deleteFolder(libraryName);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
 
@@ -309,7 +309,7 @@ const ProjectService = () => {
     const deleteAssignedClient = async (listName: string, itemId: number) => {
         if (spServiceInstance) {
             const deleteAssignedStaff = await spServiceInstance.deleteAssignedClient(listName, itemId);
-            console.log(deleteAssignedStaff, "results");
+            // console.log(deleteAssignedStaff, "results");
             return deleteAssignedStaff;
         }
     }
@@ -317,7 +317,7 @@ const ProjectService = () => {
     const getDocumentsFromFolder = async (libraryGuid: string): Promise<any> => {
         if (spServiceInstance) {
             const files = await spServiceInstance.getDocumentsFromFolder(libraryGuid);
-            console.log('Retrieved files:', files);
+            // console.log('Retrieved files:', files);
             return files;
         }
     };
@@ -326,7 +326,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getPersonByEmail(email);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
     };
@@ -335,7 +335,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getPersonById(id);
-            console.log(results, "resultsgetPersonById");
+            // console.log(results, "resultsgetPersonById");
             return results.Email;
         }
     };
@@ -345,7 +345,7 @@ const ProjectService = () => {
     const createLibrary = async (LibraryName: string, libraryDescription?: string) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.createLibrary(LibraryName, libraryDescription);
-            console.log(results, "libraryResponselibraryResponse")
+            // console.log(results, "libraryResponselibraryResponse")
             return results;
         }
     };
@@ -363,7 +363,8 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.uploadDocument(libraryGuid, file);
-            console.log(results, "results");
+            // console.log(results, "results");
+            return results;
         }
     };
 
@@ -371,7 +372,7 @@ const ProjectService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.copyDocuments(destinationLibraryUrl, files, DMStags);
-            console.log(results, "results");
+            // console.log(results, "results");
             return results;
         }
     };

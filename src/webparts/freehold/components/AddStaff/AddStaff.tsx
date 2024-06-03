@@ -27,8 +27,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
         setSelectedPersons(assignedStaffEmails);
     }, [particularClientAllData]);
 
-    console.log(exsistingPersons, particularClientAllData, "ADDStaff");
-    //console.log(selectedPersons, selected, selectedDetails, particularClientAllData, "particularClientAllDataparticularClientAllData");
 
     const handleCancel = () => {
         onClose();
@@ -41,25 +39,19 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
             }
         };
         const ID = particularClientAllData[0]?.Id ? particularClientAllData[0]?.Id : exsistingPersons?.Id;
-
-        console.log("AllClientData :", AllClientData);
-
         try {
             if (!selected || selected.length === 0) {
                 await ClientService().updateClient("Client_Informations", ID, dataObj);
             } else {
                 await Promise.all(selected.map((item: any) => {
-
                     let staffList: any[] = [];
-                    //staffList.push(selectedPersonsId);
-                    const filteredClient = _.filter(AllClientData, function (o) { return o.Id == item; });
+                    const filteredClient = _.filter(AllClientData, function (o) { return o.Id === item; });
 
-                    if (filteredClient[0].assignedStaff != undefined && filteredClient[0].assignedStaff.length > 0) {
+                    if (filteredClient[0].assignedStaff !== undefined && filteredClient[0].assignedStaff.length > 0) {
                         _.forEach(filteredClient[0].assignedStaff, function (staff) {
                             staffList.push(staff.Id);
                         });
                     }
-
                     staffList = _.union(staffList, selectedPersonsId);
 
                     const dataObj = {
@@ -84,23 +76,9 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
     };
 
     const handlePeoplePickerChange = async (items: any[]) => {
-        //console.log(items, "itemsitemsitemsitems");
         const selectedPersonsIds = [];
-        /* if (selected && selected.length > 0 &&
-            selectedDetails && selectedDetails.length > 0) {
-            selected.forEach((selItem: any) => {
-                selectedDetails.forEach((selDetail: any) => {
-                    if (selItem === selDetail.Id) {
-                        //console.log(selDetail.Id, selDetail.StaffId);
-                        selectedPersonsIds.push(selDetail.StaffId);
-                    }
-                });
-            });
-        } */
-
         for (const item of items) {
             const getID = await ClientService().getPersonByEmail(item.secondaryText);
-            //console.log(getID.Id, "getIDgetID");
             selectedPersonsIds.push(getID.Id);
         }
         setSelectedPersonsId(selectedPersonsIds);
@@ -155,7 +133,6 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                                     }
                                 }
                             }}
-                            // searchTextLimit={5}
                             personSelectionLimit={50}
                             context={props.spContext}
                             showHiddenInUI={false}
@@ -170,7 +147,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button
                             onClick={handleSave}
-                            disabled={(selectedPersonsId.length == 0) ? true : false}
+                            disabled={(selectedPersonsId.length === 0) ? true : false}
                             variant="contained"
                             color="primary"
                             sx={{

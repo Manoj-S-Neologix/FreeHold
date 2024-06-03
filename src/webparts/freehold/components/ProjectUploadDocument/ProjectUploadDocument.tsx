@@ -15,37 +15,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
 const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, userRole }) => {
-
   const { control, handleSubmit, formState: { errors }, setValue } = useForm();
-
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<any>([]);
   const [getClient, setGetClient] = useState("");
   const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const [, setFiles] = useState<File[]>([]);
   const [getClientDetails, setGetClientDetails] = useState<any[]>([]);
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [projectData, setProjectData] = useState<any>([]);
-  const getProjectCode = particularClientAllData[0]?.projectNumber;
+  const [, setIsLoading] = useState(true);
+  const [, setProjectData] = useState<any>([]);
+  // const getProjectCode = particularClientAllData[0]?.projectNumber;
   const getProjectWebURL = particularClientAllData[0]?.webURL;
-  const [getClientDocumentsData, setClientDocumentsData] = useState<any[]>([]);
-  const [getClientDocumentsAllData, setClientDocumentsAllData] = useState<any[]>([]);
+  const [, setClientDocumentsData] = useState<any[]>([]);
+  const [, setClientDocumentsAllData] = useState<any[]>([]);
   const [getGuid, setGetGuid] = React.useState('');
-  const [fileData, setFileData] = useState<any[]>([]);
+  const [, setFileData] = useState<any[]>([]);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
-  console.log(projectData, isLoading, setGetFoldersResponse, 'projectdata..')
-
-  console.log(getClientDetails, "uploadgetClientDetails....")
-
-  console.log(getClientDocumentsData, getClientDocumentsAllData, getFoldersResponse, 'getClientDocuments..')
-
-
   const handleFileInput = (selectedFiles: File[]) => {
-    console.log(selectedFiles, "selectedFiles");
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
@@ -53,50 +43,19 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     setUploadFiles((prevFiles: any[]) =>
       prevFiles.filter((_, i: number) => i !== index)
     );
-    // setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
-
-    // const clientName: string = getValues("clientName");
-    // reset();
-
-    // setValue("clientName", clientName);
-
-    // //const upFiles:any[] = uploadFiles;
-
-    // uploadFiles.filter((_, i) => i !== index).map((uploadedFile, index) => (
-    //   setValue(`projectChecklist-${index}`, uploadedFile.checklist)
-    // ));
   };
-
-  const mappedFiles = fileData.map((file: any) => ({
-    id: file.Id,
-    fileName: file.FileLeafRef,
-    url: file.FileRef,
-    fileType: file.File_x0020_Type,
-    created: file.Created,
-    editorName: file.Editor.Title,
-    editorId: file.Editor.Id,
-    dmstags: file.DMS_x0020_Tags
-  }));
-
-  console.log(mappedFiles);
 
   const clientService = ClientService();
   const clientListName = "Client_Informations";
   const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
   const expand = 'AssignedStaff';
-  //alert("userROle | " + userRole);
-  //const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
 
   const apiCall = async (particularClientAllData: any) => {
     try {
-      console.log(particularClientAllData, "particularClientAllDataparticularClientAllData")
       const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, "", "");
-      console.log("API Call Data:", data);
-
       if (data) {
         const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
         const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
-        console.log(filteredData, "filteredData");
         const mappedData = filteredData.map((item: any) => ({
           id: item.Id,
           name: item.Title,
@@ -112,52 +71,39 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-      console.log(`${getProjectWebURL}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      // console.log(`${getProjectWebURL}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectWebURL}/${getLibraryName}`);
-
-      console.log('Retrieved files:', results,);
-      console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
-
-      // Ensure results is an array before setting state
       if (Array.isArray(results)) {
         setClientDocumentsData(results.map(item => item.FileLeafRef));
         setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB');
       } else {
         console.error('Error: Retrieved data is not an array');
       }
     } catch (error) {
       console.error('Error fetching documents:', error);
+      toast.error(error.message);
     }
   };
 
   const getClientFromFolder = async (libraryGuid: string, getUnique: string) => {
     try {
-      console.log(getUnique, "getUnique")
       await apiCall(getUnique)
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      console.log(results, 'guidresult')
       const getLibraryName = AllClientData.filter((item: any) => item.GUID === libraryGuid)[0].projectNumber;
-      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      // console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getLibraryName}`);
-
-      console.log('Retrieved files:', results,);
-      console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
-
-      // Ensure results is an array before setting state
       if (Array.isArray(results)) {
         setClientDocumentsData(results.map(item => item.FileLeafRef));
         setClientDocumentsAllData(results);
-        console.log(getClientDocumentsAllData, 'BBB');
       } else {
         console.error('Error: Retrieved data is not an array');
       }
     } catch (error) {
       console.error('Error fetching documents:', error);
+      toast.error(error.message);
     }
   };
 
@@ -169,27 +115,19 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
       let results: any = [];
-      //const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
       if (userRole === "staff") {
         results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, spContext.pageContext.user.email);
       } else {
         results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
       }
-
-      console.log(results, "result");
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
         setAllClientData(results.updatedResults);
-
-        // Retrieve documents from a folder (assuming getGuid is defined)
         const projectService = ProjectService();
-        const folderGUID = getGuid; // Assuming getGuid is defined elsewhere
+        const folderGUID = getGuid; 
         const folderResults = await projectService.getDocumentsFromFolder(folderGUID);
-        console.log(folderResults, "File Datas");
-
         setFileData(folderResults);
       } else {
-        // Handle case where no data is returned
         setProjectData([]);
         setAllClientData([]);
       }
@@ -204,7 +142,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     const projectService = ProjectService();
     projectService.getProject('project Checklist')
       .then((results) => {
-        console.log(results, 'client');
         if (results) {
           setDropdownOptions(results);
         }
@@ -217,7 +154,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
   React.useEffect(() => {
     fetchData();
-    // apiCall();
   }, []);
 
   React.useEffect(() => {
@@ -225,11 +161,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
       fetchProjectData();
     }
   }, [uploadFiles]);
-
-
-
-  console.log(particularClientAllData, "Data");
-  console.log(files, "files");
 
   const handleCancel = () => {
     onClose();
@@ -242,7 +173,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
       if (getClient !== "") {
         const apiResponse = ProjectService();
-        console.log(data, 'projectdata..')
         const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
 
         const clientInfo: any = getClientDetails.filter((item: any) => item.libraryGUID === getClient);
@@ -256,15 +186,11 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
         }
 
         const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}`;
-        console.log(folderUrl, "folderUrlfolderUrl")
         if (data.unitDocument !== '') {
-
           const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
-          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
         else {
-          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
 
@@ -283,30 +209,20 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
           DMSClientID: "",
           DMSUnit: "",
         }
-
         const folderUrl = `${particularClientAllData[0].webURL}`;
-        console.log(folderUrl, "folderUrlfolderUrl")
         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-
         setLoading(false);
         setFiles([]);
         setUploadFiles([]);
         toast.success('Documents Added Successfully!');
         handleCancel();
       }
-
-
     } catch (error) {
       setLoading(false);
-      console.error("Failed to add client and document:", error);
       toast.error(`Failed to add client and document: ${error}`);
     }
   });
-
-  console.log(AllClientData, "UploadClientData...")
-
   return (
-    // <div>ClientProjectUpload</div>
     <Stack direction={"column"} gap={3}>
       <Grid container spacing={2}>
         <Grid item sm={12}>
@@ -329,17 +245,13 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                   label=""
                   error={!!errors.projectName}
                   onChange={async (e: any) => {
-                    console.log(e.target.value);
                     const getUnique = AllClientData.filter((datas: any) => datas.projectName === e.target.value);
                     setParticularClientAllData(getUnique);
                     setValue('projectName', e.target.value);
                     setValue('clientName', "");
                     setIsUnitDocumentChecked(false);
                     setValue('unitDocument', "");
-                    console.log(getUnique, "getUnique")
-                    // await ProjectService().getDocumentsFromFolder(getUnique[0].GUID);
                     getClientFromFolder(getUnique[0].GUID, getUnique);
-
                   }}
                 >
                   {AllClientData?.map((item: any) => (
@@ -359,7 +271,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             name="clientName"
             control={control}
             defaultValue=""
-            //rules={{ required: 'Client Name is required' }}
             render={({ field }) => (
               <>
                 <InputLabel htmlFor="client-name">Client Name</InputLabel>
@@ -375,12 +286,8 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                   error={!!errors.clientName}
                   helperText={errors?.clientName?.message}
                   onChange={(e: any) => {
-                    console.log(e.target.value);
-                    console.log(getClientDetails, "getClientDetails....")
                     setGetClient(e.target.value);
                     const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === e.target.value)[0].libraryGUID
-
-                    console.log(getLibraryName, "getLibraryName");
                     getDocumentsFromFolder(getLibraryName);
                     setValue('clientName', e.target.value);
                     setGetGuid(e.target.value);
@@ -398,7 +305,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             )}
           />
         </Grid>
-
 
         <Grid item sm={6}>
           <Stack direction="row" alignItems="center">
@@ -479,12 +385,11 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                             required
                             error={!!errors[`projectChecklist-${index}`]}
                             helperText={errors[`projectChecklist-${index}`]?.message}
-                            style={{ width: 200 }} // Fixed width
+                            style={{ width: 200 }} 
                             onChange={(e: any) => {
                               field.onChange(e);
                               const newValue = e.target.value;
                               setValue('projectChecklist', e.target.value);
-                              console.log(newValue, 'e.target')
                               setUploadFiles((prevFiles: any) => {
                                 const updatedFiles = [...prevFiles];
                                 updatedFiles[index].checklist = newValue;
