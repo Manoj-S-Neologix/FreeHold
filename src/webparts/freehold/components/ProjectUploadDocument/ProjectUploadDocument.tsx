@@ -488,7 +488,14 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
           <Stack direction="row" alignItems="center">
             <Checkbox
               checked={isUnitDocumentChecked}
-              onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
+              onChange={(e) => {
+                setIsUnitDocumentChecked(e.target.checked);
+                setValue('unitDocument', "");
+                if (!e.target.checked) {
+                  getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+                }
+              }
+              }
               size="small"
               sx={{ p: 0, mr: 2 }}
             />

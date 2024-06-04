@@ -26,7 +26,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
 
   const { control, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm();
   const [AllClientData, setAllClientData] = useState<any>([]);
-  const [, setParticularClientAllData] = useState<any>([]);
+  const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const [uploadFiles, setUploadFiles] = useState<any>([]);
   const [getClient, setGetClient] = useState<string>("");
   const [, setFiles] = useState<File[]>([]);
@@ -147,11 +147,12 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
   const handleDelete = () => {
     const apiResponse = ClientService();
 
-    apiResponse.deleteFile(AllClientData[0].GUID, deleteId)
+    apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
       .then(() => {
         setIsDeleteDialogOpen(false);
         toast.success('File deleted successfully!');
-        fetchData();
+        //fetchData();
+        getDocumentsFromFolder(particularClientAllData[0].GUID);
       })
       .catch(error => {
         toast.error(`Failed to delete document: ${error}`);
