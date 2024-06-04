@@ -52,7 +52,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     React.useEffect(() => {
         if (location.pathname !== "/") {
             setisNavOpen(true);
-        }else{
+        } else {
             setisNavOpen(false);
         }
     }, [location]);
