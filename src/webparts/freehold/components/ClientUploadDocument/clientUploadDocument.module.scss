@@ -1,0 +1,39 @@
+.dialogOverlayAddClient {
+    backdrop-filter: blur(2px); 
+  }
+  
+  .dialogContent {
+    height: 300px !important; 
+    width: 500px !important; 
+    overflow: hidden !important;
+    label {
+      color: #125895 !important; 
+    }
+    input[type="text"] {
+      padding: 0 !important; 
+      
+    }
+  }
+
+  .dialogTitle {
+    text-align: center !important; 
+    font-weight: bold !important; 
+    color: var(--primarycolor);
+    margin-top: 0px !important;
+   
+  }
+  
+  .addTitle{
+    color: var(--primarycolor) !important;
+  }
+
+  .dropZone{
+  margin-top: 10px !important;
+  padding: 20px !important;
+  border: 1px solid gray !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  }
+
+
+  
