@@ -96,8 +96,9 @@ const tableIcons: Icons = {
 
 const ChecklistValidation = (props: IFreeholdChildProps) => {
 
-  const [, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
+  //const [unitData, setunitData] = useState<any>([]);
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
   const projectService = ProjectService();
@@ -119,14 +120,17 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     navigate('/');
   };
 
+  //Get search results
   const handleSearch = async () => {
 
     projectService.getProject('project Checklist')
       .then(async (results: any) => {
+        //console.log(results);
 
         let clientName: string = "";
 
         if (results.length > 0) {
+          //Get project number
           const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
           const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
 
@@ -137,14 +141,19 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
             projectRelativePath += "/" + getValues("clientName");
           }
 
-          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+          //Get all recursive documents
+          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+
           const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
+          console.log("docDetails :", docDetails_Grpd);
+
+          //Create document list
           const docList: any[] = [];
 
           if (clientName === "" && getValues("projectName") !== "") {
 
             const projectFolderPath: string = `${projectwebURL}`;
-            const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType === 1; });
+            const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
 
             _.forEach(clientDetails, function (client) {
 
@@ -163,6 +172,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           }
           else if (clientName !== "" && getValues("projectName") !== "") {
             const clientFolderPath: string = `${projectwebURL}/${clientName}`;
+
             docList.push({
               project: getValues("projectName"),
               client: getValues("clientName"),
@@ -173,7 +183,12 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
             });
 
           }
+
+          console.log('docList', docList);
+
+          //Set table
           setData(docList);
+
         } else {
           toast("No checklist configured for the selected project");
         }
@@ -181,6 +196,10 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       .catch((error) => {
         console.error('Error fetching checklist data:', error);
       });
+
+    //Set table
+    //setData(empList);
+
   };
 
   const checkProgress = (docDetails: any, checkListName: string) => {
@@ -198,6 +217,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     groupedData[row.project].push(row);
   });
 
+  console.log(isLoading);
+
   const fetchData = async () => {
 
     try {
@@ -209,17 +230,21 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       if (userRole === "staff") {
         const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
 
+        console.log(results, "result");
         if (results && results.TableData && results.TableData.length > 0) {
           setProjectData(results.TableData);
         } else {
+          // Handle case where no data is returned
           setProjectData([]);
         }
       } else {
         const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
 
+        console.log(results, "result");
         if (results && results.updatedResults && results.updatedResults.length > 0) {
           setProjectData(results.updatedResults);
         } else {
+          // Handle case where no data is returned
           setProjectData([]);
         }
       }
@@ -232,10 +257,12 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   };
 
   const getUserRoles = () => {
-    const loggedInUserGroups: string[] = [];
+    let loggedInUserGroups: string[] = [];
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {
+      //console.log("Current user site groups : ", response);
+
       _.forEach(response, function (group: any) {
         loggedInUserGroups.push(group.Title);
       });
@@ -251,7 +278,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       setUserRole(userRoleVal);
 
     });
-  }
+  };
 
   React.useEffect(() => {
     getUserRoles();
@@ -259,6 +286,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   React.useEffect(() => {
     fetchData();
+    // apiCall();
   }, [userRole]);
 
   return (
@@ -278,6 +306,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           </Breadcrumbs>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Box sx={{ ...commonStyles, border: 1, borderRadius: 2, borderColor: 'primary.main', mt: 1 }}>
+
+              {/* Filter section */}
               <div style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
                 justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
@@ -307,6 +337,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                               label=""
                               error={!!errors.projectName}
                               onChange={async (e: any) => {
+                                console.log(e.target.value);
                                 const getUnique = projectData.filter((datas: any) => datas.projectName === e.target.value);
                                 if (getUnique[0].clientDetails.length > 0) {
                                   setParticularClientAllData(getUnique[0].clientDetails);
@@ -315,7 +346,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                                 }
                                 setValue('projectName', e.target.value);
                                 setValue('clientName', "");
-                                
+
                               }}
                             >
                               {projectData?.map((item: any) => (
@@ -375,6 +406,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
                 <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button
+                    //disabled={(getValues('projectName') !== "" && getValues('projectName') !== undefined) ? false : true}
                     variant='contained'
                     style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
                     onClick={() => {
@@ -385,12 +417,14 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                     style={{ height: '1.5rem', backgroundColor: '#dba236', color: '#000' }}
                     onClick={() => {
                       reset();
+                      //setunitData([]);
                       setParticularClientAllData([]);
                       setData([]);
                     }}>Clear</Button>
                 </FormControl>
               </div>
 
+              {/* Filter results */}
               <Box style={{ position: 'relative', top: '5rem' }}>
 
                 <MaterialTable
