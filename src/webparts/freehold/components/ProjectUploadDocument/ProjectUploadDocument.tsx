@@ -192,12 +192,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     fetchData();
   }, []);
 
-  const getDocumentsLibPath = async (type: string) => {
+  const getDocumentsLibPath = async (type: string, projectUrl: string, projectNum: string) => {
 
-    const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
+    const projectRelativePath = (type === "project") ? `${projectUrl}` : (type === "client") ? `${projectUrl}/${getValues("clientName")}` : `${projectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, projectNum);
       setFileData(results);
       setIsLoading(false);
     } catch (error) {
@@ -318,9 +318,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
         toast.success('Documents Added Successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit");
+          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
         } else {
-          getDocumentsLibPath("client");
+          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
         }
 
       } catch (error) {
@@ -359,9 +359,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
         toast.success('Documents Added Successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit");
+          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
         } else {
-          getDocumentsLibPath("client");
+          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
         }
 
       } catch (error) {
@@ -378,9 +378,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
         setIsDeleteDialogOpen(false);
         toast.success('File deleted successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit");
+          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
         } else {
-          getDocumentsLibPath("client");
+          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
         }
       })
       .catch(error => {
@@ -419,15 +419,15 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                   error={!!errors.projectName}
                   onChange={async (e: any) => {
                     const getUnique = AllClientData.filter((datas: any) => datas.projectName === e.target.value);
+                    setProjectUrl(getUnique[0].webURL);
+                    setProjectCode(getUnique[0].projectNumber);
                     setParticularClientAllData(getUnique);
                     setValue('projectName', e.target.value);
                     setValue('clientName', "");
                     setIsUnitDocumentChecked(false);
                     setValue('unitDocument', "");
                     getClientFromFolder(getUnique[0].GUID, getUnique);
-                    setProjectUrl(getUnique[0].webURL);
-                    setProjectCode(getUnique[0].projectNumber);
-                    getDocumentsLibPath("project");
+                    getDocumentsLibPath("project", getUnique[0].webURL, getUnique[0].projectNumber);
                   }}
                 >
                   {AllClientData?.map((item: any) => (
@@ -463,17 +463,18 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                   helperText={errors?.clientName?.message}
                   onChange={(e: any) => {
                     setGetClient(e.target.value);
-                    const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === e.target.value)[0].libraryGUID
+                    setIsUnitDocumentChecked(false);
+                    const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID;
                     getDocumentsFromFolder(getLibraryName);
                     setValue('clientName', e.target.value);
                     setGetGuid(e.target.value);
-                    getDocumentsLibPath("client");
+                    getDocumentsLibPath("client", getProjectUrl, getProjectCode);
                     fetchData();
 
                   }}
                 >
                   {getClientDetails?.map((item: any) => (
-                    <MenuItem key={item.Id} value={item.libraryGUID}>
+                    <MenuItem key={item.Id} value={item.name}>
                       {item.name}
                     </MenuItem>
                   ))}
@@ -509,7 +510,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                 size="small"
                 onChange={(e: any) => {
                   setValue('unitDocument', e.target.value);
-                  getDocumentsLibPath("unit");
+                  getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
                 }}
                 required
               >
