@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Box } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,6 +12,15 @@ import { CircularProgress } from "@mui/material";
 import toast from 'react-hot-toast';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import styles from "../UploadDocuments/UploadDocuments.module.scss";
+import formatDate from "../../hooks/dateFormat";
+import CloseIcon from '@mui/icons-material/Close';
+
+
+
 
 const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
 
@@ -19,12 +28,18 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
   const [AllClientData, setAllClientData] = useState<any>([]);
   const [, setParticularClientAllData] = useState<any>([]);
   const [uploadFiles, setUploadFiles] = useState<any>([]);
-  const [getClient, setGetClient] = useState<any[]>([]);
+  const [getClient, setGetClient] = useState<string>("");
   const [, setFiles] = useState<File[]>([]);
   const [, setClientData] = useState<any>([]);
-  const [, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+  const [fileData, setFileData] = useState<any[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<number>(0);
+
+
+
 
   const fetchData = async () => {
     try {
@@ -46,6 +61,16 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
     } catch (error) {
       setIsLoading(false);
       console.error('Error fetching data:', error);
+    }
+  };
+
+  const getDocumentsFromFolder = async (libraryGuid: string) => {
+    const clientService = ClientService();
+    try {
+      const documents = await clientService.getDocumentsFromFolder(libraryGuid);
+      setFileData(documents);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
     }
   };
 
@@ -81,12 +106,12 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
   };
 
   const onDelete = (index: number) => {
-    const updatedFiles = uploadFiles.filter((_:any, i:any) => i !== index);
+    const updatedFiles = uploadFiles.filter((_: any, i: any) => i !== index);
     setUploadFiles(updatedFiles);
     const clientName: string = getValues("clientName");
     reset({ clientName });
-    updatedFiles.forEach((file:any, i:any) => {
-        setValue(`clientChecklist-${i}`, file.checklist || "");
+    updatedFiles.forEach((file: any, i: any) => {
+      setValue(`clientChecklist-${i}`, file.checklist || "");
     });
   };
 
@@ -114,6 +139,46 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
       toast.error(`Failed to add client and document: ${error}`);
     }
   });
+
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleDelete = () => {
+    const apiResponse = ClientService();
+
+    apiResponse.deleteFile(AllClientData[0].GUID, deleteId)
+      .then(() => {
+        setIsDeleteDialogOpen(false);
+        toast.success('File deleted successfully!');
+        fetchData();
+      })
+      .catch(error => {
+        toast.error(`Failed to delete document: ${error}`);
+      });
+  };
+
+  const handleClientChange = (clientName: string) => {
+    setGetClient(clientName);
+    const selectedClient = AllClientData.find((client: any) => client.name === clientName);
+    if (selectedClient) {
+      setParticularClientAllData([selectedClient]);
+      setValue('clientName', clientName);
+      getDocumentsFromFolder(selectedClient.GUID);
+    }
+  };
+
+  const mappedFiles = fileData.map((file: any) => ({
+    id: file.Id,
+    fileName: file.FileLeafRef,
+    url: file.FileRef,
+    fileType: file.File_x0020_Type,
+    created: file.Created,
+    editorName: file.Editor.Title,
+    editorId: file.Editor.Id,
+    dmstags: file.DMS_x0020_Tags
+}));
+
 
   return (
 
@@ -144,6 +209,9 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                     const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
                     setParticularClientAllData(getUnique);
                     setValue('clientName', e.target.value);
+                    handleClientChange(e.target.value);
+                    
+                    
                   }}
                 >
                   {AllClientData?.map((item: any) => (
@@ -199,7 +267,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                             required
                             error={!!errors[`clientChecklist-${index}`]}
                             helperText={errors[`clientChecklist-${index}`]?.message}
-                            style={{ width: 200 }} 
+                            style={{ width: 200 }}
                             onChange={(e: any) => {
                               field.onChange(e);
                               const newValue = e.target.value;
@@ -255,6 +323,120 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
             </Stack>
           </DialogActions>
         </>
+      )}
+
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Document Name</TableCell>
+              <TableCell>Document Type</TableCell>
+              <TableCell>Uploaded Date</TableCell>
+              <TableCell>Uploaded By</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!isLoading && mappedFiles.length > 0 ? mappedFiles.map((file: any) => (
+              <TableRow key={file.fileName}>
+                <TableCell>
+                  <Box sx={{
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    color: 'primary'
+                  }}
+                    onClick={() => {
+                      window.open(file.url, '_blank');
+                    }}   >
+                    {file.fileName}
+
+                  </Box>
+                </TableCell>
+                <TableCell>{file.dmstags}</TableCell>
+                <TableCell>{formatDate(file.created)}</TableCell>
+                <TableCell>{file.editorName}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => {
+                    setIsDeleteDialogOpen(true); setDeleteId(file.id);
+                  }}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            )) :
+              !isLoading && <TableRow>
+                <TableCell colSpan={8} align="center">
+                  No Records Found
+                </TableCell>
+              </TableRow>}
+            {isLoading &&
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  <CircularProgress size={20} />
+                </TableCell>
+              </TableRow>
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {isDeleteDialogOpen && (
+        <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
+          <DialogTitle className={styles.addTitle}
+            style={{ textAlign: 'center', marginLeft: '7px', position: 'relative' }}>
+            <div className="d-flex flex-column">
+              <div className="d-flex justify-content-between
+                               align-items-center relative">
+                <h4 style={{ margin: '0', color: '#125895' }}>
+                  Delete Document</h4>
+              </div>
+              <div style={{
+                height: '4px', width: '100%',
+                backgroundColor: '#125895'
+              }} />
+            </div>
+          </DialogTitle>
+          {!loading && <IconButton
+            aria-label="close"
+            onClick={handleCloseDeleteDialog}
+            sx={{
+              position: "absolute",
+              right: "14px",
+              top: "8px",
+              color: (theme: any) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>}
+          <DialogContent >
+
+            <div style={{ marginLeft: '7px' }}>
+              Are you sure you want to delete document
+              <strong style={{ marginLeft: '2px' }}>
+              </strong>
+              ?
+            </div>
+          </DialogContent>
+          <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+            <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              spacing={3}
+            >
+              <Button variant="contained" color="primary"
+                sx={{ width: loading ? '150px' : 'auto' }}
+                onClick={handleDelete} disabled={loading}>
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+              {!loading && <Button variant="outlined" onClick={handleCloseDeleteDialog}  >Cancel</Button>}
+            </Stack>
+          </DialogActions>
+        </Dialog>
       )}
     </Stack>
   )
