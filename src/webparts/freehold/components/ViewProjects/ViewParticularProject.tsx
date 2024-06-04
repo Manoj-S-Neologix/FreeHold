@@ -20,7 +20,6 @@ import ProjectService from '../../Services/Business/ProjectService';
 import toast from 'react-hot-toast';
 
 
-
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
         theme.palette.mode === 'light'
@@ -49,26 +48,20 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 }));
 
 const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fetchData, initialFetchData, isEdit, setIsEdit, particularClientAllData }: any) => {
-    // const [isEdit, setIsEdit] = useState(false);
     const [handleClientDialog, setHandleClientDialog] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
-
     const closeAssignClientDialog = () => {
         setHandleClientDialog(false);
     };
 
     const { control, setValue, handleSubmit, reset, formState: { errors }, trigger } = useForm(
         {
-
-            defaultValues: {
+           defaultValues: {
                 title: projectDetails.projectName,
                 projectNumber: projectDetails.projectNumber,
                 location: projectDetails.location,
                 developer: projectDetails.developer
-                // contact: clientDetails.contact,
-                // assignedStaff: clientDetails.assignedStaff
             }
         }
     );
@@ -97,9 +90,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
             setValue("developer", datas.developer)
         }
     }, [projectDetails]);
-
-
-    console.log(projectDetails, "projectDetails");
 
     const navigateToHome = () => {
         navigate('/');
@@ -139,23 +129,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
             });
     });
 
-
-
-
-
-    // const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm(
-    //     {
-    //         defaultValues: {
-    //             title: projectDetails.projectName,
-    //             projectNumber: projectDetails.ProjectNumber,
-    //             location: projectDetails.location,
-    //             developer: projectDetails.developer
-    //         }
-    //     }
-    // );
-
-
-
     return (
         <Box>
             <Stack direction='column' sx={{ gap: "30px" }} >
@@ -177,7 +150,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                 </Box>
                 <Box>
                     <form onSubmit={handleUpdate}>
-                        {/* <form> */}
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="client-details-table">
                                 <TableHead>
@@ -207,50 +179,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {/* <TableRow>
-                                        <TableCell component="th" scope="row">Project Number</TableCell>
-                                        {!isEdit ? (
-                                            <TableCell>{projectDetails.projectNumber}</TableCell>
-                                        ) : (
-                                            <TableCell>
-                                                <Controller
-                                                    name="projectNumber"
-                                                    control={control}
-                                                    defaultValue=""
-                                                    rules={{
-                                                        required: 'Project Number is required',
-                                                        pattern: {
-                                                            value: /^[a-zA-Z0-9+-.]+$/,
-                                                            message: 'Invalid project number'
-                                                        }
-                                                    }}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            id="projectNumber"
-                                                            margin="dense"
-                                                            size="small"
-                                                            // fullWidth
-                                                            value={editData.projectNumber}
-                                                            onChange={async (e) => {
-                                                                const input = e.target;
-                                                                const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
-                                                                const start = input.selectionStart;
-                                                                const end = input.selectionEnd;
-                                                                field.onChange(value);
-                                                                await trigger('projectNumber');
-                                                                setEditData({ ...editData, projectNumber: value });
-                                                                input.setSelectionRange(start, end);
-                                                            }}
-                                                            error={!!errors.projectNumber}
-                                                            helperText={errors.projectNumber && errors.projectNumber.message}
-                                                        />
-                                                    )}
-                                                />
-
-                                            </TableCell>
-                                        )}
-                                    </TableRow> */}
+                                
                                     <TableRow>
                                         <TableCell component="th" scope="row">Project Number</TableCell>
                                         <TableCell>{projectDetails.projectNumber}</TableCell>
@@ -267,10 +196,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     defaultValue=""
                                                     rules={{
                                                         required: 'Project Name is required',
-                                                        //    pattern: {
-                                                        //     value: /^[a-zA-Z\s]+$/,
-                                                        //        message: 'Invalid project name'
-                                                        //    }
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
@@ -278,7 +203,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             id="title"
                                                             margin="dense"
                                                             size="small"
-                                                            // fullWidth
                                                             value={editData.title}
                                                             onChange={async (e) => {
                                                                 const input = e.target;
@@ -310,11 +234,7 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     control={control}
                                                     defaultValue=""
                                                     rules={{
-                                                        required: 'Location is required',
-                                                        // pattern: {
-                                                        //     value: /^[a-zA-Z\s-]+$/,
-                                                        //     message: 'Invalid project number'
-                                                        // }
+                                                        required: 'Location is required',                                                  
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
@@ -322,7 +242,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             id="location"
                                                             margin="dense"
                                                             size="small"
-                                                            // fullWidth
                                                             value={editData.location}
                                                             onChange={async (e) => {
                                                                 const input = e.target;
@@ -339,7 +258,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                         />
                                                     )}
                                                 />
-
                                             </TableCell>
                                         )}
                                     </TableRow>
@@ -355,10 +273,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                     defaultValue=""
                                                     rules={{
                                                         required: 'Developer is required',
-                                                        // pattern: {
-                                                        //     value: /^[a-zA-Z\s-]+$/,
-                                                        //     message: 'Invalid Developer'
-                                                        // }
                                                     }}
                                                     render={({ field }) => (
                                                         <TextField
@@ -366,7 +280,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                             id="developer"
                                                             margin="dense"
                                                             size="small"
-                                                            // fullWidth
                                                             value={editData.developer}
                                                             onChange={async (e) => {
                                                                 const input = e.target;
@@ -390,15 +303,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
 
                                     <TableRow>
                                         <TableCell component="th" scope="row">Assigned Client</TableCell>
-                                        {/* {!isEdit ? (<TableCell>{projectDetails.assignClient}</TableCell>) : (<TableCell
-                                            sx={{ textDecoration: "underline", color: "blue", cursor: "pointer" }}
-                                        >
-                                            {projectDetails.assignClient ?
-                                                projectDetails.assignClient :
-                                                "Assign Client"
-                                            }
-                                        </TableCell>
-                                        )} */}
                                         {!isEdit ? (
                                             (<TableCell>
                                                 {projectDetails?.clientDetails?.length > 0 && (
@@ -440,18 +344,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                         <TableCell component="th" scope="row">Modified By</TableCell>
                                         <TableCell>{projectDetails.modifiedBy}</TableCell>
                                     </TableRow>
-                                    {/* {isEdit && <TableRow>
-                                    <TableCell component="th" scope="row">
-                                        <MuiButton variant="contained" color="primary">
-                                            Update
-                                        </MuiButton>
-                                        <MuiButton sx={{ marginLeft: "10px" }} variant="outlined" color="secondary"
-                                            onClick={navigateToClient}
-                                        >
-                                            Cancel
-                                        </MuiButton>
-                                    </TableCell>
-                                </TableRow>} */}
                                     {isEdit && <TableRow>
                                         <TableCell component="th" scope="row">
 
@@ -460,7 +352,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
                                                 color="primary"
 
                                                 onClick={() => {
-                                                    // console.log("data")
                                                     handleUpdate();
                                                 }}
                                                 disabled={loading}
@@ -486,7 +377,6 @@ const ViewParticularProject = ({ props, projectDetails, setIsViewDialogOpen, fet
             </Stack>
             {handleClientDialog && <AssignClient
                 particularClientAllData={particularClientAllData}
-                // exsistingPersons={selectedPersons}
                 open={handleClientDialog}
                 onClose={closeAssignClientDialog}
                 props={props}

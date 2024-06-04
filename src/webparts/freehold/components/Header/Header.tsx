@@ -28,7 +28,6 @@ const Header = ({ props }: any) => {
                                         width="150"
                                         height="50"
                                         alt="Logo"
-                                        /* style={{ marginLeft: '7px' }} */
                                     />
                                 </Link>
                             </Box>

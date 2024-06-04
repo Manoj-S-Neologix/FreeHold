@@ -47,24 +47,19 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 
 const ViewClientByID = (props: IFreeholdChildProps) => {
 
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
     const [clientDetails, setClientDetails] = useState<any[]>([]);
     const { cId } = useParams();
 
     const fetchData = async () => {
         try {
-
             const clientService = ClientService();
             const select = '*,AssignedStaff/Title,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
             const expand = 'AssignedStaff,Author,ProjectId,Editor';
-            // const orderBy = 'Modified';
             const filter = `Id eq '${cId}'`;
             const orderBy = "Modified";
-            // const filtered = "";
             const results = await clientService.getClientbyID('Client_Informations', select, expand, filter, orderBy, cId);
-
-            // Handle project results
             if (results && results?.updatedResults && results?.updatedResults.length > 0) {
                 setClientDetails(results.updatedResults);
             } else {
@@ -87,7 +82,6 @@ const ViewClientByID = (props: IFreeholdChildProps) => {
 
     const navigate = useNavigate();
 
-    // update code end
     const navigateToHome = () => {
         navigate('/');
     };
@@ -95,8 +89,6 @@ const ViewClientByID = (props: IFreeholdChildProps) => {
     const navigateToClient = () => {
         navigate(-1);
     };
-
-    console.log("loading : ", loading);
 
     return (
         <Box sx={{ width: '100', padding: '20px', marginTop: "10px" }}>

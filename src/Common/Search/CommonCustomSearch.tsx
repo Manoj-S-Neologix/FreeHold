@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Box, TextField, CircularProgress, IconButton } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-
 import styles from './CustomSearch.module.scss';
 import Drawer from '@mui/material/Drawer';
 import SearchResults from '../SearchResults/SearchResults';
@@ -14,7 +13,7 @@ interface ISearchPros {
     spContext: WebPartContext;
     siteUrl: string;
     client: string;
-    project: String;
+    project: string;
     isExpand?: boolean;
     isApplied?: boolean;
 }
@@ -44,7 +43,6 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                 }
 
                 const results = await spServiceInstance.getFilteredResults(qryTxt);
-                console.log("searchresults", results.PrimarySearchResults);
                 setSearchResults(results.PrimarySearchResults);
                 setOpend(newOpen);
             }

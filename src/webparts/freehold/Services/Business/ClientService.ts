@@ -63,7 +63,7 @@ const ClientService = () => {
     const updateClientDocumentMetadata = async (libraryName: string, file: any, DMSTags: any) => {
         if (spServiceInstance) {
             const response = await spServiceInstance.uploadDocumentMetaData(libraryName, file, DMSTags);
-            console.log(response, "response-metaData")
+            // console.log(response, "response-metaData")
             return response;
         }
     };
@@ -152,7 +152,7 @@ const ClientService = () => {
                     Editor: item?.Editor
                 };
             });
-            console.log(updatedResults, tableData, "updatedResults");
+            // console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
         }
     };
@@ -174,7 +174,7 @@ const ClientService = () => {
     const getClientExpand = async (ListName: string, select: string, expand: string, orderBy: any, id?: string | number | undefined) => {
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
-            console.log(results, 'client result,,,')
+            // console.log(results, 'client result,,,')
             const updatedResults = await Promise.all(results.map(async (item: any) => {
                 const assignedStaffDetails = await Promise.all((item.AssignedStaff || []).map(async (staff: any) => {
                     const staffDetails = {
@@ -195,7 +195,7 @@ const ClientService = () => {
                 })
 
                 const assignedStaff = assignedStaffDetails;
-                console.log(item, projectDetails, 'itemresult')
+                // console.log(item, projectDetails, 'itemresult')
 
                 return {
                     name: item.Title,
@@ -235,7 +235,7 @@ const ClientService = () => {
                     Editor: item?.Editor
                 };
             });
-            console.log(updatedResults, tableData, "updatedResults");
+            // console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
         }
     };
@@ -318,7 +318,7 @@ const ClientService = () => {
                     Editor: item?.Editor
                 };
             });
-            console.log(updatedResults, tableData, "updatedResults");
+            // console.log(updatedResults, tableData, "updatedResults");
             return { updatedResults, tableData };
         }
     };
@@ -363,7 +363,7 @@ const ClientService = () => {
 
         if (spServiceInstance) {
             const results = await spServiceInstance.getListItemsByFilter(ListName, select, expand, orderBy, id);
-            console.log("Client results : ", results);
+            // console.log("Client results : ", results);
 
             return results;
         }

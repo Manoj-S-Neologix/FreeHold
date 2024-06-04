@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import React from 'react';
@@ -18,8 +17,6 @@ export interface ISideNavProps {
 
 const Sidenav = (props: ISideNavProps) => {
     const navigate = useNavigate();
-    //console.log(props);
-
     let menuItems: any[] = [];
 
     if (props.userRole === "staff") {

@@ -7,14 +7,12 @@ import DialogActions from '@mui/material/DialogActions';
 import { Button, IconButton, Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, MenuItem } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import ClientService from '../../Services/Business/ClientService';
 import styles from "./UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
 import toast from 'react-hot-toast';
 import DropZone from '../../../../Common/DropZone/DropZone';
 import { Controller } from "react-hook-form";
-// import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 
 interface UploadDocumentProps {
@@ -35,9 +33,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
     const [uploadFiles, setUploadFiles] = useState<any[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
-
     const handleFileInput = (selectedFiles: File[]) => {
-        console.log(selectedFiles, "selectedFiles");
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     };
 
@@ -51,19 +47,12 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         }
     }, [uploadFiles]);
 
-    console.log(files, "files");
-
-    console.log(particularClientAllData, "ClientData");
-
-
     const fetchData = async () => {
         if (particularClientAllData.length > 0) {
             const clientService: any = ClientService();
             const folderGUID = particularClientAllData[0].GUID;
             try {
                 const results = await clientService.getDocumentsFromFolder(folderGUID);
-                console.log(results, "File Datas");
-                console.log("Folder GUID:", folderGUID);
                 setFileData(results);
                 setIsLoading(false);
             } catch (error) {
@@ -71,20 +60,14 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 console.error("Error fetching documents:", error);
             }
         } else {
-            console.warn("No data in particularClientAllData");
+            // console.warn("No data in particularClientAllData");
         }
     };
-
-
-
-    console.log(fileData, "fileData");
-
 
     const fetchClientData = () => {
         const clientService = ClientService();
         clientService.getClient('Client Checklist')
             .then((results) => {
-                console.log(results, 'client');
                 if (results) {
                     setDropdownOptions(results);
                 }
@@ -93,7 +76,6 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                 console.error('Error fetching SharePoint data:', error);
             });
     };
-
 
 
     const mappedFiles = fileData.map((file: any) => ({
@@ -107,77 +89,37 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         dmstags: file.DMS_x0020_Tags
     }));
 
-    console.log(mappedFiles, 'mappedfiles');
-
-
-
     useEffect(() => {
         fetchData();
     }, [particularClientAllData, files]);
-
-
 
     const handleCloseDeleteDialog = () => {
         setIsDeleteDialogOpen(false);
         fetchData();
     };
 
-
-    const fileInfoArray = uploadFiles?.map((file: any) => ({
-        lastModified: file.lastModified,
-        lastModifiedDate: file.lastModifiedDate,
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        webkitRelativePath: file.webkitRelativePath
-    }));
-
-    console.log(fileInfoArray, 'fileInfoArray');
-
-    console.log(uploadFiles, "uploadFiles");
-
     const onDelete = (index: number) => {
-        // setUploadFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
         const updatedFiles = uploadFiles.filter((_, i) => i !== index);
         setUploadFiles(updatedFiles);
-    
-        // Get the current form values
         const clientName: string = getValues("clientName");
-    
-        // Reset the form while keeping the clientName value
         reset({ clientName });
-    
-        // Set the form values for the remaining files
-        updatedFiles.forEach((file, i) => {
+            updatedFiles.forEach((file, i) => {
             setValue(`clientChecklist-${i}`, file.checklist || "");
         });
     };
 
-    //......Upload documents with meta data......
     const handleSave = handleSubmit(async (data: any) => {
         setLoading(true);
         const apiResponse = ClientService();
 
         const updatedData = {
-            //DMS_x0020_Tags: data.clientChecklist,
             DMSClient: particularClientAllData[0].name,
-            //DMSProject: "",
-            //DMSTags: "",
-            //DMSUnit: "",
             DMSClientID: (particularClientAllData[0].Id).toString(),
-            //DMSProjectID: ""
         }
-
-
-        //console.log(updatedData.DMS_x0020_Tags, 'DMSTags..')
-
-        console.log(particularClientAllData[0].webURL, "name");
-        console.log(fileInfoArray);
 
         apiResponse.updateClientDocumentMetadata(particularClientAllData[0].webURL, uploadFiles, updatedData)
             .then(() => {
                 setLoading(false);
-                // handleCancel();
                 setFiles([]);
                 setUploadFiles([]);
                 toast.success('Documents Added Successfully!');
@@ -186,52 +128,9 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
             })
             .catch((error) => {
                 setLoading(false);
-                console.error("Failed to add client and document:", error);
                 toast.error(`Failed to add client and document: ${error}`);
             });
-
     });
-
-
-    // const handleSave = handleSubmit(async (data: any) => {
-    //     setLoading(true);
-    //     const apiResponse = ClientService();
-
-    //     console.log(particularClientAllData[0].webURL, "name");
-    //     console.log(fileInfoArray);
-
-    //     try {
-
-    //         const uploadedFile = await apiResponse.uploadDocumentInLibrary(particularClientAllData[0].webURL, uploadFiles);
-    //         const item = await uploadedFile.file.getItem();
-    //         await item.update({
-    //             DMSTags: data.clientChecklist
-    //         });
-
-    //         setLoading(false);
-    //         setFiles([]);
-    //         setUploadFiles([]);
-    //         toast.success('Documents Added Successfully!');
-    //         fetchData();
-
-    //         alert("Document and its metadata updated successfully");
-    //         // window.location.href = `${this.props.spContext.pageContext.web.absoluteUrl}/SitePages/Document-Listing.aspx?PropTitle=${encodeURIComponent(that._formatPathTitle())}&FolderPath=${encodeURIComponent(that.state.selectedFolderPath)}`;
-    //     } catch (error) {
-    //         // Handle errors
-    //         setLoading(false);
-    //         console.error("Failed to add client and document:", error);
-    //         toast.error(`Failed to add client and document: ${error}`);
-    //     }
-    // });
-
-
-
-
-
-
-
-    console.log(dropdownOptions, "dropdownOptions...")
-
 
     const handleDelete = () => {
         const apiResponse = ClientService();
@@ -239,12 +138,10 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
         apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
             .then(() => {
                 setIsDeleteDialogOpen(false);
-                console.log("File deleted successfully!");
                 toast.success('File deleted successfully!');
                 fetchData();
             })
             .catch(error => {
-                console.error("Failed to delete document:", error);
                 toast.error(`Failed to delete document: ${error}`);
             });
     };
@@ -324,7 +221,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                                                         required
                                                                         error={!!errors[`clientChecklist-${index}`]}
                                                                         helperText={errors[`clientChecklist-${index}`]?.message}
-                                                                        style={{ width: 200 }} // Fixed width
+                                                                        style={{ width: 200 }} 
                                                                         onChange={(e: any) => {
                                                                             field.onChange(e);
                                                                             const newValue = e.target.value;
@@ -438,7 +335,6 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                     </DialogContent>
                 </Dialog>
 
-                {/* Delete document dialog */}
                 {isDeleteDialogOpen && (
                     <Dialog open={isDeleteDialogOpen} maxWidth='sm' fullWidth  >
                         <DialogTitle className={styles.addTitle}

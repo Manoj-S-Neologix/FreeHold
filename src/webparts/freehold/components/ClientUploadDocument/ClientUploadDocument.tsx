@@ -16,21 +16,15 @@ import IconButton from '@mui/material/IconButton';
 const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
 
   const { control, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm();
-
   const [AllClientData, setAllClientData] = useState<any>([]);
-  const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [, setParticularClientAllData] = useState<any>([]);
   const [uploadFiles, setUploadFiles] = useState<any>([]);
   const [getClient, setGetClient] = useState<any[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
-  const [clientData, setClientData] = useState<any>([]);
-  const [getGuid, setGetGuid] = React.useState('');
-  const [fileData, _] = useState<any[]>([]);
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setFiles] = useState<File[]>([]);
+  const [, setClientData] = useState<any>([]);
+  const [, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
-
-  console.log(getGuid, "getGuid");
 
   const fetchData = async () => {
     try {
@@ -38,23 +32,13 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      //debugger;
-      //alert("userRole : " + userRole);
       const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'` : "";
-      //const filter = "";
       const orderBy = 'Modified';
-      console.log(orderBy, "orderByorderByorderBy....")
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
-      //const results = await clientService.getClient('Client_Informations');
-      console.log(results, "result");
       if (results?.updatedResults && results?.updatedResults.length > 0) {
-        //setClientData(results);
-        //setAllClientData(results);
         setClientData(results?.tableData);
         setAllClientData(results?.updatedResults);
-
       } else {
-        // Handle case where no data is returned
         setClientData([]);
         setAllClientData([]);
       }
@@ -71,7 +55,6 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
 
   React.useEffect(() => {
     fetchData();
-    // apiCall();
   }, []);
 
   React.useEffect(() => {
@@ -84,7 +67,6 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
     const clientService = ClientService();
     clientService.getClient('Client Checklist')
       .then((results) => {
-        console.log(results, 'client');
         if (results) {
           setDropdownOptions(results);
         }
@@ -95,41 +77,24 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
   };
 
   const handleFileInput = (selectedFiles: File[]) => {
-    console.log(selectedFiles, "selectedFiles");
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
   const onDelete = (index: number) => {
-    // setUploadFiles((prevFiles: any[]) =>
-    //   prevFiles.filter((_, i: number) => i !== index)
-    // );
     const updatedFiles = uploadFiles.filter((_:any, i:any) => i !== index);
     setUploadFiles(updatedFiles);
-
-    // Get the current form values
     const clientName: string = getValues("clientName");
-
-    // Reset the form while keeping the clientName value
     reset({ clientName });
-
-    // Set the form values for the remaining files
     updatedFiles.forEach((file:any, i:any) => {
         setValue(`clientChecklist-${i}`, file.checklist || "");
     });
   };
 
-  console.log(files, setValue, particularClientAllData, getClient, setGetClient, clientData, "files");
-  console.log(fileData, setLoading, isLoading, setLoading, setGetGuid, "files...");
-
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
-
     try {
       const apiResponse = ClientService();
-      console.log(data, 'projectdata..')
-      //const getLibraryPath = AllClientData.filter((item: any) => item.Title === getClient)[0].webURL;
       const clientInfo: any = AllClientData.filter((item: any) => item.name === getClient)[0];
-
       const updatedData = {
         DMSClient: clientInfo.name,
         DMSProject: "",
@@ -137,22 +102,18 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
         DMSClientID: (clientInfo.Id).toString(),
         DMSProjectID: ""
       }
-
       await apiResponse.updateClientDocumentMetadata(clientInfo.webURL, uploadFiles, updatedData);
-
       setLoading(false);
       setFiles([]);
       setUploadFiles([]);
       toast.success('Documents Added Successfully!');
       handleCancel();
-
     } catch (error) {
       setLoading(false);
       console.error("Failed to add client and document:", error);
       toast.error(`Failed to add client and document: ${error}`);
     }
   });
-  console.log(AllClientData, "AllClientData..")
 
   return (
 
@@ -179,20 +140,10 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                   error={!!errors.clientName}
                   helperText={errors?.clientName?.message}
                   onChange={(e: any) => {
-                    console.log(e.target.value);
                     setGetClient(e.target.value);
-                    // const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
                     const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
                     setParticularClientAllData(getUnique);
-                    // setValue('projectName', e.target.value)
-                    console.log(getUnique, "getUnique")
-
-                    // console.log(getLibraryName, "getLibraryName");
-                    // getDocumentsFromFolder(getLibraryName);
                     setValue('clientName', e.target.value);
-                    // setGetGuid(e.target.value);
-                    // fetchData(getLibraryName);
-
                   }}
                 >
                   {AllClientData?.map((item: any) => (
@@ -201,7 +152,6 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                     </MenuItem>
                   ))}
                 </TextField>
-                {/* <FormHelperText error>{errors.clientName && errors.clientName.message}</FormHelperText> */}
               </>
             )}
           />
@@ -216,7 +166,6 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
         </Grid>
       </Grid>
 
-      {/*multiple checklist dropdown */}
       {uploadFiles.length > 0 && dropdownOptions.length > 0 && (
         <>
 
@@ -250,12 +199,11 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                             required
                             error={!!errors[`clientChecklist-${index}`]}
                             helperText={errors[`clientChecklist-${index}`]?.message}
-                            style={{ width: 200 }} // Fixed width
+                            style={{ width: 200 }} 
                             onChange={(e: any) => {
                               field.onChange(e);
                               const newValue = e.target.value;
                               setValue('clientChecklist', e.target.value);
-                              console.log(newValue, 'e.target')
                               setUploadFiles((prevFiles: any) => {
                                 const updatedFiles = [...prevFiles];
                                 updatedFiles[index].checklist = newValue;
@@ -283,8 +231,6 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
             </Table>
           </TableContainer>
 
-
-
           <DialogActions sx={{ px: 0, mr: 0 }}>
             <Stack
               direction="row"
@@ -310,10 +256,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
           </DialogActions>
         </>
       )}
-
     </Stack>
-
   )
 }
-
 export default ClientUploadDocument;

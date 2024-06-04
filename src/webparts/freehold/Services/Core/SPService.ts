@@ -139,7 +139,7 @@ const SPService: SPServiceType = {
                 const uploadedFile = await library.files.add(file.name, file, true);
                 if (uploadedFile) {
                     const item = await uploadedFile.file.getItem();
-                    console.log(item, 'serviceitem..')
+                    // console.log(item, 'serviceitem..')
                     if (item) {
                         await item.update({
                             ...DMSTags,
@@ -160,7 +160,7 @@ const SPService: SPServiceType = {
         });
         return Promise.all(promises)
             .then((documents: any[]) => {
-                console.log("Documents with metadata updated successfully")
+                // console.log("Documents with metadata updated successfully")
                 return documents;
             })
             .catch((error: any) => {
@@ -301,13 +301,13 @@ const SPService: SPServiceType = {
                     .then(async document => {
 
                         const item = await web.getFileByServerRelativePath(`${destinationLibraryUrl}/${file.FileLeafRef}`).getItem();
-                        console.log(item);
+                        // console.log(item);
                         if (item) {
                             await item.update({
                                 DMSProject: DMStags.DMSProject,
                                 DMSProjectID: DMStags.DMSProjectID
                             });
-                            console.log(`Document ${file.FileLeafRef} copied successfully.`);
+                            // console.log(`Document ${file.FileLeafRef} copied successfully.`);
                             results.push({ file: file.FileLeafRef, success: true });
                         } else {
                             throw new Error("Failed to get item after upload");

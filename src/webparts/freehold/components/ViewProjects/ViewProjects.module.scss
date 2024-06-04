@@ -1,70 +1,3 @@
-// @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
-
-// $container-padding: 2rem !important;
-// $container-gap: 1rem !important;
-
-// .container {
-//     @include ms-Grid;
-//     padding-left: $container-padding;
-//     padding-right: $container-padding;
-//     display: flex;
-//     flex-direction: column !important;
-// }
-
-// .Addcontainer {
-//     display: flex;
-//     align-items: center; 
-//     gap: 2px !important; 
-
-// }
-// .searchBar {
-//     width: 20%;
-//     height: 10% !important;
-//     left: 1.25rem !important; 
-//     margin-inline-start: auto !important;
-//     margin-right: 33px !important;
-// }
-
-
-// .searchInput {
-    
-//     display: contents !important
-
-// }
-
-// .iconFilter {
-//     color: black;
-//     margin-left: 0.5rem;
-//     height: 20px !important;
-// }
-
-
-
-// .Addbutton {
-//     background-color: transparent !important;
-//     border: none !important;
-//     color: var(--primarycolor) !important;
-// }
-
-// .Clientcontainer {
-//     background-color: white !important;
-//     margin-left: 0.625rem !important; 
-// }
-
-// .Assignbutton{
-//     background-color: var(--secondarycolor) !important;
-//     color: black !important;
-//     padding: 3px !important;
-//     border-radius: 10px !important;
-// }
-// .Homebreadcrumb{
-//     margin-left: 0 !important;
-//     padding: 0px !important;
-//     padding-top: 15px !important;
-//     padding-left: 3px !important;
-    
-// }
-
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/_SPFabricCore.scss';
 
 $container-padding: 2rem !important;
@@ -109,8 +42,6 @@ $container-gap: 1rem !important;
     border: none !important;
     color: white !important;
     padding: 5px !important;
-    // padding-left: 5px !important;
-    // padding-right: 5px !important;
     border-radius: 4px !important;
 }
 
@@ -159,7 +90,5 @@ $container-gap: 1rem !important;
 
 }
 .Homebreadcrumb{
-    // margin-left: -16 !important;
     padding: 0 10px !important;
-    // padding-top: 15px !important;
 }

@@ -15,12 +15,10 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
   const [userRole, setUserRole] = useState('');
 
   const getUserRoles = () => {
-    let loggedInUserGroups: string[] = [];
+    const loggedInUserGroups: string[] = [];
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {
-      //console.log("Current user site groups : ", response);
-
       _.forEach(response, function (group: any) {
         loggedInUserGroups.push(group.Title);
       });
@@ -32,9 +30,7 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
       } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
         userRoleVal = "staff";
       }
-
       setUserRole(userRoleVal);
-
     });
   }
 
@@ -48,27 +44,19 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
   }, [userRole]
   )
 
-  console.log(clientData, "countclient")
-  console.log(projectData, "countproject")
-
   const fetchData = async () => {
     try {
       const clientService = ClientService();
-
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
       const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
-
       const orderBy = 'Modified';
       const filteredClientsnProjects = await clientService.getfilteredClientsnProjects('Client_Informations', select, expand, filter, orderBy, userRole);
-      console.log("filteredClientsnProjects : ", filteredClientsnProjects);
-
       if (filteredClientsnProjects?.clientResults)
         setClientData(filteredClientsnProjects.clientResults.length)
       if (filteredClientsnProjects?.pResults)
         setProjectData(filteredClientsnProjects.pResults.length)
     } catch (error) {
-
       console.error('Error fetching data:', error);
     }
   };
@@ -80,7 +68,6 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
     <Box >
       <Stack>
         <div className={styles.projectsClient}>
-          {/* <div className={styles.container}> */}
           <div className={`${styles.container} ${styles.projectContainer}`}>
             <div className={`${styles.row} ${styles.projectRow}`}>
               <div className={`${styles.column} ${styles.projectColumn}`}>
@@ -90,7 +77,6 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                       alt=""
                     />
                   </div>
-                  {/* <div className={`${styles.col3} ${styles.projectC3}`} >PROJECTS </div> */}
                   <Link to={"/ViewProject"}>
                     <div className={`${styles.col3} ${styles.projectC3}`}>
                       <img
@@ -104,8 +90,6 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                       </div>
                     </div>
                   </Link>
-
-                  {/* <div className={`${styles.col3} ${styles.clientC3}`} >CLIENTS</div> */}
                   <Link to={"/ViewClient"}>
                     <div className={`${styles.col3} ${styles.clientC3}`}>
                       <img
@@ -119,15 +103,10 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                       </div>
                     </div>
                   </Link>
-
-
-
                   <div className={styles.col3}>
                     <img src={require('/src/assets/Images/HomeBorderRight.png')}
-
                       alt=""
                     /></div>
-
                 </div>
               </div>
             </div>
