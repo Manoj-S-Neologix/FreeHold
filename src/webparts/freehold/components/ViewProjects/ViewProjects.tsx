@@ -442,7 +442,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
       location: item.location,
       assignClient: hyperLink(item?.clientDetails.length, item?.clientDetails, item),
       modifiedDate: item?.modifiedDate,
-      modifiedBy: item?.modifiedBy,
+      //modifiedBy: item?.modifiedBy,
       clientDetails: item?.clientDetails
     };
   }
@@ -457,7 +457,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
       //developer: { value: item.developer, width: "140px" },
       assignClient: { value: item?.assignClient, width: "120px" },
       modifiedDate: { value: item.modifiedDate, width: "140px" },
-      modifiedBy: { value: item.modifiedBy, width: "150px" },
+      //modifiedBy: { value: item.modifiedBy, width: "150px" },
       // assignedStaff: { value: item?.assignedStaff, width: "80%" },
     };
   });

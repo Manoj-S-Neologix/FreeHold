@@ -492,6 +492,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                             <ProjectUploadDocument
                                 userRole={userRole}
                                 spContext={spContext}
+                                siteUrl={siteUrl}
                                 onClose={() => {
                                     setDocumentType('')
                                     setOpenDocuments(false)
