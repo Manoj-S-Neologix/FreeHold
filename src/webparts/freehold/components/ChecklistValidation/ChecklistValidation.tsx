@@ -96,7 +96,7 @@ const tableIcons: Icons = {
 
 const ChecklistValidation = (props: IFreeholdChildProps) => {
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState<any>([]);
   //const [unitData, setunitData] = useState<any>([]);
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
@@ -142,10 +142,10 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           }
 
           //Get all recursive documents
-          let docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
 
           const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
-          console.log("docDetails :", docDetails_Grpd);
+          // console.log("docDetails :", docDetails_Grpd);
 
           //Create document list
           const docList: any[] = [];
@@ -153,7 +153,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           if (clientName === "" && getValues("projectName") !== "") {
 
             const projectFolderPath: string = `${projectwebURL}`;
-            const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType == 1; });
+            const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType === 1; });
 
             _.forEach(clientDetails, function (client) {
 
@@ -184,7 +184,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
           }
 
-          console.log('docList', docList);
+          // console.log('docList', docList);
 
           //Set table
           setData(docList);
@@ -204,7 +204,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
   const checkProgress = (docDetails: any, checkListName: string) => {
 
-    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType == 0 && (o.DMSTag !== null) ? o.DMSTag.toLowerCase() == checkListName.toLowerCase() : false; });
+    const docs = _.filter(docDetails, function (o) { return o.FileSystemObjectType === 0 && (o.DMSTag !== null) ? o.DMSTag.toLowerCase() === checkListName.toLowerCase() : false; });
 
     return (docs.length > 0) ? <CheckCircleOutlineIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />;
   };
@@ -217,7 +217,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     groupedData[row.project].push(row);
   });
 
-  console.log(isLoading);
+  // console.log(isLoading);
 
   const fetchData = async () => {
 
@@ -230,7 +230,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       if (userRole === "staff") {
         const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
 
-        console.log(results, "result");
+        // console.log(results, "result");
         if (results && results.TableData && results.TableData.length > 0) {
           setProjectData(results.TableData);
         } else {
@@ -240,7 +240,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       } else {
         const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
 
-        console.log(results, "result");
+        // console.log(results, "result");
         if (results && results.updatedResults && results.updatedResults.length > 0) {
           setProjectData(results.updatedResults);
         } else {
@@ -257,7 +257,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   };
 
   const getUserRoles = () => {
-    let loggedInUserGroups: string[] = [];
+    const loggedInUserGroups: string[] = [];
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {
@@ -337,7 +337,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                               label=""
                               error={!!errors.projectName}
                               onChange={async (e: any) => {
-                                console.log(e.target.value);
+                                // console.log(e.target.value);
                                 const getUnique = projectData.filter((datas: any) => datas.projectName === e.target.value);
                                 if (getUnique[0].clientDetails.length > 0) {
                                   setParticularClientAllData(getUnique[0].clientDetails);

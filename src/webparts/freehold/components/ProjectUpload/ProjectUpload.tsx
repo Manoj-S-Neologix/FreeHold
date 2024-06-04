@@ -34,7 +34,7 @@ import formatDate from "../../hooks/dateFormat";
 
 const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl, userRole }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const [, setFiles] = useState<File[]>([]);
   const [fileData, setFileData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<any[]>([]);
@@ -45,12 +45,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   //const [_, setCollectionOfDocuments] = React.useState<string[]>([]);
   const [deleteId, setDeleteId] = useState<number>(0);
 
-  console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
+  // console.log(getClient, getClientDetails, particularClientAllData, "getClientgetClient");
   const { control, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm();
   const [isUnitDocumentChecked, setIsUnitDocumentChecked] = useState(false);
 
   const handleFileInput = (selectedFiles: File[]) => {
-    console.log(selectedFiles, "selectedFiles");
+    // console.log(selectedFiles, "selectedFiles");
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
@@ -63,9 +63,9 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     onClose();
   };
 
-  console.log(files, "files");
+  // console.log(files, "files");
 
-  console.log(setFileData, "setFileData");
+  // console.log(setFileData, "setFileData");
 
   const clientService = ClientService();
   const clientListName = "Client_Informations";
@@ -80,7 +80,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       if (data) {
         const assignClientIds = particularClientAllData[0].assignClientId.split(',').map((id: any) => Number(id.trim()));
         const filteredData = data.filter(item => assignClientIds.includes(item.Id));
-        console.log(filteredData, "filteredData");
+        // console.log(filteredData, "filteredData");
         const mappedData = filteredData.map(item => ({
           id: item.Id,
           name: item.Title,
@@ -108,7 +108,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
       //console.log('Retrieved files:', results,);
-      console.log('getFolders', getFolders);
+      // console.log('getFolders', getFolders);
       setGetFoldersResponse(getFolders);
 
     } catch (error) {
@@ -122,11 +122,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
   const getDocumentsLibPath = async (type: string) => {
 
-    let projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
+    const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
       const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
-      console.log(results, "File Datas");
+      // console.log(results, "File Datas");
       setFileData(results);
 
       setIsLoading(false);
@@ -140,7 +140,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     const projectService = ProjectService();
     projectService.getProject('project Checklist')
       .then((results) => {
-        console.log(results, 'client');
+        // console.log(results, 'client');
         if (results) {
           setDropdownOptions(results);
         }
@@ -150,20 +150,20 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       });
   };
 
-  const fileInfoArray = uploadFiles?.map((file: any) => ({
-    lastModified: file.lastModified,
-    lastModifiedDate: file.lastModifiedDate,
-    name: file.name,
-    size: file.size,
-    type: file.type,
-    webkitRelativePath: file.webkitRelativePath
-  }));
+  // const fileInfoArray = uploadFiles?.map((file: any) => ({
+  //   lastModified: file.lastModified,
+  //   lastModifiedDate: file.lastModifiedDate,
+  //   name: file.name,
+  //   size: file.size,
+  //   type: file.type,
+  //   webkitRelativePath: file.webkitRelativePath
+  // }));
 
-  console.log(fileInfoArray, 'fileInfoArray');
+  // console.log(fileInfoArray, 'fileInfoArray');
 
-  console.log(getClientDetails, "uploadFilesgetGuid");
+  // console.log(getClientDetails, "uploadFilesgetGuid");
 
-  console.log(particularClientAllData, 'getProjectName..');
+  // console.log(particularClientAllData, 'getProjectName..');
 
   React.useEffect(() => {
     if (uploadFiles && uploadFiles.length > 0) {
@@ -202,7 +202,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     setLoading(true);
 
     if (getClient !== "") {
-      const clientInfo: any = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name == getClient);
+      const clientInfo: any = (particularClientAllData[0].clientDetails).filter((o: any) => o.Name === getClient);
 
       const updatedData = {
         DMSProject: particularClientAllData[0].projectName,
@@ -216,12 +216,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
       try {
         const apiResponse = ProjectService();
-        console.log(data, 'projectdata..')
+        // console.log(data, 'projectdata..')
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
         if (data.unitDocument !== '' && isUnitDocumentChecked) {
 
           const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-          console.log(folderUrl, 'projectfolderurl..')
+          // console.log(folderUrl, 'projectfolderurl..')
           await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
@@ -265,12 +265,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
 
       try {
         const apiResponse = ProjectService();
-        console.log(data, 'projectdata..')
+        // console.log(data, 'projectdata..')
         const folderUrl = `${particularClientAllData[0].webURL}/${getClient}`;
         if (data.unitDocument !== '' && isUnitDocumentChecked) {
 
           const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-          console.log(folderUrl, 'projectfolderurl..')
+          // console.log(folderUrl, 'projectfolderurl..')
           await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
@@ -310,7 +310,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     apiResponse.deleteFile(particularClientAllData[0].GUID, deleteId)
       .then(() => {
         setIsDeleteDialogOpen(false);
-        console.log("File deleted successfully!");
+        // console.log("File deleted successfully!");
         toast.success('File deleted successfully!');
         //fetchData(particularClientAllData[0].GUID);
 
@@ -385,13 +385,13 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             error={!!errors.clientName}
                             helperText={errors?.clientName?.message}
                             onChange={(e: any) => {
-                              console.log(e.target.value);
+                              // console.log(e.target.value);
                               setGetClient(e.target.value);
                               setIsUnitDocumentChecked(false);
-                              console.log("particularClientAllData: ", particularClientAllData);
+                              // console.log("particularClientAllData: ", particularClientAllData);
                               const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
 
-                              console.log(getLibraryName, "getLibraryName");
+                              // console.log(getLibraryName, "getLibraryName");
                               setValue('clientName', e.target.value);
                               setGetGuid(e.target.value);
 
@@ -447,7 +447,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           placeholder="Select Unit..."
                           size="small"
                           onChange={(e: any) => {
-                            console.log(e.target.value);
+                            // console.log(e.target.value);
                             setValue('unitDocument', e.target.value);
 
                             getDocumentsLibPath("unit");
@@ -525,7 +525,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                       field.onChange(e);
                                       const newValue = e.target.value;
                                       setValue('projectChecklist', e.target.value);
-                                      console.log(newValue, 'e.target')
+                                      // console.log(newValue, 'e.target')
                                       setUploadFiles(prevFiles => {
                                         const updatedFiles = [...prevFiles];
                                         updatedFiles[index].checklist = newValue;
