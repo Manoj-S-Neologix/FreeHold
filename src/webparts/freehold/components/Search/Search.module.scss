@@ -5,98 +5,10 @@ $searchInput-border-radius: 1.25rem;
 
 .searchmodule {
 
-    // .container {
-    //     @include ms-Grid;
-    //     background-color: var(--primarycolor);
-    //     padding: $searchmodule-padding;
-    // }
-
-    // .row {
-    //     @include ms-Grid-row;
-    // }
-
-    // .col6 {
-    //     @include ms-Grid-col;
-    //     @include ms-md6;
-    //     @include ms-sm12;
-    //     @include ms-lg6;
-    // }
-
-    // .col2 {
-    //     @include ms-Grid-col;
-    //     @include ms-lg2;
-    //     @include ms-md2;
-    //     @include ms-sm12;
-    // }
-
-    // .col8 {
-    //     @include ms-Grid-col;
-    //     @include ms-lg10;
-    //     @include ms-md10;
-    //     @include ms-sm12;
-    // }
-
-    // .col12 {
-    //     @include ms-Grid-col;
-    //     @include ms-lg12;
-    // }
-
-    // .column {
-    //     @include ms-Grid-col;
-    //     width: 100% !important;
-    // }
-
-    // .searchBar {
-    //     width: calc(100% - 40px); 
-    //     background-color: #99b0c4;
-    //     border-radius: 20px; 
-    //     padding: 0.5rem; 
-    //     color: var(--primarycolor);
-    //     height: 35px !important;
-
-
-    //     input{
-    //     padding: 0px !important;
-    //     height: 20px !important;
-    //     padding: 0!important;
-    //     top: 0px;
-    //     margin-top: 0px;  
-    //     position: absolute;
-    //     display: block;
-    //     width: 93%;
-    //     padding-left: 10px !important;
-    //     }
-    // }
-
-    // .searchInput {
-    //     display: flex;
-    //     align-items: center;
-    //     width: 80%;
-    //     border-radius: $searchInput-border-radius !important;
-    //     justify-content: space-between;
-    //     padding-right: 0px !important;
-
-
-    // }
-
-    // .SearchIcon  {
-    //     align-items: right !important;
-    //     display: flex;
-    // }
-
     .iconFilter {
         color: white;
         margin-left: 0.5rem;
     }
-
-
-    // .IconSearch{
-    //     color: black !important;
-    //     position: relative !important;
-    //     margin-left: auto !important;
-    //     bottom: 2px !important;
-    // }
-
 
 }
 

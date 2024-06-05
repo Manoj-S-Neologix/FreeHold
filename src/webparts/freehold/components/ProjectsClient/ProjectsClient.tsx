@@ -77,32 +77,36 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                       alt=""
                     />
                   </div>
-                  <Link to={"/ViewProject"}>
                     <div className={`${styles.col3} ${styles.projectC3}`}>
+                   
                       <img
                         src={require('/src/assets/Images/ProjectsClients.png')}
                         alt=""
                         className={styles.projectImage}
                       />
+                      <Link to={"/ViewProject"}>
                       <div className={styles.projectContent}>
                         <div className={styles.projectNumber}>{projectData}</div>
                         <div className={styles.projectHeading}>{getProjectText(projectData)}</div>
                       </div>
+                      </Link>
                     </div>
-                  </Link>
-                  <Link to={"/ViewClient"}>
+                 
+                
                     <div className={`${styles.col3} ${styles.clientC3}`}>
                       <img
                         src={require('/src/assets/Images/ProjectsClients.png')}
                         alt=""
                         className={styles.projectImage}
                       />
+                      <Link to={"/ViewClient"}>
                       <div className={styles.clientContent}>
                         <div className={styles.clientNumber}>{clientData}</div>
                         <div className={styles.clientText}>{getClientText(clientData)}</div>
                       </div>
+                      </Link>
                     </div>
-                  </Link>
+                  
                   <div className={styles.col3}>
                     <img src={require('/src/assets/Images/HomeBorderRight.png')}
                       alt=""

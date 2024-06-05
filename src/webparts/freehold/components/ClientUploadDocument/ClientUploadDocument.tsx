@@ -15,9 +15,10 @@ import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import styles from "../UploadDocuments/UploadDocuments.module.scss";
+// import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
 import CloseIcon from '@mui/icons-material/Close';
+import styles from './clientUploadDocument.module.scss';
 
 
 
