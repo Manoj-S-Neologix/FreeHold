@@ -15,12 +15,10 @@ import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-// import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './clientUploadDocument.module.scss';
-
-
+import Autocomplete from '@mui/material/Autocomplete';
 
 
 const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
@@ -178,7 +176,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
     editorName: file.Editor.Title,
     editorId: file.Editor.Id,
     dmstags: file.DMS_x0020_Tags
-}));
+  }));
 
 
   return (
@@ -192,36 +190,34 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
             defaultValue=""
             rules={{ required: 'Client Name is required' }}
             render={({ field }) => (
-              <>
-                <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                <TextField
-                  {...field}
-                  id="client-name"
-                  fullWidth
-                  variant="outlined"
-                  select
-                  size="small"
-                  required
-                  label=""
-                  error={!!errors.clientName}
-                  helperText={errors?.clientName?.message}
-                  onChange={(e: any) => {
-                    setGetClient(e.target.value);
-                    const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
-                    setParticularClientAllData(getUnique);
-                    setValue('clientName', e.target.value);
-                    handleClientChange(e.target.value);
-                    
-                    
-                  }}
-                >
-                  {AllClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.name}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </>
+              <Autocomplete
+                {...field}
+                disablePortal
+                id="combo-box-client"
+                options={AllClientData.map((option: any) => option.name)}
+                sx={{ width: '100%' }}
+                renderInput={(params) => (
+                  <>
+                    <InputLabel htmlFor="combo-box-client">Client Name</InputLabel>
+                    <TextField
+                      {...params}
+                      error={!!errors.clientName}
+                      helperText={errors?.clientName?.message}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </>
+                )}
+                onChange={(e, value) => {
+                  setGetClient(value);
+                  const getUnique = AllClientData.filter((datas: any) => datas.name === value);
+                  setParticularClientAllData(getUnique);
+                  setValue('clientName', value);
+                  handleClientChange(value);
+                  setFileData([]); // Clear document data
+                  setUploadFiles([]); // Clear upload files
+                }}
+              />
             )}
           />
         </Grid>

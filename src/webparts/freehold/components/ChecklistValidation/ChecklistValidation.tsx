@@ -1,11 +1,10 @@
-import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, TextField, Typography, Autocomplete } from '@mui/material';
 import React, { useState } from 'react';
 import { emphasize, styled } from '@mui/material/styles';
 import { Button as MuiButton } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { Controller, useForm } from 'react-hook-form';
 import Stack from '@mui/material/Stack';
@@ -125,8 +124,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
     projectService.getProject('project Checklist')
       .then(async (results: any) => {
-        //console.log(results);
-
         let clientName: string = "";
 
         if (results.length > 0) {
@@ -145,7 +142,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
 
           const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
-          // console.log("docDetails :", docDetails_Grpd);
 
           //Create document list
           const docList: any[] = [];
@@ -184,8 +180,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
           }
 
-          // console.log('docList', docList);
-
           //Set table
           setData(docList);
 
@@ -217,8 +211,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     groupedData[row.project].push(row);
   });
 
-  // console.log(isLoading);
-
   const fetchData = async () => {
 
     try {
@@ -230,17 +222,14 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       if (userRole === "staff") {
         const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
 
-        // console.log(results, "result");
         if (results && results.TableData && results.TableData.length > 0) {
           setProjectData(results.TableData);
         } else {
-          // Handle case where no data is returned
           setProjectData([]);
         }
       } else {
         const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
 
-        // console.log(results, "result");
         if (results && results.updatedResults && results.updatedResults.length > 0) {
           setProjectData(results.updatedResults);
         } else {
@@ -261,7 +250,6 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     let userRoleVal: string = "staff";
 
     spServiceInstance.getLoggedInUserGroups().then((response) => {
-      //console.log("Current user site groups : ", response);
 
       _.forEach(response, function (group: any) {
         loggedInUserGroups.push(group.Title);
@@ -312,6 +300,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                 display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
                 justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
               }}>
+
                 <Typography>Project Name *
                   <Box>
                     <FormControl>
@@ -321,46 +310,43 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                         defaultValue=""
                         rules={{ required: 'Project Name is required' }}
                         render={({ field }: any) => (
-                          <>
-                            <TextField
-                              {...field}
-                              id="project-name"
-                              fullWidth
-                              variant="outlined"
-                              select
-                              size="small"
-                              required
-                              sx={{
-                                width: '15rem',
-                                height: '2rem'
-                              }}
-                              label=""
-                              error={!!errors.projectName}
-                              onChange={async (e: any) => {
-                                // console.log(e.target.value);
-                                const getUnique = projectData.filter((datas: any) => datas.projectName === e.target.value);
-                                if (getUnique[0].clientDetails.length > 0) {
-                                  setParticularClientAllData(getUnique[0].clientDetails);
-                                } else {
-                                  toast("No client found, Please select any other project");
-                                }
-                                setValue('projectName', e.target.value);
-                                setValue('clientName', "");
-
-                              }}
-                            >
-                              {projectData?.map((item: any) => (
-                                <MenuItem key={item.id} value={item.projectName}>
-                                  {item.projectName}
-                                </MenuItem>
-                              ))}
-                            </TextField>
-                          </>
+                          <Autocomplete
+                            {...field}
+                            options={projectData.map((item: any) => item.projectName)}
+                            onChange={(_, value) => {
+                              const selectedProject = projectData.find((project: any) => project.projectName === value);
+                              if (selectedProject && selectedProject.clientDetails.length > 0) {
+                                setParticularClientAllData(selectedProject.clientDetails);
+                              } else {
+                                toast("No client found, Please select any other project");
+                                setParticularClientAllData([]);
+                              }
+                              setValue('projectName', value);
+                              setValue('clientName', "");
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                id="project-name"
+                                fullWidth
+                                variant="outlined"
+                                size="small"
+                                required
+                                sx={{
+                                  width: '15rem',
+                                  height: '2rem'
+                                }}
+                                error={!!errors.projectName}
+                                label=""
+                              />
+                            )}
+                          />
                         )}
                       />
                     </FormControl>
                   </Box>
                 </Typography>
+
 
                 <Typography>Client Name
                   <Box>
@@ -371,33 +357,30 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                         defaultValue=""
                         rules={{ required: 'Client Name is required' }}
                         render={({ field }) => (
-                          <>
-                            <TextField
-                              {...field}
-                              id="client-name"
-                              fullWidth
-                              variant="outlined"
-                              select
-                              size="small"
-                              required
-                              sx={{
-                                width: '15rem',
-                                height: '2rem'
-                              }}
-                              label=""
-                              error={!!errors.clientName}
-                              helperText={errors?.clientName?.message}
-                              onChange={(e: any) => {
-                                setValue('clientName', e.target.value);
-                              }}
-                            >
-                              {particularClientAllData?.map((item: any) => (
-                                <MenuItem key={item.Id} value={item.Title}>
-                                  {item.Title}
-                                </MenuItem>
-                              ))}
-                            </TextField>
-                          </>
+                          <Autocomplete
+                            {...field}
+                            options={particularClientAllData.map((item: any) => item.Title)}
+                            onChange={(_, value) => {
+                              setValue('clientName', value);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                id="client-name"
+                                fullWidth
+                                variant="outlined"
+                                size="small"
+                                required
+                                sx={{
+                                  width: '15rem',
+                                  height: '2rem'
+                                }}
+                                error={!!errors.clientName}
+                                helperText={errors?.clientName?.message}
+                                label=""
+                              />
+                            )}
+                          />
                         )}
                       />
                     </FormControl>

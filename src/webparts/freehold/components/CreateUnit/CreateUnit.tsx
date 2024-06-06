@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from '../AssignClient/AssignClient.module.scss';
-import { Box, CircularProgress, Grid, MenuItem, Stack, TextField, InputBase, Tooltip, Table, TableBody, TableContainer, TableRow, } from '@mui/material';
+import { Box, CircularProgress, Grid, Stack, TextField, InputBase, Tooltip, Table, TableBody, TableContainer, TableRow, Autocomplete } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import ClientService from "../../Services/Business/ClientService";
 import toast from "react-hot-toast";
@@ -64,7 +64,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     };
 
     const deleteUnit = (indexToRemove: number) => {
-        const currentValues = watch(); 
+        const currentValues = watch();
         setCount((prevCount) => {
             const newCount = prevCount - 1;
             unregister(`unitName${indexToRemove}`);
@@ -108,7 +108,9 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             setLoading(false);
             toast.success("Units created successfully");
 
+            const selectedClient = data.AssignClient;
             reset();
+            setValue("AssignClient", selectedClient);
             setCount(1);
         } catch (error) {
             setLoading(false);
@@ -204,29 +206,36 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                             required: 'Assign Client is required',
                                         }}
                                         render={({ field }) => (
-                                            <TextField
-                                                label="Assigned Client"
-                                                variant="outlined"
-                                                fullWidth
-                                                select
-                                                {...field}
-                                                required
-                                                onChange={(e: any) => {
-                                                    setGetClient(e.target.value);
-                                                    getDocumentsFromFolder(e.target.value);
-                                                    setValue('AssignClient', e.target.value);
+                                            <Autocomplete
+                                                options={getClientDetails.sort((a, b) => a.name.localeCompare(b.name))}
+                                                getOptionLabel={(option) => option.name}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Assign Client"
+                                                        variant="outlined"
+                                                        error={!!errors?.AssignClient}
+                                                        helperText={errors?.AssignClient?.message}
+                                                    />
+                                                )}
+                                                onChange={(e, value) => {
+                                                    const selectedValue = value ? value.libraryGUID : '';
+                                                    field.onChange(selectedValue);
+                                                    setGetClient(selectedValue);
+                                                    setValue('AssignClient', selectedValue);
+
+                                                    if (selectedValue) {
+                                                        // setValue('AssignClient', selectedValue);
+                                                        getDocumentsFromFolder(selectedValue);
+                                                    } else {
+                                                        setGetFoldersResponse([]);
+                                                        setShowCount(false);
+                                                    }
                                                 }}
-                                                error={!!errors?.AssignClient}
-                                                helperText={errors?.AssignClient?.message}
-                                            >
-                                                {getClientDetails?.map((item: any) => (
-                                                    <MenuItem key={item.id} value={item.libraryGUID}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>
+                                            />
                                         )}
                                     />
+
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TableContainer>
@@ -475,7 +484,3 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
 };
 
 export default CreateUnit;
-
-
-
-

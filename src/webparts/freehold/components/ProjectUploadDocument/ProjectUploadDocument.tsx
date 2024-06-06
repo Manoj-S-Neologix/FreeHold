@@ -20,6 +20,8 @@ import DialogContent from '@mui/material/DialogContent';
 // import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './ProjectUploadDocument.module.scss';
+import Autocomplete from '@mui/material/Autocomplete';
+
 
 
 
@@ -49,12 +51,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
   //const getProjectCode = particularClientAllData[0]?.projectNumber;
   const [getProjectUrl, setProjectUrl] = useState("");
   const [getProjectCode, setProjectCode] = useState("");
-
-
   // const getProjectUrl = particularClientAllData[0]?.webURL;
-
-
-
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -213,75 +210,6 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     onClose();
   };
 
-  // const mappedFiles = fileData.map((file: any) => ({
-  //   id: file.Id,
-  //   fileName: file.FileLeafRef,
-  //   url: file.FileRef,
-  //   fileType: file.File_x0020_Type,
-  //   created: file.Created,
-  //   editorName: file.Editor.Title,
-  //   editorId: file.Editor.Id,
-  //   dmstags: file.DMS_x0020_Tags
-  // }));
-
-
-  // const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
-  //   setLoading(true);
-
-  //   try {
-
-  //     if (getClient !== "") {
-  //       const apiResponse = ProjectService();
-  //       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === getClient)[0].name;
-
-  //       const clientInfo: any = getClientDetails.filter((item: any) => item.libraryGUID === getClient);
-
-  //       const updatedData = {
-  //         DMSProject: particularClientAllData[0].projectName,
-  //         DMSProjectID: (particularClientAllData[0].Id).toString(),
-  //         DMSClient: clientInfo[0].name,
-  //         DMSClientID: (clientInfo[0].id).toString(),
-  //         DMSUnit: (data.unitDocument !== '') ? data.unitDocument : "",
-  //       }
-
-  //       const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}`;
-  //       if (data.unitDocument !== '') {
-  //         const folderUrl = `${particularClientAllData[0].webURL}/${getLibraryName}/${data.unitDocument}`
-  //         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-  //       }
-  //       else {
-  //         await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-  //       }
-
-  //       setLoading(false);
-  //       setFiles([]);
-  //       setUploadFiles([]);
-  //       toast.success('Documents Added Successfully!');
-  //       handleCancel();
-  //     } else {
-  //       const apiResponse = ProjectService();
-
-  //       const updatedData = {
-  //         DMSProject: particularClientAllData[0].projectName,
-  //         DMSProjectID: (particularClientAllData[0].Id).toString(),
-  //         DMSClient: "",
-  //         DMSClientID: "",
-  //         DMSUnit: "",
-  //       }
-  //       const folderUrl = `${particularClientAllData[0].webURL}`;
-  //       await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-  //       setLoading(false);
-  //       setFiles([]);
-  //       setUploadFiles([]);
-  //       toast.success('Documents Added Successfully!');
-  //       handleCancel();
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     toast.error(`Failed to add client and document: ${error}`);
-  //   }
-  // });
-
   const handleSave = handleSubmit(async (data: any, libraryGuid: any) => {
     setLoading(true);
 
@@ -405,39 +333,51 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             control={control}
             defaultValue=""
             rules={{ required: 'Project Name is required' }}
-            render={({ field }: any) => (
+            render={({ field }) => (
               <>
-                <InputLabel htmlFor="project-name">Project Name</InputLabel>
-                <TextField
+                <Autocomplete
                   {...field}
-                  id="project-name"
-                  fullWidth
-                  variant="outlined"
-                  select
-                  size="small"
-                  required
-                  label=""
-                  error={!!errors.projectName}
-                  onChange={async (e: any) => {
-                    const getUnique = AllClientData.filter((datas: any) => datas.projectName === e.target.value);
-                    setProjectUrl(getUnique[0].webURL);
-                    setProjectCode(getUnique[0].projectNumber);
-                    setParticularClientAllData(getUnique);
-                    setValue('projectName', e.target.value);
-                    setValue('clientName', "");
-                    setIsUnitDocumentChecked(false);
-                    setValue('unitDocument', "");
-                    getClientFromFolder(getUnique[0].GUID, getUnique);
-                    getDocumentsLibPath("project", getUnique[0].webURL, getUnique[0].projectNumber);
+                  disablePortal
+                  id="combo-box-project"
+                  options={AllClientData.map((option: any) => option.projectName)}
+                  sx={{ width: '100%' }}
+                  renderInput={(params) => (
+                    <>
+                      <InputLabel htmlFor="combo-box-project">Project Name</InputLabel>
+                      <TextField
+                        {...params}
+                        error={!!errors.projectName}
+                        helperText={errors?.projectName?.message}
+                        variant="outlined"
+                      />
+                    </>
+                  )}
+                  // clearIcon={null}
+                  onChange={(e, value) => {
+                    if (value) {
+                      const getUnique = AllClientData.filter((datas: any) => datas.projectName === value);
+                      setProjectUrl(getUnique[0].webURL);
+                      setProjectCode(getUnique[0].projectNumber);
+                      setParticularClientAllData(getUnique);
+                      setValue('projectName', value);
+                      setValue('clientName', "");
+                      setIsUnitDocumentChecked(false);
+                      setValue('unitDocument', "");
+                      getClientFromFolder(getUnique[0].GUID, getUnique);
+                      getDocumentsLibPath("project", getUnique[0].webURL, getUnique[0].projectNumber);
+                    } else {
+                      setProjectUrl("");
+                      setProjectCode("");
+                      setParticularClientAllData([]);
+                      setValue('projectName', "");
+                      setValue('clientName', "");
+                      setIsUnitDocumentChecked(false);
+                      setValue('unitDocument', "");
+                      setFileData([]); 
+                      setUploadFiles([]); 
+                    }
                   }}
-                >
-                  {AllClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.projectName
-                    }>
-                      {item.projectName}-{item.projectNumber}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                />
               </>
             )}
           />
@@ -451,35 +391,42 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             render={({ field }) => (
               <>
                 <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                <TextField
+                <Autocomplete
                   {...field}
                   id="client-name"
+                  options={getClientDetails}
+                  getOptionLabel={(option) => option.name}
                   fullWidth
-                  variant="outlined"
-                  select
                   size="small"
-                  required
-                  label=""
-                  error={!!errors.clientName}
-                  helperText={errors?.clientName?.message}
-                  onChange={(e: any) => {
-                    setGetClient(e.target.value);
-                    setIsUnitDocumentChecked(false);
-                    const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID;
-                    getDocumentsFromFolder(getLibraryName);
-                    setValue('clientName', e.target.value);
-                    setGetGuid(e.target.value);
-                    getDocumentsLibPath("client", getProjectUrl, getProjectCode);
-                    fetchData();
-
+                  value={getClientDetails.find((item) => item.name === field.value) || null}
+                  onChange={(e, newValue) => {
+                    if (newValue) {
+                      setGetClient(newValue.name);
+                      setIsUnitDocumentChecked(false);
+                      const getLibraryName = newValue.libraryGUID;
+                      setValue('clientName', newValue.name);
+                      setGetGuid(newValue.name);
+                      getDocumentsFromFolder(getLibraryName);
+                      getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+                    } else {
+                      setGetClient('');
+                      setIsUnitDocumentChecked(false);
+                      setValue('clientName', '');
+                      setFileData([]); 
+                      setUploadFiles([]); 
+                      getDocumentsLibPath("project", getProjectUrl, getProjectCode); 
+                    }
                   }}
-                >
-                  {getClientDetails?.map((item: any) => (
-                    <MenuItem key={item.Id} value={item.name}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label=""
+                      error={!!errors.clientName}
+                      helperText={errors?.clientName?.message}
+                    />
+                  )}
+                />
               </>
             )}
           />
@@ -489,7 +436,13 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
           <Stack direction="row" alignItems="center">
             <Checkbox
               checked={isUnitDocumentChecked}
-              onChange={(e) => setIsUnitDocumentChecked(e.target.checked)}
+              onChange={(e) => {
+                setIsUnitDocumentChecked(e.target.checked);
+                setValue('unitDocument', "");
+                if (!e.target.checked) {
+                  getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
+                }
+              }}
               size="small"
               sx={{ p: 0, mr: 2 }}
             />
@@ -500,31 +453,29 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <TextField
+              <Autocomplete
                 {...field}
                 id="is-unit-document"
+                options={getFoldersResponse.map(item => item.Name)}
                 fullWidth
-                select
                 disabled={!isUnitDocumentChecked}
-                variant="outlined"
-                placeholder="Select Unit..."
-                size="small"
-                onChange={(e: any) => {
-                  setValue('unitDocument', e.target.value);
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    // placeholder="Select Unit..."
+                    size="small"
+                    required
+                  />
+                )}
+                onChange={(e, newValue) => {
+                  setValue('unitDocument', newValue || "");
                   getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
                 }}
-                required
-              >
-
-                {getFoldersResponse.length > 0 &&
-                  getFoldersResponse.map((item: any, idx: any) => (
-                    <MenuItem key={idx} value={item?.Name}>
-                      {item?.Name}
-                    </MenuItem>
-                  ))}
-              </TextField>
+              />
             )}
           />
+
         </Grid>
         <Grid item sm={12}>
           <InputLabel htmlFor="project-document">Upload Document</InputLabel>

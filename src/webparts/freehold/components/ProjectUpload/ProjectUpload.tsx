@@ -31,6 +31,8 @@ import DropZone from '../../../../Common/DropZone/DropZone';
 import ClientService from "../../Services/Business/ClientService";
 //import CheckIcon from "@mui/icons-material/Check";
 import formatDate from "../../hooks/dateFormat";
+import Autocomplete from '@mui/material/Autocomplete';
+
 
 const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl, userRole }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -171,9 +173,16 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     }
   }, [uploadFiles]);
 
+  // React.useEffect(() => {
+  //   getDocumentsLibPath("project");
+  // }, []);
   React.useEffect(() => {
-    getDocumentsLibPath("project");
-  }, []);
+    if (!getValues("clientName")) { // Check if client name is empty
+      getDocumentsLibPath("project"); // Fetch project documents
+    } else {
+      getDocumentsLibPath("client"); // Fetch client documents
+    }
+  }, [getValues("clientName")]); // Trigger when client name changes
 
   const onDelete = (index: number) => {
 
@@ -363,13 +372,11 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
               {/* Document selection section */}
               <Stack direction="column" gap={3}>
                 <Grid container spacing={2}>
-                  {/* Client grid */}
                   <Grid item sm={6}>
-                    <Controller
+                    {/* <Controller
                       name="clientName"
                       control={control}
                       defaultValue=""
-                      //rules={{ required: 'Client Name is required' }}
                       render={({ field }) => (
                         <>
                           <InputLabel htmlFor="client-name">Client Name</InputLabel>
@@ -385,21 +392,12 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             error={!!errors.clientName}
                             helperText={errors?.clientName?.message}
                             onChange={(e: any) => {
-                              // console.log(e.target.value);
                               setGetClient(e.target.value);
                               setIsUnitDocumentChecked(false);
-                              // console.log("particularClientAllData: ", particularClientAllData);
                               const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
-
-                              // console.log(getLibraryName, "getLibraryName");
                               setValue('clientName', e.target.value);
                               setGetGuid(e.target.value);
-
-                              //Populate Unit documents folder
                               getDocumentsFromFolder(getLibraryName);
-
-                              //Get documents for client selection
-                              //fetchData(getLibraryName);
                               getDocumentsLibPath("client");
                             }}
                           >
@@ -411,12 +409,50 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           </TextField>
                         </>
                       )}
+                    /> */}
+                    <Controller
+                      name="clientName"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <>
+                          <InputLabel htmlFor="client-name">Client Name</InputLabel>
+                          <Autocomplete
+                            {...field}
+                            id="client-name"
+                            options={getClientDetails}
+                            getOptionLabel={(option) => option.name}
+                            fullWidth
+                            size="small"
+                            // required
+                            value={getClientDetails.find((item) => item.name === field.value) || null}
+                            onChange={(e, newValue) => {
+                              if (newValue) {
+                                setGetClient(newValue.name);
+                                setIsUnitDocumentChecked(false);
+                                const getLibraryName = newValue.libraryGUID;
+                                setValue('clientName', newValue.name);
+                                setGetGuid(newValue.name);
+                                getDocumentsFromFolder(getLibraryName);
+                                getDocumentsLibPath("client");
+                              } else {
+                                setGetClient('');
+                                setIsUnitDocumentChecked(false);
+                                setValue('clientName', '');
+                                setFileData([]); // Clear document data
+                                setUploadFiles([]); // Clear upload files
+                              }
+                            }}
+                            renderInput={(params) => <TextField {...params} variant="outlined" label="" error={!!errors.clientName} helperText={errors?.clientName?.message} />}
+                          />
+                        </>
+                      )}
                     />
                   </Grid>
 
                   {/* Unit document grid */}
                   <Grid item sm={6}>
-                    <Stack direction="row" alignItems="center">
+                    {/* <Stack direction="row" alignItems="center">
                       <Checkbox
                         checked={isUnitDocumentChecked}
                         onChange={(e) => {
@@ -451,14 +487,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                             setValue('unitDocument', e.target.value);
 
                             getDocumentsLibPath("unit");
-
-                            /* const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
-   
-                            const libraryPath = `${getLibraryName}/${e.target.value}`;
-   
-                            fetchData(libraryPath) */
-                            //Get documents for client selection
-                            //fetchData(getLibraryName);
                           }}
                           required
                         >
@@ -469,6 +497,48 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                               </MenuItem>
                             ))}
                         </TextField>
+                      )}
+                    /> */}
+                    <Stack direction="row" alignItems="center">
+                      <Checkbox
+                        checked={isUnitDocumentChecked}
+                        onChange={(e) => {
+                          setIsUnitDocumentChecked(e.target.checked);
+                          setValue('unitDocument', "");
+                          if (!e.target.checked) {
+                            getDocumentsLibPath("client");
+                          }
+                        }}
+                        size="small"
+                        sx={{ p: 0, mr: 2 }}
+                      />
+                      <InputLabel>Is Unit Document</InputLabel>
+                    </Stack>
+                    <Controller
+                      name="unitDocument"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          id="is-unit-document"
+                          options={getFoldersResponse.map(item => item.Name)}
+                          fullWidth
+                          disabled={!isUnitDocumentChecked}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              // placeholder="Select Unit..."
+                              size="small"
+                              required
+                            />
+                          )}
+                          onChange={(e, newValue) => {
+                            setValue('unitDocument', newValue || "");
+                            getDocumentsLibPath("unit");
+                          }}
+                        />
                       )}
                     />
                   </Grid>

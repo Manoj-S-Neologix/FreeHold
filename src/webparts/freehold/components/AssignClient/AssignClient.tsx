@@ -54,7 +54,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     useEffect(() => {
         apiCall();
     }, [particularClientAllData]);
-    
+
     const handleCancel = () => {
         onClose();
     };
@@ -187,27 +187,26 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                                             required: 'Assign Client is required',
                                         }}
                                         render={({ field }) => (
-                                            <TextField
-                                                label="Assign Client"
-                                                variant="outlined"
-                                                fullWidth
-                                                select
-                                                {...field}
-                                                required
-                                                onChange={(e: any) => {
-                                                    setGetClient(e.target.value);
-                                                    getDocumentsFromFolder(e.target.value);
-                                                    setValue('AssignClient', e.target.value);
+                                            <Autocomplete
+                                                options={getClientDetails.sort((a, b) => a.name.localeCompare(b.name))}
+                                                getOptionLabel={(option) => option.name}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Assign Client"
+                                                        variant="outlined"
+                                                        error={!!errors?.AssignClient}
+                                                        helperText={errors?.AssignClient?.message}
+                                                    />
+                                                )}
+                                                onChange={(e, value) => {
+                                                    field.onChange(value ? value.libraryGUID : '');
+                                                    setGetClient(value ? value.libraryGUID : '');
+                                                    getDocumentsFromFolder(value ? value.libraryGUID : '');
+                                                    setValue('AssignClient', value ? value.libraryGUID : '');
                                                 }}
-                                                error={!!errors?.AssignClient}
-                                                helperText={errors?.AssignClient?.message}
-                                            >
-                                                {getClientDetails?.sort((a, b) => a.name.localeCompare(b.name)).map((item: any) => (
-                                                    <MenuItem key={item.id} value={item.libraryGUID}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>)}
+                                            />
+                                        )}
                                     />
                                 </Grid>
                                 {getClient.length > 0 && (
@@ -277,7 +276,7 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
                             </Grid>
                         </Box>
                     </DialogContent>
-                         <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
+                    <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button variant="contained" sx={{ width: loading ? '150px' : 'auto' }} onClick={handleSave} disabled={loading}>
                             {loading ? <CircularProgress size={20} color="inherit" /> : "Save"}
                         </Button>

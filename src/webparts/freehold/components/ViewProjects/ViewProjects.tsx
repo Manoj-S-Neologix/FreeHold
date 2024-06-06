@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip, MenuItem, InputLabel, TextField } from '@mui/material';
+import { CircularProgress, Breadcrumbs, Box, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, Chip, Autocomplete, TextField } from '@mui/material';
 import { Button as MuiButton } from "@mui/material";
 import { emphasize, styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
@@ -182,7 +182,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
           setIsViewDialogOpen(true);
           setProjectDetails(data);
           setIsEdit(false);
-          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data}));
+          const uniqueClientData = AllClientData.map((client: any) => ({ Id: client.Id, data: data }));
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
@@ -207,9 +207,9 @@ const ViewProject = (props: IFreeholdChildProps) => {
         handler: (data: any) => {
           setHandleUnitDialog(true);
           setProjectDetails(data);
-          const uniqueClientData = AllClientData.map((client: any) => 
-         ({Id:client.Id, data:data})
-        );
+          const uniqueClientData = AllClientData.map((client: any) =>
+            ({ Id: client.Id, data: data })
+          );
           setParticularClientAllData(uniqueClientData);
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
           setParticularClientAllData(getUnique);
@@ -261,8 +261,8 @@ const ViewProject = (props: IFreeholdChildProps) => {
           setIsViewDialogOpen(true);
           setProjectDetails(data);
           setIsEdit(false);
-          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data})
-        );
+          const uniqueClientData = AllClientData.map((client: any) => ({ Id: client.Id, data: data })
+          );
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
@@ -296,8 +296,8 @@ const ViewProject = (props: IFreeholdChildProps) => {
         handler: (data: any) => {
           setHandleUnitDialog(true);
           setProjectDetails(data);
-          const uniqueClientData = AllClientData.map((client: any) => ({Id:client.Id, data:data})
-        );
+          const uniqueClientData = AllClientData.map((client: any) => ({ Id: client.Id, data: data })
+          );
           setParticularClientAllData(uniqueClientData);
 
           const getUnique = AllClientData.filter((datas: any) => datas.Id === data.Id);
@@ -632,42 +632,38 @@ const ViewProject = (props: IFreeholdChildProps) => {
               <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
 
                 <Grid item sm={12}>
-
                   <Controller
                     name="clientName"
                     control={control}
                     defaultValue=""
-                    rules={{ required: 'Client Name is required' }}
+                    rules={{
+                      required: 'clientName is required',
+                    }}
                     render={({ field }) => (
-                      <>
-                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                        <TextField
-                          {...field}
-                          id="client-name"
-                          fullWidth
-                          variant="outlined"
-                          select
-                          size="small"
-                          required
-                          error={!!errors.clientName}
-                          helperText={errors?.clientName?.message}
-                          onChange={(e) => {
-                            setValue('clientName', e.target.value);
-                            handleFilterChange(e);
-                            const getUnique = assignedClientData.filter((datas) => datas.Title === e.target.value);
-                            setParticularClientAllData(getUnique);
-                            setSelectedPersons(getUnique);
-                          }}
-                        >
-                          {assignedClientData?.sort((a, b) => a.Title.localeCompare(b.Title)).map((item) => (
-                            <MenuItem key={item.Id} value={item.Title}>
-                              {item.Title}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </>
+                      <Autocomplete
+                        options={assignedClientData.sort((a, b) => a.Title.localeCompare(b.Title))}
+                        getOptionLabel={(option) => option.Title}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Client Name"
+                            variant="outlined"
+                            error={!!errors?.ClientName}
+                            helperText={errors?.ClientName?.message}
+                          />
+                        )}
+                        onChange={(e, value) => {
+                          field.onChange(value ? value.Title : '');
+                          setValue('ClientName', value ? value.Title : '');
+                          handleFilterChange(value ? { target: { value: value.Title } } : null);
+                          const getUnique = assignedClientData.filter((datas) => datas.Title === value?.Title);
+                          setParticularClientAllData(getUnique);
+                          setSelectedPersons(getUnique);
+                        }}
+                      />
                     )}
                   />
+
                 </Grid>
               </Grid>
               <DialogActions sx={{ mt: 3, ml: "7px", width: "100%", p: 0 }}>
