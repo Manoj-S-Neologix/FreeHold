@@ -367,7 +367,9 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                 name="clientName"
                                 control={control}
                                 defaultValue=""
-                                rules={{ required: 'Client Name is required' }}
+                                rules={{ 
+                                    required: 'Client Name is required' 
+                                }}
                                 render={({ field }) => (
                                     <Autocomplete
                                         {...field}
@@ -379,9 +381,10 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             <TextField
                                                 {...params}
                                                 label="Client Name"
-                                                error={!!errors.clientName}
-                                                helperText={errors?.clientName?.message}
                                                 variant="outlined"
+                                                error={!!errors?.clientName}
+                                                helperText={errors?.clientName?.message}
+                                                
                                             />
                                         )}
                                         onChange={(e, value) => {

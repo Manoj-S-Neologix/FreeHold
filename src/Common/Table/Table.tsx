@@ -82,7 +82,7 @@ function EnhancedTableHead(props: any) {
     );
 }
 
-const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth, isPersona }: any) => {
+const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDetails, selected, rows, tableData, headCells, actions, isLoading, tableDataWidth, isPersona, moduleName }: any) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [page, setPage] = React.useState(0);
@@ -255,7 +255,7 @@ const GridTable = ({ props, searchQuery, filterQuery, setSelected, setSelectedDe
                                                         <TableCell width={"40%"} align="left" padding="none">
                                                             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                                                 <Box sx={{
-                                                                    display: 'flex', gap: '10px',
+                                                                    display: 'flex', gap: moduleName==='clients'? '10px':'5px',
                                                                     minWidth: '554px !important'
                                                                 }}>
                                                                     {actions.map((action: Action, index: number) => (

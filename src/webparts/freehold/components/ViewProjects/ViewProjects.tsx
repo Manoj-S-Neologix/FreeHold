@@ -823,6 +823,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
               isLoading={isLoading}
               AllClientData={AllClientData}
               tableDataWidth={tableDataWidth}
+              moduleName={'projects'}
             />
           </Box>
         </Stack>}
