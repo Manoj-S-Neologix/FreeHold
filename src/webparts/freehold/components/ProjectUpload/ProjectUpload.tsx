@@ -119,7 +119,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${getProjectCode}`);
       // console.log(results, "File Datas");
       setFileData(results);
 

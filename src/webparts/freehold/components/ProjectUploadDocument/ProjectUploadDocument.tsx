@@ -20,9 +20,6 @@ import DialogContent from '@mui/material/DialogContent';
 import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
 
-
-
-
 const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, userRole, siteUrl }) => {
   const { control, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
   const [AllClientData, setAllClientData] = useState<any>([]);
@@ -197,7 +194,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     const projectRelativePath = (type === "project") ? `${projectUrl}` : (type === "client") ? `${projectUrl}/${getValues("clientName")}` : `${projectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, projectNum);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${projectNum}`);
       setFileData(results);
       setIsLoading(false);
     } catch (error) {
