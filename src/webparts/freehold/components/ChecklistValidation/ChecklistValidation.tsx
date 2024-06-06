@@ -1,11 +1,11 @@
-import { Box, Breadcrumbs, Button, Chip, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Chip, TextField, Typography, Autocomplete } from '@mui/material';
 import React, { useState } from 'react';
 import { emphasize, styled } from '@mui/material/styles';
 import { Button as MuiButton } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
-import MenuItem from '@mui/material/MenuItem';
+// import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { Controller, useForm } from 'react-hook-form';
 import Stack from '@mui/material/Stack';
@@ -166,7 +166,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           }
 
           //Get all recursive documents
-          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
+          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, `Project_${projectInfo}`);
 
           //const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
 
@@ -345,7 +345,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                 display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
                 justifyContent: 'flex-start', padding: '20px', gap: '20px', position: 'relative'
               }}>
-                <Typography>Project Name *
+                {/* <Typography>Project Name *
                   <Box>
                     <FormControl>
                       <Controller
@@ -393,9 +393,55 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                       />
                     </FormControl>
                   </Box>
-                </Typography>
+                </Typography> */}
+                   <Typography>Project Name *
+  <Box>
+    <FormControl>
+      <Controller
+        name="projectName"
+        control={control}
+        defaultValue=""
+        rules={{ required: 'Project Name is required' }}
+        render={({ field }: any) => (
+          <Autocomplete
+            {...field}
+            options={projectData.map((item: any) => item.projectName)}
+            onChange={(_, value) => {
+              const selectedProject = projectData.find((project: any) => project.projectName === value);
+              if (selectedProject && selectedProject.clientDetails.length > 0) {
+                setParticularClientAllData(selectedProject.clientDetails);
+              } else {
+                toast("No client found, Please select any other project");
+                setParticularClientAllData([]);
+              }
+              setValue('projectName', value);
+              setValue('clientName', "");
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="project-name"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{
+                  width: '15rem',
+                  height: '2rem'
+                }}
+                error={!!errors.projectName}
+                helperText={errors.projectName ? errors.projectName.message : null}
+                label=""
+              />
+            )}
+          />
+        )}
+      />
+    </FormControl>
+  </Box>
+</Typography> 
 
-                <Typography>Client Name
+                {/* <Typography>Client Name
                   <Box>
                     <FormControl>
                       <Controller
@@ -435,7 +481,45 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                       />
                     </FormControl>
                   </Box>
-                </Typography>
+                </Typography> */}
+                <Typography>Client Name
+  <Box>
+    <FormControl>
+      <Controller
+        name="clientName"
+        control={control}
+        defaultValue=""
+        rules={{ required: 'Client Name is required' }}
+        render={({ field }) => (
+          <Autocomplete
+            {...field}
+            options={particularClientAllData.map((item: any) => item.Title)}
+            onChange={(_, value) => {
+              setValue('clientName', value);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="client-name"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{
+                  width: '15rem',
+                  height: '2rem'
+                }}
+                error={!!errors.clientName}
+                helperText={errors?.clientName?.message}
+                label=""
+              />
+            )}
+          />
+        )}
+      />
+    </FormControl>
+  </Box>
+</Typography>
 
                 <FormControl sx={{ display: 'flex', flexDirection: 'row', gap: "1rem", justifyContent: 'center', alignItems: 'center', width: 'maxContent', marginTop: '2rem' }}>
                   <Button

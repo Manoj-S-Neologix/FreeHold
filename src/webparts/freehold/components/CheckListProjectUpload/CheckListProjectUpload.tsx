@@ -108,7 +108,7 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
     const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${selectedClient}` : `${getProjectUrl}/${selectedClient}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, getProjectCode);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${getProjectCode}`);
       // console.log(results, "File Datas");
       setFileData(results);
 
