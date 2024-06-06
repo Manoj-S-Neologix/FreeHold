@@ -44,11 +44,11 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
         Developer: data.developer
       };
 
-      const library = await apiResponse.createLibrary(dataObj.ProjectNumber, "Project Library");
+      const library = await apiResponse.createLibrary(`Project_${dataObj.ProjectNumber}`, "Project Library");
       const updatedDataObj = {
         ...dataObj,
         ProjectLibraryGUID: library.data.Id,
-        ProjectLibraryPath: library.data.ParentWebUrl + "/" + library.data.EntityTypeName
+        ProjectLibraryPath: library.data.ParentWebUrl + "/" + library.data.Title
       }
       const response = await apiResponse.addProject("Project_Informations", updatedDataObj);
       const fileInfoArray = files.map((file: any) => ({
@@ -117,7 +117,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                     rules={{
                       required: 'Project Number is required',
                       pattern: {
-                        value: /^[a-zA-Z0-9+-.]+$/,
+                        value: /^[a-zA-Z0-9 ]+$/,
                         message: 'Invalid project number'
                       }
                     }}
@@ -129,7 +129,7 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
                         size="small"
                         fullWidth
                         onChange={async (e) => {
-                          const value = e.target.value.replace(/[^a-zA-Z0-9+-.]/g, '');
+                          const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
                           field.onChange(value);
                           await trigger('projectNumber');
                         }}

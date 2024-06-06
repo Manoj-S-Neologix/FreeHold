@@ -64,7 +64,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
     };
 
     const deleteUnit = (indexToRemove: number) => {
-        const currentValues = watch(); 
+        const currentValues = watch();
         setCount((prevCount) => {
             const newCount = prevCount - 1;
             unregister(`unitName${indexToRemove}`);
@@ -108,7 +108,9 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
             setLoading(false);
             toast.success("Units created successfully");
 
+            const selectedClient = data.AssignClient;
             reset();
+            setValue("AssignClient", selectedClient);
             setCount(1);
         } catch (error) {
             setLoading(false);

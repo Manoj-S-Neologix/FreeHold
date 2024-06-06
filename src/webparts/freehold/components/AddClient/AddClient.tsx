@@ -123,7 +123,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         DMS_x0020_Tags: data.clientChecklist
       }));
 
-      apiResponse.uploadDocument(data.title, fileInfoArray, 'Client_Informations')
+      apiResponse.uploadDocument(`Client_${data.title}`, fileInfoArray, 'Client_Informations')
         .then(response => resolve(response))
         .catch(error => reject(error));
     });
@@ -136,7 +136,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         const updatedDataObj = {
           ...dataObj,
           ClientLibraryGUID: uploadDocumentResponse.data.Id,
-          ClientLibraryPath: uploadDocumentResponse.data.ParentWebUrl + "/" + dataObj.Title
+          ClientLibraryPath: uploadDocumentResponse.data.ParentWebUrl + "/" + uploadDocumentResponse.data.Title
         };
         return apiResponse.addClient("Client_Informations", updatedDataObj).then((clientInfo) => {
 
@@ -234,6 +234,10 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
                       maxLength: {
                         value: 100,
                         message: "Client Name must be at most 100 characters.",
+                      },
+                      pattern: {
+                        value: /^[a-zA-Z0-9 ]+$/,
+                        message: 'Special characters not allowed'
                       }
                     }}
                     render={({ field }) => (

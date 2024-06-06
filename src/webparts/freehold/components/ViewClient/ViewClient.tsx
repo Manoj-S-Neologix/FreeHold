@@ -367,7 +367,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}' and IsActive eq 'Yes'` : "IsActive eq 'Yes'";
       const orderBy = 'Modified';
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
       setClientData(results?.tableData);
@@ -450,7 +450,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
       email: item.email,
       contact: item.contact,
       modifiedDate: item.modifiedDate,
-      modifiedBy: item.modifiedBy,
+      //modifiedBy: item.modifiedBy,
       assignStaff: hyperLink(item?.assignedStaff.length, item?.assignedStaff, item.Id),
       assignedStaff: item?.assignedStaff,
       ProjectId: hyperLink(item.projectName, item?.ProjectIdId)
@@ -464,7 +464,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
       email: { value: item.email, width: "180px" },
       contact: { value: item.contact, width: "150px" },
       modifiedDate: { value: item.modifiedDate, width: "150px" },
-      modifiedBy: { value: item.modifiedBy, width: "150px" },
+      //modifiedBy: { value: item.modifiedBy, width: "150px" },
       assignStaff: { value: item?.assignStaff, width: "150px" },
       assignedStaff: { value: item?.assignedStaff, width: "80%" },
     };

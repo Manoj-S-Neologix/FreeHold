@@ -351,11 +351,11 @@ const ViewProject = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
-      const filter = "";
+      const filter = "IsActive eq 'Yes'";
       if (userRole === "staff") {
         const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
         const cexpand = 'AssignedStaff,Author,ProjectId,Editor';
-        const cfilter = `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'`;
+        const cfilter = `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}' and IsActive eq 'Yes'`;
 
         const [projectResults, clientResults] = await Promise.all([
           projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),

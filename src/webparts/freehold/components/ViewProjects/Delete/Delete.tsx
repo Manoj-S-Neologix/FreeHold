@@ -10,18 +10,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Stack } from '@mui/material';
 import styles from './Delete.module.scss';
-import ProjectService from '../../../Services/Business/ProjectService'; 
+import ProjectService from '../../../Services/Business/ProjectService';
 import toast from 'react-hot-toast';
 
 
 interface DeleteDialogProps {
   open: boolean;
   onClose: () => void;
-  projectDetails: any; 
+  projectDetails: any;
   fetchData: () => Promise<void>;
 }
 
-const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, projectDetails, fetchData}) => {
+const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, projectDetails, fetchData }) => {
   const [loading, setLoading] = useState(false);
 
   const handleCancel = () => {
@@ -31,18 +31,35 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, projectDetai
   const handleDeleteProject = async () => {
     try {
       setLoading(true);
-      await ProjectService().deleteProject("Project_Informations", projectDetails.Id);
-      await ProjectService().deleteLibrary(projectDetails.projectNumber);
-      toast.success('Project deleted Successfully !');
-      fetchData();
 
-      onClose();
+      const updatedData = {
+        IsActive: "No",
+        DeactivationDate: new Date()
+      };
+
+      ProjectService().updateProject("Project_Informations", projectDetails.Id, updatedData)
+        .then(() => {
+
+          setLoading(false);
+          toast.success('Project deleted Successfully !');
+          fetchData();
+
+          onClose();
+        })
+        .catch((error) => {
+          setLoading(false);
+          toast.error('Failed to update project details. Please try again.');
+        });
+
+      //await ProjectService().deleteProject("Project_Informations", projectDetails.Id);
+      //await ProjectService().deleteLibrary(projectDetails.projectNumber);
+
     } catch (error) {
       toast.error('Error deleting Project:', error);
-      setLoading(false); 
+      setLoading(false);
     }
   };
-  
+
   return (
     <Box sx={{ width: '100', padding: '20px' }}>
       <Stack direction="column" spacing={2}>

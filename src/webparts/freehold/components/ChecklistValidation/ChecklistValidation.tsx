@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Chip, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { emphasize, styled } from '@mui/material/styles';
 import { Button as MuiButton } from "@mui/material";
@@ -36,6 +36,7 @@ import {
 import ProjectService from '../../Services/Business/ProjectService';
 import _ from 'lodash';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import CheckListProjectUpload from '../CheckListProjectUpload/CheckListProjectUpload';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
   backgroundColor:
@@ -101,9 +102,12 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
   //const [unitData, setunitData] = useState<any>([]);
   const { control, formState: { errors }, setValue, getValues, reset } = useForm();
   const [particularClientAllData, setParticularClientAllData] = useState<any>([]);
+  const [particularProjectData, setParticularProjectData] = useState<any>([]);
+  const [selectedClient, setSelectedClient] = useState('');
   const projectService = ProjectService();
   const spServiceInstance: SPServiceType = SPService;
   const [userRole, setUserRole] = useState('');
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   const [data, setData] = useState<any>([]);
 
@@ -120,6 +124,25 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     navigate('/');
   };
 
+  const hyperLink = (data: any) => {
+    return (
+      <Box>
+        <Chip
+          label={data}
+          onClick={() => {
+            setSelectedClient(data);
+            const getUnique = projectData.filter((datas: any) => datas.projectName === getValues("projectName"));
+            setParticularProjectData(getUnique);            
+            setUploadDialogOpen(true);
+          }}
+        >
+          {data}
+        </Chip>
+      </Box>
+    )
+  };
+
+
   //Get search results
   const handleSearch = async () => {
 
@@ -132,7 +155,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
         if (results.length > 0) {
           //Get project number
           const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
-          const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL;
+          const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL.toLowerCase();
+
 
           let projectRelativePath = projectwebURL;
 
@@ -144,7 +168,11 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           //Get all recursive documents
           const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, projectInfo);
 
-          const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
+          //const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
+
+          const docDetails_Grpd = _.groupBy(docDetails, function (value) {
+            return value.FileDirRef.toLowerCase();
+          })
           // console.log("docDetails :", docDetails_Grpd);
 
           //Create document list
@@ -152,16 +180,16 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
           if (clientName === "" && getValues("projectName") !== "") {
 
-            const projectFolderPath: string = `${projectwebURL}`;
+            const projectFolderPath: string = (`${projectwebURL}`).toLowerCase();
             const clientDetails = _.filter(docDetails_Grpd[projectFolderPath], function (o) { return o.FileSystemObjectType === 1; });
 
             _.forEach(clientDetails, function (client) {
 
-              const clientFolderPath: string = `${projectwebURL}/${client.Title}`;
+              const clientFolderPath: string = (`${projectwebURL}/${client.Title}`).toLowerCase();
 
               docList.push({
                 project: getValues("projectName"),
-                client: client.Title,
+                client: hyperLink(client.Title),
                 passportCopy: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Passport copy") : <HighlightOffIcon style={{ color: 'red' }} />,
                 nationalID: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "National ID") : <HighlightOffIcon style={{ color: 'red' }} />,
                 engLetter: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Engagement letter") : <HighlightOffIcon style={{ color: 'red' }} />,
@@ -171,11 +199,11 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
           }
           else if (clientName !== "" && getValues("projectName") !== "") {
-            const clientFolderPath: string = `${projectwebURL}/${clientName}`;
+            const clientFolderPath: string = (`${projectwebURL}/${clientName}`).toLowerCase();
 
             docList.push({
               project: getValues("projectName"),
-              client: getValues("clientName"),
+              client: hyperLink(getValues("clientName")),
               passportCopy: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Passport copy") : <HighlightOffIcon style={{ color: 'red' }} />,
               nationalID: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "National ID") : <HighlightOffIcon style={{ color: 'red' }} />,
               engLetter: (docDetails_Grpd[`${clientFolderPath}`] !== undefined) ? checkProgress(docDetails_Grpd[`${clientFolderPath}`], "Engagement letter") : <HighlightOffIcon style={{ color: 'red' }} />,
@@ -216,6 +244,11 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
     }
     groupedData[row.project].push(row);
   });
+
+  const closeUploadDialog = () => {
+    setUploadDialogOpen(false);
+    handleSearch();
+  };
 
   // console.log(isLoading);
 
@@ -437,6 +470,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
                   }}
                 />
               </Box>
+
+              {uploadDialogOpen && <CheckListProjectUpload open={uploadDialogOpen} selectedClient={selectedClient} onClose={closeUploadDialog} particularProjectData={particularProjectData} spContext={props.spContext} siteUrl={props.siteUrl} />}
 
             </Box>
           </Box>

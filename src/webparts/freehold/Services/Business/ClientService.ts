@@ -337,8 +337,9 @@ const ClientService = () => {
             const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
             const pexpand = 'AssignClient';
             const porderBy = 'Modified';
+            const pfilter = "IsActive eq 'Yes'";
 
-            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, "", porderBy);
+            const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, pfilter, porderBy);
 
             let pResults: any[] = [];
             if (userRole === "staff") {

@@ -53,7 +53,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
   };
 
   const handledeleteClient = (clientId: any, title: any) => {
-    ClientService().deleteClient("Client_Informations", clientId)
+    /* ClientService().deleteClient("Client_Informations", clientId)
       .then(() => {
         return ClientService().deleteLibrary(title);
       })
@@ -65,6 +65,25 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, clientDetail
       .catch((error) => {
         const errorMessage = error || 'An error occurred while deleting client and associated document.';
         toast.error(`Failed to delete client and associated document. ${errorMessage}`);
+      }); */
+
+    const updatedData = {
+      IsActive: "No",
+      DeactivationDate: new Date()
+    };
+
+    ClientService().updateClient("Client_Informations", clientId, updatedData)
+      .then(() => {
+        setLoading(false);
+
+        toast.success('Client de-activated Successfully !');
+        setFiles([]);
+        fetchData();
+      })
+      .catch((error) => {
+        setLoading(false);
+        const errorMessage = error || 'An error occurred while de-activating client.';
+        toast.error(`Failed to de-activating client. ${errorMessage}`);
       });
   };
 

@@ -49,7 +49,7 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}' and IsActive eq 'Yes'` : "IsActive eq 'Yes'";
       const orderBy = 'Modified';
       const filteredClientsnProjects = await clientService.getfilteredClientsnProjects('Client_Informations', select, expand, filter, orderBy, userRole);
       if (filteredClientsnProjects?.clientResults)
