@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Box } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Box, Autocomplete } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -192,38 +192,37 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
             defaultValue=""
             rules={{ required: 'Client Name is required' }}
             render={({ field }) => (
-              <>
-                <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                <TextField
-                  {...field}
-                  id="client-name"
-                  fullWidth
-                  variant="outlined"
-                  select
-                  size="small"
-                  required
-                  label=""
-                  error={!!errors.clientName}
-                  helperText={errors?.clientName?.message}
-                  onChange={(e: any) => {
-                    setGetClient(e.target.value);
-                    const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
-                    setParticularClientAllData(getUnique);
-                    setValue('clientName', e.target.value);
-                    handleClientChange(e.target.value);
-                    
-                    
-                  }}
-                >
-                  {AllClientData?.map((item: any) => (
-                    <MenuItem key={item.id} value={item.name}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </>
-            )}
-          />
+       
+          <Autocomplete
+          {...field}
+          disablePortal
+          id="combo-box-client"
+          options={AllClientData.map((option: any) => option.name)}
+          sx={{ width: '100%' }}
+          renderInput={(params) => (
+            <>
+              <InputLabel htmlFor="combo-box-client">Client Name</InputLabel>
+              <TextField
+                {...params}
+                error={!!errors.clientName}
+                helperText={errors?.clientName?.message}
+                variant="outlined"
+                size="small"
+              />
+            </>
+          )}
+          onChange={(e, value) => {
+            setGetClient(value);
+            const getUnique = AllClientData.filter((datas: any) => datas.name === value);
+            setParticularClientAllData(getUnique);
+            setValue('clientName', value);
+            handleClientChange(value);
+            setFileData([]); // Clear document data
+            setUploadFiles([]); // Clear upload files
+          }}
+        />
+      )}
+    />
         </Grid>
         <Grid item sm={12}>
           <InputLabel htmlFor="client-document">Upload Document</InputLabel>

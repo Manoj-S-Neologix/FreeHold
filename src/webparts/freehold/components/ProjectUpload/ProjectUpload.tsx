@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { Button, CircularProgress } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Stack, Grid } from '@mui/material';
+import { Box, Stack, Grid, Autocomplete } from '@mui/material';
 // import DragAndDropUpload from '../../../../Common/DragAndDrop/DragAndDrop';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -153,6 +153,14 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   React.useEffect(() => {
     getDocumentsLibPath("project");
   }, []);
+
+  React.useEffect(() => {
+    if (!getValues("clientName")) {
+      getDocumentsLibPath("project");
+    } else {
+      getDocumentsLibPath("client");
+    }
+  }, [getValues("clientName")]);
 
   const onDelete = (index: number) => {
 
@@ -344,50 +352,43 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                 <Grid container spacing={2}>
                   {/* Client grid */}
                   <Grid item sm={6}>
+
                     <Controller
                       name="clientName"
                       control={control}
                       defaultValue=""
-                      //rules={{ required: 'Client Name is required' }}
                       render={({ field }) => (
                         <>
                           <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                          <TextField
+                          <Autocomplete
                             {...field}
                             id="client-name"
+                            options={getClientDetails}
+                            getOptionLabel={(option) => option.name}
                             fullWidth
-                            variant="outlined"
-                            select
                             size="small"
-                            required
-                            label=""
-                            error={!!errors.clientName}
-                            helperText={errors?.clientName?.message}
-                            onChange={(e: any) => {
-                              // console.log(e.target.value);
-                              setGetClient(e.target.value);
-                              setIsUnitDocumentChecked(false);
-                              // console.log("particularClientAllData: ", particularClientAllData);
-                              const getLibraryName = getClientDetails.filter((item: any) => item.name === e.target.value)[0].libraryGUID
-
-                              // console.log(getLibraryName, "getLibraryName");
-                              setValue('clientName', e.target.value);
-                              setGetGuid(e.target.value);
-
-                              //Populate Unit documents folder
-                              getDocumentsFromFolder(getLibraryName);
-
-                              //Get documents for client selection
-                              //fetchData(getLibraryName);
-                              getDocumentsLibPath("client");
+                            // required
+                            value={getClientDetails.find((item) => item.name === field.value) || null}
+                            onChange={(e, newValue) => {
+                              if (newValue) {
+                                setGetClient(newValue.name);
+                                setIsUnitDocumentChecked(false);
+                                const getLibraryName = newValue.libraryGUID;
+                                setValue('clientName', newValue.name);
+                                setGetGuid(newValue.name);
+                                getDocumentsFromFolder(getLibraryName);
+                                getDocumentsLibPath("client");
+                              } else {
+                                setGetClient('');
+                                setIsUnitDocumentChecked(false);
+                                setValue('clientName', '');
+                                setFileData([]); // Clear document data
+                                setUploadFiles([]); // Clear upload files
+                                setValue('unitDocument', '');
+                              }
                             }}
-                          >
-                            {getClientDetails?.map((item: any) => (
-                              <MenuItem key={item.id} value={item.name}>
-                                {item.name}
-                              </MenuItem>
-                            ))}
-                          </TextField>
+                            renderInput={(params) => <TextField {...params} variant="outlined" label="" error={!!errors.clientName} helperText={errors?.clientName?.message} />}
+                          />
                         </>
                       )}
                     />
@@ -396,6 +397,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                   {/* Unit document grid */}
                   <Grid item sm={6}>
                     <Stack direction="row" alignItems="center">
+
                       <Checkbox
                         checked={isUnitDocumentChecked}
                         onChange={(e) => {
@@ -404,7 +406,6 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                           if (!e.target.checked) {
                             getDocumentsLibPath("client");
                           }
-
                         }}
                         size="small"
                         sx={{ p: 0, mr: 2 }}
@@ -416,38 +417,27 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                       control={control}
                       defaultValue=""
                       render={({ field }) => (
-                        <TextField
+                        <Autocomplete
                           {...field}
                           id="is-unit-document"
+                          options={getFoldersResponse.map(item => item.Name)}
                           fullWidth
-                          select
-                          disabled={!isUnitDocumentChecked}
-                          variant="outlined"
-                          placeholder="Select Unit..."
-                          size="small"
-                          onChange={(e: any) => {
-                            // console.log(e.target.value);
-                            setValue('unitDocument', e.target.value);
-
+                          // disabled={!isUnitDocumentChecked}
+                          disabled={!isUnitDocumentChecked || !getClient}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              // placeholder="Select Unit..."
+                              size="small"
+                              required
+                            />
+                          )}
+                          onChange={(e, newValue) => {
+                            setValue('unitDocument', newValue || "");
                             getDocumentsLibPath("unit");
-
-                            /* const getLibraryName = getClientDetails.filter((item: any) => item.name === getGuid)[0].libraryGUID
-   
-                            const libraryPath = `${getLibraryName}/${e.target.value}`;
-   
-                            fetchData(libraryPath) */
-                            //Get documents for client selection
-                            //fetchData(getLibraryName);
                           }}
-                          required
-                        >
-                          {getFoldersResponse.length > 0 &&
-                            getFoldersResponse.map((item: any, idx: any) => (
-                              <MenuItem key={idx} value={item?.Name}>
-                                {item?.Name}
-                              </MenuItem>
-                            ))}
-                        </TextField>
+                        />
                       )}
                     />
                   </Grid>

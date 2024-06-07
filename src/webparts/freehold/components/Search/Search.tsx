@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Stack, TextField, Chip, Menu } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, MenuItem, Stack, TextField, Chip, Menu, Autocomplete } from "@mui/material";
 import React, { useState } from 'react';
 import Button from "../../../../Common/Button/CustomButton";
 import { Button as MuiButton } from "@mui/material";
@@ -216,44 +216,45 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                 </Box>
                                 <Box>
 
-                                    <Stack direction="row" spacing={1}>
-                                        <Box sx={{ maxWidth: "10rem", display: "flex" }}>
-                                            {selectedPersons.length === 0 ? (
-                                                <MuiButton onClick={() => setOpen(true)}>
-                                                    <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
-                                                </MuiButton>
-                                            ) : (
-                                                selectedPersons.map((person, index) => (
-                                                    <Chip
-                                                        key={index}
-                                                        sx={{ color: theme.palette.common.white }}
-                                                        label={person}
-                                                        onDelete={() => {
-                                                            const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
+                                     {selectedPersons.length === 0 &&
+                                    <Box sx={{ width: "20px !important", cursor: 'pointer' }} onClick={() => setOpen(true)}>
+                                        <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
+                                    </Box>
+                                }
 
-                                                            if (selectedPersons[index].startsWith("Project :")) {
-                                                                setValue('projectName', "");
+                                <Box sx={{ display: "flex" }}>
+                                    {selectedPersons.length !== 0 &&
+                                        (
+                                            selectedPersons.map((person, index) => (
+                                                <Chip
+                                                    key={index}
+                                                    sx={{ color: theme.palette.common.white }}
+                                                    label={person}
+                                                    onDelete={() => {
+                                                        const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
 
-                                                                if (getValues("clientName") === "") {
-                                                                    setIsApplied(false);
-                                                                }
-                                                            } else if (selectedPersons[index].startsWith("Client :")) {
-                                                                setValue('clientName', "");
+                                                        if (selectedPersons[index].startsWith("Project :")) {
+                                                            setValue('projectName', "");
 
-                                                                if (getValues("projectName") === "") {
-                                                                    setIsApplied(false);
-                                                                }
+                                                            if (getValues("clientName") === "") {
+                                                                setIsApplied(false);
                                                             }
-                                                            setSelectedPersons(updatedPersons);
-                                                            if (updatedPersons.length === 0) {
-                                                                setIsExpand(false);
+                                                        } else if (selectedPersons[index].startsWith("Client :")) {
+                                                            setValue('clientName', "");
+
+                                                            if (getValues("projectName") === "") {
+                                                                setIsApplied(false);
                                                             }
-                                                        }}
-                                                    />
-                                                ))
-                                            )}
-                                        </Box>
-                                    </Stack>
+                                                        }
+                                                        setSelectedPersons(updatedPersons);
+                                                        if (updatedPersons.length === 0) {
+                                                            setIsExpand(false);
+                                                        }
+                                                    }}
+                                                />
+                                            ))
+                                        )}
+                                </Box>
 
                                 </Box>
                             </Box>
@@ -328,19 +329,22 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 open={open}
                 fullWidth={true}
                 maxWidth={"sm"}
+                sx={{
+                    '.MuiPaper-root': { overflowY: 'initial !important' }
+                }}
             >
                 <DialogTitle>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex justify-content-between
-                     align-items-center relative">
+                <Box sx={{ overflowY: 'hidden' }} className="d-flex flex-column" >
+                        <Box sx={{ overflowY: 'hidden' }} className="d-flex justify-content-between
+                     align-items-center relative" >
                             <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
                                 Advanced Filter</h4>
-                        </div>
+                        </Box>
                         <div style={{
                             height: '4px', width: '100%',
                             backgroundColor: theme.palette.primary.main
                         }} />
-                    </div>
+                    </Box>
                 </DialogTitle>
 
                 <IconButton
@@ -356,75 +360,71 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                     <CloseIcon />
                 </IconButton>
                 <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
-                    <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
+                    <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px", width: "100%" }}>
                         <Grid item xs={12} sm={12} >
-                            <Controller
+                           
+                             <Controller
                                 name="clientName"
                                 control={control}
                                 defaultValue=""
-                                rules={{ required: 'Client Name is required' }}
+                                rules={{ 
+                                    required: 'Client Name is required' 
+                                }}
                                 render={({ field }) => (
-                                    <>
-                                        <InputLabel htmlFor="client-name">Client Name</InputLabel>
-                                        <TextField
-                                            {...field}
-                                            id="client-name"
-                                            fullWidth
-                                            variant="outlined"
-                                            select
-                                            size="small"
-                                            required
-                                            label=""
-                                            error={!!errors.clientName}
-                                            helperText={errors?.clientName?.message}
-                                            onChange={(e: any) => {
-                                                setGetClient(e.target.value);
-                                                const getUnique = AllClientData.filter((datas: any) => datas.Title === e.target.value);
-                                                setParticularClientAllData(getUnique);
-                                                setValue('clientName', e.target.value);
-                                            }}
-                                        >
-                                            {AllClientData?.map((item: any) => (
-                                                <MenuItem key={item.id} value={item.Title}>
-                                                    {item.Title}
-                                                </MenuItem>
-                                            ))}
-                                        </TextField>
-                                    </>
+                                    <Autocomplete
+                                        {...field}
+                                        disablePortal
+                                        id="combo-box-client"
+                                        options={AllClientData.map((option: any) => option.Title)}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Client Name"
+                                                variant="outlined"
+                                                error={!!errors?.clientName}
+                                                helperText={errors?.clientName?.message}
+                                                
+                                            />
+                                        )}
+                                        onChange={(e, value) => {
+                                            setGetClient(value);
+                                            const getUnique = AllClientData.filter((datas: any) => datas.Title === value);
+                                            setParticularClientAllData(getUnique);
+                                            setValue('clientName', value);
+                                        }}
+                                    />
                                 )}
                             />
 
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <Controller
+                        
+                             <Controller
                                 name="projectName"
                                 control={control}
                                 defaultValue=""
                                 rules={{ required: 'Project Name is required' }}
                                 render={({ field }) => (
-                                    <>
-                                        <InputLabel htmlFor="project-name">Project Name</InputLabel>
-                                        <TextField
-                                            {...field}
-                                            id="project-name"
-                                            fullWidth
-                                            variant="outlined"
-                                            select
-                                            size="small"
-                                            required
-                                            label=""
-                                            error={!!errors.projectName}
-                                            onChange={async (e: any) => {
-                                                setValue('projectName', e.target.value);
-                                            }}
-                                        >
-                                            {projectData.map((item: any) => (
-                                                <MenuItem key={item.id} value={item.Title}>
-                                                    {item.Title}
-                                                </MenuItem>
-                                            ))}
-                                        </TextField>
-                                    </>
+                                    <Autocomplete
+                                        {...field}
+                                        disablePortal
+                                        id="combo-box-project"
+                                        options={projectData.map((option: any) => option.Title)}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Project Name"
+                                                error={!!errors.projectName}
+                                                helperText={errors?.projectName?.message}
+                                                variant="outlined"
+                                            />
+                                        )}
+                                        onChange={(e, value) => {
+                                            setValue('projectName', value);
+                                        }}
+                                    />
                                 )}
                             />
                         </Grid>
