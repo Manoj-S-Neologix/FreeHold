@@ -12,6 +12,7 @@ import { Box, Stack, CircularProgress } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
+import generateAutoNumber from '../../../../Common/Common';
 
 
 interface AddClientDialogProps {
@@ -44,11 +45,12 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
         Developer: data.developer
       };
 
-      const library = await apiResponse.createLibrary(`Project_${dataObj.ProjectNumber}`, "Project Library");
+      const library = await apiResponse.createLibrary(`PR${generateAutoNumber()}_${dataObj.ProjectNumber}`, "Project Library");
       const updatedDataObj = {
         ...dataObj,
         ProjectLibraryGUID: library.data.Id,
-        ProjectLibraryPath: library.data.ParentWebUrl + "/" + library.data.Title
+        ProjectLibraryPath: library.data.ParentWebUrl + "/" + library.data.Title,
+        ProjectLibraryName: library.data.Title
       }
       const response = await apiResponse.addProject("Project_Informations", updatedDataObj);
       const fileInfoArray = files.map((file: any) => ({

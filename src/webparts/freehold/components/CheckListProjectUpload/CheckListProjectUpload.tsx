@@ -84,6 +84,7 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
   const getProjectCode = particularProjectData[0]?.projectNumber;
   const getProjectUrl = particularProjectData[0]?.webURL;
+  const projectLibraryName = particularProjectData[0]?.projectLibraryName;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
     try {
@@ -108,7 +109,7 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
     const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${selectedClient}` : `${getProjectUrl}/${selectedClient}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${getProjectCode}`);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `${projectLibraryName}`);
       // console.log(results, "File Datas");
       setFileData(results);
 

@@ -44,13 +44,8 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
   const [deleteId, setDeleteId] = useState<number>(0);
   //const getProjectCode = particularClientAllData[0]?.projectNumber;
   const [getProjectUrl, setProjectUrl] = useState("");
-  const [getProjectCode, setProjectCode] = useState("");
-
-
-  // const getProjectUrl = particularClientAllData[0]?.webURL;
-
-
-
+  //const [getProjectCode, setProjectCode] = useState("");
+  const [projectLibraryName, setProjectLibraryName] = useState("");
 
   const handleFileInput = (selectedFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -118,7 +113,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     try {
       await apiCall(getUnique)
       const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
-      const getLibraryName = AllClientData.filter((item: any) => item.GUID === libraryGuid)[0].projectNumber;
+      const getLibraryName = AllClientData.filter((item: any) => item.GUID === libraryGuid)[0].projectLibraryName;
       // console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getLibraryName}`);
       setGetFoldersResponse(getFolders);
@@ -141,11 +136,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      const filter = "IsActive eq 'Yes'";
       let results: any = [];
       if (userRole === "staff") {
         results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, spContext.pageContext.user.email);
       } else {
-        results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+        results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
       }
       if (results && results.updatedResults && results.updatedResults.length > 0) {
         setProjectData(results.TableData);
@@ -189,12 +185,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
     fetchData();
   }, []);
 
-  const getDocumentsLibPath = async (type: string, projectUrl: string, projectNum: string) => {
+  const getDocumentsLibPath = async (type: string, projectUrl: string, projectLibraryName: string) => {
 
     const projectRelativePath = (type === "project") ? `${projectUrl}` : (type === "client") ? `${projectUrl}/${getValues("clientName")}` : `${projectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${projectNum}`);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `${projectLibraryName}`);
       setFileData(results);
       setIsLoading(false);
     } catch (error) {
@@ -246,9 +242,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
         toast.success('Documents Added Successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("unit", getProjectUrl, projectLibraryName);
         } else {
-          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("client", getProjectUrl, projectLibraryName);
         }
 
       } catch (error) {
@@ -287,9 +283,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
         toast.success('Documents Added Successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("unit", getProjectUrl, projectLibraryName);
         } else {
-          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("client", getProjectUrl, projectLibraryName);
         }
 
       } catch (error) {
@@ -306,9 +302,9 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
         setIsDeleteDialogOpen(false);
         toast.success('File deleted successfully!');
         if (isUnitDocumentChecked) {
-          getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("unit", getProjectUrl, projectLibraryName);
         } else {
-          getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+          getDocumentsLibPath("client", getProjectUrl, projectLibraryName);
         }
       })
       .catch(error => {
@@ -359,17 +355,19 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                     if (value) {
                       const getUnique = AllClientData.filter((datas: any) => datas.projectName === value);
                       setProjectUrl(getUnique[0].webURL);
-                      setProjectCode(getUnique[0].projectNumber);
+                      //setProjectCode(getUnique[0].projectNumber);
+                      setProjectLibraryName(getUnique[0].projectLibraryName);
                       setParticularClientAllData(getUnique);
                       setValue('projectName', value);
                       setValue('clientName', "");
                       setIsUnitDocumentChecked(false);
                       setValue('unitDocument', "");
                       getClientFromFolder(getUnique[0].GUID, getUnique);
-                      getDocumentsLibPath("project", getUnique[0].webURL, getUnique[0].projectNumber);
+                      getDocumentsLibPath("project", getUnique[0].webURL, getUnique[0].projectLibraryName);
                     } else {
                       setProjectUrl("");
-                      setProjectCode("");
+                      //setProjectCode("");
+                      setProjectLibraryName("");
                       setParticularClientAllData([]);
                       setValue('projectName', "");
                       setValue('clientName', "");
@@ -448,7 +446,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                       setValue('clientName', newValue.name);
                       setGetGuid(newValue.name);
                       getDocumentsFromFolder(getLibraryName);
-                      getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+                      getDocumentsLibPath("client", getProjectUrl, projectLibraryName);
                     } else {
                       setGetClient('');
                       setIsUnitDocumentChecked(false);
@@ -456,7 +454,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                       setFileData([]); // Clear document data
                       setUploadFiles([]); // Clear upload files
                       setValue('unitDocument', '');
-                      getDocumentsLibPath("project", getProjectUrl, getProjectCode); 
+                      getDocumentsLibPath("project", getProjectUrl, projectLibraryName); 
                     }
                   }}
                   renderInput={(params) => (
@@ -482,7 +480,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                 setIsUnitDocumentChecked(e.target.checked);
                 setValue('unitDocument', "");
                 if (!e.target.checked) {
-                  getDocumentsLibPath("client", getProjectUrl, getProjectCode);
+                  getDocumentsLibPath("client", getProjectUrl, projectLibraryName);
                 }
               }
               }
@@ -515,7 +513,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                 )}
                 onChange={(e, newValue) => {
                   setValue('unitDocument', newValue || "");
-                  getDocumentsLibPath("unit", getProjectUrl, getProjectCode);
+                  getDocumentsLibPath("unit", getProjectUrl, projectLibraryName);
                 }}
               />
             )}

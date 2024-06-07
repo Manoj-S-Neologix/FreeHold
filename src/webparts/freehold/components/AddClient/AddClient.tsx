@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import DropZone from "../../../../Common/DropZone/DropZone";
 // import InputLabel from '@mui/material/InputLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
+import generateAutoNumber from '../../../../Common/Common';
 
 
 
@@ -123,7 +124,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         DMS_x0020_Tags: data.clientChecklist
       }));
 
-      apiResponse.uploadDocument(`Client_${data.title}`, fileInfoArray, 'Client_Informations')
+      apiResponse.uploadDocument(`CL${generateAutoNumber()}_${data.title}`, fileInfoArray, 'Client_Informations')
         .then(response => resolve(response))
         .catch(error => reject(error));
     });

@@ -204,7 +204,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                         control={control}
                                         defaultValue=""
                                         rules={{
-                                            required: 'Assign Client is required',
+                                            required: 'Client is required',
                                         }}
                                         render={({ field }) => (
                                             <Autocomplete
@@ -213,7 +213,7 @@ const CreateUnit = ({ open, onClose, props, particularClientAllData, selected, e
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        label="Assign Client"
+                                                        label="Assigned Client"
                                                         variant="outlined"
                                                         error={!!errors?.AssignClient}
                                                         helperText={errors?.AssignClient?.message}

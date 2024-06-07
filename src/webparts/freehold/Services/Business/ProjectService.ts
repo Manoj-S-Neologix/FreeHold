@@ -107,6 +107,7 @@ const ProjectService = () => {
                     contact: item.ClientContact,
                     GUID: item.ProjectLibraryGUID,
                     webURL: item.ProjectLibraryPath,
+                    projectLibraryName: item.ProjectLibraryName,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
@@ -130,6 +131,7 @@ const ProjectService = () => {
                 modifiedBy: tableItem.Editor.Title,
                 GUID: tableItem.ProjectLibraryGUID,
                 webURL: tableItem.ProjectLibraryPath,
+                projectLibraryName: tableItem.ProjectLibraryName,
                 assignClient: (tableItem?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
                 assignClientId: (tableItem?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
                 clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,
@@ -146,7 +148,7 @@ const ProjectService = () => {
 
             const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id';
             const cexpand = 'AssignedStaff';
-            const cfilter = `AssignedStaff/EMail eq '${currentUserEmail}'`;
+            const cfilter = `AssignedStaff/EMail eq '${currentUserEmail}' and IsActive eq 'Yes'`;
 
             const corderBy = 'Modified';
 
@@ -205,6 +207,7 @@ const ProjectService = () => {
                     contact: item.ClientContact,
                     GUID: item.ProjectLibraryGUID,
                     webURL: item.ProjectLibraryPath,
+                    projectLibraryName: item.ProjectLibraryName,
                     Author: {
                         Name: item.Author.Title,
                         Email: item.Author.EMail
@@ -229,6 +232,7 @@ const ProjectService = () => {
                 modifiedBy: tableItem.Editor.Title,
                 GUID: tableItem.ProjectLibraryGUID,
                 webURL: tableItem.ProjectLibraryPath,
+                projectLibraryName: tableItem.ProjectLibraryName,
                 assignClient: (tableItem?.AssignClient || []).map((client: any) => client.Title).join(', ') || '',
                 assignClientId: (tableItem?.AssignClient || []).map((client: any) => client.Id).join(', ') || '',
                 clientDetails: tableItem?.AssignClient ? tableItem.AssignClient : null,

@@ -6,6 +6,7 @@ import {
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { Web } from "@pnp/sp/presets/all";
 import pnp from 'sp-pnp-js';
+import CommonService from '../../../../Common/Common';
 // import toast from 'react-hot-toast';
 
 export type SPServiceType = {
@@ -45,11 +46,12 @@ export type SPServiceType = {
     ) => Promise<any[]>;
 };
 
+const commonServiceInstance = CommonService;
+
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
 //const web = Web('https://freeholddxb.sharepoint.com/sites/UAT');
 
 const SPService: SPServiceType = {
-
 
     // Get all list items
     getAllListItems: async (listTitle: string): Promise<any[]> => {
@@ -136,7 +138,7 @@ const SPService: SPServiceType = {
 
         const promises = files.map(async (file: any) => {
             try {
-                const uploadedFile = await library.files.add(file.name, file, true);
+                const uploadedFile = await library.files.add(commonServiceInstance().generateFilenameWithTimestamp(file.name), file, true);
                 if (uploadedFile) {
                     const item = await uploadedFile.file.getItem();
                     // console.log(item, 'serviceitem..')

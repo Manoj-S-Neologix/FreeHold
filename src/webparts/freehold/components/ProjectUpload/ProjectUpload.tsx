@@ -91,7 +91,8 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
   const [getGuid, setGetGuid] = React.useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [getFoldersResponse, setGetFoldersResponse] = useState<any[]>([]);
-  const getProjectCode = particularClientAllData[0]?.projectNumber;
+  //const getProjectCode = particularClientAllData[0]?.projectNumber;
+  const projectLibraryName = particularClientAllData[0]?.projectLibraryName;
   const getProjectUrl = particularClientAllData[0]?.webURL;
 
   const getDocumentsFromFolder = async (libraryGuid: string) => {
@@ -99,7 +100,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
       //const results: any = await ProjectService().getDocumentsFromFolder(libraryGuid);
       //console.log(results, 'guidresult')
       const getLibraryName = getClientDetails.filter((item: any) => item.libraryGUID === libraryGuid)[0].name;
-      console.log(`${getProjectCode}/${getLibraryName}`, 'getProjectName/getLibraryName');
+      console.log(`${projectLibraryName}/${getLibraryName}`, 'getProjectName/getLibraryName');
       const getFolders: any = await ProjectService().getAllFoldersInLibrary(`${getProjectUrl}/${getLibraryName}`);
       //console.log('Retrieved files:', results,);
       // console.log('getFolders', getFolders);
@@ -119,7 +120,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
     const projectRelativePath = (type === "project") ? `${getProjectUrl}` : (type === "client") ? `${getProjectUrl}/${getValues("clientName")}` : `${getProjectUrl}/${getValues("clientName")}/${getValues("unitDocument")}`;
 
     try {
-      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `Project_${getProjectCode}`);
+      const results: any = await ProjectService().getFolderItems(spContext, siteUrl, `${projectRelativePath}`, `${projectLibraryName}`);
       // console.log(results, "File Datas");
       setFileData(results);
 
