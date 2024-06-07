@@ -154,9 +154,8 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
 
         if (results.length > 0) {
           //Get project number
-          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectNumber;
+          const projectInfo = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].projectLibraryName;
           const projectwebURL = _.filter(projectData, function (o) { return o.projectName === getValues("projectName"); })[0].webURL.toLowerCase();
-
 
           let projectRelativePath = projectwebURL;
 
@@ -166,7 +165,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           }
 
           //Get all recursive documents
-          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, `Project_${projectInfo}`);
+          const docDetails = await ProjectService().getFolderItemsRecursive(props.spContext, props.siteUrl, `${projectRelativePath}`, `<View Scope='RecursiveAll'><Query><OrderBy><FieldRef Name="Modified" Ascending="FALSE"/></OrderBy></Query></View>`, `${projectInfo}`);
 
           //const docDetails_Grpd = _.groupBy(docDetails, "FileDirRef");
 
@@ -259,6 +258,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
       const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'Author,AssignClient,Editor';
       const orderBy = 'Modified';
+      const filter = "IsActive eq 'Yes'";
 
       if (userRole === "staff") {
         const results = await projectService.getfilteredProjectExpand('Project_Informations', select, "", expand, orderBy, props.spContext.pageContext.user.email);
@@ -271,7 +271,7 @@ const ChecklistValidation = (props: IFreeholdChildProps) => {
           setProjectData([]);
         }
       } else {
-        const results = await projectService.getProjectExpand('Project_Informations', select, "", expand, orderBy);
+        const results = await projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy);
 
         // console.log(results, "result");
         if (results && results.updatedResults && results.updatedResults.length > 0) {
