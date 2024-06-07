@@ -16,7 +16,8 @@ import toast from 'react-hot-toast';
 import DropZone from "../../../../Common/DropZone/DropZone";
 // import InputLabel from '@mui/material/InputLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
-import generateAutoNumber from '../../../../Common/Common';
+// import generateAutoNumber from '../../../../Common/Common';
+import CommonService from '../../../../Common/Common';
 
 
 
@@ -27,6 +28,9 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
   const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+  // const commonServiceInstance = CommonService;
+  const { generateAutoNumber } = CommonService();
+
 
   const textFieldWidth = {
     xs: 12,
@@ -102,6 +106,8 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
     const apiResponse = ClientService();
     // console.log(data, selectedPersons, "staff");
 
+    const autoNumber = generateAutoNumber();
+
     const dataObj = {
       Title: data.title,
       ClientEmail: data.email,
@@ -124,7 +130,9 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
         DMS_x0020_Tags: data.clientChecklist
       }));
 
-      apiResponse.uploadDocument(`CL${generateAutoNumber()}_${data.title}`, fileInfoArray, 'Client_Informations')
+      // apiResponse.uploadDocument(`CL${generateAutoNumber()}_${data.title}`, fileInfoArray, 'Client_Informations')
+      apiResponse.uploadDocument(`CL${autoNumber}_${data.title}`, fileInfoArray, 'Client_Informations')
+
         .then(response => resolve(response))
         .catch(error => reject(error));
     });

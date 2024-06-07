@@ -12,7 +12,9 @@ import { Box, Stack, CircularProgress } from '@mui/material';
 import ProjectService from '../../Services/Business/ProjectService';
 import { Controller, useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
-import generateAutoNumber from '../../../../Common/Common';
+// import generateAutoNumber from '../../../../Common/Common';
+import CommonService from '../../../../Common/Common';
+
 
 
 interface AddClientDialogProps {
@@ -27,6 +29,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, reset, formState: { errors }, trigger } = useForm();
+  const { generateAutoNumber } = CommonService();
+
 
   const handleCancel = () => {
     onClose();
@@ -37,6 +41,8 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
     try {
       setLoading(true);
       const apiResponse = ProjectService();
+      const autoNumber = generateAutoNumber();
+
 
       const dataObj = {
         Title: data.title,
@@ -45,7 +51,9 @@ const AddProjectDialog: React.FC<AddClientDialogProps> = ({ open, onClose, fetch
         Developer: data.developer
       };
 
-      const library = await apiResponse.createLibrary(`PR${generateAutoNumber()}_${dataObj.ProjectNumber}`, "Project Library");
+      // const library = await apiResponse.createLibrary(`PR${generateAutoNumber()}_${dataObj.ProjectNumber}`, "Project Library");
+      const library = await apiResponse.createLibrary(`PR${autoNumber}_${dataObj.ProjectNumber}`, "Project Library");
+
       const updatedDataObj = {
         ...dataObj,
         ProjectLibraryGUID: library.data.Id,
