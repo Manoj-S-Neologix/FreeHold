@@ -26,8 +26,11 @@ const AssignClient = ({ open, onClose, props, particularClientAllData, selected,
     const clientListName = "Client_Informations";
     const selectQuery = "Id,Title,ClientLibraryGUID,AssignedStaff/Title,AssignedStaff/EMail";
     const expand = 'AssignedStaff';
-    const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
-
+    // const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}'` : "";
+    const filter = (userRole === "staff")
+    ? `AssignedStaff/EMail eq '${props.spContext.pageContext.user.email}' and IsActive eq 'Yes'`
+    : "IsActive eq 'Yes'";
+    
     const apiCall = async () => {
         try {
             const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, filter, "");

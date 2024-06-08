@@ -641,9 +641,12 @@ const ViewProject = (props: IFreeholdChildProps) => {
                     rules={{
                       required: 'clientName is required',
                     }}
-                    render={({ field }) => (
+                    render={({ field }) => {
+                      const filteredClientData = assignedClientData.filter(client => client.IsActive === 'Yes');
+        
+                      return (
                       <Autocomplete
-                        options={assignedClientData.sort((a, b) => a.Title.localeCompare(b.Title))}
+                        options={filteredClientData.sort((a, b) => a.Title.localeCompare(b.Title))}
                         getOptionLabel={(option) => option.Title}
                         renderInput={(params) => (
                           <TextField
@@ -663,7 +666,8 @@ const ViewProject = (props: IFreeholdChildProps) => {
                           setSelectedPersons(getUnique);
                         }}
                       />
-                    )}
+                      );
+                    }}
                   />
                 </Grid>
               </Grid>
