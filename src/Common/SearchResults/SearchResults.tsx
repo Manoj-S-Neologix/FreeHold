@@ -23,9 +23,9 @@ const SearchResults = ({ searchResults, spContext, siteUrl, handleClose }: ISear
 
     const getValue = (file: any, type: string) => {
         if (type === "project") {
-            return (file.DMSProject !== null && file.DMSProject !== "") ? <a onClick={() => pageRedirect(`/ViewProject/${file.DMSProjectID}`, "same")} href={`#`}>&bull; {file.DMSProject}</a> : "";
+            return (file.DMSProject !== null && file.DMSProject !== "") ? <a onClick={() => {handleClose();}} href={`#/ViewProject/${file.DMSProjectID}`}>&bull; {file.DMSProject}</a> : "";
         } else if (type === "client") {
-            return (file.DMSClient !== null && file.DMSClient !== "") ? <a onClick={() => pageRedirect(`/ViewClient/${file.DMSClientID}`, "same")} href={`#`}>&bull; {file.DMSClient}</a> : "";
+            return (file.DMSClient !== null && file.DMSClient !== "") ? <a onClick={() => {handleClose();}} href={`#/ViewClient/${file.DMSClientID}`}>&bull; {file.DMSClient}</a> : "";
         } else if (type === "unit") {
             return (file.DMSUnit !== null && file.DMSUnit !== "") ? <span>&bull; {file.DMSUnit}</span> : "";
         }
