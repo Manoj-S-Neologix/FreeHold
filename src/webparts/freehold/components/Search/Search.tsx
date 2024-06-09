@@ -43,7 +43,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     const [, setGetClient] = React.useState<any[]>([]);
     const [, setParticularClientAllData] = React.useState<any>([]);
     const [projectData, setProjectData] = React.useState<any>([]);
-    const { control, formState: { errors }, setValue, reset, getValues } = useForm();
+    const { control, formState: { errors }, setValue, reset, getValues, watch } = useForm();
     const [documentType, setDocumentType] = React.useState('');
     const [selectedPersons, setSelectedPersons] = React.useState<string[]>([]);
     const navigate = useNavigate();
@@ -193,6 +193,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
     React.useEffect(() => {
         fetchData();
     }, [userRole]);
+
+      // Watch the values of clientName and projectName
+      const clientName = watch("clientName");
+      const projectName = watch("projectName");
+  
+      // Check if either field is filled
+      const isFormValid = !!clientName || !!projectName;
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
@@ -441,6 +448,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                 maxWidth: '150px',
                                 float: 'right',
                             }}
+                            disabled={!isFormValid}
                         >
                             Apply
                         </MuiButton>
