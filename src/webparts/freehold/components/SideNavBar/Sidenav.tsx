@@ -21,13 +21,13 @@ const Sidenav = (props: ISideNavProps) => {
 
     if (props.userRole === "staff") {
         menuItems = [
-            { to: '/ViewClient', text: 'View Clients' },
+            { to: '/ViewClients', text: 'View Clients' },
             { to: '/ViewProject', text: 'View Projects' },
             { to: '/ChecklistValidation', text: 'Checklist Validation' }
         ];
     } else {
         menuItems = [
-            { to: '/ViewClient', text: 'View Clients' },
+            { to: '/ViewClients', text: 'View Clients' },
             { to: '/ViewProject', text: 'View Projects' },
             { to: '/ChecklistValidation', text: 'Checklist Validation' },
             { to: '/ChecklistConfiguration', text: 'Checklist Configuration' }

@@ -43,7 +43,7 @@ const Home = (props: IFreeholdProps) => {
                                 </>}
                         />
                         <Route
-                            path='/ViewClient'
+                            path='/ViewClients'
                             element={<ViewClient spContext={props.context} siteUrl={props.siteUrl} userRole={props.userRole} />}
                         />
                         <Route

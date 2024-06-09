@@ -144,7 +144,7 @@ const ViewParticularClient = ({ props, spContext: WebPartContext, clientDetails,
 
     const navigateToClient = () => {
         setIsViewDialogOpen(false);
-        navigate('/ViewClient');
+        navigate('/ViewClients');
     };
 
     return (

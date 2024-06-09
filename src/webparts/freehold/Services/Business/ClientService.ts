@@ -71,7 +71,9 @@ const ClientService = () => {
     const getClient = async (ListName: string) => {
 
         if (spServiceInstance) {
-            const results = await spServiceInstance.getAllListItems(ListName);
+            //const results = await spServiceInstance.getAllListItems(ListName);
+            const filter = "IsActive eq 'Yes'";
+            const results = await spServiceInstance.getListItemsByFilter(ListName, "", "", filter, "");
             return results;
         }
     };

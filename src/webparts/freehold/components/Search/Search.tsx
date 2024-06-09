@@ -116,11 +116,11 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
                 const expand = 'Author,AssignClient,Editor';
                 const orderBy = 'Modified';
-                const filter = "";
+                const filter = "IsActive eq 'Yes'";
 
                 const cselect = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
                 const cexpand = 'AssignedStaff,Author,ProjectId,Editor';
-                const cfilter = `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'`;
+                const cfilter = `AssignedStaff/EMail eq '${spContext.pageContext.user.email}' and IsActive eq 'Yes'`;
 
                 const [projectResults, clientResults] = await Promise.all([
                     projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, spContext.pageContext.user.email),
@@ -212,49 +212,49 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                     gap: "10px"
                                 }}>
                                 <Box sx={{ width: "100%", paddingLeft: '8px' }}>
-                                    <CommonCustomSearch isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} isApplied={isApplied} />
+                                    <CommonCustomSearch projectData={projectData} clientData={AllClientData} isExpand={isExpand} handleSearchChange={handleSearchChange} spContext={spContext} siteUrl={siteUrl} client={getValues("clientName")} project={getValues("projectName")} isApplied={isApplied} />
                                 </Box>
                                 <Box>
 
-                                     {selectedPersons.length === 0 &&
-                                    <Box sx={{ width: "20px !important", cursor: 'pointer' }} onClick={() => setOpen(true)}>
-                                        <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
+                                    {selectedPersons.length === 0 &&
+                                        <Box sx={{ width: "20px !important", cursor: 'pointer' }} onClick={() => setOpen(true)}>
+                                            <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
+                                        </Box>
+                                    }
+
+                                    <Box sx={{ display: "flex" }}>
+                                        {selectedPersons.length !== 0 &&
+                                            (
+                                                selectedPersons.map((person, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        sx={{ color: theme.palette.common.white }}
+                                                        label={person}
+                                                        onDelete={() => {
+                                                            const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
+
+                                                            if (selectedPersons[index].startsWith("Project :")) {
+                                                                setValue('projectName', "");
+
+                                                                if (getValues("clientName") === "") {
+                                                                    setIsApplied(false);
+                                                                }
+                                                            } else if (selectedPersons[index].startsWith("Client :")) {
+                                                                setValue('clientName', "");
+
+                                                                if (getValues("projectName") === "") {
+                                                                    setIsApplied(false);
+                                                                }
+                                                            }
+                                                            setSelectedPersons(updatedPersons);
+                                                            if (updatedPersons.length === 0) {
+                                                                setIsExpand(false);
+                                                            }
+                                                        }}
+                                                    />
+                                                ))
+                                            )}
                                     </Box>
-                                }
-
-                                <Box sx={{ display: "flex" }}>
-                                    {selectedPersons.length !== 0 &&
-                                        (
-                                            selectedPersons.map((person, index) => (
-                                                <Chip
-                                                    key={index}
-                                                    sx={{ color: theme.palette.common.white }}
-                                                    label={person}
-                                                    onDelete={() => {
-                                                        const updatedPersons = selectedPersons.filter((name, idx) => idx !== index);
-
-                                                        if (selectedPersons[index].startsWith("Project :")) {
-                                                            setValue('projectName', "");
-
-                                                            if (getValues("clientName") === "") {
-                                                                setIsApplied(false);
-                                                            }
-                                                        } else if (selectedPersons[index].startsWith("Client :")) {
-                                                            setValue('clientName', "");
-
-                                                            if (getValues("projectName") === "") {
-                                                                setIsApplied(false);
-                                                            }
-                                                        }
-                                                        setSelectedPersons(updatedPersons);
-                                                        if (updatedPersons.length === 0) {
-                                                            setIsExpand(false);
-                                                        }
-                                                    }}
-                                                />
-                                            ))
-                                        )}
-                                </Box>
 
                                 </Box>
                             </Box>
@@ -307,7 +307,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                             onClose={mhandleClose}
                                         >
 
-                                            <MenuItem onClick={() => pageRedirect("/ViewClient")}>
+                                            <MenuItem onClick={() => pageRedirect("/ViewClients")}>
                                                 View Clients
                                             </MenuItem>
                                             <MenuItem onClick={() => pageRedirect("/ViewProject")}>
@@ -334,7 +334,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 }}
             >
                 <DialogTitle>
-                <Box sx={{ overflowY: 'hidden' }} className="d-flex flex-column" >
+                    <Box sx={{ overflowY: 'hidden' }} className="d-flex flex-column" >
                         <Box sx={{ overflowY: 'hidden' }} className="d-flex justify-content-between
                      align-items-center relative" >
                             <h4 style={{ margin: '0', color: theme.palette.primary.main }}>
@@ -362,13 +362,13 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 <DialogContent sx={{ pt: 0, mt: 0, pl: 0, overflow: "hidden" }}>
                     <Grid container spacing={2} sx={{ m: 0, alignItems: "center", paddingLeft: "10px", paddingRight: "10px", width: "100%" }}>
                         <Grid item xs={12} sm={12} >
-                           
-                             <Controller
+
+                            <Controller
                                 name="clientName"
                                 control={control}
                                 defaultValue=""
-                                rules={{ 
-                                    required: 'Client Name is required' 
+                                rules={{
+                                    required: 'Client Name is required'
                                 }}
                                 render={({ field }) => (
                                     <Autocomplete
@@ -384,7 +384,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                                 variant="outlined"
                                                 error={!!errors?.clientName}
                                                 helperText={errors?.clientName?.message}
-                                                
+
                                             />
                                         )}
                                         onChange={(e, value) => {
@@ -399,8 +399,8 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
 
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                        
-                             <Controller
+
+                            <Controller
                                 name="projectName"
                                 control={control}
                                 defaultValue=""

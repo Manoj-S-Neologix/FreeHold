@@ -7,6 +7,7 @@ import Drawer from '@mui/material/Drawer';
 import SearchResults from '../SearchResults/SearchResults';
 import SPService, { SPServiceType } from '../../webparts/freehold/Services/Core/SPService';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
+import _ from 'lodash';
 
 interface ISearchPros {
     handleSearchChange?: any;
@@ -16,9 +17,11 @@ interface ISearchPros {
     project: string;
     isExpand?: boolean;
     isApplied?: boolean;
+    projectData?: any;
+    clientData?: any;
 }
 
-const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, project, isExpand, isApplied }: ISearchPros) => {
+const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, project, isExpand, isApplied, clientData, projectData }: ISearchPros) => {
 
     const [opend, setOpend] = React.useState(false);
     const spServiceInstance: SPServiceType = SPService;
@@ -43,7 +46,31 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                 }
 
                 const results = await spServiceInstance.getFilteredResults(qryTxt);
-                setSearchResults(results.PrimarySearchResults);
+                let searchResults: any[] = [];
+                console.log("SearchResults " + results.PrimarySearchResults);
+
+                console.log("clientdata:", clientData);
+                console.log("projectData:", projectData);
+
+                //Show only relevant documents
+                _.forEach(results.PrimarySearchResults, function (result: any) {
+                    if (result.DMSClient != null) {
+
+                        if (result.DMSProject != null) {
+                            if (_.size(_.find(clientData, { Title: result.DMSClient })) > 0 && _.size(_.find(projectData, { Title: result.DMSProject })) > 0) {
+                                searchResults.push(result);
+                            }
+                        } else {
+
+                            if (_.size(_.find(clientData, { Title: result.DMSClient })) > 0) {
+                                searchResults.push(result);
+                            }
+                        }
+
+                    }
+                });
+
+                setSearchResults(searchResults);
                 setOpend(newOpen);
             }
         } catch (error) {

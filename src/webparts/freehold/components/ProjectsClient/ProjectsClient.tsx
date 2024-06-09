@@ -99,7 +99,7 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
                         alt=""
                         className={styles.projectImage}
                       />
-                        <Link to={"/ViewClient"}>
+                        <Link to={"/ViewClients"}>
                       <div className={styles.clientContent}>
                         <div className={styles.clientNumber}>{clientData}</div>
                         <div className={styles.clientText}>{getClientText(clientData)}</div>
