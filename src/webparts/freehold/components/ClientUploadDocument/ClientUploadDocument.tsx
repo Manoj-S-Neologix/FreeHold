@@ -47,7 +47,10 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
       const clientService = ClientService();
       const select = '*,AssignedStaff/Title,AssignedStaff/EMail,AssignedStaff/Id,Author/Title,Author/EMail,ProjectId/Id,ProjectId/Title, Editor/Id,Editor/Title,Editor/EMail';
       const expand = 'AssignedStaff,Author,ProjectId,Editor';
-      const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'` : "";
+      // const filter = (userRole === "staff") ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}'` : "";
+      const filter = (userRole === "staff")
+      ? `AssignedStaff/EMail eq '${spContext.pageContext.user.email}' and IsActive eq 'Yes'`
+      : "IsActive eq 'Yes'";
       const orderBy = 'Modified';
       const results = await clientService.getClients('Client_Informations', select, expand, filter, orderBy);
       if (results?.updatedResults && results?.updatedResults.length > 0) {
@@ -132,7 +135,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
       setFiles([]);
       setUploadFiles([]);
       toast.success('Documents Added Successfully!');
-      handleCancel();
+      getDocumentsFromFolder(particularClientAllData[0].GUID);
     } catch (error) {
       setLoading(false);
       console.error("Failed to add client and document:", error);
