@@ -158,7 +158,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
     };
 
     const navigateToClient = () => {
-        navigate(-1);
+        navigate("/ViewClients");
     };
 
     return (
