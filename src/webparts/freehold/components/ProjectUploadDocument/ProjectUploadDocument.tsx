@@ -224,12 +224,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
         if (data.unitDocument !== '' && isUnitDocumentChecked) {
 
           const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
         else {
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
         }
 
         uploadFiles.map((uploadedFile: any, index: any) => (
@@ -265,12 +265,12 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
         if (data.unitDocument !== '' && isUnitDocumentChecked) {
 
           const folderUrl = `${particularClientAllData[0].webURL}/${getClient}/${data.unitDocument}`
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
         else {
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
         }
 
         uploadFiles.map((uploadedFile: any, index: any) => (

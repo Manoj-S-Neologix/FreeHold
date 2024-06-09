@@ -193,13 +193,13 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
 
           const folderUrl = `${particularProjectData[0].webURL}/${getClient}/${data.unitDocument}`
           // console.log(folderUrl, 'projectfolderurl..')
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
         }
         else {
           // Upload documents to the specified client's folder
           await apiResponse.updateProjectDocumentMetadata(folderUrl, uploadFiles, updatedData)
-          await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
+          //await apiResponse.addDocumentsToFolder(folderUrl, uploadFiles);
         }
 
         uploadFiles.map((uploadedFile, index) => (
