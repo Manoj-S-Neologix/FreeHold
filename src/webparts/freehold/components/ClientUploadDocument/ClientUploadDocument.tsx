@@ -92,7 +92,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
 
   const fetchClientData = () => {
     const clientService = ClientService();
-    clientService.getClient('Client Checklist')
+    clientService.getItems('Client Checklist')
       .then((results) => {
         if (results) {
           setDropdownOptions(results);
