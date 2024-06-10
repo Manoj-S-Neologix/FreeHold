@@ -9,6 +9,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { ListItemAvatar } from '@mui/material';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { useNavigate } from "react-router-dom";
+import CommonService from '../Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 interface ISearchPros {
     searchResults?: any;
@@ -64,7 +66,7 @@ const SearchResults = ({ searchResults, spContext, siteUrl, handleClose }: ISear
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={<a onClick={() => pageRedirect(`${siteUrl}/_layouts/download.aspx?SourceUrl=${getRedirectUrl(file.ParentLink, file.Filename)}`, "other")} target="_blank" href={"#"}>{file.Filename}</a>}
+                                primary={<a onClick={() => pageRedirect(`${siteUrl}/_layouts/download.aspx?SourceUrl=${getRedirectUrl(file.ParentLink, file.Filename)}`, "other")} target="_blank" href={"#"}>{removeFilenameWithTimestamp(file.Filename)}</a>}
                                 secondary={
                                     <>
                                         <li>{getValue(file, "project")} {getValue(file, "client")} {getValue(file, "unit")}</li>

@@ -14,6 +14,8 @@ import toast from 'react-hot-toast';
 import DropZone from '../../../../Common/DropZone/DropZone';
 import { Controller } from "react-hook-form";
 import TextField from '@mui/material/TextField';
+import CommonService from '../../../../Common/Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 interface UploadDocumentProps {
     open: boolean;
@@ -300,7 +302,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ open, onClose, particul
                                                         onClick={() => {
                                                             window.open(file.url, '_blank');
                                                         }}   >
-                                                        {file.fileName}
+                                                        {removeFilenameWithTimestamp(file.fileName)}
 
                                                     </Box>
                                                 </TableCell>

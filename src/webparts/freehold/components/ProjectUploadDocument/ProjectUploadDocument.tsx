@@ -19,6 +19,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
+import CommonService from '../../../../Common/Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, userRole, siteUrl }) => {
   const { control, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
@@ -643,7 +645,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
                       onClick={() => {
                         window.open(file.FileRef, '_blank');
                       }}   >
-                      {file.FileLeafRef}
+                      {removeFilenameWithTimestamp(file.FileLeafRef)}
 
                     </Box>
                   </TableCell>

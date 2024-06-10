@@ -28,6 +28,8 @@ import toast from 'react-hot-toast';
 import DropZone from '../../../../Common/DropZone/DropZone';
 import ClientService from "../../Services/Business/ClientService";
 import formatDate from "../../hooks/dateFormat";
+import CommonService from '../../../../Common/Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjectData, selectedClient, spContext, siteUrl }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -577,7 +579,7 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
                                 onClick={() => {
                                   window.open(file.FileRef, '_blank');
                                 }}   >
-                                {file.FileLeafRef}
+                                {removeFilenameWithTimestamp(file.FileLeafRef)}
 
                               </Box>
                             </TableCell>

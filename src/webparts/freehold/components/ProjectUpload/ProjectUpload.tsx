@@ -31,6 +31,8 @@ import DropZone from '../../../../Common/DropZone/DropZone';
 import ClientService from "../../Services/Business/ClientService";
 //import CheckIcon from "@mui/icons-material/Check";
 import formatDate from "../../hooks/dateFormat";
+import CommonService from '../../../../Common/Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, selected, props, spContext, siteUrl, userRole }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -575,7 +577,7 @@ const ViewUpload: React.FC<any> = ({ open, onClose, particularClientAllData, sel
                                 onClick={() => {
                                   window.open(file.FileRef, '_blank');
                                 }}   >
-                                {file.FileLeafRef}
+                                {removeFilenameWithTimestamp(file.FileLeafRef)}
 
                               </Box>
                             </TableCell>

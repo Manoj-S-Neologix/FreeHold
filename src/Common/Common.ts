@@ -23,9 +23,19 @@ const CommonService = () => {
         return newFilename;
     }
 
+
+    const removeFilenameWithTimestamp = (filename: string): string => {
+        // Regular expression to match the timestamp pattern with the leading underscore in the filename
+        const timestampPattern = /_\d{8}T\d{9}Z/;
+        // Replace the matched pattern with an empty string
+        const newFilename = filename.replace(timestampPattern, '');
+        return newFilename;
+    }
+
     return {
         generateAutoNumber,
-        generateFilenameWithTimestamp
+        generateFilenameWithTimestamp,
+        removeFilenameWithTimestamp
     };
 }
 
