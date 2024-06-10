@@ -15,10 +15,11 @@ import _ from 'lodash';
 
 
 const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
-    selected, exsistingPersons, selectedDetails, fetchData, spContext: WebPartContext, AllClientData }: any) => {
+    selected, exsistingPersons, selectedDetails, fetchData, spContext: WebPartContext, AllClientData, userRole }: any) => {
 
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
+    
 
     useEffect(() => {
         const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>

@@ -61,8 +61,11 @@ const ProjectsClient = (props: IFreeholdChildProps) => {
     }
   };
 
-  const getProjectText = (count: number) => count === 1 ? 'PROJECT' : 'PROJECTS';
-  const getClientText = (count: number) => count === 1 ? 'CLIENT' : 'CLIENTS';
+  // const getProjectText = (count: number) => count === 1 ? 'PROJECT' : 'PROJECTS';
+  // const getClientText = (count: number) => count === 1 ? 'CLIENT' : 'CLIENTS';
+
+  const getProjectText = (count: number) => count <= 1 ? 'PROJECT' : 'PROJECTS';
+  const getClientText = (count: number) => count <= 1 ? 'CLIENT' : 'CLIENTS';
 
   return (
     <Box >

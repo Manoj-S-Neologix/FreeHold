@@ -322,7 +322,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                     </TableRow>
 
                                     <TableRow>
-                                        <TableCell component="th" scope="row">Name</TableCell>
+                                        <TableCell component="th" scope="row">Client Name</TableCell>
                                         <TableCell>{clientDetails[0]?.name}</TableCell>
                                     </TableRow>
 
