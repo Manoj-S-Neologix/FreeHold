@@ -66,7 +66,7 @@ const ProjectUploadDocument: React.FC<any> = ({ onClose, selected, spContext, us
 
   const apiCall = async (particularClientAllData: any) => {
     try {
-      const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, "", "");
+      const data = await clientService.getClientExpandApi(clientListName, selectQuery, expand, "IsActive eq 'Yes'", "");
       if (data) {
         const assignClientIds = particularClientAllData[0]?.assignClientId?.split(',').map((id: any) => Number(id.trim()));
         const filteredData = data.filter((item: any) => assignClientIds.includes(item.Id));
