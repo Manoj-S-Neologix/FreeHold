@@ -377,7 +377,7 @@ const ViewProject = (props: IFreeholdChildProps) => {
       } else {
         const [projectResults, clientResults] = await Promise.all([
           projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy),
-          clientService.getClient('Client_Informations')
+          clientService.getItems('Client_Informations')
         ]);
 
         if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
