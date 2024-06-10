@@ -84,7 +84,7 @@ const AddClientDialog = ({ open, onClose, props, fetchData, spContext }: any) =>
 
   const fetchClientData = () => {
     const clientService = ClientService();
-    clientService.getClient('Client Checklist')
+    clientService.getItems('Client Checklist')
       .then((results) => {
         // console.log(results, 'client');
         if (results) {

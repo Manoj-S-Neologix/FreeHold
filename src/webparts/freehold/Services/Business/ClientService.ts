@@ -78,6 +78,14 @@ const ClientService = () => {
         }
     };
 
+    const getItems = async (ListName: string) => {
+
+        if (spServiceInstance) {
+            const results = await spServiceInstance.getAllListItems(ListName);
+            return results;
+        }
+    };
+
     const getClientbyID = async (ListName: string, select: string, expand: string, filter: string, orderBy: any, id?: string | number | undefined) => {
 
         if (spServiceInstance) {
@@ -474,7 +482,8 @@ const ClientService = () => {
         getProjects,
         getfilteredListCounts,
         getfilteredClientsnProjects,
-        getClientbyID
+        getClientbyID,
+        getItems
     };
 };
 

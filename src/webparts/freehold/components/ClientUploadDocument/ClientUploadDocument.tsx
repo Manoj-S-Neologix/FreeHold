@@ -18,9 +18,8 @@ import DialogContent from '@mui/material/DialogContent';
 import styles from "../UploadDocuments/UploadDocuments.module.scss";
 import formatDate from "../../hooks/dateFormat";
 import CloseIcon from '@mui/icons-material/Close';
-
-
-
+import CommonService from '../../../../Common/Common';
+const { removeFilenameWithTimestamp } = CommonService();
 
 const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRole, spContext }) => {
 
@@ -351,7 +350,7 @@ const ClientUploadDocument: React.FC<any> = ({ onClose, selected, props, userRol
                     onClick={() => {
                       window.open(file.url, '_blank');
                     }}   >
-                    {file.fileName}
+                    {removeFilenameWithTimestamp(file.fileName)}
 
                   </Box>
                 </TableCell>
