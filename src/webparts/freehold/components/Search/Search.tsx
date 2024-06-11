@@ -148,7 +148,8 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                 }
                 const projectResults = await projectService.getProject('Project_Informations');
                 if (projectResults && projectResults.length > 0) {
-                    setProjectData(projectResults);
+                    // setProjectData(projectResults);
+                    setProjectData(projectResults.filter((project: any) => project.IsActive === 'Yes'));
                 } else {
                     setProjectData([]);
                 }
@@ -407,7 +408,34 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                         </Grid>
                         <Grid item xs={12} sm={12}>
 
-                            <Controller
+                            {/* <Controller
+                                name="projectName"
+                                control={control}
+                                defaultValue=""
+                                rules={{ required: 'Project Name is required' }}
+                                render={({ field }) => (
+                                    <Autocomplete
+                                        {...field}
+                                        disablePortal
+                                        id="combo-box-project"
+                                        options={projectData.map((option: any) => option.Title)}
+                                        sx={{ width: '100%' }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Project Name"
+                                                error={!!errors.projectName}
+                                                helperText={errors?.projectName?.message}
+                                                variant="outlined"
+                                            />
+                                        )}
+                                        onChange={(e, value) => {
+                                            setValue('projectName', value);
+                                        }}
+                                    />
+                                )}
+                            /> */}
+                             <Controller
                                 name="projectName"
                                 control={control}
                                 defaultValue=""

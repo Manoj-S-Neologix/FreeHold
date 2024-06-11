@@ -270,6 +270,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
           <Button
             color="secondary"
             message="Assign Staff"
+            disabled={userRole === "staff"}
             handleClick={(data: any) => {
               setHandleStaffDialog(!handleStaffDialog);
             }}
@@ -522,7 +523,7 @@ const ViewClient = (props: IFreeholdChildProps) => {
             />
             <Button
               handleClick={openAddStaffDialog}
-              disabled={selected.length <= 0}
+              disabled={selected.length <= 0 || userRole === "staff"}
               style={{
                 maxWidth: "200px", whiteSpace: "pre",
                 background: "#dba236", color: "#000"

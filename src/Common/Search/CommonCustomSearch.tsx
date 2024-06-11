@@ -46,7 +46,7 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
                 }
 
                 const results = await spServiceInstance.getFilteredResults(qryTxt);
-                let searchResults: any[] = [];
+                const searchResults: any[] = [];
                 console.log("SearchResults " + results.PrimarySearchResults);
 
                 console.log("clientdata:", clientData);
@@ -54,9 +54,9 @@ const CommonCustomSearch = ({ handleSearchChange, spContext, siteUrl, client, pr
 
                 //Show only relevant documents
                 _.forEach(results.PrimarySearchResults, function (result: any) {
-                    if (result.DMSClient != null) {
+                    if (result.DMSClient !== null) {
 
-                        if (result.DMSProject != null) {
+                        if (result.DMSProject !== null) {
                             if (_.size(_.find(clientData, { Title: result.DMSClient })) > 0 && _.size(_.find(projectData, { Title: result.DMSProject })) > 0) {
                                 searchResults.push(result);
                             }
