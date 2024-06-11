@@ -57,10 +57,11 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
             const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
             const expand = 'Author,AssignClient,Editor';
             const orderBy = 'Modified';
-            const filter = `Id eq '${pId}'`;
+            const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
 
             const [projectResults] = await Promise.all([
-                projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                //projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
             ]);
             if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
                 setProjectDetails(projectResults.TableData);

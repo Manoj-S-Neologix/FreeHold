@@ -96,7 +96,7 @@ const ClientService = () => {
             const pselect = '*,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id';
             const pexpand = 'AssignClient';
             const porderBy = 'Modified';
-            const pfilter = `AssignClient/Id eq '${id}'`;
+            const pfilter = `AssignClient/Id eq '${id}' and IsActive eq 'Yes'`;
 
             const projectResults = await spServiceInstance.getListItemsByFilter('Project_Informations', pselect, pexpand, pfilter, porderBy);
 
