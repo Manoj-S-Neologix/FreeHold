@@ -16,6 +16,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ProjectService from '../../Services/Business/ProjectService';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
+import _ from 'lodash';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -47,26 +49,49 @@ const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
 const ViewProjectByID = (props: IFreeholdChildProps) => {
     const [projectDetails, setProjectDetails] = useState<any[]>([]);
     const [, setLoading] = useState(false);
+    const [userRole, setUserRole] = useState('');
     const { pId } = useParams();
+    const spServiceInstance: SPServiceType = SPService;
 
     const navigate = useNavigate();
     const fetchData = async () => {
         try {
 
             const projectService = ProjectService();
-            const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
-            const expand = 'Author,AssignClient,Editor';
-            const orderBy = 'Modified';
-            const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
 
-            const [projectResults] = await Promise.all([
-                //projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
-                projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
-            ]);
-            if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
-                setProjectDetails(projectResults.TableData);
+            if (userRole === "staff") {
+
+                const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+                const expand = 'Author,AssignClient,Editor';
+                const orderBy = 'Modified';
+                const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
+
+                const [projectResults] = await Promise.all([
+                    //projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                    projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
+                ]);
+                if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
+                    setProjectDetails(projectResults.TableData);
+                } else {
+                    setProjectDetails([]);
+                }
             } else {
-                setProjectDetails([]);
+
+                const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+                const expand = 'Author,AssignClient,Editor';
+                const orderBy = 'Modified';
+                const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
+
+                const [projectResults] = await Promise.all([
+                    projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                ]);
+
+                if (projectResults && projectResults.updatedResults && projectResults.updatedResults.length > 0) {
+                    setProjectDetails(projectResults.TableData);
+                } else {
+                    setProjectDetails([]);
+                }
+
             }
 
         } catch (error) {
@@ -74,10 +99,34 @@ const ViewProjectByID = (props: IFreeholdChildProps) => {
         }
     };
 
+    const getUserRoles = () => {
+        const loggedInUserGroups: string[] = [];
+        let userRoleVal: string = "staff";
+
+        spServiceInstance.getLoggedInUserGroups().then((response: any) => {
+            _.forEach(response, function (group: any) {
+                loggedInUserGroups.push(group.Title);
+            });
+
+            if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+                userRoleVal = "superuser";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+                userRoleVal = "manager";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+                userRoleVal = "staff";
+            }
+            setUserRole(userRoleVal);
+        });
+    }
+
+    React.useEffect(() => {
+        getUserRoles();
+    }, []);
+
     React.useEffect(() => {
         setLoading(false);
         fetchData();
-    }, []);
+    }, [userRole]);
 
     const navigateToHome = () => {
         navigate('/');

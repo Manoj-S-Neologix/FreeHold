@@ -16,6 +16,8 @@ import { Controller, useForm } from "react-hook-form";
 import ProjectService from '../../Services/Business/ProjectService';
 import toast from 'react-hot-toast';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import _ from 'lodash';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -48,39 +50,100 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
     const [loading, setLoading] = useState(false);
     const [projectDetails, setProjectDetails] = useState<any[]>([]);
     const { pId } = useParams();
+    const [userRole, setUserRole] = useState('');
+    const spServiceInstance: SPServiceType = SPService;
 
     const navigate = useNavigate();
 
+    const getUserRoles = () => {
+        const loggedInUserGroups: string[] = [];
+        let userRoleVal: string = "staff";
+
+        spServiceInstance.getLoggedInUserGroups().then((response: any) => {
+            _.forEach(response, function (group: any) {
+                loggedInUserGroups.push(group.Title);
+            });
+
+            if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+                userRoleVal = "superuser";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+                userRoleVal = "manager";
+            } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+                userRoleVal = "staff";
+            }
+            setUserRole(userRoleVal);
+        });
+    }
+
+    React.useEffect(() => {
+        getUserRoles();
+    }, []);
+
     const fetchData = async () => {
         try {
+
             const projectService = ProjectService();
-            const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
-            const expand = 'Author,AssignClient,Editor';
-            const orderBy = 'Modified';
-            const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
-            
-            const [projectResults] = await Promise.all([
-                //projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
-                projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
-            ]);
 
-            if (projectResults && projectResults.TableData && projectResults.TableData.length > 0) {
-                setProjectDetails(projectResults.TableData);
+            if (userRole === "staff") {
+                //const projectService = ProjectService();
+                const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+                const expand = 'Author,AssignClient,Editor';
+                const orderBy = 'Modified';
+                const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
 
-                const datas: any = {
-                    title: projectResults.TableData[0]?.projectName,
-                    projectNumber: projectResults.TableData[0]?.projectNumber,
-                    location: projectResults.TableData[0]?.location,
-                    developer: projectResults.TableData[0]?.developer
-                };
-                setEditData(datas);
-                setValue("title", datas.title);
-                setValue("projectNumber", datas.projectNumber);
-                setValue("location", datas.location);
-                setValue("developer", datas.developer)
+                const [projectResults] = await Promise.all([
+                    //projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                    projectService.getfilteredProjectExpand('Project_Informations', select, filter, expand, orderBy, props.spContext.pageContext.user.email),
+                ]);
 
+                if (projectResults && projectResults.TableData && projectResults.TableData.length > 0) {
+                    setProjectDetails(projectResults.TableData);
+
+                    const datas: any = {
+                        title: projectResults.TableData[0]?.projectName,
+                        projectNumber: projectResults.TableData[0]?.projectNumber,
+                        location: projectResults.TableData[0]?.location,
+                        developer: projectResults.TableData[0]?.developer
+                    };
+                    setEditData(datas);
+                    setValue("title", datas.title);
+                    setValue("projectNumber", datas.projectNumber);
+                    setValue("location", datas.location);
+                    setValue("developer", datas.developer)
+
+                } else {
+                    setProjectDetails([]);
+                }
             } else {
-                setProjectDetails([]);
+
+                const select = '*,Author/Title,Author/EMail,AssignClient/Title,AssignClient/ClientLibraryGUID,AssignClient/Id,Editor/Id,Editor/Title,Editor/EMail';
+                const expand = 'Author,AssignClient,Editor';
+                const orderBy = 'Modified';
+                const filter = `IsActive eq 'Yes' and Id eq '${pId}'`;
+
+                const [projectResults] = await Promise.all([
+                    projectService.getProjectExpand('Project_Informations', select, filter, expand, orderBy)
+                ]);
+
+                if (projectResults && projectResults.TableData && projectResults.TableData.length > 0) {
+                    setProjectDetails(projectResults.TableData);
+
+                    const datas: any = {
+                        title: projectResults.TableData[0]?.projectName,
+                        projectNumber: projectResults.TableData[0]?.projectNumber,
+                        location: projectResults.TableData[0]?.location,
+                        developer: projectResults.TableData[0]?.developer
+                    };
+                    setEditData(datas);
+                    setValue("title", datas.title);
+                    setValue("projectNumber", datas.projectNumber);
+                    setValue("location", datas.location);
+                    setValue("developer", datas.developer)
+
+                } else {
+                    setProjectDetails([]);
+                }
+
             }
 
         } catch (error) {
@@ -108,7 +171,7 @@ const EditProjectByID = (props: IFreeholdChildProps) => {
 
     React.useEffect(() => {
         fetchData();
-    }, []);
+    }, [userRole]);
 
     const navigateToHome = () => {
         navigate('/');

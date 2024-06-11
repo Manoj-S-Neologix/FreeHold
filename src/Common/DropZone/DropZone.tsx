@@ -26,7 +26,17 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
     //         });
     // };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop, accept: {
+            "application/pdf": [".pdf"],
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                [".docx"],
+            "application/msword": [".doc"],
+            "text/plain": [".txt"],
+            "image/jpeg": [".jpg", ".jpeg"],
+            "image/png": [".png"]
+        },
+    });
 
     React.useEffect(() => {
         if (setFiles) {
@@ -63,6 +73,12 @@ const DropZone: React.FC<DragAndDropUploadProps> = ({ onFilesAdded, setIsError, 
                             <Box>
                                 <InputLabel htmlFor="fileInput" sx={{ color: 'blue', cursor: 'pointer' }}>
                                     click here to upload document
+                                </InputLabel>
+                            </Box>
+
+                            <Box>
+                                <InputLabel htmlFor="fileInput" sx={{ color: 'blue', cursor: 'pointer' }}>
+                                    Allowed file types: pdf, doc, docx, <br/> txt, jpg/jpeg and png
                                 </InputLabel>
                             </Box>
                         </Box>
