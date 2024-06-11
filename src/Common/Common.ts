@@ -1,5 +1,6 @@
 const CommonService = () => {
 
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
 
     const generateAutoNumber = (): number => {
         const min = 100000; // Minimum 6 digit number
@@ -32,10 +33,15 @@ const CommonService = () => {
         return newFilename;
     }
 
+    function validateFileType(file: File): boolean {
+        return allowedFileTypes.includes(file.type);
+    }
+
     return {
         generateAutoNumber,
         generateFilenameWithTimestamp,
-        removeFilenameWithTimestamp
+        removeFilenameWithTimestamp,
+        validateFileType
     };
 }
 
