@@ -20,6 +20,10 @@ import toast from 'react-hot-toast';
 import UploadDocument from '../UploadDocuments/UploadDocuments';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { IFreeholdChildProps } from '../IFreeholdChildProps';
+import SPService, { SPServiceType } from '../../Services/Core/SPService';
+import _ from 'lodash';
+
+
 
 const StyledBreadcrumb = styled(MuiButton)(({ theme }) => ({
     backgroundColor:
@@ -56,6 +60,8 @@ const EditClientByID = (props: IFreeholdChildProps) => {
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
     const [clientDetails, setClientDetails] = useState<any[]>([]);
     const { cId } = useParams();
+    const spServiceInstance: SPServiceType = SPService;
+    const [userRole, setUserRole] = useState('');
 
     const fetchData = async () => {
         try {
@@ -95,8 +101,30 @@ const EditClientByID = (props: IFreeholdChildProps) => {
 
         setLoading(false);
         fetchData();
+        getUserRoles();
     }, []);
 
+
+    const getUserRoles = () => {
+        const loggedInUserGroups: string[] = [];
+        let userRoleVal: string = "staff";
+    
+        spServiceInstance.getLoggedInUserGroups().then((response:any) => {
+          _.forEach(response, function (group: any) {
+            loggedInUserGroups.push(group.Title);
+          });
+    
+          if (_.indexOf(loggedInUserGroups, "DMS Superuser") > -1) {
+            userRoleVal = "superuser";
+          } else if (_.indexOf(loggedInUserGroups, "DMS Managers") > -1) {
+            userRoleVal = "manager";
+          } else if (_.indexOf(loggedInUserGroups, "DMS Staffs") > -1) {
+            userRoleVal = "staff";
+          }
+          setUserRole(userRoleVal);
+        });
+      }
+    
     const { control, handleSubmit, reset, formState: { errors }, trigger, setValue } = useForm(
         {
             defaultValues: {
@@ -360,7 +388,7 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                         </TableCell>
                                     </TableRow>
 
-                                    <TableRow>
+                                    {/* <TableRow>
 
                                         <TableCell component="th" scope="row">
                                             Assigned Staff
@@ -391,6 +419,40 @@ const EditClientByID = (props: IFreeholdChildProps) => {
                                                     <AddCircleOutlineIcon fontSize='medium' style={{ color: '#125895;' }} />
                                                 </div>
                                             </li>
+                                        </TableCell>
+                                  
+                                    </TableRow> */}
+
+<TableRow>
+                                        <TableCell component="th" scope="row">Assigned Staff</TableCell>
+
+                                        <TableCell className="default-cursor">
+                                            {userRole !== "staff" && (
+                                                <li
+                                                    className="default-cursor"
+                                                    style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+                                                    key="add-icon"
+                                                >
+                                                    <div
+                                                        onClick={() => { setHandleStaffDialog(true); }}
+                                                        style={{ cursor: 'pointer', alignItems: 'center', flexDirection: 'column' }}
+                                                    >
+                                                        <AddCircleOutlineIcon fontSize='medium' style={{ color: '#125895' }} />
+                                                    </div>
+                                                </li>
+                                            )}
+
+                                            {clientDetails[0]?.assignedStaff
+                                                ?.sort((a: any, b: any) => a.Name.localeCompare(b.Name))
+                                                .map((staff: any, index: number) => (
+                                                    <li
+                                                        className="default-cursor"
+                                                        style={{ textDecoration: "none" }}
+                                                        key={index}
+                                                    >
+                                                        <span>{staff.Name}</span>
+                                                    </li>
+                                                ))}
                                         </TableCell>
 
                                     </TableRow>

@@ -19,6 +19,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
 
     const [selectedPersons, setSelectedPersons] = useState<any[]>([]);
     const [selectedPersonsId, setSelectedPersonsId] = useState<any[]>([]);
+    const [actionPerformed, setActionPerformed] = useState<boolean>(false);
 
     useEffect(() => {
         const assignedStaffEmails = particularClientAllData?.flatMap((item: any) =>
@@ -82,6 +83,7 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
             selectedPersonsIds.push(getID.Id);
         }
         setSelectedPersonsId(selectedPersonsIds);
+        setActionPerformed(true);
     };
 
     return (
@@ -147,7 +149,8 @@ const AddStaffDialog = ({ open, onClose, props, particularClientAllData,
                     <DialogActions sx={{ padding: '10px', marginRight: '14px' }}>
                         <Button
                             onClick={handleSave}
-                            disabled={(selectedPersonsId.length === 0) ? true : false}
+                            // disabled={(selectedPersonsId.length === 0) ? true : false}
+                            disabled={!actionPerformed}
                             variant="contained"
                             color="primary"
                             sx={{

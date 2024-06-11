@@ -49,7 +49,7 @@ export type SPServiceType = {
 const commonServiceInstance = CommonService;
 
 const web = Web('https://freeholddxb.sharepoint.com/sites/Development');
-//const web = Web('https://freeholddxb.sharepoint.com/sites/UAT');
+// const web = Web('https://freeholddxb.sharepoint.com/sites/UAT');
 
 const SPService: SPServiceType = {
 
