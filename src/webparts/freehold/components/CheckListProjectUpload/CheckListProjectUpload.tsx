@@ -175,9 +175,10 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
     setLoading(true);
 
     if (getClient !== "") {
-      const clientInfo: any = (particularProjectData[0].clientDetails).filter((o: any) => o.Name === getClient);
-
-      const updatedData = {
+      const clientInfo: any = (particularProjectData[0].clientDetails).filter((o: any) => o.Title === getClient);
+        console.log("clientInfo", clientInfo);     
+        
+        const updatedData = {
         DMSProject: particularProjectData[0].projectName,
         DMSProjectID: (particularProjectData[0].Id).toString(),
         DMSClient: clientInfo[0].Name,
@@ -276,7 +277,7 @@ const CheckListProjectUpload: React.FC<any> = ({ open, onClose, particularProjec
     }
 
   });
-
+  
   const handleDelete = (getGuid: any) => {
 
     const apiResponse = ProjectService();

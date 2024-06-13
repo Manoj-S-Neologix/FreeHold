@@ -198,9 +198,18 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
       // Watch the values of clientName and projectName
       const clientName = watch("clientName");
       const projectName = watch("projectName");
+
+      console.log(clientName, "clientName.......");
   
       // Check if either field is filled
       const isFormValid = !!clientName || !!projectName;
+
+      const handleFilterIconClick = async () => {
+        setIsLoading(true); 
+        await fetchData();
+        setOpen(true);
+        setIsLoading(false); 
+    };
 
     return (
         <Box sx={{ backgroundColor: theme.palette.primary.main, padding: '10px' }} >
@@ -225,7 +234,7 @@ const Search: React.FC<any> = ({ onClose, spContext, siteUrl }) => {
                                 <Box>
 
                                     {selectedPersons.length === 0 &&
-                                        <Box sx={{ width: "20px !important", cursor: 'pointer' }} onClick={() => setOpen(true)}>
+                                        <Box sx={{ width: "20px !important", cursor: 'pointer' }} onClick={handleFilterIconClick}>
                                             <FilterAltIcon sx={{ marginRight: '11rem', color: theme.palette.common.white }} />
                                         </Box>
                                     }
